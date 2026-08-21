@@ -145,7 +145,11 @@ tailwind.config = {
 
 <aside id="app-sidebar" class="fixed left-0 top-0 h-full bg-secondary-container z-50 flex flex-col border-r border-tertiary/10" style="width: var(--sidebar-w);">
 <button id="sidebar-toggle" class="absolute -right-3.5 top-9 w-7 h-7 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center shadow-lg border-2 border-surface hover:brightness-110 hover:scale-110 transition-all z-[60]" aria-label="Colapsar/expandir menú" title="Colapsar/expandir menú"><span class="material-symbols-outlined text-[16px]" id="sidebar-toggle-icon">chevron_left</span></button>
-  <div class="flex-1 flex flex-col pt-20 pb-6 overflow-y-auto overflow-x-hidden">
+  <div class="h-20 flex items-center gap-3 px-5 border-b border-tertiary/10 shrink-0 overflow-hidden">
+    <img alt="Logo" class="w-8 h-8 object-contain shrink-0" src="assets/logo.png"/>
+    <span class="font-headline-md text-headline-md text-tertiary tracking-widest uppercase sidebar-label whitespace-nowrap">GALA</span>
+  </div>
+  <div class="flex-1 flex flex-col pt-4 pb-6 overflow-y-auto overflow-x-hidden">
     <nav class="flex-1 flex flex-col gap-1 px-4" data-active-classes="border-l-4 border-tertiary bg-white/5 text-tertiary font-bold px-[20px]">
       <a aria-current="page" class="flex items-center py-3 transition-all border-l-4 border-tertiary bg-white/5 text-tertiary font-bold px-[16px]" data-path="dashboard" href="index.html"><span class="material-symbols-outlined mr-3 nav-icon">dashboard</span><span class="sidebar-label">Panel</span></a>
       <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="invitados" href="invitados.html"><span class="material-symbols-outlined mr-3 nav-icon">group</span><span class="sidebar-label">Invitados</span></a>
@@ -168,10 +172,7 @@ tailwind.config = {
 
 <div id="app-content-wrapper" class="flex flex-col min-h-screen" style="padding-left: var(--sidebar-w);">
   <header class="fixed top-0 right-0 left-0 h-20 bg-primary-container z-40 px-gutter flex items-center justify-between border-b border-tertiary/5 shadow-xl">
-    <div id="app-header-logo" class="flex items-center gap-4 pl-8" style="width: var(--sidebar-w);">
-      <img alt="Logo" class="w-9 h-9 object-contain shrink-0" src="assets/logo.png"/>
-      <span class="font-headline-md text-headline-md text-tertiary tracking-widest uppercase sidebar-label">GALA</span>
-    </div>
+    <div id="app-header-logo" style="width: var(--sidebar-w);"></div>
     <div class="flex-1 flex items-center justify-center gap-6">
       <span class="font-headline-md text-headline-md text-on-surface">Gala del Solsticio de Verano</span>
       <div class="px-4 py-1.5 bg-tertiary/10 border border-tertiary/20 rounded-full flex items-center gap-2">

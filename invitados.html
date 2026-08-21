@@ -145,7 +145,11 @@ tailwind.config = {
 
 <aside id="app-sidebar" class="fixed left-0 top-0 h-full bg-secondary-container z-50 flex flex-col border-r border-tertiary/10" style="width: var(--sidebar-w);">
 <button id="sidebar-toggle" class="absolute -right-3.5 top-9 w-7 h-7 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center shadow-lg border-2 border-surface hover:brightness-110 hover:scale-110 transition-all z-[60]" aria-label="Colapsar/expandir menú" title="Colapsar/expandir menú"><span class="material-symbols-outlined text-[16px]" id="sidebar-toggle-icon">chevron_left</span></button>
-  <div class="flex-1 flex flex-col pt-20 pb-6 overflow-y-auto overflow-x-hidden">
+  <div class="h-20 flex items-center gap-3 px-5 border-b border-tertiary/10 shrink-0 overflow-hidden">
+    <img alt="Logo" class="w-8 h-8 object-contain shrink-0" src="assets/logo.png"/>
+    <span class="font-headline-md text-headline-md text-tertiary tracking-widest uppercase sidebar-label whitespace-nowrap">GALA</span>
+  </div>
+  <div class="flex-1 flex flex-col pt-4 pb-6 overflow-y-auto overflow-x-hidden">
     <nav class="flex-1 flex flex-col gap-1 px-4" data-active-classes="border-l-4 border-tertiary bg-white/5 text-tertiary font-bold px-[20px]">
       <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="dashboard" href="index.html"><span class="material-symbols-outlined mr-3 nav-icon">dashboard</span><span class="sidebar-label">Panel</span></a>
       <a aria-current="page" class="flex items-center py-3 transition-all border-l-4 border-tertiary bg-white/5 text-tertiary font-bold px-[16px]" data-path="invitados" href="invitados.html"><span class="material-symbols-outlined mr-3 nav-icon">group</span><span class="sidebar-label">Invitados</span></a>
@@ -168,10 +172,7 @@ tailwind.config = {
 
 <div id="app-content-wrapper" class="flex flex-col min-h-screen" style="padding-left: var(--sidebar-w);">
   <header class="fixed top-0 right-0 left-0 h-20 bg-primary-container z-40 px-gutter flex items-center justify-between border-b border-tertiary/5 shadow-xl">
-    <div id="app-header-logo" class="flex items-center gap-4 pl-8" style="width: var(--sidebar-w);">
-      <img alt="Logo" class="w-9 h-9 object-contain shrink-0" src="assets/logo.png"/>
-      <span class="font-headline-md text-headline-md text-tertiary tracking-widest uppercase sidebar-label">GALA</span>
-    </div>
+    <div id="app-header-logo" style="width: var(--sidebar-w);"></div>
     <div class="flex-1 flex items-center justify-center gap-6">
       <span class="font-headline-md text-headline-md text-on-surface">Gala del Solsticio de Verano</span>
       <div class="px-4 py-1.5 bg-tertiary/10 border border-tertiary/20 rounded-full flex items-center gap-2">
@@ -293,7 +294,7 @@ tailwind.config = {
                   <tr class="bg-primary-container/50 border-b border-tertiary/20">
                     <th class="py-5 px-6 font-label-gold text-label-gold text-tertiary uppercase tracking-widest w-1/4">Invitado</th>
                     <th class="py-5 px-6 font-label-gold text-label-gold text-tertiary uppercase tracking-widest w-[15%]">Grupo/Rel.</th>
-                    <th class="py-5 px-6 font-label-gold text-label-gold text-tertiary uppercase tracking-widest w-1/5">Contacto</th>
+                    <th class="py-5 px-6 font-label-gold text-label-gold text-tertiary uppercase tracking-widest w-1/5">Teléfono</th>
                     <th class="py-5 px-6 font-label-gold text-label-gold text-tertiary uppercase tracking-widest w-[15%]">RSVP</th>
                     <th class="py-5 px-6 font-label-gold text-label-gold text-tertiary uppercase tracking-widest w-[10%]">Mesa #</th>
                     <th class="py-5 px-6 font-label-gold text-label-gold text-tertiary uppercase tracking-widest text-right">Acciones</th>
@@ -344,17 +345,18 @@ document.addEventListener('DOMContentLoaded', function () {
       </div>
       <div class="grid grid-cols-2 gap-4">
         <div class="flex flex-col gap-1">
-          <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="guest-group">Grupo</label>
-          <input id="guest-group" placeholder="Familia, VIP, Amigo..." class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
+          <div class="flex items-center justify-between">
+            <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="guest-group">Grupo</label>
+            <button type="button" id="btn-manage-groups" class="text-[11px] uppercase tracking-wider text-tertiary hover:text-tertiary-fixed transition-colors">Gestionar</button>
+          </div>
+          <select id="guest-group" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary">
+            <option value="">Sin grupo</option>
+          </select>
         </div>
         <div class="flex flex-col gap-1">
           <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="guest-table">Mesa #</label>
           <input id="guest-table" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
         </div>
-      </div>
-      <div class="flex flex-col gap-1">
-        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="guest-email">Correo</label>
-        <input id="guest-email" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="email"/>
       </div>
       <div class="flex flex-col gap-1">
         <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="guest-phone">Teléfono</label>
@@ -389,6 +391,23 @@ document.addEventListener('DOMContentLoaded', function () {
   </div>
 </div>
 
+<!-- Modal: Gestionar Grupos -->
+<div id="groups-modal" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-4">
+  <div id="groups-modal-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+  <div class="relative w-full max-w-md bg-surface-container-low rounded-2xl shadow-2xl border border-tertiary/10 p-8">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="font-headline-lg text-headline-lg text-on-surface">Gestionar Grupos</h2>
+      <button id="groups-modal-close" class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors">close</button>
+    </div>
+    <div id="groups-list" class="flex flex-col gap-2 mb-6 max-h-64 overflow-y-auto"></div>
+    <form id="group-add-form" class="flex gap-2">
+      <input id="new-group-name" placeholder="Nombre del nuevo grupo" required="" class="flex-1 bg-surface-container border border-tertiary/20 rounded-lg py-2.5 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
+      <button type="submit" class="px-4 py-2.5 rounded-lg bg-tertiary text-on-tertiary font-button-text uppercase tracking-wider text-sm hover:brightness-110 transition-all">Agregar</button>
+    </form>
+    <p id="groups-error" class="hidden text-error text-sm mt-2"></p>
+  </div>
+</div>
+
 <script type="module">
   const tbody = document.getElementById("guests-tbody");
   const countLabel = document.getElementById("guests-count-label");
@@ -396,9 +415,15 @@ document.addEventListener('DOMContentLoaded', function () {
   const modal = document.getElementById("guest-modal");
   const form = document.getElementById("guest-form");
   const formError = document.getElementById("guest-form-error");
+  const groupSelect = document.getElementById("guest-group");
+  const groupsModal = document.getElementById("groups-modal");
+  const groupsList = document.getElementById("groups-list");
+
 
   let currentEventId = null;
   let allGuests = [];
+  let allGroups = [];
+  let groupsById = {};
 
   const rsvpStyles = {
     confirmado: { dot: "bg-[#4ade80] shadow-[0_0_8px_#4ade80]", text: "text-[#4ade80]", label: "Confirmado" },
@@ -434,11 +459,10 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
           </td>
           <td class="py-4 px-6">
-            ${g.group_label ? `<span class="inline-flex items-center px-2.5 py-1 rounded-full bg-tertiary/10 border border-tertiary/20 text-tertiary font-label-gold text-label-gold uppercase">${escapeHtml(g.group_label)}</span>` : `<span class="text-on-surface-variant/40">—</span>`}
+            ${g.group_id && groupsById[g.group_id] ? `<span class="inline-flex items-center px-2.5 py-1 rounded-full bg-tertiary/10 border border-tertiary/20 text-tertiary font-label-gold text-label-gold uppercase">${escapeHtml(groupsById[g.group_id])}</span>` : `<span class="text-on-surface-variant/40">—</span>`}
           </td>
           <td class="py-4 px-6">
-            <div class="text-on-surface">${escapeHtml(g.email) || "—"}</div>
-            ${g.phone ? `<div class="text-on-surface-variant text-sm mt-0.5">${escapeHtml(g.phone)}</div>` : ""}
+            <div class="text-on-surface">${escapeHtml(g.phone) || "—"}</div>
           </td>
           <td class="py-4 px-6">
             <div class="flex items-center gap-2">
@@ -475,13 +499,33 @@ document.addEventListener('DOMContentLoaded', function () {
     const filtered = term
       ? allGuests.filter(g =>
           (g.full_name || "").toLowerCase().includes(term) ||
-          (g.email || "").toLowerCase().includes(term))
+          (g.phone || "").toLowerCase().includes(term))
       : allGuests;
     renderRows(filtered);
     updateStats(allGuests); // los contadores reflejan el total, no el filtro
     if (term) {
       countLabel.textContent = `Mostrando ${filtered.length} de ${allGuests.length} registros`;
     }
+  }
+
+  function populateGroupSelect() {
+    groupSelect.innerHTML = '<option value="">Sin grupo</option>' +
+      allGroups.map(gr => `<option value="${gr.id}">${escapeHtml(gr.name)}</option>`).join("");
+  }
+
+  async function loadGroups() {
+    const { data, error } = await window.supabaseClient
+      .from("guest_groups")
+      .select("*")
+      .eq("event_id", currentEventId)
+      .order("name", { ascending: true });
+    if (error) {
+      console.error("No se pudieron cargar los grupos:", error);
+      return;
+    }
+    allGroups = data || [];
+    groupsById = Object.fromEntries(allGroups.map(g => [g.id, g.name]));
+    populateGroupSelect();
   }
 
   async function loadGuests() {
@@ -504,9 +548,8 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById("guest-modal-title").textContent = mode === "edit" ? "Editar Invitado" : "Agregar Invitado";
     document.getElementById("guest-id").value = guest ? guest.id : "";
     document.getElementById("guest-full-name").value = guest ? guest.full_name || "" : "";
-    document.getElementById("guest-group").value = guest ? guest.group_label || "" : "";
+    document.getElementById("guest-group").value = guest ? guest.group_id || "" : "";
     document.getElementById("guest-table").value = guest ? guest.table_number || "" : "";
-    document.getElementById("guest-email").value = guest ? guest.email || "" : "";
     document.getElementById("guest-phone").value = guest ? guest.phone || "" : "";
     document.getElementById("guest-dietary").value = guest ? guest.dietary_notes || "" : "";
     document.getElementById("guest-rsvp").value = guest ? guest.rsvp_status || "pendiente" : "pendiente";
@@ -532,9 +575,9 @@ document.addEventListener('DOMContentLoaded', function () {
       alert("No hay invitados para exportar.");
       return;
     }
-    const headers = ["Nombre", "Grupo", "Correo", "Teléfono", "RSVP", "Mesa", "Acompañante", "Notas dietéticas"];
+    const headers = ["Nombre", "Grupo", "Teléfono", "RSVP", "Mesa", "Acompañante", "Notas dietéticas"];
     const rows = allGuests.map(g => [
-      g.full_name, g.group_label, g.email, g.phone, g.rsvp_status, g.table_number,
+      g.full_name, g.group_id ? (groupsById[g.group_id] || "") : "", g.phone, g.rsvp_status, g.table_number,
       g.plus_one ? "Sí" : "No", g.dietary_notes
     ]);
     const csv = [headers, ...rows]
@@ -578,9 +621,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const payload = {
       event_id: currentEventId,
       full_name: document.getElementById("guest-full-name").value.trim(),
-      group_label: document.getElementById("guest-group").value.trim() || null,
+      group_id: document.getElementById("guest-group").value || null,
       table_number: document.getElementById("guest-table").value.trim() || null,
-      email: document.getElementById("guest-email").value.trim() || null,
       phone: document.getElementById("guest-phone").value.trim() || null,
       dietary_notes: document.getElementById("guest-dietary").value.trim() || null,
       rsvp_status: document.getElementById("guest-rsvp").value,
@@ -620,8 +662,92 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
     currentEventId = events[0].id;
+    await loadGroups();
     await loadGuests();
   })();
+
+  // ---- Gestión de grupos ----
+  function renderGroupsList() {
+    if (allGroups.length === 0) {
+      groupsList.innerHTML = `<p class="text-on-surface-variant text-sm py-4 text-center">Todavía no tienes grupos.</p>`;
+      return;
+    }
+    groupsList.innerHTML = allGroups.map(g => `
+      <div class="flex items-center gap-2 bg-surface-container rounded-lg p-2 pl-4" data-group-id="${g.id}">
+        <span class="flex-1 group-name-display text-on-surface text-sm truncate">${escapeHtml(g.name)}</span>
+        <input class="group-name-edit hidden flex-1 bg-surface border border-tertiary/30 rounded px-2 py-1 text-on-surface text-sm" value="${escapeHtml(g.name)}"/>
+        <button class="btn-rename-group p-1.5 text-on-surface-variant hover:text-tertiary transition-colors" title="Renombrar"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+        <button class="btn-delete-group p-1.5 text-on-surface-variant hover:text-error transition-colors" title="Eliminar"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+      </div>
+    `).join("");
+  }
+
+  document.getElementById("btn-manage-groups").addEventListener("click", () => {
+    renderGroupsList();
+    groupsModal.classList.remove("hidden");
+    groupsModal.classList.add("flex");
+  });
+  document.getElementById("groups-modal-close").addEventListener("click", () => {
+    groupsModal.classList.add("hidden");
+    groupsModal.classList.remove("flex");
+  });
+  document.getElementById("groups-modal-backdrop").addEventListener("click", () => {
+    groupsModal.classList.add("hidden");
+    groupsModal.classList.remove("flex");
+  });
+
+  document.getElementById("group-add-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const input = document.getElementById("new-group-name");
+    const name = input.value.trim();
+    if (!name) return;
+    const { error } = await window.supabaseClient.from("guest_groups").insert({ event_id: currentEventId, name });
+    const errEl = document.getElementById("groups-error");
+    if (error) {
+      errEl.textContent = error.message;
+      errEl.classList.remove("hidden");
+      return;
+    }
+    errEl.classList.add("hidden");
+    input.value = "";
+    await loadGroups();
+    renderGroupsList();
+    applyFilterAndRender(); // refresca las etiquetas de grupo en la tabla
+  });
+
+  groupsList.addEventListener("click", async (e) => {
+    const row = e.target.closest("[data-group-id]");
+    if (!row) return;
+    const id = row.getAttribute("data-group-id");
+    const nameDisplay = row.querySelector(".group-name-display");
+    const nameEdit = row.querySelector(".group-name-edit");
+
+    if (e.target.closest(".btn-rename-group")) {
+      const isEditing = !nameEdit.classList.contains("hidden");
+      if (!isEditing) {
+        nameDisplay.classList.add("hidden");
+        nameEdit.classList.remove("hidden");
+        nameEdit.focus();
+      } else {
+        const newName = nameEdit.value.trim();
+        if (newName) {
+          await window.supabaseClient.from("guest_groups").update({ name: newName }).eq("id", id);
+          await loadGroups();
+          renderGroupsList();
+          applyFilterAndRender();
+        }
+      }
+    }
+
+    if (e.target.closest(".btn-delete-group")) {
+      const groupName = nameDisplay.textContent;
+      if (!confirm(`¿Eliminar el grupo "${groupName}"? Los invitados que lo tengan quedarán sin grupo.`)) return;
+      await window.supabaseClient.from("guest_groups").delete().eq("id", id);
+      await loadGroups();
+      renderGroupsList();
+      applyFilterAndRender();
+    }
+  });
 </script>
 </body>
 </html>
