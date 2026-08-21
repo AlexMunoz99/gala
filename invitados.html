@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gala ERP — Invitados</title>
+<style>
+  @layer base {
+    html, body { margin: 0; padding: 0; }
+    body { overscroll-behavior: none; }
+    main > :first-child { margin-top: 0 !important; }
+    main > :last-child { margin-bottom: 0 !important; }
+  }
+  ::-webkit-scrollbar { display: none; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "surface-tint": "#bac8dc",
+        "primary-fixed": "#d6e4f9",
+        "surface-container-low": "#1c1c19",
+        "error": "#ffb4ab",
+        "secondary-fixed": "#d2e4ff",
+        "on-error": "#690005",
+        "secondary-container": "#2a486b",
+        "on-primary-fixed-variant": "#3a4859",
+        "secondary-fixed-dim": "#abc9f2",
+        "primary-container": "#0d1b2a",
+        "tertiary-fixed-dim": "#e9c349",
+        "outline": "#8e9196",
+        "on-secondary-container": "#9ab7e0",
+        "inverse-on-surface": "#31302d",
+        "tertiary-container": "#cca730",
+        "surface-variant": "#353532",
+        "primary-fixed-dim": "#bac8dc",
+        "inverse-primary": "#525f71",
+        "on-secondary": "#103253",
+        "on-error-container": "#ffdad6",
+        "outline-variant": "#44474c",
+        "tertiary": "#e9c349",
+        "on-primary-fixed": "#0f1c2c",
+        "surface": "#131411",
+        "on-surface": "#e5e2dd",
+        "on-tertiary-container": "#4f3e00",
+        "tertiary-fixed": "#ffe088",
+        "inverse-surface": "#e5e2dd",
+        "on-tertiary-fixed-variant": "#574500",
+        "surface-container": "#20201d",
+        "primary": "#bac8dc",
+        "error-container": "#93000a",
+        "on-secondary-fixed-variant": "#2a486b",
+        "on-background": "#e5e2dd",
+        "on-tertiary": "#3c2f00",
+        "on-secondary-fixed": "#001c37",
+        "on-primary-container": "#768497",
+        "on-tertiary-fixed": "#241a00",
+        "surface-dim": "#131411",
+        "background": "#131411",
+        "surface-container-highest": "#353532",
+        "surface-container-high": "#2a2a27",
+        "on-primary": "#243141",
+        "surface-container-lowest": "#0e0e0c",
+        "secondary": "#abc9f2",
+        "surface-bright": "#3a3936",
+        "on-surface-variant": "#c4c6cc"
+      },
+      borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+      spacing: { "gutter": "24px", "margin-mobile": "16px", "container-padding": "40px", "section-gap": "80px", "unit": "8px" },
+      fontFamily: {
+        "headline-lg-mobile": ["Playfair Display"],
+        "headline-lg": ["Playfair Display"],
+        "body-md": ["Inter"],
+        "button-text": ["Inter"],
+        "label-gold": ["Inter"],
+        "headline-md": ["Playfair Display"],
+        "body-lg": ["Inter"],
+        "display-lg": ["Playfair Display"]
+      },
+      fontSize: {
+        "headline-lg-mobile": ["28px", { lineHeight: "1.3", fontWeight: "600" }],
+        "headline-lg": ["32px", { lineHeight: "1.3", fontWeight: "600" }],
+        "body-md": ["16px", { lineHeight: "1.5", fontWeight: "400" }],
+        "button-text": ["14px", { lineHeight: "1", letterSpacing: "0.05em", fontWeight: "600" }],
+        "label-gold": ["12px", { lineHeight: "1.2", letterSpacing: "0.15em", fontWeight: "700" }],
+        "headline-md": ["24px", { lineHeight: "1.4", fontWeight: "500" }],
+        "body-lg": ["18px", { lineHeight: "1.6", fontWeight: "400" }],
+        "display-lg": ["48px", { lineHeight: "1.2", letterSpacing: "-0.02em", fontWeight: "700" }]
+      }
+    }
+  }
+};
+</script>
+</head>
+<body class="bg-surface font-body-md text-on-surface overflow-x-hidden">
+
+<aside class="fixed left-0 top-0 h-full w-72 bg-secondary-container z-50 flex flex-col border-r border-tertiary/10">
+  <div class="flex-1 flex flex-col pt-24 pb-8 overflow-y-auto">
+    <nav class="flex-1 flex flex-col gap-1 px-4" data-active-classes="border-l-4 border-tertiary bg-white/5 text-tertiary font-bold px-[20px]">
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="dashboard" href="index.html"><span class="material-symbols-outlined mr-4">dashboard</span>Panel</a>
+      <a aria-current="page" class="flex items-center py-4 transition-all border-l-4 border-tertiary bg-white/5 text-tertiary font-bold px-[20px]" data-path="invitados" href="invitados.html"><span class="material-symbols-outlined mr-4">group</span>Invitados</a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="itinerario" href="itinerario.html"><span class="material-symbols-outlined mr-4">calendar_today</span>Itinerario</a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="lugares" href="lugares.html"><span class="material-symbols-outlined mr-4">location_on</span>Lugares</a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="proveedores" href="proveedores.html"><span class="material-symbols-outlined mr-4">business_center</span>Proveedores</a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="tareas" href="tareas.html"><span class="material-symbols-outlined mr-4">check_circle</span>Tareas</a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="programa" href="programa.html"><span class="material-symbols-outlined mr-4">list_alt</span>Programa</a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="seating-materials" href="seating-materials.html"><span class="material-symbols-outlined mr-4">chair</span>Asientos/Materiales</a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="post-wedding" href="post-wedding.html"><span class="material-symbols-outlined mr-4">celebration</span>Post-Boda</a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="presupuesto" href="presupuesto.html"><span class="material-symbols-outlined mr-4">payments</span>Presupuesto</a>
+    </nav>
+    <div class="px-8 mt-auto pt-8">
+      <button class="w-full py-4 bg-tertiary text-on-tertiary font-button-text text-button-text uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-2 rounded-lg">
+        <span class="material-symbols-outlined">add</span>Crear Nuevo Evento
+      </button>
+    </div>
+  </div>
+</aside>
+
+<div class="pl-72 flex flex-col min-h-screen">
+  <header class="fixed top-0 right-0 left-0 h-20 bg-primary-container z-40 px-gutter flex items-center justify-between border-b border-tertiary/5 shadow-xl">
+    <div class="flex items-center gap-4 w-72 pl-8">
+      <img alt="Logo" class="w-8 h-8 rounded-full border border-tertiary" src="assets/logo.png"/>
+      <span class="font-headline-md text-headline-md text-tertiary tracking-widest uppercase">GALA</span>
+    </div>
+    <div class="flex-1 flex items-center justify-center gap-6">
+      <span class="font-headline-md text-headline-md text-on-surface">Gala del Solsticio de Verano</span>
+      <div class="px-4 py-1.5 bg-tertiary/10 border border-tertiary/20 rounded-full flex items-center gap-2">
+        <span class="material-symbols-outlined text-tertiary text-sm">timer</span>
+        <span class="font-label-gold text-label-gold text-tertiary">42D : 12H : 08M</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-6 justify-end w-72 pr-8">
+      <button class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors">notifications</button>
+      <button class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors">settings</button>
+      <div class="w-10 h-10 rounded-full border border-tertiary/30 p-0.5 overflow-hidden ring-2 ring-tertiary/10">
+        <img alt="Perfil" class="w-full h-full rounded-full object-cover" src="assets/avatar.png"/>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 pt-20 bg-on-surface-variant/5 min-h-screen relative">
+    <div class="flex flex-col w-full relative z-10 pb-section-gap">
+      <!-- Decorative Background Glow -->
+      <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-tertiary/5 rounded-full blur-[120px] pointer-events-none -mt-[400px] -mr-[200px]"></div>
+      <div class="absolute top-[40%] left-0 w-[600px] h-[600px] bg-secondary-container/10 rounded-full blur-[100px] pointer-events-none -ml-[300px]"></div>
+
+      <div class="px-container-padding flex flex-col gap-section-gap w-full max-w-[1440px] mx-auto mt-12">
+
+        <!-- Header & Actions -->
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 relative z-20">
+          <div class="flex flex-col gap-2">
+            <span class="font-label-gold text-label-gold text-tertiary uppercase tracking-[0.2em] relative pl-8 before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-6 before:h-px before:bg-tertiary/50">Guest Management</span>
+            <h1 class="font-display-lg text-display-lg text-on-surface">Invitados</h1>
+            <p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl mt-2">Gestiona tu lista de invitados, da seguimiento a los RSVP y coordina los acomodos para el próximo evento.</p>
+          </div>
+          <div class="flex items-center gap-4">
+            <button class="px-6 py-3 bg-surface-container border border-tertiary/20 text-tertiary font-button-text text-button-text uppercase tracking-widest hover:bg-tertiary/5 transition-all flex items-center justify-center gap-2 rounded-lg backdrop-blur-sm shadow-md">
+              <span class="material-symbols-outlined text-[18px]">download</span>
+              Exportar CSV
+            </button>
+            <button class="px-8 py-3 bg-tertiary text-on-tertiary font-button-text text-button-text uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-2 rounded-lg shadow-xl shadow-tertiary/20">
+              <span class="material-symbols-outlined text-[18px]">person_add</span>
+              Agregar Invitado
+            </button>
+          </div>
+        </div>
+
+        <!-- Summary Metrics -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative z-20">
+          <div class="bg-surface-container-high/60 backdrop-blur-md p-6 rounded-xl border border-tertiary/10 shadow-lg relative overflow-hidden group">
+            <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div class="flex justify-between items-start mb-4 relative z-10">
+              <span class="font-label-gold text-label-gold text-on-surface-variant uppercase">Total Invitados</span>
+              <span class="material-symbols-outlined text-primary/50 text-[32px]">groups</span>
+            </div>
+            <div class="flex items-end gap-3 relative z-10">
+              <span class="font-display-lg text-display-lg text-on-surface">300</span>
+              <span class="font-body-md text-body-md text-on-surface-variant mb-1">+12 esta semana</span>
+            </div>
+          </div>
+          <div class="bg-surface-container-high/60 backdrop-blur-md p-6 rounded-xl border border-tertiary/10 shadow-lg relative overflow-hidden group">
+            <div class="absolute inset-0 bg-gradient-to-br from-[#4ade80]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div class="flex justify-between items-start mb-4 relative z-10">
+              <span class="font-label-gold text-label-gold text-[#4ade80] uppercase">Confirmados</span>
+              <span class="material-symbols-outlined text-[#4ade80]/50 text-[32px]">check_circle</span>
+            </div>
+            <div class="flex items-end gap-3 relative z-10">
+              <span class="font-display-lg text-display-lg text-on-surface">215</span>
+              <div class="mb-2 w-full max-w-[100px] h-1 bg-surface-container rounded-full overflow-hidden">
+                <div class="h-full bg-[#4ade80]" style="width: 71%"></div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-surface-container-high/60 backdrop-blur-md p-6 rounded-xl border border-tertiary/10 shadow-lg relative overflow-hidden group">
+            <div class="absolute inset-0 bg-gradient-to-br from-tertiary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div class="flex justify-between items-start mb-4 relative z-10">
+              <span class="font-label-gold text-label-gold text-tertiary uppercase">Pendientes</span>
+              <span class="material-symbols-outlined text-tertiary/50 text-[32px]">hourglass_empty</span>
+            </div>
+            <div class="flex items-end gap-3 relative z-10">
+              <span class="font-display-lg text-display-lg text-on-surface">85</span>
+              <span class="font-body-md text-body-md text-tertiary/80 mb-1">Esperando RSVP</span>
+            </div>
+          </div>
+          <div class="bg-surface-container-high/60 backdrop-blur-md p-6 rounded-xl border border-tertiary/10 shadow-lg relative overflow-hidden group">
+            <div class="absolute inset-0 bg-gradient-to-br from-error/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div class="flex justify-between items-start mb-4 relative z-10">
+              <span class="font-label-gold text-label-gold text-error uppercase">Declinados</span>
+              <span class="material-symbols-outlined text-error/50 text-[32px]">cancel</span>
+            </div>
+            <div class="flex items-end gap-3 relative z-10">
+              <span class="font-display-lg text-display-lg text-on-surface">12</span>
+              <span class="font-body-md text-body-md text-on-surface-variant mb-1">Con aviso</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Content Area: Search, Filters & Table -->
+        <div class="flex flex-col gap-6 relative z-20">
+          <!-- Toolbar -->
+          <div class="flex flex-col lg:flex-row gap-4 justify-between items-center bg-surface-container-low/80 backdrop-blur-md p-4 rounded-xl border border-tertiary/5 shadow-md">
+            <div class="relative w-full lg:w-96">
+              <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-tertiary/50">search</span>
+              <input class="w-full bg-surface-container border border-secondary-container text-on-surface font-body-md text-body-md py-3 pl-12 pr-4 rounded-lg focus:outline-none focus:border-tertiary/50 focus:shadow-[0_0_15px_rgba(204,167,48,0.1)] transition-all placeholder:text-on-surface-variant/50" placeholder="Buscar invitado por nombre o correo..." type="text"/>
+            </div>
+            <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+              <div class="flex items-center gap-2 mr-2">
+                <span class="material-symbols-outlined text-tertiary/70 text-[20px]">filter_list</span>
+                <span class="font-label-gold text-label-gold text-on-surface-variant uppercase">Filtrar por</span>
+              </div>
+              <div class="relative group">
+                <button class="px-4 py-2 bg-surface-container border border-tertiary/10 text-on-surface font-button-text text-button-text rounded-lg flex items-center gap-2 hover:bg-tertiary/5 transition-colors">
+                  Status <span class="material-symbols-outlined text-[16px]">arrow_drop_down</span>
+                </button>
+              </div>
+              <div class="relative group">
+                <button class="px-4 py-2 bg-surface-container border border-tertiary/10 text-on-surface font-button-text text-button-text rounded-lg flex items-center gap-2 hover:bg-tertiary/5 transition-colors">
+                  Grupo <span class="material-symbols-outlined text-[16px]">arrow_drop_down</span>
+                </button>
+              </div>
+              <div class="w-px h-6 bg-tertiary/20 mx-2 hidden md:block"></div>
+              <button class="px-3 py-1 bg-tertiary/10 border border-tertiary/20 text-tertiary font-label-gold text-label-gold uppercase rounded-full hover:bg-tertiary/20 transition-colors">VIP</button>
+              <button class="px-3 py-1 bg-surface-container border border-tertiary/10 text-on-surface-variant font-label-gold text-label-gold uppercase rounded-full hover:bg-tertiary/5 transition-colors">Familia</button>
+              <button class="px-3 py-1 bg-surface-container border border-tertiary/10 text-on-surface-variant font-label-gold text-label-gold uppercase rounded-full hover:bg-tertiary/5 transition-colors">Trabajo</button>
+            </div>
+          </div>
+
+          <!-- Table Container -->
+          <div class="bg-surface-container-low/90 backdrop-blur-xl rounded-xl border border-tertiary/10 shadow-2xl overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-primary-container/50 border-b border-tertiary/20">
+                    <th class="py-5 px-6 font-label-gold text-label-gold text-tertiary uppercase tracking-widest w-1/4">Invitado</th>
+                    <th class="py-5 px-6 font-label-gold text-label-gold text-tertiary uppercase tracking-widest w-[15%]">Grupo/Rel.</th>
+                    <th class="py-5 px-6 font-label-gold text-label-gold text-tertiary uppercase tracking-widest w-1/5">Contacto</th>
+                    <th class="py-5 px-6 font-label-gold text-label-gold text-tertiary uppercase tracking-widest w-[15%]">RSVP</th>
+                    <th class="py-5 px-6 font-label-gold text-label-gold text-tertiary uppercase tracking-widest w-[10%]">Mesa #</th>
+                    <th class="py-5 px-6 font-label-gold text-label-gold text-tertiary uppercase tracking-widest text-right">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody class="font-body-md text-body-md text-on-surface">
+                  <!-- Row 1 -->
+                  <tr class="border-b border-tertiary/5 hover:bg-secondary-container/20 transition-colors group">
+                    <td class="py-4 px-6">
+                      <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-tertiary font-headline-md shadow-inner border border-tertiary/20">A</div>
+                        <div>
+                          <div class="font-headline-md text-headline-md text-on-surface mb-0.5">Alistair Montgomery</div>
+                          <div class="font-label-gold text-label-gold text-on-surface-variant uppercase flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[12px] text-tertiary">star</span> Invitado VIP
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="py-4 px-6">
+                      <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-tertiary/10 border border-tertiary/20 text-tertiary font-label-gold text-label-gold uppercase">Familia</span>
+                    </td>
+                    <td class="py-4 px-6">
+                      <div class="text-on-surface">alistair.m@example.com</div>
+                      <div class="text-on-surface-variant text-sm mt-0.5">+1 (555) 019-2834</div>
+                    </td>
+                    <td class="py-4 px-6">
+                      <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-[#4ade80] shadow-[0_0_8px_#4ade80]"></div>
+                        <span class="text-[#4ade80] font-button-text text-button-text uppercase tracking-wider">Confirmado</span>
+                      </div>
+                    </td>
+                    <td class="py-4 px-6">
+                      <span class="font-headline-md text-headline-md text-tertiary">01</span>
+                    </td>
+                    <td class="py-4 px-6 text-right">
+                      <button class="p-2 text-on-surface-variant hover:text-tertiary transition-colors opacity-0 group-hover:opacity-100"><span class="material-symbols-outlined">edit</span></button>
+                      <button class="p-2 text-on-surface-variant hover:text-tertiary transition-colors opacity-0 group-hover:opacity-100"><span class="material-symbols-outlined">more_vert</span></button>
+                    </td>
+                  </tr>
+                  <!-- Row 2 -->
+                  <tr class="border-b border-tertiary/5 hover:bg-secondary-container/20 transition-colors group bg-black/10">
+                    <td class="py-4 px-6">
+                      <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant font-headline-md border border-surface-bright">E</div>
+                        <div>
+                          <div class="font-headline-md text-headline-md text-on-surface mb-0.5">Eleanor Vance</div>
+                          <div class="font-label-gold text-label-gold text-on-surface-variant uppercase">Acompañante: Pendiente</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="py-4 px-6">
+                      <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-surface-container border border-surface-bright text-on-surface-variant font-label-gold text-label-gold uppercase">Colega</span>
+                    </td>
+                    <td class="py-4 px-6">
+                      <div class="text-on-surface">e.vance@company.net</div>
+                    </td>
+                    <td class="py-4 px-6">
+                      <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-tertiary shadow-[0_0_8px_rgba(233,195,73,0.8)]"></div>
+                        <span class="text-tertiary font-button-text text-button-text uppercase tracking-wider">Pendiente</span>
+                      </div>
+                    </td>
+                    <td class="py-4 px-6">
+                      <span class="text-on-surface-variant/50 italic font-body-md text-body-md">Sin asignar</span>
+                    </td>
+                    <td class="py-4 px-6 text-right">
+                      <button class="p-2 text-on-surface-variant hover:text-tertiary transition-colors opacity-0 group-hover:opacity-100"><span class="material-symbols-outlined">edit</span></button>
+                      <button class="p-2 text-on-surface-variant hover:text-tertiary transition-colors opacity-0 group-hover:opacity-100"><span class="material-symbols-outlined">more_vert</span></button>
+                    </td>
+                  </tr>
+                  <!-- Row 3 -->
+                  <tr class="border-b border-tertiary/5 hover:bg-secondary-container/20 transition-colors group">
+                    <td class="py-4 px-6">
+                      <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-tertiary font-headline-md shadow-inner border border-tertiary/20">J</div>
+                        <div>
+                          <div class="font-headline-md text-headline-md text-on-surface mb-0.5">Julian Blackwood</div>
+                          <div class="font-label-gold text-label-gold text-on-surface-variant uppercase flex items-center gap-1">Dieta: Vegana</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="py-4 px-6">
+                      <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-surface-container border border-surface-bright text-on-surface-variant font-label-gold text-label-gold uppercase">Amigo</span>
+                    </td>
+                    <td class="py-4 px-6">
+                      <div class="text-on-surface">j.blackwood@email.com</div>
+                      <div class="text-on-surface-variant text-sm mt-0.5">+44 7700 900077</div>
+                    </td>
+                    <td class="py-4 px-6">
+                      <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-error shadow-[0_0_8px_rgba(255,180,171,0.8)]"></div>
+                        <span class="text-error font-button-text text-button-text uppercase tracking-wider">Declinado</span>
+                      </div>
+                    </td>
+                    <td class="py-4 px-6">
+                      <span class="text-on-surface-variant/50 font-body-md text-body-md">-</span>
+                    </td>
+                    <td class="py-4 px-6 text-right">
+                      <button class="p-2 text-on-surface-variant hover:text-tertiary transition-colors opacity-0 group-hover:opacity-100"><span class="material-symbols-outlined">edit</span></button>
+                      <button class="p-2 text-on-surface-variant hover:text-tertiary transition-colors opacity-0 group-hover:opacity-100"><span class="material-symbols-outlined">more_vert</span></button>
+                    </td>
+                  </tr>
+                  <!-- Row 4 -->
+                  <tr class="border-b border-tertiary/5 hover:bg-secondary-container/20 transition-colors group bg-black/10">
+                    <td class="py-4 px-6">
+                      <div class="flex items-center gap-4">
+                        <img class="w-10 h-10 rounded-full border border-tertiary/40 object-cover" alt="Sophia Kensington" src="assets/guests/sophia.jpg"/>
+                        <div>
+                          <div class="font-headline-md text-headline-md text-on-surface mb-0.5">Sophia Kensington</div>
+                          <div class="font-label-gold text-label-gold text-on-surface-variant uppercase flex items-center gap-1">Acompañante: Sí</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="py-4 px-6">
+                      <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-tertiary/10 border border-tertiary/20 text-tertiary font-label-gold text-label-gold uppercase">VIP</span>
+                    </td>
+                    <td class="py-4 px-6">
+                      <div class="text-on-surface">skensington@luxury.com</div>
+                    </td>
+                    <td class="py-4 px-6">
+                      <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-[#4ade80] shadow-[0_0_8px_#4ade80]"></div>
+                        <span class="text-[#4ade80] font-button-text text-button-text uppercase tracking-wider">Confirmado</span>
+                      </div>
+                    </td>
+                    <td class="py-4 px-6">
+                      <span class="font-headline-md text-headline-md text-tertiary">01</span>
+                    </td>
+                    <td class="py-4 px-6 text-right">
+                      <button class="p-2 text-on-surface-variant hover:text-tertiary transition-colors opacity-0 group-hover:opacity-100"><span class="material-symbols-outlined">edit</span></button>
+                      <button class="p-2 text-on-surface-variant hover:text-tertiary transition-colors opacity-0 group-hover:opacity-100"><span class="material-symbols-outlined">more_vert</span></button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- Pagination Footer -->
+            <div class="py-4 px-6 border-t border-tertiary/10 bg-surface-container-low flex items-center justify-between">
+              <span class="font-body-md text-body-md text-on-surface-variant">Mostrando 1 a 4 de 300 registros</span>
+              <div class="flex gap-2">
+                <button class="w-8 h-8 flex items-center justify-center rounded border border-tertiary/20 text-on-surface-variant hover:bg-tertiary hover:text-on-tertiary hover:border-tertiary transition-colors disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-on-surface-variant" disabled="">
+                  <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+                </button>
+                <button class="w-8 h-8 flex items-center justify-center rounded border border-tertiary/20 bg-tertiary/10 text-tertiary font-button-text">1</button>
+                <button class="w-8 h-8 flex items-center justify-center rounded border border-tertiary/20 text-on-surface-variant hover:bg-tertiary hover:text-on-tertiary hover:border-tertiary transition-colors font-button-text">2</button>
+                <button class="w-8 h-8 flex items-center justify-center rounded border border-tertiary/20 text-on-surface-variant hover:bg-tertiary hover:text-on-tertiary hover:border-tertiary transition-colors font-button-text">3</button>
+                <button class="w-8 h-8 flex items-center justify-center rounded border border-tertiary/20 text-on-surface-variant hover:bg-tertiary hover:text-on-tertiary hover:border-tertiary transition-colors">
+                  <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>
