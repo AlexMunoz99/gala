@@ -12,8 +12,8 @@
 })();
 </script>
 <style>
-  :root { --sidebar-w: 224px; }
-  html.sidebar-collapsed { --sidebar-w: 80px; }
+  :root { --sidebar-w: 188px; }
+  html.sidebar-collapsed { --sidebar-w: 64px; }
   .sidebar-collapsed .sidebar-label { display: none; }
   .sidebar-collapsed #app-sidebar nav a { justify-content: center; padding-left: 0; padding-right: 0; }
   .sidebar-collapsed #app-sidebar .nav-icon { margin-right: 0; }
@@ -143,20 +143,20 @@ tailwind.config = {
 </script>
 
 
-<aside id="app-sidebar" class="fixed left-0 top-0 h-full bg-secondary-container z-50 flex flex-col border-r border-tertiary/10 overflow-hidden" style="width: var(--sidebar-w);">
-<button id="sidebar-toggle" class="absolute -right-3 top-24 w-6 h-6 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center shadow-md hover:brightness-110 transition-all z-10" aria-label="Colapsar/expandir menú" title="Colapsar/expandir menú"><span class="material-symbols-outlined text-[16px]" id="sidebar-toggle-icon">chevron_left</span></button>
-  <div class="flex-1 flex flex-col pt-24 pb-8 overflow-y-auto">
+<aside id="app-sidebar" class="fixed left-0 top-0 h-full bg-secondary-container z-50 flex flex-col border-r border-tertiary/10" style="width: var(--sidebar-w);">
+<button id="sidebar-toggle" class="absolute -right-3.5 top-9 w-7 h-7 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center shadow-lg border-2 border-surface hover:brightness-110 hover:scale-110 transition-all z-[60]" aria-label="Colapsar/expandir menú" title="Colapsar/expandir menú"><span class="material-symbols-outlined text-[16px]" id="sidebar-toggle-icon">chevron_left</span></button>
+  <div class="flex-1 flex flex-col pt-20 pb-6 overflow-y-auto overflow-x-hidden">
     <nav class="flex-1 flex flex-col gap-1 px-4" data-active-classes="border-l-4 border-tertiary bg-white/5 text-tertiary font-bold px-[20px]">
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="dashboard" href="index.html"><span class="material-symbols-outlined mr-4 nav-icon">dashboard</span><span class="sidebar-label">Panel</span></a>
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="invitados" href="invitados.html"><span class="material-symbols-outlined mr-4 nav-icon">group</span><span class="sidebar-label">Invitados</span></a>
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="itinerario" href="itinerario.html"><span class="material-symbols-outlined mr-4 nav-icon">calendar_today</span><span class="sidebar-label">Itinerario</span></a>
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="lugares" href="lugares.html"><span class="material-symbols-outlined mr-4 nav-icon">location_on</span><span class="sidebar-label">Lugares</span></a>
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="proveedores" href="proveedores.html"><span class="material-symbols-outlined mr-4 nav-icon">business_center</span><span class="sidebar-label">Proveedores</span></a>
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="tareas" href="tareas.html"><span class="material-symbols-outlined mr-4 nav-icon">check_circle</span><span class="sidebar-label">Tareas</span></a>
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="programa" href="programa.html"><span class="material-symbols-outlined mr-4 nav-icon">list_alt</span><span class="sidebar-label">Programa</span></a>
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="seating-materials" href="seating-materials.html"><span class="material-symbols-outlined mr-4 nav-icon">chair</span><span class="sidebar-label">Asientos/Materiales</span></a>
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="post-wedding" href="post-wedding.html"><span class="material-symbols-outlined mr-4 nav-icon">celebration</span><span class="sidebar-label">Post-Boda</span></a>
-      <a aria-current="page" class="flex items-center py-4 transition-all border-l-4 border-tertiary bg-white/5 text-tertiary font-bold px-[20px]" data-path="presupuesto" href="presupuesto.html"><span class="material-symbols-outlined mr-4 nav-icon">payments</span><span class="sidebar-label">Presupuesto</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="dashboard" href="index.html"><span class="material-symbols-outlined mr-3 nav-icon">dashboard</span><span class="sidebar-label">Panel</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="invitados" href="invitados.html"><span class="material-symbols-outlined mr-3 nav-icon">group</span><span class="sidebar-label">Invitados</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="itinerario" href="itinerario.html"><span class="material-symbols-outlined mr-3 nav-icon">calendar_today</span><span class="sidebar-label">Itinerario</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="lugares" href="lugares.html"><span class="material-symbols-outlined mr-3 nav-icon">location_on</span><span class="sidebar-label">Lugares</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="proveedores" href="proveedores.html"><span class="material-symbols-outlined mr-3 nav-icon">business_center</span><span class="sidebar-label">Proveedores</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="tareas" href="tareas.html"><span class="material-symbols-outlined mr-3 nav-icon">check_circle</span><span class="sidebar-label">Tareas</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="programa" href="programa.html"><span class="material-symbols-outlined mr-3 nav-icon">list_alt</span><span class="sidebar-label">Programa</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="seating-materials" href="seating-materials.html"><span class="material-symbols-outlined mr-3 nav-icon">chair</span><span class="sidebar-label">Asientos/Materiales</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="post-wedding" href="post-wedding.html"><span class="material-symbols-outlined mr-3 nav-icon">celebration</span><span class="sidebar-label">Post-Boda</span></a>
+      <a aria-current="page" class="flex items-center py-3 transition-all border-l-4 border-tertiary bg-white/5 text-tertiary font-bold px-[16px]" data-path="presupuesto" href="presupuesto.html"><span class="material-symbols-outlined mr-3 nav-icon">payments</span><span class="sidebar-label">Presupuesto</span></a>
     </nav>
     <div class="px-8 mt-auto pt-8 sidebar-cta">
       <button class="w-full py-4 bg-tertiary text-on-tertiary font-button-text text-button-text uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-2 rounded-lg">
@@ -220,6 +220,7 @@ tailwind.config = {
               <div class="flex items-baseline gap-2">
                 <span class="font-headline-md text-headline-md text-on-surface-variant">$</span>
                 <span class="font-display-lg text-display-lg text-on-surface">75,000</span>
+                <span class="font-label-gold text-label-gold text-on-surface-variant self-end pb-2">MXN</span>
               </div>
               <div class="mt-4 flex items-center gap-2 text-on-surface-variant font-body-md text-body-md">
                 <span class="material-symbols-outlined text-sm">account_balance</span>
@@ -232,6 +233,7 @@ tailwind.config = {
               <div class="flex items-baseline gap-2">
                 <span class="font-headline-md text-headline-md text-on-primary-container">$</span>
                 <span class="font-display-lg text-display-lg text-on-primary-container">42,500</span>
+                <span class="font-label-gold text-label-gold text-on-primary-container self-end pb-2">MXN</span>
               </div>
               <div class="mt-4 flex flex-col gap-2">
                 <div class="w-full bg-surface-container-highest rounded-full h-1.5 overflow-hidden">
@@ -248,6 +250,7 @@ tailwind.config = {
               <div class="flex items-baseline gap-2">
                 <span class="font-headline-md text-headline-md text-secondary">$</span>
                 <span class="font-display-lg text-display-lg text-secondary">32,500</span>
+                <span class="font-label-gold text-label-gold text-secondary self-end pb-2">MXN</span>
               </div>
               <div class="mt-4 flex items-center gap-2 text-on-surface-variant font-body-md text-body-md">
                 <span class="material-symbols-outlined text-sm">savings</span>
@@ -286,28 +289,28 @@ tailwind.config = {
                     <div class="w-3 h-3 rounded-full bg-secondary-container"></div>
                     <div>
                       <p class="font-label-gold text-label-gold text-on-surface-variant uppercase">Sede y Producción</p>
-                      <p class="font-body-lg text-body-lg text-on-surface">$30,000</p>
+                      <p class="font-body-lg text-body-lg text-on-surface">$30,000 MXN</p>
                     </div>
                   </div>
                   <div class="flex items-center gap-3">
                     <div class="w-3 h-3 rounded-full bg-tertiary"></div>
                     <div>
                       <p class="font-label-gold text-label-gold text-on-surface-variant uppercase">Catering de Lujo</p>
-                      <p class="font-body-lg text-body-lg text-on-surface">$22,500</p>
+                      <p class="font-body-lg text-body-lg text-on-surface">$22,500 MXN</p>
                     </div>
                   </div>
                   <div class="flex items-center gap-3">
                     <div class="w-3 h-3 rounded-full bg-primary-container"></div>
                     <div>
                       <p class="font-label-gold text-label-gold text-on-surface-variant uppercase">Flores y Decoración</p>
-                      <p class="font-body-lg text-body-lg text-on-surface">$11,250</p>
+                      <p class="font-body-lg text-body-lg text-on-surface">$11,250 MXN</p>
                     </div>
                   </div>
                   <div class="flex items-center gap-3">
                     <div class="w-3 h-3 rounded-full bg-surface-tint"></div>
                     <div>
                       <p class="font-label-gold text-label-gold text-on-surface-variant uppercase">Entretenimiento</p>
-                      <p class="font-body-lg text-body-lg text-on-surface">$11,250</p>
+                      <p class="font-body-lg text-body-lg text-on-surface">$11,250 MXN</p>
                     </div>
                   </div>
                 </div>
@@ -332,30 +335,30 @@ tailwind.config = {
                   <tbody class="font-body-md text-body-md text-on-surface">
                     <tr class="hover:bg-surface-container-highest transition-colors">
                       <td class="py-5 px-8 font-headline-md text-headline-md">Sede y Producción</td>
-                      <td class="py-5 px-8 text-right">$30,000</td>
-                      <td class="py-5 px-8 text-right">$28,500</td>
-                      <td class="py-5 px-8 text-right text-secondary">+$1,500</td>
+                      <td class="py-5 px-8 text-right">$30,000 MXN</td>
+                      <td class="py-5 px-8 text-right">$28,500 MXN</td>
+                      <td class="py-5 px-8 text-right text-secondary">+$1,500 MXN</td>
                       <td class="py-5 px-8 text-center"><span class="material-symbols-outlined text-secondary text-sm">trending_down</span></td>
                     </tr>
                     <tr class="bg-primary-container/10 hover:bg-surface-container-highest transition-colors">
                       <td class="py-5 px-8 font-headline-md text-headline-md">Catering de Lujo</td>
-                      <td class="py-5 px-8 text-right">$22,500</td>
-                      <td class="py-5 px-8 text-right">$22,500</td>
-                      <td class="py-5 px-8 text-right text-on-surface-variant">$0</td>
+                      <td class="py-5 px-8 text-right">$22,500 MXN</td>
+                      <td class="py-5 px-8 text-right">$22,500 MXN</td>
+                      <td class="py-5 px-8 text-right text-on-surface-variant">$0 MXN</td>
                       <td class="py-5 px-8 text-center"><span class="material-symbols-outlined text-on-surface-variant text-sm">horizontal_rule</span></td>
                     </tr>
                     <tr class="hover:bg-surface-container-highest transition-colors">
                       <td class="py-5 px-8 font-headline-md text-headline-md">Flores y Decoración</td>
-                      <td class="py-5 px-8 text-right">$11,250</td>
-                      <td class="py-5 px-8 text-right">$12,000</td>
-                      <td class="py-5 px-8 text-right text-error">-$750</td>
+                      <td class="py-5 px-8 text-right">$11,250 MXN</td>
+                      <td class="py-5 px-8 text-right">$12,000 MXN</td>
+                      <td class="py-5 px-8 text-right text-error">-$750 MXN</td>
                       <td class="py-5 px-8 text-center"><span class="material-symbols-outlined text-error text-sm">trending_up</span></td>
                     </tr>
                     <tr class="bg-primary-container/10 hover:bg-surface-container-highest transition-colors">
                       <td class="py-5 px-8 font-headline-md text-headline-md">Entretenimiento</td>
-                      <td class="py-5 px-8 text-right">$11,250</td>
-                      <td class="py-5 px-8 text-right">$9,500</td>
-                      <td class="py-5 px-8 text-right text-secondary">+$1,750</td>
+                      <td class="py-5 px-8 text-right">$11,250 MXN</td>
+                      <td class="py-5 px-8 text-right">$9,500 MXN</td>
+                      <td class="py-5 px-8 text-right text-secondary">+$1,750 MXN</td>
                       <td class="py-5 px-8 text-center"><span class="material-symbols-outlined text-secondary text-sm">trending_down</span></td>
                     </tr>
                   </tbody>
@@ -382,7 +385,7 @@ tailwind.config = {
                     <p class="font-body-md text-body-md text-on-surface-variant">Entretenimiento</p>
                   </div>
                   <div class="text-right">
-                    <p class="font-headline-md text-headline-md text-on-surface">$2,500</p>
+                    <p class="font-headline-md text-headline-md text-on-surface">$2,500 MXN</p>
                     <span class="px-2 py-0.5 bg-error/10 text-error font-label-gold text-label-gold rounded uppercase text-[10px]">Vencido</span>
                   </div>
                 </div>
@@ -396,7 +399,7 @@ tailwind.config = {
                     <p class="font-body-md text-body-md text-on-surface-variant">Catering de Lujo</p>
                   </div>
                   <div class="text-right">
-                    <p class="font-headline-md text-headline-md text-on-surface">$11,250</p>
+                    <p class="font-headline-md text-headline-md text-on-surface">$11,250 MXN</p>
                     <span class="px-2 py-0.5 bg-tertiary/10 text-tertiary font-label-gold text-label-gold rounded uppercase text-[10px]">Próximo</span>
                   </div>
                 </div>
@@ -410,7 +413,7 @@ tailwind.config = {
                     <p class="font-body-md text-body-md text-on-surface-variant">Sede y Producción</p>
                   </div>
                   <div class="text-right">
-                    <p class="font-headline-md text-headline-md text-on-surface">$15,000</p>
+                    <p class="font-headline-md text-headline-md text-on-surface">$15,000 MXN</p>
                     <span class="px-2 py-0.5 bg-secondary-container/20 text-secondary-container font-label-gold text-label-gold rounded uppercase text-[10px]">Programado</span>
                   </div>
                 </div>

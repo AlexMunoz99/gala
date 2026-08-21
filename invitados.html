@@ -12,8 +12,8 @@
 })();
 </script>
 <style>
-  :root { --sidebar-w: 224px; }
-  html.sidebar-collapsed { --sidebar-w: 80px; }
+  :root { --sidebar-w: 188px; }
+  html.sidebar-collapsed { --sidebar-w: 64px; }
   .sidebar-collapsed .sidebar-label { display: none; }
   .sidebar-collapsed #app-sidebar nav a { justify-content: center; padding-left: 0; padding-right: 0; }
   .sidebar-collapsed #app-sidebar .nav-icon { margin-right: 0; }
@@ -143,20 +143,20 @@ tailwind.config = {
 </script>
 
 
-<aside id="app-sidebar" class="fixed left-0 top-0 h-full bg-secondary-container z-50 flex flex-col border-r border-tertiary/10 overflow-hidden" style="width: var(--sidebar-w);">
-<button id="sidebar-toggle" class="absolute -right-3 top-24 w-6 h-6 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center shadow-md hover:brightness-110 transition-all z-10" aria-label="Colapsar/expandir menú" title="Colapsar/expandir menú"><span class="material-symbols-outlined text-[16px]" id="sidebar-toggle-icon">chevron_left</span></button>
-  <div class="flex-1 flex flex-col pt-24 pb-8 overflow-y-auto">
+<aside id="app-sidebar" class="fixed left-0 top-0 h-full bg-secondary-container z-50 flex flex-col border-r border-tertiary/10" style="width: var(--sidebar-w);">
+<button id="sidebar-toggle" class="absolute -right-3.5 top-9 w-7 h-7 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center shadow-lg border-2 border-surface hover:brightness-110 hover:scale-110 transition-all z-[60]" aria-label="Colapsar/expandir menú" title="Colapsar/expandir menú"><span class="material-symbols-outlined text-[16px]" id="sidebar-toggle-icon">chevron_left</span></button>
+  <div class="flex-1 flex flex-col pt-20 pb-6 overflow-y-auto overflow-x-hidden">
     <nav class="flex-1 flex flex-col gap-1 px-4" data-active-classes="border-l-4 border-tertiary bg-white/5 text-tertiary font-bold px-[20px]">
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="dashboard" href="index.html"><span class="material-symbols-outlined mr-4 nav-icon">dashboard</span><span class="sidebar-label">Panel</span></a>
-      <a aria-current="page" class="flex items-center py-4 transition-all border-l-4 border-tertiary bg-white/5 text-tertiary font-bold px-[20px]" data-path="invitados" href="invitados.html"><span class="material-symbols-outlined mr-4 nav-icon">group</span><span class="sidebar-label">Invitados</span></a>
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="itinerario" href="itinerario.html"><span class="material-symbols-outlined mr-4 nav-icon">calendar_today</span><span class="sidebar-label">Itinerario</span></a>
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="lugares" href="lugares.html"><span class="material-symbols-outlined mr-4 nav-icon">location_on</span><span class="sidebar-label">Lugares</span></a>
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="proveedores" href="proveedores.html"><span class="material-symbols-outlined mr-4 nav-icon">business_center</span><span class="sidebar-label">Proveedores</span></a>
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="tareas" href="tareas.html"><span class="material-symbols-outlined mr-4 nav-icon">check_circle</span><span class="sidebar-label">Tareas</span></a>
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="programa" href="programa.html"><span class="material-symbols-outlined mr-4 nav-icon">list_alt</span><span class="sidebar-label">Programa</span></a>
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="seating-materials" href="seating-materials.html"><span class="material-symbols-outlined mr-4 nav-icon">chair</span><span class="sidebar-label">Asientos/Materiales</span></a>
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="post-wedding" href="post-wedding.html"><span class="material-symbols-outlined mr-4 nav-icon">celebration</span><span class="sidebar-label">Post-Boda</span></a>
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="presupuesto" href="presupuesto.html"><span class="material-symbols-outlined mr-4 nav-icon">payments</span><span class="sidebar-label">Presupuesto</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="dashboard" href="index.html"><span class="material-symbols-outlined mr-3 nav-icon">dashboard</span><span class="sidebar-label">Panel</span></a>
+      <a aria-current="page" class="flex items-center py-3 transition-all border-l-4 border-tertiary bg-white/5 text-tertiary font-bold px-[16px]" data-path="invitados" href="invitados.html"><span class="material-symbols-outlined mr-3 nav-icon">group</span><span class="sidebar-label">Invitados</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="itinerario" href="itinerario.html"><span class="material-symbols-outlined mr-3 nav-icon">calendar_today</span><span class="sidebar-label">Itinerario</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="lugares" href="lugares.html"><span class="material-symbols-outlined mr-3 nav-icon">location_on</span><span class="sidebar-label">Lugares</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="proveedores" href="proveedores.html"><span class="material-symbols-outlined mr-3 nav-icon">business_center</span><span class="sidebar-label">Proveedores</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="tareas" href="tareas.html"><span class="material-symbols-outlined mr-3 nav-icon">check_circle</span><span class="sidebar-label">Tareas</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="programa" href="programa.html"><span class="material-symbols-outlined mr-3 nav-icon">list_alt</span><span class="sidebar-label">Programa</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="seating-materials" href="seating-materials.html"><span class="material-symbols-outlined mr-3 nav-icon">chair</span><span class="sidebar-label">Asientos/Materiales</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="post-wedding" href="post-wedding.html"><span class="material-symbols-outlined mr-3 nav-icon">celebration</span><span class="sidebar-label">Post-Boda</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="presupuesto" href="presupuesto.html"><span class="material-symbols-outlined mr-3 nav-icon">payments</span><span class="sidebar-label">Presupuesto</span></a>
     </nav>
     <div class="px-8 mt-auto pt-8 sidebar-cta">
       <button class="w-full py-4 bg-tertiary text-on-tertiary font-button-text text-button-text uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-2 rounded-lg">
@@ -206,16 +206,16 @@ tailwind.config = {
         <!-- Header & Actions -->
         <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 relative z-20">
           <div class="flex flex-col gap-2">
-            <span class="font-label-gold text-label-gold text-tertiary uppercase tracking-[0.2em] relative pl-8 before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-6 before:h-px before:bg-tertiary/50">Guest Management</span>
+            <span class="font-label-gold text-label-gold text-tertiary uppercase tracking-[0.2em] relative pl-8 before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-6 before:h-px before:bg-tertiary/50">Gestión de Invitados</span>
             <h1 class="font-display-lg text-display-lg text-on-surface">Invitados</h1>
             <p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl mt-2">Gestiona tu lista de invitados, da seguimiento a los RSVP y coordina los acomodos para el próximo evento.</p>
           </div>
           <div class="flex items-center gap-4">
-            <button class="px-6 py-3 bg-surface-container border border-tertiary/20 text-tertiary font-button-text text-button-text uppercase tracking-widest hover:bg-tertiary/5 transition-all flex items-center justify-center gap-2 rounded-lg backdrop-blur-sm shadow-md">
+            <button id="btn-export-csv" class="px-6 py-3 bg-surface-container border border-tertiary/20 text-tertiary font-button-text text-button-text uppercase tracking-widest hover:bg-tertiary/5 transition-all flex items-center justify-center gap-2 rounded-lg backdrop-blur-sm shadow-md">
               <span class="material-symbols-outlined text-[18px]">download</span>
               Exportar CSV
             </button>
-            <button class="px-8 py-3 bg-tertiary text-on-tertiary font-button-text text-button-text uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-2 rounded-lg shadow-xl shadow-tertiary/20">
+            <button id="btn-add-guest" class="px-8 py-3 bg-tertiary text-on-tertiary font-button-text text-button-text uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-2 rounded-lg shadow-xl shadow-tertiary/20">
               <span class="material-symbols-outlined text-[18px]">person_add</span>
               Agregar Invitado
             </button>
@@ -231,8 +231,7 @@ tailwind.config = {
               <span class="material-symbols-outlined text-primary/50 text-[32px]">groups</span>
             </div>
             <div class="flex items-end gap-3 relative z-10">
-              <span class="font-display-lg text-display-lg text-on-surface">300</span>
-              <span class="font-body-md text-body-md text-on-surface-variant mb-1">+12 esta semana</span>
+              <span id="stat-total" class="font-display-lg text-display-lg text-on-surface">0</span>
             </div>
           </div>
           <div class="bg-surface-container-high/60 backdrop-blur-md p-6 rounded-xl border border-tertiary/10 shadow-lg relative overflow-hidden group">
@@ -242,9 +241,9 @@ tailwind.config = {
               <span class="material-symbols-outlined text-[#4ade80]/50 text-[32px]">check_circle</span>
             </div>
             <div class="flex items-end gap-3 relative z-10">
-              <span class="font-display-lg text-display-lg text-on-surface">215</span>
+              <span id="stat-confirmed" class="font-display-lg text-display-lg text-on-surface">0</span>
               <div class="mb-2 w-full max-w-[100px] h-1 bg-surface-container rounded-full overflow-hidden">
-                <div class="h-full bg-[#4ade80]" style="width: 71%"></div>
+                <div id="stat-confirmed-bar" class="h-full bg-[#4ade80]" style="width: 0%"></div>
               </div>
             </div>
           </div>
@@ -255,7 +254,7 @@ tailwind.config = {
               <span class="material-symbols-outlined text-tertiary/50 text-[32px]">hourglass_empty</span>
             </div>
             <div class="flex items-end gap-3 relative z-10">
-              <span class="font-display-lg text-display-lg text-on-surface">85</span>
+              <span id="stat-pending" class="font-display-lg text-display-lg text-on-surface">0</span>
               <span class="font-body-md text-body-md text-tertiary/80 mb-1">Esperando RSVP</span>
             </div>
           </div>
@@ -266,7 +265,7 @@ tailwind.config = {
               <span class="material-symbols-outlined text-error/50 text-[32px]">cancel</span>
             </div>
             <div class="flex items-end gap-3 relative z-10">
-              <span class="font-display-lg text-display-lg text-on-surface">12</span>
+              <span id="stat-declined" class="font-display-lg text-display-lg text-on-surface">0</span>
               <span class="font-body-md text-body-md text-on-surface-variant mb-1">Con aviso</span>
             </div>
           </div>
@@ -278,27 +277,11 @@ tailwind.config = {
           <div class="flex flex-col lg:flex-row gap-4 justify-between items-center bg-surface-container-low/80 backdrop-blur-md p-4 rounded-xl border border-tertiary/5 shadow-md">
             <div class="relative w-full lg:w-96">
               <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-tertiary/50">search</span>
-              <input class="w-full bg-surface-container border border-secondary-container text-on-surface font-body-md text-body-md py-3 pl-12 pr-4 rounded-lg focus:outline-none focus:border-tertiary/50 focus:shadow-[0_0_15px_rgba(204,167,48,0.1)] transition-all placeholder:text-on-surface-variant/50" placeholder="Buscar invitado por nombre o correo..." type="text"/>
+              <input id="guest-search" class="w-full bg-surface-container border border-secondary-container text-on-surface font-body-md text-body-md py-3 pl-12 pr-4 rounded-lg focus:outline-none focus:border-tertiary/50 focus:shadow-[0_0_15px_rgba(204,167,48,0.1)] transition-all placeholder:text-on-surface-variant/50" placeholder="Buscar invitado por nombre o correo..." type="text"/>
             </div>
-            <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-              <div class="flex items-center gap-2 mr-2">
-                <span class="material-symbols-outlined text-tertiary/70 text-[20px]">filter_list</span>
-                <span class="font-label-gold text-label-gold text-on-surface-variant uppercase">Filtrar por</span>
-              </div>
-              <div class="relative group">
-                <button class="px-4 py-2 bg-surface-container border border-tertiary/10 text-on-surface font-button-text text-button-text rounded-lg flex items-center gap-2 hover:bg-tertiary/5 transition-colors">
-                  Status <span class="material-symbols-outlined text-[16px]">arrow_drop_down</span>
-                </button>
-              </div>
-              <div class="relative group">
-                <button class="px-4 py-2 bg-surface-container border border-tertiary/10 text-on-surface font-button-text text-button-text rounded-lg flex items-center gap-2 hover:bg-tertiary/5 transition-colors">
-                  Grupo <span class="material-symbols-outlined text-[16px]">arrow_drop_down</span>
-                </button>
-              </div>
-              <div class="w-px h-6 bg-tertiary/20 mx-2 hidden md:block"></div>
-              <button class="px-3 py-1 bg-tertiary/10 border border-tertiary/20 text-tertiary font-label-gold text-label-gold uppercase rounded-full hover:bg-tertiary/20 transition-colors">VIP</button>
-              <button class="px-3 py-1 bg-surface-container border border-tertiary/10 text-on-surface-variant font-label-gold text-label-gold uppercase rounded-full hover:bg-tertiary/5 transition-colors">Familia</button>
-              <button class="px-3 py-1 bg-surface-container border border-tertiary/10 text-on-surface-variant font-label-gold text-label-gold uppercase rounded-full hover:bg-tertiary/5 transition-colors">Trabajo</button>
+            <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto text-on-surface-variant text-sm">
+              <span class="material-symbols-outlined text-tertiary/70 text-[20px]">info</span>
+              <span>Los filtros por grupo llegan en la próxima actualización</span>
             </div>
           </div>
 
@@ -316,152 +299,16 @@ tailwind.config = {
                     <th class="py-5 px-6 font-label-gold text-label-gold text-tertiary uppercase tracking-widest text-right">Acciones</th>
                   </tr>
                 </thead>
-                <tbody class="font-body-md text-body-md text-on-surface">
-                  <!-- Row 1 -->
-                  <tr class="border-b border-tertiary/5 hover:bg-secondary-container/20 transition-colors group">
-                    <td class="py-4 px-6">
-                      <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-tertiary font-headline-md shadow-inner border border-tertiary/20">A</div>
-                        <div>
-                          <div class="font-headline-md text-headline-md text-on-surface mb-0.5">Alistair Montgomery</div>
-                          <div class="font-label-gold text-label-gold text-on-surface-variant uppercase flex items-center gap-1">
-                            <span class="material-symbols-outlined text-[12px] text-tertiary">star</span> Invitado VIP
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td class="py-4 px-6">
-                      <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-tertiary/10 border border-tertiary/20 text-tertiary font-label-gold text-label-gold uppercase">Familia</span>
-                    </td>
-                    <td class="py-4 px-6">
-                      <div class="text-on-surface">alistair.m@example.com</div>
-                      <div class="text-on-surface-variant text-sm mt-0.5">+1 (555) 019-2834</div>
-                    </td>
-                    <td class="py-4 px-6">
-                      <div class="flex items-center gap-2">
-                        <div class="w-2 h-2 rounded-full bg-[#4ade80] shadow-[0_0_8px_#4ade80]"></div>
-                        <span class="text-[#4ade80] font-button-text text-button-text uppercase tracking-wider">Confirmado</span>
-                      </div>
-                    </td>
-                    <td class="py-4 px-6">
-                      <span class="font-headline-md text-headline-md text-tertiary">01</span>
-                    </td>
-                    <td class="py-4 px-6 text-right">
-                      <button class="p-2 text-on-surface-variant hover:text-tertiary transition-colors opacity-0 group-hover:opacity-100"><span class="material-symbols-outlined">edit</span></button>
-                      <button class="p-2 text-on-surface-variant hover:text-tertiary transition-colors opacity-0 group-hover:opacity-100"><span class="material-symbols-outlined">more_vert</span></button>
-                    </td>
-                  </tr>
-                  <!-- Row 2 -->
-                  <tr class="border-b border-tertiary/5 hover:bg-secondary-container/20 transition-colors group bg-black/10">
-                    <td class="py-4 px-6">
-                      <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant font-headline-md border border-surface-bright">E</div>
-                        <div>
-                          <div class="font-headline-md text-headline-md text-on-surface mb-0.5">Eleanor Vance</div>
-                          <div class="font-label-gold text-label-gold text-on-surface-variant uppercase">Acompañante: Pendiente</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td class="py-4 px-6">
-                      <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-surface-container border border-surface-bright text-on-surface-variant font-label-gold text-label-gold uppercase">Colega</span>
-                    </td>
-                    <td class="py-4 px-6">
-                      <div class="text-on-surface">e.vance@company.net</div>
-                    </td>
-                    <td class="py-4 px-6">
-                      <div class="flex items-center gap-2">
-                        <div class="w-2 h-2 rounded-full bg-tertiary shadow-[0_0_8px_rgba(233,195,73,0.8)]"></div>
-                        <span class="text-tertiary font-button-text text-button-text uppercase tracking-wider">Pendiente</span>
-                      </div>
-                    </td>
-                    <td class="py-4 px-6">
-                      <span class="text-on-surface-variant/50 italic font-body-md text-body-md">Sin asignar</span>
-                    </td>
-                    <td class="py-4 px-6 text-right">
-                      <button class="p-2 text-on-surface-variant hover:text-tertiary transition-colors opacity-0 group-hover:opacity-100"><span class="material-symbols-outlined">edit</span></button>
-                      <button class="p-2 text-on-surface-variant hover:text-tertiary transition-colors opacity-0 group-hover:opacity-100"><span class="material-symbols-outlined">more_vert</span></button>
-                    </td>
-                  </tr>
-                  <!-- Row 3 -->
-                  <tr class="border-b border-tertiary/5 hover:bg-secondary-container/20 transition-colors group">
-                    <td class="py-4 px-6">
-                      <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-tertiary font-headline-md shadow-inner border border-tertiary/20">J</div>
-                        <div>
-                          <div class="font-headline-md text-headline-md text-on-surface mb-0.5">Julian Blackwood</div>
-                          <div class="font-label-gold text-label-gold text-on-surface-variant uppercase flex items-center gap-1">Dieta: Vegana</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td class="py-4 px-6">
-                      <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-surface-container border border-surface-bright text-on-surface-variant font-label-gold text-label-gold uppercase">Amigo</span>
-                    </td>
-                    <td class="py-4 px-6">
-                      <div class="text-on-surface">j.blackwood@email.com</div>
-                      <div class="text-on-surface-variant text-sm mt-0.5">+44 7700 900077</div>
-                    </td>
-                    <td class="py-4 px-6">
-                      <div class="flex items-center gap-2">
-                        <div class="w-2 h-2 rounded-full bg-error shadow-[0_0_8px_rgba(255,180,171,0.8)]"></div>
-                        <span class="text-error font-button-text text-button-text uppercase tracking-wider">Declinado</span>
-                      </div>
-                    </td>
-                    <td class="py-4 px-6">
-                      <span class="text-on-surface-variant/50 font-body-md text-body-md">-</span>
-                    </td>
-                    <td class="py-4 px-6 text-right">
-                      <button class="p-2 text-on-surface-variant hover:text-tertiary transition-colors opacity-0 group-hover:opacity-100"><span class="material-symbols-outlined">edit</span></button>
-                      <button class="p-2 text-on-surface-variant hover:text-tertiary transition-colors opacity-0 group-hover:opacity-100"><span class="material-symbols-outlined">more_vert</span></button>
-                    </td>
-                  </tr>
-                  <!-- Row 4 -->
-                  <tr class="border-b border-tertiary/5 hover:bg-secondary-container/20 transition-colors group bg-black/10">
-                    <td class="py-4 px-6">
-                      <div class="flex items-center gap-4">
-                        <img class="w-10 h-10 rounded-full border border-tertiary/40 object-cover" alt="Sophia Kensington" src="assets/guests/sophia.jpg"/>
-                        <div>
-                          <div class="font-headline-md text-headline-md text-on-surface mb-0.5">Sophia Kensington</div>
-                          <div class="font-label-gold text-label-gold text-on-surface-variant uppercase flex items-center gap-1">Acompañante: Sí</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td class="py-4 px-6">
-                      <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-tertiary/10 border border-tertiary/20 text-tertiary font-label-gold text-label-gold uppercase">VIP</span>
-                    </td>
-                    <td class="py-4 px-6">
-                      <div class="text-on-surface">skensington@luxury.com</div>
-                    </td>
-                    <td class="py-4 px-6">
-                      <div class="flex items-center gap-2">
-                        <div class="w-2 h-2 rounded-full bg-[#4ade80] shadow-[0_0_8px_#4ade80]"></div>
-                        <span class="text-[#4ade80] font-button-text text-button-text uppercase tracking-wider">Confirmado</span>
-                      </div>
-                    </td>
-                    <td class="py-4 px-6">
-                      <span class="font-headline-md text-headline-md text-tertiary">01</span>
-                    </td>
-                    <td class="py-4 px-6 text-right">
-                      <button class="p-2 text-on-surface-variant hover:text-tertiary transition-colors opacity-0 group-hover:opacity-100"><span class="material-symbols-outlined">edit</span></button>
-                      <button class="p-2 text-on-surface-variant hover:text-tertiary transition-colors opacity-0 group-hover:opacity-100"><span class="material-symbols-outlined">more_vert</span></button>
-                    </td>
+                <tbody id="guests-tbody" class="font-body-md text-body-md text-on-surface">
+                  <tr id="guests-loading-row">
+                    <td class="py-8 px-6 text-center text-on-surface-variant" colspan="6">Cargando invitados…</td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <!-- Pagination Footer -->
             <div class="py-4 px-6 border-t border-tertiary/10 bg-surface-container-low flex items-center justify-between">
-              <span class="font-body-md text-body-md text-on-surface-variant">Mostrando 1 a 4 de 300 registros</span>
-              <div class="flex gap-2">
-                <button class="w-8 h-8 flex items-center justify-center rounded border border-tertiary/20 text-on-surface-variant hover:bg-tertiary hover:text-on-tertiary hover:border-tertiary transition-colors disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-on-surface-variant" disabled="">
-                  <span class="material-symbols-outlined text-[20px]">chevron_left</span>
-                </button>
-                <button class="w-8 h-8 flex items-center justify-center rounded border border-tertiary/20 bg-tertiary/10 text-tertiary font-button-text">1</button>
-                <button class="w-8 h-8 flex items-center justify-center rounded border border-tertiary/20 text-on-surface-variant hover:bg-tertiary hover:text-on-tertiary hover:border-tertiary transition-colors font-button-text">2</button>
-                <button class="w-8 h-8 flex items-center justify-center rounded border border-tertiary/20 text-on-surface-variant hover:bg-tertiary hover:text-on-tertiary hover:border-tertiary transition-colors font-button-text">3</button>
-                <button class="w-8 h-8 flex items-center justify-center rounded border border-tertiary/20 text-on-surface-variant hover:bg-tertiary hover:text-on-tertiary hover:border-tertiary transition-colors">
-                  <span class="material-symbols-outlined text-[20px]">chevron_right</span>
-                </button>
-              </div>
+              <span id="guests-count-label" class="font-body-md text-body-md text-on-surface-variant">Mostrando 0 registros</span>
             </div>
           </div>
         </div>
@@ -479,6 +326,302 @@ document.addEventListener('DOMContentLoaded', function () {
     try { localStorage.setItem('galaSidebarCollapsed', isCollapsed ? 'true' : 'false'); } catch (e) {}
   });
 });
+</script>
+
+<!-- Modal: Agregar / Editar Invitado -->
+<div id="guest-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
+  <div id="guest-modal-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+  <div class="relative w-full max-w-lg bg-surface-container-low rounded-2xl shadow-2xl border border-tertiary/10 p-8 max-h-[90vh] overflow-y-auto">
+    <div class="flex items-center justify-between mb-6">
+      <h2 id="guest-modal-title" class="font-headline-lg text-headline-lg text-on-surface">Agregar Invitado</h2>
+      <button id="guest-modal-close" class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors">close</button>
+    </div>
+    <form id="guest-form" class="flex flex-col gap-4">
+      <input id="guest-id" type="hidden"/>
+      <div class="flex flex-col gap-1">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="guest-full-name">Nombre completo *</label>
+        <input id="guest-full-name" required="" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex flex-col gap-1">
+          <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="guest-group">Grupo</label>
+          <input id="guest-group" placeholder="Familia, VIP, Amigo..." class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="guest-table">Mesa #</label>
+          <input id="guest-table" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
+        </div>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="guest-email">Correo</label>
+        <input id="guest-email" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="email"/>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="guest-phone">Teléfono</label>
+        <input id="guest-phone" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="guest-dietary">Notas dietéticas</label>
+        <input id="guest-dietary" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
+      </div>
+      <div class="grid grid-cols-2 gap-4 items-end">
+        <div class="flex flex-col gap-1">
+          <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="guest-rsvp">RSVP</label>
+          <select id="guest-rsvp" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary">
+            <option value="pendiente">Pendiente</option>
+            <option value="confirmado">Confirmado</option>
+            <option value="declinado">Declinado</option>
+          </select>
+        </div>
+        <label class="flex items-center gap-3 py-3 cursor-pointer">
+          <input id="guest-plus-one" class="w-5 h-5 accent-tertiary" type="checkbox"/>
+          <span class="text-on-surface text-sm">Lleva acompañante</span>
+        </label>
+      </div>
+
+      <p id="guest-form-error" class="hidden text-error text-sm"></p>
+
+      <div class="flex justify-end gap-3 mt-2">
+        <button type="button" id="guest-modal-cancel" class="px-6 py-3 rounded-lg border border-tertiary/20 text-on-surface-variant hover:bg-surface-container transition-colors font-button-text uppercase tracking-wider text-sm">Cancelar</button>
+        <button type="submit" id="guest-form-submit" class="px-8 py-3 rounded-lg bg-tertiary text-on-tertiary font-button-text uppercase tracking-wider text-sm hover:brightness-110 transition-all">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script type="module">
+  const tbody = document.getElementById("guests-tbody");
+  const countLabel = document.getElementById("guests-count-label");
+  const searchInput = document.getElementById("guest-search");
+  const modal = document.getElementById("guest-modal");
+  const form = document.getElementById("guest-form");
+  const formError = document.getElementById("guest-form-error");
+
+  let currentEventId = null;
+  let allGuests = [];
+
+  const rsvpStyles = {
+    confirmado: { dot: "bg-[#4ade80] shadow-[0_0_8px_#4ade80]", text: "text-[#4ade80]", label: "Confirmado" },
+    pendiente:  { dot: "bg-tertiary shadow-[0_0_8px_rgba(233,195,73,0.8)]", text: "text-tertiary", label: "Pendiente" },
+    declinado:  { dot: "bg-error shadow-[0_0_8px_rgba(255,180,171,0.8)]", text: "text-error", label: "Declinado" }
+  };
+
+  function escapeHtml(str) {
+    if (str === null || str === undefined) return "";
+    return String(str).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  function renderRows(guests) {
+    if (guests.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" class="py-10 px-6 text-center text-on-surface-variant">
+        Aún no hay invitados. Da clic en "Agregar Invitado" para crear el primero.
+      </td></tr>`;
+      return;
+    }
+    tbody.innerHTML = guests.map((g) => {
+      const initial = (g.full_name || "?").trim().charAt(0).toUpperCase();
+      const style = rsvpStyles[g.rsvp_status] || rsvpStyles.pendiente;
+      const subtitle = g.plus_one ? "Acompañante: Sí" : (g.dietary_notes ? `Dieta: ${escapeHtml(g.dietary_notes)}` : "");
+      return `
+        <tr class="border-b border-tertiary/5 hover:bg-secondary-container/20 transition-colors group" data-id="${g.id}">
+          <td class="py-4 px-6">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-tertiary font-headline-md shadow-inner border border-tertiary/20 shrink-0">${escapeHtml(initial)}</div>
+              <div class="min-w-0">
+                <div class="font-headline-md text-headline-md text-on-surface mb-0.5 truncate">${escapeHtml(g.full_name)}</div>
+                ${subtitle ? `<div class="font-label-gold text-label-gold text-on-surface-variant uppercase truncate">${subtitle}</div>` : ""}
+              </div>
+            </div>
+          </td>
+          <td class="py-4 px-6">
+            ${g.group_label ? `<span class="inline-flex items-center px-2.5 py-1 rounded-full bg-tertiary/10 border border-tertiary/20 text-tertiary font-label-gold text-label-gold uppercase">${escapeHtml(g.group_label)}</span>` : `<span class="text-on-surface-variant/40">—</span>`}
+          </td>
+          <td class="py-4 px-6">
+            <div class="text-on-surface">${escapeHtml(g.email) || "—"}</div>
+            ${g.phone ? `<div class="text-on-surface-variant text-sm mt-0.5">${escapeHtml(g.phone)}</div>` : ""}
+          </td>
+          <td class="py-4 px-6">
+            <div class="flex items-center gap-2">
+              <div class="w-2 h-2 rounded-full ${style.dot}"></div>
+              <span class="${style.text} font-button-text text-button-text uppercase tracking-wider">${style.label}</span>
+            </div>
+          </td>
+          <td class="py-4 px-6">
+            ${g.table_number ? `<span class="font-headline-md text-headline-md text-tertiary">${escapeHtml(g.table_number)}</span>` : `<span class="text-on-surface-variant/50 italic font-body-md text-body-md">Sin asignar</span>`}
+          </td>
+          <td class="py-4 px-6 text-right whitespace-nowrap">
+            <button class="btn-edit-guest p-2 text-on-surface-variant hover:text-tertiary transition-colors"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+            <button class="btn-delete-guest p-2 text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+          </td>
+        </tr>`;
+    }).join("");
+  }
+
+  function updateStats(guests) {
+    const total = guests.length;
+    const confirmed = guests.filter(g => g.rsvp_status === "confirmado").length;
+    const pending = guests.filter(g => g.rsvp_status === "pendiente").length;
+    const declined = guests.filter(g => g.rsvp_status === "declinado").length;
+    document.getElementById("stat-total").textContent = total;
+    document.getElementById("stat-confirmed").textContent = confirmed;
+    document.getElementById("stat-pending").textContent = pending;
+    document.getElementById("stat-declined").textContent = declined;
+    document.getElementById("stat-confirmed-bar").style.width = total ? `${Math.round((confirmed / total) * 100)}%` : "0%";
+    countLabel.textContent = `Mostrando ${total} de ${total} registro${total === 1 ? "" : "s"}`;
+  }
+
+  function applyFilterAndRender() {
+    const term = (searchInput.value || "").trim().toLowerCase();
+    const filtered = term
+      ? allGuests.filter(g =>
+          (g.full_name || "").toLowerCase().includes(term) ||
+          (g.email || "").toLowerCase().includes(term))
+      : allGuests;
+    renderRows(filtered);
+    updateStats(allGuests); // los contadores reflejan el total, no el filtro
+    if (term) {
+      countLabel.textContent = `Mostrando ${filtered.length} de ${allGuests.length} registros`;
+    }
+  }
+
+  async function loadGuests() {
+    const { data, error } = await window.supabaseClient
+      .from("guests")
+      .select("*")
+      .eq("event_id", currentEventId)
+      .order("created_at", { ascending: true });
+
+    if (error) {
+      tbody.innerHTML = `<tr><td colspan="6" class="py-8 px-6 text-center text-error">Error al cargar invitados: ${escapeHtml(error.message)}</td></tr>`;
+      return;
+    }
+    allGuests = data || [];
+    applyFilterAndRender();
+  }
+
+  function openModal(mode, guest) {
+    formError.classList.add("hidden");
+    document.getElementById("guest-modal-title").textContent = mode === "edit" ? "Editar Invitado" : "Agregar Invitado";
+    document.getElementById("guest-id").value = guest ? guest.id : "";
+    document.getElementById("guest-full-name").value = guest ? guest.full_name || "" : "";
+    document.getElementById("guest-group").value = guest ? guest.group_label || "" : "";
+    document.getElementById("guest-table").value = guest ? guest.table_number || "" : "";
+    document.getElementById("guest-email").value = guest ? guest.email || "" : "";
+    document.getElementById("guest-phone").value = guest ? guest.phone || "" : "";
+    document.getElementById("guest-dietary").value = guest ? guest.dietary_notes || "" : "";
+    document.getElementById("guest-rsvp").value = guest ? guest.rsvp_status || "pendiente" : "pendiente";
+    document.getElementById("guest-plus-one").checked = guest ? !!guest.plus_one : false;
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+  }
+
+  function closeModal() {
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    form.reset();
+  }
+
+  document.getElementById("guest-modal-close").addEventListener("click", closeModal);
+  document.getElementById("guest-modal-cancel").addEventListener("click", closeModal);
+  document.getElementById("guest-modal-backdrop").addEventListener("click", closeModal);
+
+  document.getElementById("btn-add-guest").addEventListener("click", () => openModal("add", null));
+
+  document.getElementById("btn-export-csv").addEventListener("click", () => {
+    if (allGuests.length === 0) {
+      alert("No hay invitados para exportar.");
+      return;
+    }
+    const headers = ["Nombre", "Grupo", "Correo", "Teléfono", "RSVP", "Mesa", "Acompañante", "Notas dietéticas"];
+    const rows = allGuests.map(g => [
+      g.full_name, g.group_label, g.email, g.phone, g.rsvp_status, g.table_number,
+      g.plus_one ? "Sí" : "No", g.dietary_notes
+    ]);
+    const csv = [headers, ...rows]
+      .map(row => row.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(","))
+      .join("\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "invitados.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  searchInput.addEventListener("input", applyFilterAndRender);
+
+  tbody.addEventListener("click", async (e) => {
+    const row = e.target.closest("tr[data-id]");
+    if (!row) return;
+    const id = row.getAttribute("data-id");
+    const guest = allGuests.find(g => String(g.id) === id);
+
+    if (e.target.closest(".btn-edit-guest")) {
+      openModal("edit", guest);
+    }
+    if (e.target.closest(".btn-delete-guest")) {
+      if (!confirm(`¿Eliminar a ${guest.full_name}? Esta acción no se puede deshacer.`)) return;
+      const { error } = await window.supabaseClient.from("guests").delete().eq("id", id);
+      if (error) {
+        alert("No se pudo eliminar: " + error.message);
+      } else {
+        await loadGuests();
+      }
+    }
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    formError.classList.add("hidden");
+    const id = document.getElementById("guest-id").value;
+    const payload = {
+      event_id: currentEventId,
+      full_name: document.getElementById("guest-full-name").value.trim(),
+      group_label: document.getElementById("guest-group").value.trim() || null,
+      table_number: document.getElementById("guest-table").value.trim() || null,
+      email: document.getElementById("guest-email").value.trim() || null,
+      phone: document.getElementById("guest-phone").value.trim() || null,
+      dietary_notes: document.getElementById("guest-dietary").value.trim() || null,
+      rsvp_status: document.getElementById("guest-rsvp").value,
+      plus_one: document.getElementById("guest-plus-one").checked
+    };
+
+    let error;
+    if (id) {
+      ({ error } = await window.supabaseClient.from("guests").update(payload).eq("id", id));
+    } else {
+      ({ error } = await window.supabaseClient.from("guests").insert(payload));
+    }
+
+    if (error) {
+      formError.textContent = error.message;
+      formError.classList.remove("hidden");
+      return;
+    }
+    closeModal();
+    await loadGuests();
+  });
+
+  (async function init() {
+    const auth = await window.requireAuth();
+    if (!auth) return;
+
+    const { data: events, error: eventsError } = await window.supabaseClient
+      .from("events")
+      .select("id")
+      .order("created_at", { ascending: true })
+      .limit(1);
+
+    if (eventsError || !events || events.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" class="py-8 px-6 text-center text-error">
+        No hay ningún evento creado todavía en la base de datos. Corre 03_datos_iniciales.sql en Supabase primero.
+      </td></tr>`;
+      return;
+    }
+    currentEventId = events[0].id;
+    await loadGuests();
+  })();
 </script>
 </body>
 </html>
