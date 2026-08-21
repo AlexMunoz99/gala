@@ -2,6 +2,27 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"/>
+<script>
+(function(){
+  try {
+    if (localStorage.getItem('galaSidebarCollapsed') === 'true') {
+      document.documentElement.classList.add('sidebar-collapsed');
+    }
+  } catch (e) {}
+})();
+</script>
+<style>
+  :root { --sidebar-w: 224px; }
+  html.sidebar-collapsed { --sidebar-w: 80px; }
+  .sidebar-collapsed .sidebar-label { display: none; }
+  .sidebar-collapsed #app-sidebar nav a { justify-content: center; padding-left: 0; padding-right: 0; }
+  .sidebar-collapsed #app-sidebar .nav-icon { margin-right: 0; }
+  .sidebar-collapsed #app-sidebar .sidebar-cta { padding-left: 12px; padding-right: 12px; }
+  #sidebar-toggle-icon { transition: transform 0.3s; }
+  .sidebar-collapsed #sidebar-toggle-icon { transform: rotate(180deg); }
+  #app-sidebar, #app-content-wrapper, #app-header-logo { transition: width 0.25s ease, padding-left 0.25s ease; }
+</style>
+
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Gala ERP — Proveedores</title>
 <style>
@@ -98,36 +119,59 @@ tailwind.config = {
   }
 };
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/supabase-client.js"></script>
 </head>
 <body class="bg-surface font-body-md text-on-surface overflow-x-hidden">
+<script type="module">
+  (async function () {
+    const auth = await window.requireAuth();
+    if (!auth) return; // requireAuth ya redirige a login.html
+    const nameEl = document.getElementById("current-user-name");
+    if (nameEl && auth.profile) {
+      nameEl.textContent = auth.profile.full_name || auth.user.email;
+    }
+    const roleBadge = document.getElementById("current-user-role");
+    if (roleBadge && auth.profile) {
+      roleBadge.textContent = auth.profile.role;
+      if (auth.profile.role !== "admin") {
+        document.querySelectorAll(".admin-only").forEach(el => el.remove());
+      }
+    }
+    const logoutBtn = document.getElementById("logout-btn");
+    if (logoutBtn) logoutBtn.addEventListener("click", window.signOut);
+  })();
+</script>
 
-<aside class="fixed left-0 top-0 h-full w-72 bg-secondary-container z-50 flex flex-col border-r border-tertiary/10">
+
+<aside id="app-sidebar" class="fixed left-0 top-0 h-full bg-secondary-container z-50 flex flex-col border-r border-tertiary/10 overflow-hidden" style="width: var(--sidebar-w);">
+<button id="sidebar-toggle" class="absolute -right-3 top-24 w-6 h-6 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center shadow-md hover:brightness-110 transition-all z-10" aria-label="Colapsar/expandir menú" title="Colapsar/expandir menú"><span class="material-symbols-outlined text-[16px]" id="sidebar-toggle-icon">chevron_left</span></button>
   <div class="flex-1 flex flex-col pt-24 pb-8 overflow-y-auto">
     <nav class="flex-1 flex flex-col gap-1 px-4" data-active-classes="border-l-4 border-tertiary bg-white/5 text-tertiary font-bold px-[20px]">
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="dashboard" href="index.html"><span class="material-symbols-outlined mr-4">dashboard</span>Panel</a>
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="invitados" href="invitados.html"><span class="material-symbols-outlined mr-4">group</span>Invitados</a>
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="itinerario" href="itinerario.html"><span class="material-symbols-outlined mr-4">calendar_today</span>Itinerario</a>
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="lugares" href="lugares.html"><span class="material-symbols-outlined mr-4">location_on</span>Lugares</a>
-      <a aria-current="page" class="flex items-center py-4 transition-all border-l-4 border-tertiary bg-white/5 text-tertiary font-bold px-[20px]" data-path="proveedores" href="proveedores.html"><span class="material-symbols-outlined mr-4">business_center</span>Proveedores</a>
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="tareas" href="tareas.html"><span class="material-symbols-outlined mr-4">check_circle</span>Tareas</a>
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="programa" href="programa.html"><span class="material-symbols-outlined mr-4">list_alt</span>Programa</a>
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="seating-materials" href="seating-materials.html"><span class="material-symbols-outlined mr-4">chair</span>Asientos/Materiales</a>
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="post-wedding" href="post-wedding.html"><span class="material-symbols-outlined mr-4">celebration</span>Post-Boda</a>
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="presupuesto" href="presupuesto.html"><span class="material-symbols-outlined mr-4">payments</span>Presupuesto</a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="dashboard" href="index.html"><span class="material-symbols-outlined mr-4 nav-icon">dashboard</span><span class="sidebar-label">Panel</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="invitados" href="invitados.html"><span class="material-symbols-outlined mr-4 nav-icon">group</span><span class="sidebar-label">Invitados</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="itinerario" href="itinerario.html"><span class="material-symbols-outlined mr-4 nav-icon">calendar_today</span><span class="sidebar-label">Itinerario</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="lugares" href="lugares.html"><span class="material-symbols-outlined mr-4 nav-icon">location_on</span><span class="sidebar-label">Lugares</span></a>
+      <a aria-current="page" class="flex items-center py-4 transition-all border-l-4 border-tertiary bg-white/5 text-tertiary font-bold px-[20px]" data-path="proveedores" href="proveedores.html"><span class="material-symbols-outlined mr-4 nav-icon">business_center</span><span class="sidebar-label">Proveedores</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="tareas" href="tareas.html"><span class="material-symbols-outlined mr-4 nav-icon">check_circle</span><span class="sidebar-label">Tareas</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="programa" href="programa.html"><span class="material-symbols-outlined mr-4 nav-icon">list_alt</span><span class="sidebar-label">Programa</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="seating-materials" href="seating-materials.html"><span class="material-symbols-outlined mr-4 nav-icon">chair</span><span class="sidebar-label">Asientos/Materiales</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="post-wedding" href="post-wedding.html"><span class="material-symbols-outlined mr-4 nav-icon">celebration</span><span class="sidebar-label">Post-Boda</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="presupuesto" href="presupuesto.html"><span class="material-symbols-outlined mr-4 nav-icon">payments</span><span class="sidebar-label">Presupuesto</span></a>
     </nav>
-    <div class="px-8 mt-auto pt-8">
+    <div class="px-8 mt-auto pt-8 sidebar-cta">
       <button class="w-full py-4 bg-tertiary text-on-tertiary font-button-text text-button-text uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-2 rounded-lg">
-        <span class="material-symbols-outlined">add</span>Crear Nuevo Evento
+        <span class="material-symbols-outlined nav-icon">add</span><span class="sidebar-label">Crear Nuevo Evento</span>
       </button>
     </div>
   </div>
 </aside>
 
-<div class="pl-72 flex flex-col min-h-screen">
+<div id="app-content-wrapper" class="flex flex-col min-h-screen" style="padding-left: var(--sidebar-w);">
   <header class="fixed top-0 right-0 left-0 h-20 bg-primary-container z-40 px-gutter flex items-center justify-between border-b border-tertiary/5 shadow-xl">
-    <div class="flex items-center gap-4 w-72 pl-8">
-      <img alt="Logo" class="w-8 h-8 rounded-full border border-tertiary" src="assets/logo.png"/>
-      <span class="font-headline-md text-headline-md text-tertiary tracking-widest uppercase">GALA</span>
+    <div id="app-header-logo" class="flex items-center gap-4 pl-8" style="width: var(--sidebar-w);">
+      <img alt="Logo" class="w-9 h-9 object-contain shrink-0" src="assets/logo.png"/>
+      <span class="font-headline-md text-headline-md text-tertiary tracking-widest uppercase sidebar-label">GALA</span>
     </div>
     <div class="flex-1 flex items-center justify-center gap-6">
       <span class="font-headline-md text-headline-md text-on-surface">Gala del Solsticio de Verano</span>
@@ -139,8 +183,15 @@ tailwind.config = {
     <div class="flex items-center gap-6 justify-end w-72 pr-8">
       <button class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors">notifications</button>
       <button class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors">settings</button>
-      <div class="w-10 h-10 rounded-full border border-tertiary/30 p-0.5 overflow-hidden ring-2 ring-tertiary/10">
-        <img alt="Perfil" class="w-full h-full rounded-full object-cover" src="assets/avatar.png"/>
+      <button id="logout-btn" class="material-symbols-outlined text-on-surface-variant hover:text-error transition-colors" title="Cerrar sesión">logout</button>
+      <div class="flex items-center gap-2">
+        <div class="w-10 h-10 rounded-full border border-tertiary/30 p-0.5 overflow-hidden ring-2 ring-tertiary/10">
+          <img alt="Perfil" class="w-full h-full rounded-full object-cover" src="assets/avatar.png"/>
+        </div>
+        <div class="hidden md:flex flex-col leading-tight">
+          <span id="current-user-name" class="text-sm text-on-surface">Cargando…</span>
+          <span id="current-user-role" class="text-[10px] uppercase tracking-wider text-tertiary"></span>
+        </div>
       </div>
     </div>
   </header>
@@ -436,6 +487,16 @@ tailwind.config = {
       });
     });
   });
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var btn = document.getElementById('sidebar-toggle');
+  if (!btn) return;
+  btn.addEventListener('click', function () {
+    var isCollapsed = document.documentElement.classList.toggle('sidebar-collapsed');
+    try { localStorage.setItem('galaSidebarCollapsed', isCollapsed ? 'true' : 'false'); } catch (e) {}
+  });
+});
 </script>
 </body>
 </html>
