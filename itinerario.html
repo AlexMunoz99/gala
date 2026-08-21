@@ -139,6 +139,11 @@ tailwind.config = {
     }
     const logoutBtn = document.getElementById("logout-btn");
     if (logoutBtn) logoutBtn.addEventListener("click", window.signOut);
+
+    const currentEvent = await window.requireEvent();
+    if (!currentEvent) return; // requireEvent ya redirige a proyectos.html
+    window.applyEventToHeader(currentEvent);
+    window.currentEventId = currentEvent.id;
   })();
 </script>
 
@@ -151,6 +156,7 @@ tailwind.config = {
   </div>
   <div class="flex-1 flex flex-col pt-4 pb-6 overflow-y-auto overflow-x-hidden">
     <nav class="flex-1 flex flex-col gap-1 px-4" data-active-classes="border-l-4 border-tertiary bg-white/5 text-tertiary font-bold px-[20px]">
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="presupuesto" href="presupuesto.html"><span class="material-symbols-outlined mr-3 nav-icon">payments</span><span class="sidebar-label">Presupuesto</span></a>
       <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="dashboard" href="index.html"><span class="material-symbols-outlined mr-3 nav-icon">dashboard</span><span class="sidebar-label">Panel</span></a>
       <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="invitados" href="invitados.html"><span class="material-symbols-outlined mr-3 nav-icon">group</span><span class="sidebar-label">Invitados</span></a>
       <a aria-current="page" class="flex items-center py-3 transition-all border-l-4 border-tertiary bg-white/5 text-tertiary font-bold px-[16px]" data-path="itinerario" href="itinerario.html"><span class="material-symbols-outlined mr-3 nav-icon">calendar_today</span><span class="sidebar-label">Itinerario</span></a>
@@ -160,12 +166,11 @@ tailwind.config = {
       <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="programa" href="programa.html"><span class="material-symbols-outlined mr-3 nav-icon">list_alt</span><span class="sidebar-label">Programa</span></a>
       <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="seating-materials" href="seating-materials.html"><span class="material-symbols-outlined mr-3 nav-icon">chair</span><span class="sidebar-label">Asientos/Materiales</span></a>
       <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="post-wedding" href="post-wedding.html"><span class="material-symbols-outlined mr-3 nav-icon">celebration</span><span class="sidebar-label">Post-Boda</span></a>
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="presupuesto" href="presupuesto.html"><span class="material-symbols-outlined mr-3 nav-icon">payments</span><span class="sidebar-label">Presupuesto</span></a>
     </nav>
     <div class="px-8 mt-auto pt-8 sidebar-cta">
-      <button class="w-full py-4 bg-tertiary text-on-tertiary font-button-text text-button-text uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-2 rounded-lg">
-        <span class="material-symbols-outlined nav-icon">add</span><span class="sidebar-label">Crear Nuevo Evento</span>
-      </button>
+      <a href="proyectos.html" class="w-full py-4 bg-tertiary text-on-tertiary font-button-text text-button-text uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-2 rounded-lg">
+        <span class="material-symbols-outlined nav-icon">apps</span><span class="sidebar-label">Mis Proyectos</span>
+      </a>
     </div>
   </div>
 </aside>
@@ -174,10 +179,13 @@ tailwind.config = {
   <header class="fixed top-0 right-0 left-0 h-20 bg-primary-container z-40 px-gutter flex items-center justify-between border-b border-tertiary/5 shadow-xl">
     <div id="app-header-logo" style="width: var(--sidebar-w);"></div>
     <div class="flex-1 flex items-center justify-center gap-6">
-      <span class="font-headline-md text-headline-md text-on-surface">Gala del Solsticio de Verano</span>
+      <a href="proyectos.html" title="Cambiar de proyecto" class="font-headline-md text-headline-md text-on-surface hover:text-tertiary transition-colors flex items-center gap-2">
+        <span id="current-event-name">Cargando…</span>
+        <span class="material-symbols-outlined text-[18px] opacity-60">unfold_more</span>
+      </a>
       <div class="px-4 py-1.5 bg-tertiary/10 border border-tertiary/20 rounded-full flex items-center gap-2">
         <span class="material-symbols-outlined text-tertiary text-sm">timer</span>
-        <span class="font-label-gold text-label-gold text-tertiary">42D : 12H : 08M</span>
+        <span id="current-event-countdown" class="font-label-gold text-label-gold text-tertiary">--</span>
       </div>
     </div>
     <div class="flex items-center gap-6 justify-end w-72 pr-8">
@@ -265,8 +273,13 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
       </div>
       <div class="flex flex-col gap-1">
-        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="activity-category">Categoría</label>
-        <input id="activity-category" placeholder="LOGÍSTICA, CEREMONIA, RECEPCIÓN, CENA..." class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
+        <div class="flex items-center justify-between">
+          <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="activity-category">Categoría</label>
+          <button type="button" id="btn-manage-categories" class="text-[11px] uppercase tracking-wider text-tertiary hover:text-tertiary-fixed transition-colors">Gestionar</button>
+        </div>
+        <select id="activity-category" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary">
+          <option value="">Sin categoría</option>
+        </select>
       </div>
       <div class="flex flex-col gap-1">
         <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="activity-location">Ubicación</label>
@@ -287,15 +300,37 @@ document.addEventListener('DOMContentLoaded', function () {
   </div>
 </div>
 
+<!-- Modal: Gestionar Categorías -->
+<div id="categories-modal" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-4">
+  <div id="categories-modal-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+  <div class="relative w-full max-w-md bg-surface-container-low rounded-2xl shadow-2xl border border-tertiary/10 p-8">
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="font-headline-lg text-headline-lg text-on-surface">Gestionar Categorías</h2>
+      <button id="categories-modal-close" class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors">close</button>
+    </div>
+    <div id="categories-list" class="flex flex-col gap-2 mb-6 max-h-64 overflow-y-auto"></div>
+    <form id="category-add-form" class="flex gap-2">
+      <input id="new-category-name" placeholder="Nombre de la nueva categoría" required="" class="flex-1 bg-surface-container border border-tertiary/20 rounded-lg py-2.5 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
+      <button type="submit" class="px-4 py-2.5 rounded-lg bg-tertiary text-on-tertiary font-button-text uppercase tracking-wider text-sm hover:brightness-110 transition-all">Agregar</button>
+    </form>
+    <p id="categories-error" class="hidden text-error text-sm mt-2"></p>
+  </div>
+</div>
+
 <script type="module">
   const listEl = document.getElementById("itinerary-list");
   const dayTabs = document.getElementById("day-tabs");
   const modal = document.getElementById("activity-modal");
   const form = document.getElementById("activity-form");
   const formError = document.getElementById("activity-form-error");
+  const categorySelect = document.getElementById("activity-category");
+  const categoriesModal = document.getElementById("categories-modal");
+  const categoriesList = document.getElementById("categories-list");
 
   let currentEventId = null;
   let allActivities = [];
+  let allCategories = [];
+  let categoriesById = {};
   let currentDay = 0;
 
   function escapeHtml(str) {
@@ -345,7 +380,7 @@ document.addEventListener('DOMContentLoaded', function () {
               <div class="flex flex-col gap-3">
                 <div class="flex items-center justify-between flex-wrap gap-2">
                   <div class="flex items-center gap-3">
-                    ${a.category ? `<span class="px-3 py-1 bg-tertiary/10 text-tertiary font-label-gold text-label-gold rounded uppercase">${escapeHtml(a.category)}</span>` : ""}
+                    ${a.category_id && categoriesById[a.category_id] ? `<span class="px-3 py-1 bg-tertiary/10 text-tertiary font-label-gold text-label-gold rounded uppercase">${escapeHtml(categoriesById[a.category_id])}</span>` : ""}
                   </div>
                   <div class="flex items-center gap-1">
                     <button class="btn-edit-activity p-2 text-on-surface-variant hover:text-tertiary transition-colors opacity-0 group-hover:opacity-100"><span class="material-symbols-outlined text-[20px]">edit</span></button>
@@ -360,6 +395,22 @@ document.addEventListener('DOMContentLoaded', function () {
           </div>
         </div>`;
     }).join("");
+  }
+
+  async function loadCategories() {
+    const { data, error } = await window.supabaseClient
+      .from("itinerary_categories")
+      .select("*")
+      .eq("event_id", currentEventId)
+      .order("name", { ascending: true });
+    if (error) {
+      console.error("No se pudieron cargar las categorías:", error);
+      return;
+    }
+    allCategories = data || [];
+    categoriesById = Object.fromEntries(allCategories.map(c => [c.id, c.name]));
+    categorySelect.innerHTML = '<option value="">Sin categoría</option>' +
+      allCategories.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join("");
   }
 
   async function loadActivities() {
@@ -392,7 +443,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById("activity-title").value = activity ? activity.title || "" : "";
     document.getElementById("activity-day").value = activity ? String(activity.day_offset) : String(currentDay);
     document.getElementById("activity-time").value = activity ? (activity.start_time || "").slice(0, 5) : "";
-    document.getElementById("activity-category").value = activity ? activity.category || "" : "";
+    document.getElementById("activity-category").value = activity ? activity.category_id || "" : "";
     document.getElementById("activity-location").value = activity ? activity.location || "" : "";
     document.getElementById("activity-description").value = activity ? activity.description || "" : "";
     modal.classList.remove("hidden");
@@ -439,7 +490,7 @@ document.addEventListener('DOMContentLoaded', function () {
       title: document.getElementById("activity-title").value.trim(),
       day_offset: Number(document.getElementById("activity-day").value),
       start_time: document.getElementById("activity-time").value || null,
-      category: document.getElementById("activity-category").value.trim().toUpperCase() || null,
+      category_id: document.getElementById("activity-category").value || null,
       location: document.getElementById("activity-location").value.trim() || null,
       description: document.getElementById("activity-description").value.trim() || null
     };
@@ -464,20 +515,97 @@ document.addEventListener('DOMContentLoaded', function () {
     const auth = await window.requireAuth();
     if (!auth) return;
 
-    const { data: events, error: eventsError } = await window.supabaseClient
-      .from("events")
-      .select("id")
-      .order("created_at", { ascending: true })
-      .limit(1);
+    const currentEvent = await window.requireEvent();
+    if (!currentEvent) return; // requireEvent ya redirige a proyectos.html si no hay proyecto activo
 
-    if (eventsError || !events || events.length === 0) {
-      listEl.innerHTML = `<p class="text-error py-10">No hay ningún evento creado todavía en la base de datos. Corre 03_datos_iniciales.sql en Supabase primero.</p>`;
-      return;
-    }
-    currentEventId = events[0].id;
+    currentEventId = currentEvent.id;
     updateDayTabs();
+    await loadCategories();
     await loadActivities();
   })();
+
+  // ---- Gestión de categorías ----
+  function renderCategoriesList() {
+    if (allCategories.length === 0) {
+      categoriesList.innerHTML = `<p class="text-on-surface-variant text-sm py-4 text-center">Todavía no tienes categorías.</p>`;
+      return;
+    }
+    categoriesList.innerHTML = allCategories.map(c => `
+      <div class="flex items-center gap-2 bg-surface-container rounded-lg p-2 pl-4" data-category-id="${c.id}">
+        <span class="flex-1 category-name-display text-on-surface text-sm truncate">${escapeHtml(c.name)}</span>
+        <input class="category-name-edit hidden flex-1 bg-surface border border-tertiary/30 rounded px-2 py-1 text-on-surface text-sm" value="${escapeHtml(c.name)}"/>
+        <button class="btn-rename-category p-1.5 text-on-surface-variant hover:text-tertiary transition-colors" title="Renombrar"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+        <button class="btn-delete-category p-1.5 text-on-surface-variant hover:text-error transition-colors" title="Eliminar"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+      </div>
+    `).join("");
+  }
+
+  document.getElementById("btn-manage-categories").addEventListener("click", () => {
+    renderCategoriesList();
+    categoriesModal.classList.remove("hidden");
+    categoriesModal.classList.add("flex");
+  });
+  document.getElementById("categories-modal-close").addEventListener("click", () => {
+    categoriesModal.classList.add("hidden");
+    categoriesModal.classList.remove("flex");
+  });
+  document.getElementById("categories-modal-backdrop").addEventListener("click", () => {
+    categoriesModal.classList.add("hidden");
+    categoriesModal.classList.remove("flex");
+  });
+
+  document.getElementById("category-add-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const input = document.getElementById("new-category-name");
+    const name = input.value.trim();
+    if (!name) return;
+    const { error } = await window.supabaseClient.from("itinerary_categories").insert({ event_id: currentEventId, name });
+    const errEl = document.getElementById("categories-error");
+    if (error) {
+      errEl.textContent = error.message;
+      errEl.classList.remove("hidden");
+      return;
+    }
+    errEl.classList.add("hidden");
+    input.value = "";
+    await loadCategories();
+    renderCategoriesList();
+    renderList();
+  });
+
+  categoriesList.addEventListener("click", async (e) => {
+    const row = e.target.closest("[data-category-id]");
+    if (!row) return;
+    const id = row.getAttribute("data-category-id");
+    const nameDisplay = row.querySelector(".category-name-display");
+    const nameEdit = row.querySelector(".category-name-edit");
+
+    if (e.target.closest(".btn-rename-category")) {
+      const isEditing = !nameEdit.classList.contains("hidden");
+      if (!isEditing) {
+        nameDisplay.classList.add("hidden");
+        nameEdit.classList.remove("hidden");
+        nameEdit.focus();
+      } else {
+        const newName = nameEdit.value.trim();
+        if (newName) {
+          await window.supabaseClient.from("itinerary_categories").update({ name: newName }).eq("id", id);
+          await loadCategories();
+          renderCategoriesList();
+          renderList();
+        }
+      }
+    }
+
+    if (e.target.closest(".btn-delete-category")) {
+      const catName = nameDisplay.textContent;
+      if (!confirm(`¿Eliminar la categoría "${catName}"? Las actividades que la tengan quedarán sin categoría.`)) return;
+      await window.supabaseClient.from("itinerary_categories").delete().eq("id", id);
+      await loadCategories();
+      renderCategoriesList();
+      renderList();
+    }
+  });
 </script>
 </body>
 </html>

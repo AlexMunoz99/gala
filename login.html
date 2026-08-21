@@ -126,7 +126,7 @@ tailwind.config = {
 
   // Si ya hay sesión activa, saltar directo al panel
   window.supabaseClient.auth.getSession().then(({ data: { session } }) => {
-    if (session) window.location.href = "index.html";
+    if (session) window.location.href = "proyectos.html";
   });
 
   form.addEventListener("submit", async (e) => {
@@ -152,7 +152,7 @@ tailwind.config = {
       if (error) {
         showMessage(error.message, true);
       } else {
-        window.location.href = "index.html";
+        window.location.href = "proyectos.html";
       }
     }
     submitBtn.disabled = false;

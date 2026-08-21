@@ -139,6 +139,11 @@ tailwind.config = {
     }
     const logoutBtn = document.getElementById("logout-btn");
     if (logoutBtn) logoutBtn.addEventListener("click", window.signOut);
+
+    const currentEvent = await window.requireEvent();
+    if (!currentEvent) return; // requireEvent ya redirige a proyectos.html
+    window.applyEventToHeader(currentEvent);
+    window.currentEventId = currentEvent.id;
   })();
 </script>
 
@@ -151,6 +156,7 @@ tailwind.config = {
   </div>
   <div class="flex-1 flex flex-col pt-4 pb-6 overflow-y-auto overflow-x-hidden">
     <nav class="flex-1 flex flex-col gap-1 px-4" data-active-classes="border-l-4 border-tertiary bg-white/5 text-tertiary font-bold px-[20px]">
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="presupuesto" href="presupuesto.html"><span class="material-symbols-outlined mr-3 nav-icon">payments</span><span class="sidebar-label">Presupuesto</span></a>
       <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="dashboard" href="index.html"><span class="material-symbols-outlined mr-3 nav-icon">dashboard</span><span class="sidebar-label">Panel</span></a>
       <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="invitados" href="invitados.html"><span class="material-symbols-outlined mr-3 nav-icon">group</span><span class="sidebar-label">Invitados</span></a>
       <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="itinerario" href="itinerario.html"><span class="material-symbols-outlined mr-3 nav-icon">calendar_today</span><span class="sidebar-label">Itinerario</span></a>
@@ -160,12 +166,11 @@ tailwind.config = {
       <a aria-current="page" class="flex items-center py-3 transition-all border-l-4 border-tertiary bg-white/5 text-tertiary font-bold px-[16px]" data-path="programa" href="programa.html"><span class="material-symbols-outlined mr-3 nav-icon">list_alt</span><span class="sidebar-label">Programa</span></a>
       <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="seating-materials" href="seating-materials.html"><span class="material-symbols-outlined mr-3 nav-icon">chair</span><span class="sidebar-label">Asientos/Materiales</span></a>
       <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="post-wedding" href="post-wedding.html"><span class="material-symbols-outlined mr-3 nav-icon">celebration</span><span class="sidebar-label">Post-Boda</span></a>
-      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="presupuesto" href="presupuesto.html"><span class="material-symbols-outlined mr-3 nav-icon">payments</span><span class="sidebar-label">Presupuesto</span></a>
     </nav>
     <div class="px-8 mt-auto pt-8 sidebar-cta">
-      <button class="w-full py-4 bg-tertiary text-on-tertiary font-button-text text-button-text uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-2 rounded-lg">
-        <span class="material-symbols-outlined nav-icon">add</span><span class="sidebar-label">Crear Nuevo Evento</span>
-      </button>
+      <a href="proyectos.html" class="w-full py-4 bg-tertiary text-on-tertiary font-button-text text-button-text uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-2 rounded-lg">
+        <span class="material-symbols-outlined nav-icon">apps</span><span class="sidebar-label">Mis Proyectos</span>
+      </a>
     </div>
   </div>
 </aside>
@@ -174,10 +179,13 @@ tailwind.config = {
   <header class="fixed top-0 right-0 left-0 h-20 bg-primary-container z-40 px-gutter flex items-center justify-between border-b border-tertiary/5 shadow-xl">
     <div id="app-header-logo" style="width: var(--sidebar-w);"></div>
     <div class="flex-1 flex items-center justify-center gap-6">
-      <span class="font-headline-md text-headline-md text-on-surface">Gala del Solsticio de Verano</span>
+      <a href="proyectos.html" title="Cambiar de proyecto" class="font-headline-md text-headline-md text-on-surface hover:text-tertiary transition-colors flex items-center gap-2">
+        <span id="current-event-name">Cargando…</span>
+        <span class="material-symbols-outlined text-[18px] opacity-60">unfold_more</span>
+      </a>
       <div class="px-4 py-1.5 bg-tertiary/10 border border-tertiary/20 rounded-full flex items-center gap-2">
         <span class="material-symbols-outlined text-tertiary text-sm">timer</span>
-        <span class="font-label-gold text-label-gold text-tertiary">42D : 12H : 08M</span>
+        <span id="current-event-countdown" class="font-label-gold text-label-gold text-tertiary">--</span>
       </div>
     </div>
     <div class="flex items-center gap-6 justify-end w-72 pr-8">
@@ -209,7 +217,7 @@ tailwind.config = {
           </div>
           <h1 class="font-display-lg text-display-lg text-on-surface">Programa del Evento</h1>
           <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
-            El cronograma oficial y el guion del maestro de ceremonias para la Gala del Solsticio de Verano. Los horarios son estrictos; asegúrese de que todos los oradores estén preparados 5 minutos antes de su segmento.
+            El cronograma oficial y el guion del maestro de ceremonias para <span id="current-event-name-inline">tu evento</span>. Los horarios son estrictos; asegúrese de que todos los oradores estén preparados 5 minutos antes de su segmento.
           </p>
         </div>
         <button class="relative group bg-tertiary text-on-tertiary px-8 py-4 rounded-full font-button-text text-button-text uppercase tracking-widest shadow-lg shadow-tertiary/20 hover:shadow-tertiary/40 transition-all duration-300 ease-out hover:-translate-y-1 flex items-center gap-3 shrink-0">
