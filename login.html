@@ -7,6 +7,7 @@
 <style>
   html, body { margin: 0; padding: 0; }
   ::-webkit-scrollbar { display: none; }
+  #shader-bg { position: fixed; inset: 0; z-index: 0; display: block; }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet"/>
@@ -39,16 +40,18 @@ tailwind.config = {
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/supabase-client.js"></script>
 </head>
-<body class="bg-surface font-body-md text-on-surface min-h-screen flex items-center justify-center px-6">
+<body class="bg-surface font-body-md text-on-surface min-h-screen flex items-center justify-center px-6 relative overflow-hidden">
 
-<div class="w-full max-w-md">
+<canvas id="shader-bg"></canvas>
+
+<div class="w-full max-w-md relative z-10">
   <div class="flex flex-col items-center gap-3 mb-10">
     <img alt="Logo" class="w-16 h-16 object-contain" src="assets/logo.png"/>
     <span class="font-headline-lg text-3xl text-tertiary tracking-widest uppercase">GALA</span>
     <p class="text-on-surface-variant text-sm">Planificación y gestión de eventos</p>
   </div>
 
-  <div class="bg-surface-container rounded-2xl p-8 shadow-xl">
+  <div class="bg-surface-container/80 backdrop-blur-xl border border-tertiary/10 rounded-2xl p-8 shadow-2xl">
     <div class="flex mb-8 rounded-lg bg-surface-container-low p-1">
       <button id="tab-login" class="flex-1 py-2 rounded-md font-button-text text-sm uppercase tracking-wider bg-tertiary text-on-tertiary transition-colors">Entrar</button>
       <button id="tab-signup" class="flex-1 py-2 rounded-md font-button-text text-sm uppercase tracking-wider text-on-surface-variant transition-colors">Crear cuenta</button>
@@ -144,6 +147,112 @@ tailwind.config = {
       }
     }
     submitBtn.disabled = false;
+  });
+</script>
+
+<script type="module">
+  import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
+
+  const canvas = document.getElementById("shader-bg");
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x000000);
+  scene.fog = new THREE.FogExp2(0x000000, 0.14);
+
+  const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+  // Cámara casi a ras del "agua", mirando ligeramente hacia abajo — recrea el ángulo
+  // (cAzimuthAngle 180 / cPolarAngle 95 / cDistance 2.4) del ShaderGradient original.
+  camera.position.set(0, 0.35, 2.4);
+  camera.lookAt(0, -0.15, 0);
+
+  // --- Plano "waterPlane" con desplazamiento por ondas y gradiente animado ---
+  const geometry = new THREE.PlaneGeometry(14, 14, 180, 180);
+
+  const uniforms = {
+    uTime: { value: 0 },
+    // Paleta Aureum Kinetic (dorado sobre negro), en vez del azul/morado original
+    uColorDeep:   { value: new THREE.Color(0x050403) },  // casi negro, base
+    uColorMid:    { value: new THREE.Color(0x2a2011) },  // bronce oscuro
+    uColorAccent: { value: new THREE.Color(0xe9c349) },  // dorado (acento, tenue)
+    uFrequency: { value: 1.6 },
+    uSpeed: { value: 0.12 },
+    uStrength: { value: 0.22 }
+  };
+
+  const material = new THREE.ShaderMaterial({
+    uniforms,
+    vertexShader: `
+      uniform float uTime;
+      uniform float uFrequency;
+      uniform float uSpeed;
+      uniform float uStrength;
+      varying vec2 vUv;
+      varying float vElevation;
+
+      void main() {
+        vUv = uv;
+        vec3 pos = position;
+        float t = uTime * uSpeed;
+        float wave =
+          sin(pos.x * uFrequency + t * 2.0) * 0.5 +
+          sin(pos.y * uFrequency * 1.4 - t * 1.6) * 0.35 +
+          sin((pos.x + pos.y) * uFrequency * 0.6 + t) * 0.4;
+        pos.z += wave * uStrength;
+        vElevation = wave;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform vec3 uColorDeep;
+      uniform vec3 uColorMid;
+      uniform vec3 uColorAccent;
+      varying vec2 vUv;
+      varying float vElevation;
+
+      void main() {
+        // Gradiente de base: negro -> bronce, de fondo a frente
+        vec3 color = mix(uColorDeep, uColorMid, smoothstep(0.0, 1.0, vUv.y));
+        // Toques dorados sutiles donde las crestas de la onda son más altas
+        float highlight = smoothstep(0.15, 0.55, vElevation);
+        color = mix(color, uColorAccent, highlight * 0.25);
+        gl_FragColor = vec4(color, 1.0);
+      }
+    `
+  });
+
+  const plane = new THREE.Mesh(geometry, material);
+  plane.rotation.x = -Math.PI / 2.15; // recuesta el plano, como una superficie vista de perfil
+  plane.position.y = -0.9;
+  plane.position.z = -1.5;
+  scene.add(plane);
+
+  function resize() {
+    const w = window.innerWidth, h = window.innerHeight;
+    renderer.setSize(w, h);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  window.addEventListener("resize", resize);
+  resize();
+
+  const clock = new THREE.Clock();
+  let rafId;
+  function animate() {
+    uniforms.uTime.value = clock.getElapsedTime();
+    renderer.render(scene, camera);
+    rafId = requestAnimationFrame(animate);
+  }
+  animate();
+
+  // Pausa el render cuando la pestaña no está visible (ahorra batería/CPU)
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      cancelAnimationFrame(rafId);
+    } else {
+      animate();
+    }
   });
 </script>
 </body>
