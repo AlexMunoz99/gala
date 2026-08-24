@@ -223,11 +223,16 @@ tailwind.config = {
             El cronograma oficial y el guion del maestro de ceremonias para <span id="current-event-name-inline">tu evento</span>. Los horarios son estrictos; asegúrese de que todos los oradores estén preparados 5 minutos antes de su segmento.
           </p>
         </div>
-        <button class="relative group bg-tertiary text-on-tertiary px-8 py-4 rounded-full font-button-text text-button-text uppercase tracking-widest shadow-lg shadow-tertiary/20 hover:shadow-tertiary/40 transition-all duration-300 ease-out hover:-translate-y-1 flex items-center gap-3 shrink-0">
-          <span class="material-symbols-outlined text-on-tertiary group-hover:scale-110 transition-transform">picture_as_pdf</span>
-          Imprimir como PDF
-          <div class="absolute inset-0 rounded-full bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-        </button>
+        <div class="flex items-center gap-3 shrink-0">
+          <button id="btn-add-item" class="bg-tertiary text-on-tertiary px-8 py-4 rounded-full font-button-text text-button-text uppercase tracking-widest shadow-lg shadow-tertiary/20 hover:shadow-tertiary/40 transition-all duration-300 hover:-translate-y-1 flex items-center gap-3">
+            <span class="material-symbols-outlined">add</span>
+            Agregar Suceso
+          </button>
+          <button id="btn-print-pdf" class="relative group bg-surface-container border border-tertiary/20 text-tertiary px-8 py-4 rounded-full font-button-text text-button-text uppercase tracking-widest hover:bg-tertiary/5 transition-all duration-300 flex items-center gap-3">
+            <span class="material-symbols-outlined group-hover:scale-110 transition-transform">picture_as_pdf</span>
+            Imprimir como PDF
+          </button>
+        </div>
       </div>
 
       <!-- Progress Overview -->
@@ -236,15 +241,15 @@ tailwind.config = {
         <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
           <div class="flex flex-col gap-2">
             <span class="font-label-gold text-label-gold text-on-surface-variant">DURACIÓN TOTAL</span>
-            <span class="font-headline-lg text-headline-lg text-tertiary">03:45:00</span>
+            <span id="stat-total-duration" class="font-headline-lg text-headline-lg text-tertiary">--</span>
           </div>
           <div class="flex flex-col gap-2">
             <span class="font-label-gold text-label-gold text-on-surface-variant">HORA DE INICIO</span>
-            <span class="font-headline-lg text-headline-lg text-on-surface">19:00</span>
+            <span id="stat-start-time" class="font-headline-lg text-headline-lg text-on-surface">--</span>
           </div>
           <div class="flex flex-col gap-2">
             <span class="font-label-gold text-label-gold text-on-surface-variant">HORA DE FINALIZACIÓN</span>
-            <span class="font-headline-lg text-headline-lg text-on-surface">22:45</span>
+            <span id="stat-end-time" class="font-headline-lg text-headline-lg text-on-surface">--</span>
           </div>
         </div>
       </div>
@@ -252,195 +257,10 @@ tailwind.config = {
       <!-- Timeline / Script List -->
       <div class="flex flex-col gap-8 w-full relative">
         <div class="absolute left-[88px] top-4 bottom-4 w-px bg-tertiary/20 hidden md:block z-0"></div>
-
-        <!-- Segment: Welcome Toast -->
-        <div class="group relative flex flex-col md:flex-row gap-6 md:gap-12 w-full bg-surface-container hover:bg-surface-container-high transition-colors p-6 rounded-2xl md:p-0 md:bg-transparent md:hover:bg-transparent shadow-sm md:shadow-none z-10">
-          <div class="md:w-32 flex md:justify-end shrink-0 pt-2 relative">
-            <div class="absolute -right-[21px] top-4 w-3 h-3 rounded-full bg-tertiary shadow-[0_0_10px_rgba(233,195,73,0.5)] hidden md:block ring-4 ring-surface"></div>
-            <span class="font-headline-md text-headline-md text-tertiary">19:30</span>
-          </div>
-          <div class="flex-1 flex flex-col gap-4 bg-surface-container-low rounded-2xl p-8 shadow-md border-l-4 border-l-transparent group-hover:border-l-tertiary transition-all duration-300">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-surface-container-highest pb-4">
-              <div>
-                <span class="font-label-gold text-label-gold text-secondary tracking-widest block mb-1">PARTE I</span>
-                <h2 class="font-headline-lg text-headline-lg text-on-surface">Brindis de Bienvenida</h2>
-              </div>
-              <div class="flex items-center gap-2 bg-surface-container px-4 py-2 rounded-full border border-surface-container-highest">
-                <span class="material-symbols-outlined text-on-surface-variant text-sm">schedule</span>
-                <span class="font-button-text text-button-text text-on-surface-variant">15 MIN</span>
-              </div>
-            </div>
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-4">
-              <div class="lg:col-span-8 flex flex-col gap-4">
-                <span class="font-label-gold text-label-gold text-on-surface-variant uppercase">Guion del MC</span>
-                <div class="p-6 bg-surface-container rounded-xl shadow-inner border border-surface-container-highest relative overflow-hidden">
-                  <div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary/50"></div>
-                  <p class="font-body-lg text-body-lg text-on-surface italic leading-relaxed">
-                    "Buenas noches, distinguidos invitados, colegas y amigos. Bienvenidos a la Gala Anual del Solsticio de Verano. Esta noche, nos reunimos no solo para celebrar otro año de crecimiento sin precedentes, sino para honrar el espíritu colectivo que hace que nuestra comunidad sea tan extraordinaria..."
-                  </p>
-                </div>
-              </div>
-              <div class="lg:col-span-4 flex flex-col gap-4">
-                <span class="font-label-gold text-label-gold text-on-surface-variant uppercase">Notas Técnicas</span>
-                <ul class="flex flex-col gap-3">
-                  <li class="flex items-start gap-3 bg-surface p-3 rounded-lg shadow-sm border border-surface-container">
-                    <span class="material-symbols-outlined text-tertiary text-[20px] mt-0.5" style="font-variation-settings: 'FILL' 1;">lightbulb</span>
-                    <span class="font-body-md text-body-md text-on-surface-variant text-sm">Luces de la sala se atenúan al 20%</span>
-                  </li>
-                  <li class="flex items-start gap-3 bg-surface p-3 rounded-lg shadow-sm border border-surface-container">
-                    <span class="material-symbols-outlined text-secondary text-[20px] mt-0.5" style="font-variation-settings: 'FILL' 1;">music_note</span>
-                    <span class="font-body-md text-body-md text-on-surface-variant text-sm">Pista de entrada: 'Cinematic Swell' se desvanece en 5s</span>
-                  </li>
-                  <li class="flex items-start gap-3 bg-surface p-3 rounded-lg shadow-sm border border-surface-container">
-                    <span class="material-symbols-outlined text-error text-[20px] mt-0.5" style="font-variation-settings: 'FILL' 1;">mic</span>
-                    <span class="font-body-md text-body-md text-on-surface-variant text-sm">Micrófono 1 (Podio) ACTIVO</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
+        <div id="program-list" class="flex flex-col gap-8 w-full relative z-10">
+          <p class="text-on-surface-variant py-10">Cargando programa…</p>
         </div>
-
-        <!-- Segment: Dinner Service -->
-        <div class="group relative flex flex-col md:flex-row gap-6 md:gap-12 w-full bg-surface-container hover:bg-surface-container-high transition-colors p-6 rounded-2xl md:p-0 md:bg-transparent md:hover:bg-transparent shadow-sm md:shadow-none z-10">
-          <div class="md:w-32 flex md:justify-end shrink-0 pt-2 relative">
-            <div class="absolute -right-[21px] top-4 w-3 h-3 rounded-full bg-surface-container-highest border-2 border-tertiary/50 hidden md:block ring-4 ring-surface"></div>
-            <span class="font-headline-md text-headline-md text-on-surface-variant">19:45</span>
-          </div>
-          <div class="flex-1 flex flex-col gap-4 bg-surface-container-lowest rounded-2xl p-6 shadow-sm border border-surface-container opacity-80 hover:opacity-100 transition-opacity">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div class="flex items-center gap-4">
-                <span class="material-symbols-outlined text-on-surface-variant text-3xl">restaurant</span>
-                <h2 class="font-headline-md text-headline-md text-on-surface">Inicio del Servicio de Cena</h2>
-              </div>
-              <div class="flex items-center gap-2 px-4 py-2 rounded-full border border-surface-container-highest">
-                <span class="material-symbols-outlined text-on-surface-variant text-sm">schedule</span>
-                <span class="font-button-text text-button-text text-on-surface-variant">60 MIN</span>
-              </div>
-            </div>
-            <p class="font-body-md text-body-md text-on-surface-variant mt-2">
-              No requiere acción del MC. El cuarteto de cuerdas ambiental toca. Asegúrese de que las mesas VIP sean servidas primero.
-            </p>
-          </div>
-        </div>
-
-        <!-- Segment: Award Ceremony -->
-        <div class="group relative flex flex-col md:flex-row gap-6 md:gap-12 w-full bg-surface-container hover:bg-surface-container-high transition-colors p-6 rounded-2xl md:p-0 md:bg-transparent md:hover:bg-transparent shadow-sm md:shadow-none z-10">
-          <div class="md:w-32 flex md:justify-end shrink-0 pt-2 relative">
-            <div class="absolute -right-[21px] top-4 w-3 h-3 rounded-full bg-tertiary shadow-[0_0_10px_rgba(233,195,73,0.5)] hidden md:block ring-4 ring-surface"></div>
-            <span class="font-headline-md text-headline-md text-tertiary">20:45</span>
-          </div>
-          <div class="flex-1 flex flex-col gap-4 bg-surface-container-low rounded-2xl p-8 shadow-md border-l-4 border-l-transparent group-hover:border-l-tertiary transition-all duration-300">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-surface-container-highest pb-4">
-              <div>
-                <span class="font-label-gold text-label-gold text-secondary tracking-widest block mb-1">PARTE II</span>
-                <h2 class="font-headline-lg text-headline-lg text-on-surface">Premios a la Excelencia</h2>
-              </div>
-              <div class="flex items-center gap-2 bg-surface-container px-4 py-2 rounded-full border border-surface-container-highest">
-                <span class="material-symbols-outlined text-on-surface-variant text-sm">schedule</span>
-                <span class="font-button-text text-button-text text-on-surface-variant">45 MIN</span>
-              </div>
-            </div>
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-4">
-              <div class="lg:col-span-8 flex flex-col gap-4">
-                <span class="font-label-gold text-label-gold text-on-surface-variant uppercase">Guion del MC</span>
-                <div class="p-6 bg-surface-container rounded-xl shadow-inner border border-surface-container-highest relative overflow-hidden">
-                  <div class="absolute left-0 top-0 bottom-0 w-1 bg-tertiary"></div>
-                  <p class="font-body-lg text-body-lg text-on-surface italic leading-relaxed mb-4">
-                    "Espero que todos hayan disfrutado de la cena. Ahora, pasamos al momento más destacado de la noche. Es un profundo honor para mí presentar el Premio Pinnacle a la Trayectoria..."
-                  </p>
-                  <p class="font-body-md text-body-md text-secondary border-t border-surface-container-highest pt-4 mt-2">
-                    [PAUSA PARA APLAUSOS. SEÑALAR HACIA EL LADO IZQUIERDO DEL ESCENARIO PARA LA APROXIMACIÓN DEL GANADOR]
-                  </p>
-                </div>
-                <!-- Awardees List -->
-                <div class="mt-4 flex flex-col gap-2">
-                  <span class="font-label-gold text-label-gold text-on-surface-variant uppercase mb-2">Secuencia de Premios</span>
-                  <div class="flex items-center justify-between bg-surface p-4 rounded-lg border border-surface-container-highest">
-                    <div class="flex items-center gap-4">
-                      <div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-button-text text-button-text">1</div>
-                      <span class="font-body-md text-body-md text-on-surface font-semibold">Trofeo de Innovación</span>
-                    </div>
-                    <span class="font-body-md text-body-md text-on-surface-variant">Dr. E. Vance</span>
-                  </div>
-                  <div class="flex items-center justify-between bg-surface p-4 rounded-lg border border-surface-container-highest">
-                    <div class="flex items-center gap-4">
-                      <div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-on-secondary-container font-button-text text-button-text">2</div>
-                      <span class="font-body-md text-body-md text-on-surface font-semibold">Premio Pinnacle</span>
-                    </div>
-                    <span class="font-body-md text-body-md text-on-surface-variant">Sarah Jenkins</span>
-                  </div>
-                </div>
-              </div>
-              <div class="lg:col-span-4 flex flex-col gap-4">
-                <span class="font-label-gold text-label-gold text-on-surface-variant uppercase">Notas Técnicas</span>
-                <ul class="flex flex-col gap-3">
-                  <li class="flex items-start gap-3 bg-surface p-3 rounded-lg shadow-sm border border-surface-container">
-                    <span class="material-symbols-outlined text-tertiary text-[20px] mt-0.5" style="font-variation-settings: 'FILL' 1;">lightbulb</span>
-                    <span class="font-body-md text-body-md text-on-surface-variant text-sm">Foco 1 en el Podio, Foco 2 en el Ganador</span>
-                  </li>
-                  <li class="flex items-start gap-3 bg-surface p-3 rounded-lg shadow-sm border border-surface-container">
-                    <span class="material-symbols-outlined text-secondary text-[20px] mt-0.5" style="font-variation-settings: 'FILL' 1;">music_note</span>
-                    <span class="font-body-md text-body-md text-on-surface-variant text-sm">Reproducir efecto musical 'Triumph' (0:15s) para cada entrada</span>
-                  </li>
-                  <li class="flex items-start gap-3 bg-surface p-3 rounded-lg shadow-sm border border-surface-container">
-                    <span class="material-symbols-outlined text-secondary-fixed-dim text-[20px] mt-0.5" style="font-variation-settings: 'FILL' 1;">tv</span>
-                    <span class="font-body-md text-body-md text-on-surface-variant text-sm">Pantallas: Mostrar Nombre del Ganador y Logo de la Empresa</span>
-                  </li>
-                </ul>
-                <div class="mt-4 rounded-xl overflow-hidden shadow-md border border-surface-container-highest relative h-48 w-full group">
-                  <div class="bg-cover bg-center w-full h-full transition-transform duration-700 group-hover:scale-105" style="background-image: url('assets/programa/escenario-a.jpg')"></div>
-                  <div class="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent"></div>
-                  <span class="absolute bottom-3 left-4 font-label-gold text-label-gold text-on-surface drop-shadow-md">DISTRIBUCIÓN DEL ESCENARIO A</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Segment: Closing Remarks -->
-        <div class="group relative flex flex-col md:flex-row gap-6 md:gap-12 w-full bg-surface-container hover:bg-surface-container-high transition-colors p-6 rounded-2xl md:p-0 md:bg-transparent md:hover:bg-transparent shadow-sm md:shadow-none z-10">
-          <div class="md:w-32 flex md:justify-end shrink-0 pt-2 relative">
-            <div class="absolute -right-[21px] top-4 w-3 h-3 rounded-full bg-tertiary shadow-[0_0_10px_rgba(233,195,73,0.5)] hidden md:block ring-4 ring-surface"></div>
-            <span class="font-headline-md text-headline-md text-tertiary">22:30</span>
-          </div>
-          <div class="flex-1 flex flex-col gap-4 bg-surface-container-low rounded-2xl p-8 shadow-md border-l-4 border-l-transparent group-hover:border-l-tertiary transition-all duration-300">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-surface-container-highest pb-4">
-              <div>
-                <span class="font-label-gold text-label-gold text-secondary tracking-widest block mb-1">PARTE III</span>
-                <h2 class="font-headline-lg text-headline-lg text-on-surface">Palabras de Clausura</h2>
-              </div>
-              <div class="flex items-center gap-2 bg-surface-container px-4 py-2 rounded-full border border-surface-container-highest">
-                <span class="material-symbols-outlined text-on-surface-variant text-sm">schedule</span>
-                <span class="font-button-text text-button-text text-on-surface-variant">15 MIN</span>
-              </div>
-            </div>
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-4">
-              <div class="lg:col-span-8 flex flex-col gap-4">
-                <span class="font-label-gold text-label-gold text-on-surface-variant uppercase">Guion del MC</span>
-                <div class="p-6 bg-surface-container rounded-xl shadow-inner border border-surface-container-highest relative overflow-hidden">
-                  <div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary/50"></div>
-                  <p class="font-body-lg text-body-lg text-on-surface italic leading-relaxed">
-                    "A medida que nuestra velada llega a su fin, quiero agradecer a cada uno de ustedes por hacer de esta Gala algo espectacular. La fiesta posterior comienza de inmediato en el Salón Zafiro al final del pasillo. ¡Por favor viajen seguros y buenas noches!"
-                  </p>
-                </div>
-              </div>
-              <div class="lg:col-span-4 flex flex-col gap-4">
-                <span class="font-label-gold text-label-gold text-on-surface-variant uppercase">Notas Técnicas</span>
-                <ul class="flex flex-col gap-3">
-                  <li class="flex items-start gap-3 bg-surface p-3 rounded-lg shadow-sm border border-surface-container">
-                    <span class="material-symbols-outlined text-tertiary text-[20px] mt-0.5" style="font-variation-settings: 'FILL' 1;">lightbulb</span>
-                    <span class="font-body-md text-body-md text-on-surface-variant text-sm">Las luces de la sala suben lentamente al 80%</span>
-                  </li>
-                  <li class="flex items-start gap-3 bg-surface p-3 rounded-lg shadow-sm border border-surface-container">
-                    <span class="material-symbols-outlined text-secondary text-[20px] mt-0.5" style="font-variation-settings: 'FILL' 1;">music_note</span>
-                    <span class="font-body-md text-body-md text-on-surface-variant text-sm">Música de salida animada: 'Midnight City'</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
+      </div>
 
       </div>
     </div>
@@ -455,6 +275,287 @@ document.addEventListener('DOMContentLoaded', function () {
     try { localStorage.setItem('galaSidebarCollapsed', isCollapsed ? 'true' : 'false'); } catch (e) {}
   });
 });
+</script>
+
+<!-- Modal: Agregar / Editar Suceso -->
+<div id="item-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
+  <div id="item-modal-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+  <div class="relative w-full max-w-lg bg-surface-container-low rounded-2xl shadow-2xl border border-tertiary/10 p-8 max-h-[90vh] overflow-y-auto">
+    <div class="flex items-center justify-between mb-6">
+      <h2 id="item-modal-title" class="font-headline-lg text-headline-lg text-on-surface">Agregar Suceso</h2>
+      <button id="item-modal-close" class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors">close</button>
+    </div>
+    <form id="item-form" class="flex flex-col gap-4">
+      <input id="item-id" type="hidden"/>
+      <div class="flex flex-col gap-1">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="item-title">Título *</label>
+        <input id="item-title" required="" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex flex-col gap-1">
+          <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="item-time">Hora</label>
+          <input id="item-time" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="time"/>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="item-duration">Duración (min)</label>
+          <input id="item-duration" min="0" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="number"/>
+        </div>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="item-part-label">Parte (opcional)</label>
+        <input id="item-part-label" placeholder="PARTE I, PARTE II..." class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="item-mc-script">Guion del MC</label>
+        <textarea id="item-mc-script" rows="4" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary resize-none"></textarea>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="item-technical-notes">Notas técnicas (una por línea)</label>
+        <textarea id="item-technical-notes" rows="3" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary resize-none"></textarea>
+      </div>
+
+      <p id="item-form-error" class="hidden text-error text-sm"></p>
+
+      <div class="flex justify-between items-center gap-3 mt-2">
+        <button type="button" id="item-delete-btn" class="hidden px-4 py-3 rounded-lg text-error hover:bg-error/10 transition-colors font-button-text uppercase tracking-wider text-sm flex items-center gap-2">
+          <span class="material-symbols-outlined text-[18px]">delete</span>Eliminar
+        </button>
+        <div class="flex justify-end gap-3 flex-1">
+          <button type="button" id="item-modal-cancel" class="px-6 py-3 rounded-lg border border-tertiary/20 text-on-surface-variant hover:bg-surface-container transition-colors font-button-text uppercase tracking-wider text-sm">Cancelar</button>
+          <button type="submit" class="px-8 py-3 rounded-lg bg-tertiary text-on-tertiary font-button-text uppercase tracking-wider text-sm hover:brightness-110 transition-all">Guardar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script type="module">
+  const listEl = document.getElementById("program-list");
+  const modal = document.getElementById("item-modal");
+  const form = document.getElementById("item-form");
+  const formError = document.getElementById("item-form-error");
+  const deleteBtn = document.getElementById("item-delete-btn");
+
+  let currentEventId = null;
+  let allItems = [];
+
+  function escapeHtml(str) {
+    if (str === null || str === undefined) return "";
+    return String(str).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  function formatTime(t) {
+    if (!t) return "--:--";
+    return t.slice(0, 5);
+  }
+
+  function addMinutes(timeStr, minutes) {
+    const [h, m] = timeStr.split(":").map(Number);
+    const total = h * 60 + m + minutes;
+    const hh = Math.floor((total / 60) % 24);
+    const mm = total % 60;
+    return `${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
+  }
+
+  function renderStats() {
+    if (allItems.length === 0) {
+      document.getElementById("stat-total-duration").textContent = "--";
+      document.getElementById("stat-start-time").textContent = "--";
+      document.getElementById("stat-end-time").textContent = "--";
+      return;
+    }
+    const withTime = allItems.filter(i => i.start_time).sort((a, b) => a.start_time.localeCompare(b.start_time));
+    const totalMinutes = allItems.reduce((sum, i) => sum + (Number(i.duration_minutes) || 0), 0);
+    const hh = Math.floor(totalMinutes / 60);
+    const mm = totalMinutes % 60;
+    document.getElementById("stat-total-duration").textContent = `${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}:00`;
+
+    if (withTime.length > 0) {
+      const first = withTime[0];
+      const last = withTime[withTime.length - 1];
+      document.getElementById("stat-start-time").textContent = formatTime(first.start_time);
+      document.getElementById("stat-end-time").textContent = addMinutes(formatTime(last.start_time), Number(last.duration_minutes) || 0);
+    } else {
+      document.getElementById("stat-start-time").textContent = "--";
+      document.getElementById("stat-end-time").textContent = "--";
+    }
+  }
+
+  function renderList() {
+    if (allItems.length === 0) {
+      listEl.innerHTML = `<p class="text-on-surface-variant py-10">No hay sucesos todavía. Da clic en "Agregar Suceso" para crear el primero.</p>`;
+      return;
+    }
+    const sorted = [...allItems].sort((a, b) => (a.start_time || "").localeCompare(b.start_time || "") || (a.sort_order || 0) - (b.sort_order || 0));
+
+    listEl.innerHTML = sorted.map(item => {
+      const notes = (item.technical_notes || "").split("\n").map(l => l.trim()).filter(Boolean);
+      return `
+        <div class="group relative flex flex-col md:flex-row gap-6 md:gap-12 w-full bg-surface-container hover:bg-surface-container-high transition-colors p-6 rounded-2xl md:p-0 md:bg-transparent md:hover:bg-transparent shadow-sm md:shadow-none" data-id="${item.id}">
+          <div class="md:w-32 flex md:justify-end shrink-0 pt-2 relative">
+            <div class="absolute -right-[21px] top-4 w-3 h-3 rounded-full bg-tertiary shadow-[0_0_10px_rgba(233,195,73,0.5)] hidden md:block ring-4 ring-surface"></div>
+            <span class="font-headline-md text-headline-md text-tertiary">${formatTime(item.start_time)}</span>
+          </div>
+          <div class="flex-1 md:pl-12">
+            <div class="bg-surface-container-low p-8 rounded-xl shadow-md group-hover:-translate-y-1 transition-transform duration-300 relative overflow-hidden">
+              <div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-tertiary to-transparent opacity-50"></div>
+              <div class="flex flex-col gap-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-surface-container-highest pb-4">
+                  <div>
+                    ${item.part_label ? `<span class="font-label-gold text-label-gold text-secondary tracking-widest block mb-1">${escapeHtml(item.part_label)}</span>` : ""}
+                    <h2 class="font-headline-lg text-headline-lg text-on-surface">${escapeHtml(item.title)}</h2>
+                  </div>
+                  <div class="flex items-center gap-2 shrink-0">
+                    ${item.duration_minutes ? `<div class="flex items-center gap-2 bg-surface-container px-4 py-2 rounded-full border border-surface-container-highest">
+                      <span class="material-symbols-outlined text-on-surface-variant text-sm">schedule</span>
+                      <span class="font-button-text text-button-text text-on-surface-variant">${item.duration_minutes} MIN</span>
+                    </div>` : ""}
+                    <button class="btn-edit-item p-2 text-on-surface-variant hover:text-tertiary transition-colors opacity-0 group-hover:opacity-100"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+                    <button class="btn-delete-item p-2 text-on-surface-variant hover:text-error transition-colors opacity-0 group-hover:opacity-100"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+                  </div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-4">
+                  <div class="${notes.length ? 'lg:col-span-8' : 'lg:col-span-12'} flex flex-col gap-4">
+                    ${item.mc_script ? `
+                      <span class="font-label-gold text-label-gold text-on-surface-variant uppercase">Guion del MC</span>
+                      <div class="p-6 bg-surface-container rounded-xl shadow-inner border border-surface-container-highest relative overflow-hidden">
+                        <div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary/50"></div>
+                        <p class="font-body-lg text-body-lg text-on-surface italic leading-relaxed">"${escapeHtml(item.mc_script)}"</p>
+                      </div>` : ""}
+                  </div>
+                  ${notes.length ? `
+                    <div class="lg:col-span-4 flex flex-col gap-4">
+                      <span class="font-label-gold text-label-gold text-on-surface-variant uppercase">Notas Técnicas</span>
+                      <ul class="flex flex-col gap-3">
+                        ${notes.map(n => `<li class="flex items-start gap-3 bg-surface p-3 rounded-lg shadow-sm border border-surface-container">
+                          <span class="material-symbols-outlined text-tertiary text-[20px] mt-0.5">lightbulb</span>
+                          <span class="font-body-md text-body-md text-on-surface-variant text-sm">${escapeHtml(n)}</span>
+                        </li>`).join("")}
+                      </ul>
+                    </div>` : ""}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }).join("");
+  }
+
+  async function loadItems() {
+    const { data, error } = await window.supabaseClient
+      .from("program_items")
+      .select("*")
+      .eq("event_id", currentEventId);
+    if (error) {
+      listEl.innerHTML = `<p class="text-error py-10">Error al cargar el programa: ${escapeHtml(error.message)}</p>`;
+      return;
+    }
+    allItems = data || [];
+    renderList();
+    renderStats();
+  }
+
+  function openModal(mode, item) {
+    formError.classList.add("hidden");
+    document.getElementById("item-modal-title").textContent = mode === "edit" ? "Editar Suceso" : "Agregar Suceso";
+    document.getElementById("item-id").value = item ? item.id : "";
+    document.getElementById("item-title").value = item ? item.title || "" : "";
+    document.getElementById("item-time").value = item ? (item.start_time || "").slice(0, 5) : "";
+    document.getElementById("item-duration").value = item ? item.duration_minutes || "" : "";
+    document.getElementById("item-part-label").value = item ? item.part_label || "" : "";
+    document.getElementById("item-mc-script").value = item ? item.mc_script || "" : "";
+    document.getElementById("item-technical-notes").value = item ? item.technical_notes || "" : "";
+    deleteBtn.classList.toggle("hidden", mode !== "edit");
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+  }
+
+  function closeModal() {
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    form.reset();
+  }
+
+  document.getElementById("btn-add-item").addEventListener("click", () => openModal("add", null));
+  document.getElementById("btn-print-pdf").addEventListener("click", () => window.print());
+  document.getElementById("item-modal-close").addEventListener("click", closeModal);
+  document.getElementById("item-modal-cancel").addEventListener("click", closeModal);
+  document.getElementById("item-modal-backdrop").addEventListener("click", closeModal);
+
+  listEl.addEventListener("click", (e) => {
+    const card = e.target.closest("[data-id]");
+    if (!card) return;
+    const item = allItems.find(i => String(i.id) === card.dataset.id);
+
+    if (e.target.closest(".btn-edit-item")) {
+      openModal("edit", item);
+    }
+    if (e.target.closest(".btn-delete-item")) {
+      if (!confirm(`¿Eliminar "${item.title}"? Esta acción no se puede deshacer.`)) return;
+      window.supabaseClient.from("program_items").delete().eq("id", item.id).then(({ error }) => {
+        if (error) {
+          alert("No se pudo eliminar: " + error.message);
+        } else {
+          loadItems();
+        }
+      });
+    }
+  });
+
+  deleteBtn.addEventListener("click", async () => {
+    const id = document.getElementById("item-id").value;
+    if (!id) return;
+    if (!confirm("¿Eliminar este suceso? Esta acción no se puede deshacer.")) return;
+    const { error } = await window.supabaseClient.from("program_items").delete().eq("id", id);
+    if (error) {
+      alert("No se pudo eliminar: " + error.message);
+      return;
+    }
+    closeModal();
+    await loadItems();
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    formError.classList.add("hidden");
+    const id = document.getElementById("item-id").value;
+    const payload = {
+      event_id: currentEventId,
+      title: document.getElementById("item-title").value.trim(),
+      start_time: document.getElementById("item-time").value || null,
+      duration_minutes: document.getElementById("item-duration").value ? Number(document.getElementById("item-duration").value) : null,
+      part_label: document.getElementById("item-part-label").value.trim() || null,
+      mc_script: document.getElementById("item-mc-script").value.trim() || null,
+      technical_notes: document.getElementById("item-technical-notes").value.trim() || null
+    };
+
+    let error;
+    if (id) {
+      ({ error } = await window.supabaseClient.from("program_items").update(payload).eq("id", id));
+    } else {
+      payload.sort_order = allItems.length + 1;
+      ({ error } = await window.supabaseClient.from("program_items").insert(payload));
+    }
+
+    if (error) {
+      formError.textContent = error.message;
+      formError.classList.remove("hidden");
+      return;
+    }
+    closeModal();
+    await loadItems();
+  });
+
+  (async function init() {
+    const auth = await window.requireAuth();
+    if (!auth) return;
+
+    const currentEvent = await window.requireEvent();
+    if (!currentEvent) return;
+
+    currentEventId = currentEvent.id;
+    await loadItems();
+  })();
 </script>
 </body>
 </html>
