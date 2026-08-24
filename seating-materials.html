@@ -24,7 +24,7 @@
 </style>
 
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Gala ERP — Asientos/Materiales</title>
+<title>Gala ERP — Asientos</title>
 <style>
   @layer base {
     html, body { margin: 0; padding: 0; }
@@ -165,7 +165,7 @@ tailwind.config = {
       <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="proveedores" href="proveedores.html"><span class="material-symbols-outlined mr-3 nav-icon">business_center</span><span class="sidebar-label">Proveedores</span></a>
       <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="tareas" href="tareas.html"><span class="material-symbols-outlined mr-3 nav-icon">check_circle</span><span class="sidebar-label">Tareas</span></a>
       <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="programa" href="programa.html"><span class="material-symbols-outlined mr-3 nav-icon">list_alt</span><span class="sidebar-label">Programa</span></a>
-      <a aria-current="page" class="flex items-center py-3 transition-all border-l-4 border-tertiary bg-white/5 text-tertiary font-bold px-[16px]" data-path="seating-materials" href="seating-materials.html"><span class="material-symbols-outlined mr-3 nav-icon">chair</span><span class="sidebar-label">Asientos/Materiales</span></a>
+      <a aria-current="page" class="flex items-center py-3 transition-all border-l-4 border-tertiary bg-white/5 text-tertiary font-bold px-[16px]" data-path="seating-materials" href="seating-materials.html"><span class="material-symbols-outlined mr-3 nav-icon">chair</span><span class="sidebar-label">Asientos</span></a>
       <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="post-wedding" href="post-wedding.html"><span class="material-symbols-outlined mr-3 nav-icon">celebration</span><span class="sidebar-label">Post-Boda</span></a>
     </nav>
     <div class="px-8 mt-auto pt-8 sidebar-cta">
@@ -208,307 +208,473 @@ tailwind.config = {
   </header>
 
   <main class="flex-1 pt-20 bg-on-surface-variant/5 min-h-screen relative">
-    <div class="flex flex-col w-full">
+    <div class="flex flex-col w-full h-[calc(100vh-80px)]">
 
-      <!-- Top Navigation & Actions -->
-      <div class="flex items-center justify-between px-container-padding py-6 bg-surface z-10 shadow-md">
-        <div class="flex items-center gap-8">
-          <button class="flex items-center gap-2 font-button-text text-button-text text-tertiary transition-colors opacity-100" id="btn-seating">
-            <span class="material-symbols-outlined text-[20px]">architecture</span>
-            PLANO DE ASIENTOS
-          </button>
-          <button class="flex items-center gap-2 font-button-text text-button-text text-on-surface-variant hover:text-tertiary transition-colors opacity-60 hover:opacity-100" id="btn-materials">
-            <span class="material-symbols-outlined text-[20px]">inventory_2</span>
-            MATERIALES E INVENTARIO
-          </button>
+      <!-- Toolbar -->
+      <div class="flex items-center justify-between px-container-padding py-4 bg-surface z-10 shadow-md flex-wrap gap-3">
+        <div>
+          <h1 class="font-headline-lg text-2xl text-on-surface">Plano de Asientos</h1>
+          <p class="text-on-surface-variant text-sm">Arrastra los elementos para acomodarlos. Da clic para editar, asignar invitados o eliminar.</p>
         </div>
-        <div class="flex items-center gap-4">
-          <button class="px-6 py-3 bg-secondary-container text-on-secondary-container font-button-text text-button-text rounded shadow-sm hover:brightness-110 transition-all flex items-center gap-2">
-            <span class="material-symbols-outlined text-[18px]">print</span>
-            EXPORTAR CAD
+        <div class="flex items-center gap-2 flex-wrap">
+          <button class="btn-add-element px-4 py-2 bg-surface-container border border-tertiary/20 text-on-surface rounded-lg text-sm hover:bg-tertiary/10 hover:text-tertiary transition-colors flex items-center gap-1.5" data-type="mesa_redonda">
+            <span class="material-symbols-outlined text-[18px]">panorama_fish_eye</span>Mesa Redonda
           </button>
-          <button class="px-6 py-3 bg-tertiary text-on-tertiary font-button-text text-button-text rounded shadow-md hover:brightness-110 transition-all flex items-center gap-2">
-            <span class="material-symbols-outlined text-[18px]">save</span>
-            GUARDAR CAMBIOS
+          <button class="btn-add-element px-4 py-2 bg-surface-container border border-tertiary/20 text-on-surface rounded-lg text-sm hover:bg-tertiary/10 hover:text-tertiary transition-colors flex items-center gap-1.5" data-type="mesa_rectangular">
+            <span class="material-symbols-outlined text-[18px]">crop_landscape</span>Mesa Rectangular
+          </button>
+          <button class="btn-add-element px-4 py-2 bg-surface-container border border-tertiary/20 text-on-surface rounded-lg text-sm hover:bg-tertiary/10 hover:text-tertiary transition-colors flex items-center gap-1.5" data-type="silla">
+            <span class="material-symbols-outlined text-[18px]">chair</span>Silla
+          </button>
+          <button class="btn-add-element px-4 py-2 bg-surface-container border border-tertiary/20 text-on-surface rounded-lg text-sm hover:bg-tertiary/10 hover:text-tertiary transition-colors flex items-center gap-1.5" data-type="mesa_novios">
+            <span class="material-symbols-outlined text-[18px]">favorite</span>Mesa de Novios
+          </button>
+          <button class="btn-add-element px-4 py-2 bg-surface-container border border-tertiary/20 text-on-surface rounded-lg text-sm hover:bg-tertiary/10 hover:text-tertiary transition-colors flex items-center gap-1.5" data-type="escenario">
+            <span class="material-symbols-outlined text-[18px]">theater_comedy</span>Escenario
+          </button>
+          <button class="btn-add-element px-4 py-2 bg-surface-container border border-tertiary/20 text-on-surface rounded-lg text-sm hover:bg-tertiary/10 hover:text-tertiary transition-colors flex items-center gap-1.5" data-type="pista_baile">
+            <span class="material-symbols-outlined text-[18px]">nightlife</span>Pista de Baile
+          </button>
+          <button class="btn-add-element px-4 py-2 bg-surface-container border border-tertiary/20 text-on-surface rounded-lg text-sm hover:bg-tertiary/10 hover:text-tertiary transition-colors flex items-center gap-1.5" data-type="cocina">
+            <span class="material-symbols-outlined text-[18px]">skillet</span>Cocina
+          </button>
+          <button class="btn-add-element px-4 py-2 bg-surface-container border border-tertiary/20 text-on-surface rounded-lg text-sm hover:bg-tertiary/10 hover:text-tertiary transition-colors flex items-center gap-1.5" data-type="banos">
+            <span class="material-symbols-outlined text-[18px]">wc</span>Baños
+          </button>
+          <button class="btn-add-element px-4 py-2 bg-surface-container border border-tertiary/20 text-on-surface rounded-lg text-sm hover:bg-tertiary/10 hover:text-tertiary transition-colors flex items-center gap-1.5" data-type="decoracion">
+            <span class="material-symbols-outlined text-[18px]">local_florist</span>Decoración
           </button>
         </div>
       </div>
 
-      <!-- Main Content Area -->
-      <div class="flex-1 relative flex flex-col p-container-padding gap-gutter">
-
-        <!-- SEATING VIEW -->
-        <div class="flex flex-1 gap-gutter h-[calc(100vh-200px)]" id="view-seating">
-          <!-- CAD Canvas Area -->
-          <div class="flex-1 relative bg-primary-container rounded-lg overflow-hidden shadow-xl flex flex-col">
-            <div class="absolute top-4 left-4 z-10 flex flex-col gap-2 bg-surface/80 backdrop-blur shadow-lg rounded p-2 text-on-surface">
-              <button class="p-2 hover:bg-white/10 rounded transition-colors text-tertiary"><span class="material-symbols-outlined">zoom_in</span></button>
-              <button class="p-2 hover:bg-white/10 rounded transition-colors text-tertiary"><span class="material-symbols-outlined">zoom_out</span></button>
-              <button class="p-2 hover:bg-white/10 rounded transition-colors text-tertiary"><span class="material-symbols-outlined">pan_tool</span></button>
-            </div>
-            <div class="absolute top-4 right-4 z-10 bg-surface/80 backdrop-blur px-4 py-2 rounded shadow-lg flex items-center gap-4">
-              <div class="flex items-center gap-2">
-                <div class="w-3 h-3 rounded-full bg-secondary"></div>
-                <span class="font-label-gold text-label-gold text-on-surface">VIP</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <div class="w-3 h-3 rounded-full bg-tertiary"></div>
-                <span class="font-label-gold text-label-gold text-on-surface">FAMILIA</span>
-              </div>
-            </div>
-            <!-- SVG Interactive Grid -->
-            <svg class="w-full h-full cursor-crosshair" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <pattern height="40" id="cad-grid" patternUnits="userSpaceOnUse" width="40">
-                  <path class="text-tertiary/10" d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" stroke-width="0.5"></path>
-                </pattern>
-                <pattern height="200" id="cad-grid-large" patternUnits="userSpaceOnUse" width="200">
-                  <rect fill="url(#cad-grid)" height="200" width="200"></rect>
-                  <path class="text-tertiary/20" d="M 200 0 L 0 0 0 200" fill="none" stroke="currentColor" stroke-width="1"></path>
-                </pattern>
-              </defs>
-              <rect fill="url(#cad-grid-large)" height="100%" width="100%"></rect>
-              <!-- Mesa 1 -->
-              <g class="hover:opacity-90 transition-opacity cursor-pointer group" transform="translate(300, 250)">
-                <circle class="text-secondary-container drop-shadow-xl" cx="0" cy="0" fill="currentColor" r="80"></circle>
-                <circle class="text-tertiary/30" cx="0" cy="0" fill="none" r="70" stroke="currentColor" stroke-dasharray="4 4" stroke-width="1"></circle>
-                <text class="text-on-secondary-container" fill="currentColor" font-family="Inter" font-size="16" font-weight="600" text-anchor="middle" x="0" y="-10">MESA 01</text>
-                <text class="text-tertiary" fill="currentColor" font-family="Inter" font-size="12" text-anchor="middle" x="0" y="15">8/10 ASIENTOS</text>
-                <circle class="text-tertiary shadow-sm" cx="0" cy="-90" fill="currentColor" r="8"></circle>
-                <circle class="text-secondary shadow-sm" cx="63" cy="-63" fill="currentColor" r="8"></circle>
-                <circle class="text-secondary shadow-sm" cx="90" cy="0" fill="currentColor" r="8"></circle>
-                <circle class="text-secondary shadow-sm" cx="63" cy="63" fill="currentColor" r="8"></circle>
-                <circle class="text-secondary shadow-sm" cx="0" cy="90" fill="currentColor" r="8"></circle>
-                <circle class="text-secondary shadow-sm" cx="-63" cy="63" fill="currentColor" r="8"></circle>
-                <circle class="text-surface shadow-sm" cx="-90" cy="0" fill="currentColor" r="8"></circle>
-                <circle class="text-secondary shadow-sm" cx="-63" cy="-63" fill="currentColor" r="8"></circle>
-              </g>
-              <!-- Mesa 2 -->
-              <g class="hover:opacity-90 transition-opacity cursor-pointer" transform="translate(600, 400)">
-                <circle class="text-secondary-container drop-shadow-xl" cx="0" cy="0" fill="currentColor" r="80"></circle>
-                <circle class="text-tertiary/30" cx="0" cy="0" fill="none" r="70" stroke="currentColor" stroke-dasharray="4 4" stroke-width="1"></circle>
-                <text class="text-on-secondary-container" fill="currentColor" font-family="Inter" font-size="16" font-weight="600" text-anchor="middle" x="0" y="-10">MESA 02</text>
-                <text class="text-tertiary" fill="currentColor" font-family="Inter" font-size="12" text-anchor="middle" x="0" y="15">4/10 ASIENTOS</text>
-                <circle class="text-secondary shadow-sm" cx="0" cy="-90" fill="currentColor" r="8"></circle>
-                <circle class="text-secondary shadow-sm" cx="63" cy="-63" fill="currentColor" r="8"></circle>
-                <circle class="text-secondary shadow-sm" cx="90" cy="0" fill="currentColor" r="8"></circle>
-                <circle class="text-secondary shadow-sm" cx="63" cy="63" fill="currentColor" r="8"></circle>
-                <circle class="text-surface shadow-sm" cx="0" cy="90" fill="currentColor" r="8"></circle>
-                <circle class="text-surface shadow-sm" cx="-63" cy="63" fill="currentColor" r="8"></circle>
-                <circle class="text-surface shadow-sm" cx="-90" cy="0" fill="currentColor" r="8"></circle>
-                <circle class="text-surface shadow-sm" cx="-63" cy="-63" fill="currentColor" r="8"></circle>
-              </g>
-              <!-- Focal Point / Escenario -->
-              <g transform="translate(450, 50)">
-                <rect class="text-surface-container-high shadow-lg" fill="currentColor" height="60" rx="4" width="300" x="-150" y="-30"></rect>
-                <text class="text-tertiary" fill="currentColor" font-family="Inter" font-size="14" font-weight="600" letter-spacing="2" text-anchor="middle" x="0" y="5">MESA PRESIDENCIAL / ESCENARIO</text>
-              </g>
-            </svg>
-          </div>
-
-          <!-- Sidebar: Unassigned Guests -->
-          <div class="w-80 bg-surface-container flex flex-col shadow-lg rounded-lg overflow-hidden">
-            <div class="p-6 bg-surface-container-high shadow-sm z-10 flex flex-col gap-4">
-              <h2 class="font-headline-md text-headline-md text-on-surface flex items-center justify-between">
-                Sin Asignar
-                <span class="px-2 py-1 bg-tertiary/10 text-tertiary font-label-gold text-label-gold rounded-full">24</span>
-              </h2>
-              <div class="relative">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
-                <input class="w-full bg-surface py-2 pl-10 pr-4 rounded text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none shadow-inner" placeholder="Buscar invitados..." type="text"/>
-              </div>
-            </div>
-            <div class="flex-1 overflow-y-auto p-4 flex flex-col gap-2">
-              <div class="p-4 bg-surface rounded shadow-sm hover:shadow-md transition-shadow cursor-grab active:cursor-grabbing flex items-center justify-between group">
-                <div class="flex flex-col">
-                  <span class="font-body-md text-body-md text-on-surface font-medium">Eleanor Vance</span>
-                  <span class="font-label-gold text-label-gold text-on-surface-variant mt-1">ACOMPAÑANTE: SÍ</span>
-                </div>
-                <span class="material-symbols-outlined text-on-surface-variant group-hover:text-tertiary transition-colors">drag_indicator</span>
-              </div>
-              <div class="p-4 bg-surface rounded shadow-sm hover:shadow-md transition-shadow cursor-grab active:cursor-grabbing flex items-center justify-between group">
-                <div class="flex flex-col">
-                  <span class="font-body-md text-body-md text-on-surface font-medium text-tertiary">Arthur Pendelton</span>
-                  <span class="font-label-gold text-label-gold text-on-surface-variant mt-1">VIP · DIETA: V (VEGANO)</span>
-                </div>
-                <span class="material-symbols-outlined text-on-surface-variant group-hover:text-tertiary transition-colors">drag_indicator</span>
-              </div>
-              <div class="p-4 bg-surface rounded shadow-sm hover:shadow-md transition-shadow cursor-grab active:cursor-grabbing flex items-center justify-between group">
-                <div class="flex flex-col">
-                  <span class="font-body-md text-body-md text-on-surface font-medium">Beatrice DuBois</span>
-                  <span class="font-label-gold text-label-gold text-on-surface-variant mt-1">FAMILIA</span>
-                </div>
-                <span class="material-symbols-outlined text-on-surface-variant group-hover:text-tertiary transition-colors">drag_indicator</span>
-              </div>
-              <div class="p-4 bg-surface rounded shadow-sm hover:shadow-md transition-shadow cursor-grab active:cursor-grabbing flex items-center justify-between group opacity-60">
-                <div class="flex flex-col">
-                  <span class="font-body-md text-body-md text-on-surface font-medium">Charles Montgomery</span>
-                  <span class="font-label-gold text-label-gold text-error mt-1">CONFIRMACIÓN PENDIENTE</span>
-                </div>
-                <span class="material-symbols-outlined text-on-surface-variant group-hover:text-tertiary transition-colors">drag_indicator</span>
-              </div>
-            </div>
+      <!-- Main Area: Canvas + Sidebar de invitados -->
+      <div class="flex-1 flex overflow-hidden">
+        <!-- Canvas -->
+        <div id="canvas-wrap" class="flex-1 overflow-auto relative bg-primary-container p-8">
+          <div id="canvas" class="relative" style="width: 1200px; height: 900px; background-image: radial-gradient(circle, rgba(233,195,73,0.15) 1px, transparent 1px); background-size: 40px 40px;">
+            <p id="canvas-empty-msg" class="hidden absolute inset-0 flex items-center justify-center text-on-surface-variant">Agrega tu primer elemento desde la barra de arriba.</p>
           </div>
         </div>
 
-        <!-- MATERIALS VIEW (oculta por defecto) -->
-        <div class="hidden flex-1 flex flex-col bg-surface-container rounded-lg shadow-xl overflow-hidden" id="view-materials">
-          <div class="p-6 bg-surface-container-high shadow-sm z-10 flex items-center justify-between">
-            <h2 class="font-headline-md text-headline-md text-on-surface">Inventario del Evento</h2>
-            <div class="flex gap-4">
-              <div class="relative">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">filter_list</span>
-                <select class="appearance-none bg-surface py-2 pl-10 pr-10 rounded text-body-md text-on-surface focus:outline-none shadow-sm cursor-pointer">
-                  <option>Todas las Categorías</option>
-                  <option>Iluminación</option>
-                  <option>Decoración</option>
-                  <option>Floral</option>
-                </select>
-                <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px] pointer-events-none">expand_more</span>
-              </div>
-              <button class="px-4 py-2 bg-primary-container text-tertiary font-button-text text-button-text rounded shadow-sm hover:brightness-110 transition-all flex items-center gap-2">
-                <span class="material-symbols-outlined text-[18px]">add</span>
-                AGREGAR ARTÍCULO
-              </button>
+        <!-- Sidebar: Invitados sin asignar -->
+        <div class="w-80 bg-surface-container flex flex-col shadow-lg shrink-0">
+          <div class="p-6 bg-surface-container-high shadow-sm z-10 flex flex-col gap-4">
+            <h2 class="font-headline-md text-headline-md text-on-surface flex items-center justify-between">
+              Sin Asignar
+              <span id="unassigned-count" class="px-2 py-1 bg-tertiary/10 text-tertiary font-label-gold text-label-gold rounded-full">0</span>
+            </h2>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+              <input id="guest-search-sidebar" class="w-full bg-surface py-2 pl-10 pr-4 rounded text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none shadow-inner" placeholder="Buscar invitados..." type="text"/>
             </div>
           </div>
-          <div class="flex-1 overflow-auto">
-            <table class="w-full text-left border-collapse">
-              <thead>
-                <tr class="bg-primary-container shadow-sm sticky top-0 z-10">
-                  <th class="p-6 font-label-gold text-label-gold text-tertiary">DESCRIPCIÓN</th>
-                  <th class="p-6 font-label-gold text-label-gold text-tertiary">CATEGORÍA</th>
-                  <th class="p-6 font-label-gold text-label-gold text-tertiary">CANTIDAD</th>
-                  <th class="p-6 font-label-gold text-label-gold text-tertiary">COSTO UNITARIO</th>
-                  <th class="p-6 font-label-gold text-label-gold text-tertiary">ESTADO</th>
-                  <th class="p-6 font-label-gold text-label-gold text-tertiary text-right">ACCIÓN</th>
-                </tr>
-              </thead>
-              <tbody class="font-body-md text-body-md text-on-surface">
-                <!-- Row 1 -->
-                <tr class="bg-surface-container hover:bg-surface-container-high transition-colors">
-                  <td class="p-6 flex items-center gap-4">
-                    <div class="w-12 h-12 bg-surface rounded shadow-inner flex items-center justify-center text-tertiary">
-                      <span class="material-symbols-outlined">tungsten</span>
-                    </div>
-                    <span class="font-medium">Candelabro de Cristal - Grande</span>
-                  </td>
-                  <td class="p-6 text-on-surface-variant">Iluminación</td>
-                  <td class="p-6">4</td>
-                  <td class="p-6 font-mono text-tertiary">$1,200.00 MXN</td>
-                  <td class="p-6">
-                    <span class="px-3 py-1 bg-tertiary/10 text-tertiary font-label-gold text-label-gold rounded-full inline-flex items-center gap-1">
-                      <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> CONFIRMADO
-                    </span>
-                  </td>
-                  <td class="p-6 text-right">
-                    <button class="text-on-surface-variant hover:text-tertiary transition-colors p-2"><span class="material-symbols-outlined">more_vert</span></button>
-                  </td>
-                </tr>
-                <!-- Row 2 -->
-                <tr class="bg-surface hover:bg-surface-container-high transition-colors">
-                  <td class="p-6 flex items-center gap-4">
-                    <div class="w-12 h-12 bg-surface-container rounded shadow-inner flex items-center justify-center text-tertiary">
-                      <span class="material-symbols-outlined">filter_vintage</span>
-                    </div>
-                    <span class="font-medium">Centro de Mesa Floral</span>
-                  </td>
-                  <td class="p-6 text-on-surface-variant">Floral</td>
-                  <td class="p-6">32</td>
-                  <td class="p-6 font-mono text-tertiary">$250.00 MXN</td>
-                  <td class="p-6">
-                    <span class="px-3 py-1 bg-secondary-container text-secondary font-label-gold text-label-gold rounded-full inline-flex items-center gap-1">
-                      <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> EN PRODUCCIÓN
-                    </span>
-                  </td>
-                  <td class="p-6 text-right">
-                    <button class="text-on-surface-variant hover:text-tertiary transition-colors p-2"><span class="material-symbols-outlined">more_vert</span></button>
-                  </td>
-                </tr>
-                <!-- Row 3 -->
-                <tr class="bg-surface-container hover:bg-surface-container-high transition-colors">
-                  <td class="p-6 flex items-center gap-4">
-                    <div class="w-12 h-12 bg-surface rounded shadow-inner flex items-center justify-center text-tertiary">
-                      <span class="material-symbols-outlined">chair</span>
-                    </div>
-                    <span class="font-medium">Silla Luis XVI - Oro/Terciopelo</span>
-                  </td>
-                  <td class="p-6 text-on-surface-variant">Mobiliario</td>
-                  <td class="p-6">320</td>
-                  <td class="p-6 font-mono text-tertiary">$45.00 MXN</td>
-                  <td class="p-6">
-                    <span class="px-3 py-1 bg-error-container/30 text-error font-label-gold text-label-gold rounded-full inline-flex items-center gap-1">
-                      <span class="w-1.5 h-1.5 rounded-full bg-error"></span> PROVEEDOR PENDIENTE
-                    </span>
-                  </td>
-                  <td class="p-6 text-right">
-                    <button class="text-on-surface-variant hover:text-tertiary transition-colors p-2"><span class="material-symbols-outlined">more_vert</span></button>
-                  </td>
-                </tr>
-                <!-- Row 4 -->
-                <tr class="bg-surface hover:bg-surface-container-high transition-colors">
-                  <td class="p-6 flex items-center gap-4">
-                    <div class="w-12 h-12 bg-surface-container rounded shadow-inner flex items-center justify-center text-tertiary">
-                      <span class="material-symbols-outlined">restaurant</span>
-                    </div>
-                    <span class="font-medium">Platos Base Dorados</span>
-                  </td>
-                  <td class="p-6 text-on-surface-variant">Vajilla</td>
-                  <td class="p-6">350</td>
-                  <td class="p-6 font-mono text-tertiary">$12.50 MXN</td>
-                  <td class="p-6">
-                    <span class="px-3 py-1 bg-tertiary/10 text-tertiary font-label-gold text-label-gold rounded-full inline-flex items-center gap-1">
-                      <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> CONFIRMADO
-                    </span>
-                  </td>
-                  <td class="p-6 text-right">
-                    <button class="text-on-surface-variant hover:text-tertiary transition-colors p-2"><span class="material-symbols-outlined">more_vert</span></button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+          <div id="unassigned-list" class="flex-1 overflow-y-auto p-4 flex flex-col gap-2">
+            <p class="text-on-surface-variant text-sm text-center py-6">Cargando…</p>
           </div>
         </div>
-
       </div>
     </div>
   </main>
 </div>
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const btnSeating = document.getElementById('btn-seating');
-    const btnMaterials = document.getElementById('btn-materials');
-    const viewSeating = document.getElementById('view-seating');
-    const viewMaterials = document.getElementById('view-materials');
+<!-- Modal: Editar Elemento -->
+<div id="element-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
+  <div id="element-modal-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+  <div class="relative w-full max-w-md bg-surface-container-low rounded-2xl shadow-2xl border border-tertiary/10 p-8 max-h-[90vh] overflow-y-auto">
+    <div class="flex items-center justify-between mb-6">
+      <h2 id="element-modal-title" class="font-headline-lg text-headline-lg text-on-surface">Editar Elemento</h2>
+      <button id="element-modal-close" class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors">close</button>
+    </div>
+    <form id="element-form" class="flex flex-col gap-4">
+      <input id="element-id" type="hidden"/>
+      <input id="element-type" type="hidden"/>
+      <div class="flex flex-col gap-1">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="element-label">Nombre / Etiqueta</label>
+        <input id="element-label" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
+      </div>
+      <div id="element-capacity-wrap" class="flex flex-col gap-1">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="element-capacity">Capacidad (asientos)</label>
+        <input id="element-capacity" min="0" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="number"/>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex flex-col gap-1">
+          <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="element-width">Ancho (celdas)</label>
+          <input id="element-width" min="1" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="number"/>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="element-height">Alto (celdas)</label>
+          <input id="element-height" min="1" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="number"/>
+        </div>
+      </div>
 
-    function setActiveTab(tab) {
-      if (tab === 'seating') {
-        btnSeating.classList.add('text-tertiary', 'opacity-100');
-        btnSeating.classList.remove('text-on-surface-variant', 'opacity-60');
-        btnMaterials.classList.add('text-on-surface-variant', 'opacity-60');
-        btnMaterials.classList.remove('text-tertiary', 'opacity-100');
+      <!-- Invitados asignados (solo mesas/sillas) -->
+      <div id="element-guests-wrap" class="flex flex-col gap-2 hidden">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant">Invitados en esta mesa</label>
+        <div id="element-assigned-guests" class="flex flex-col gap-2 max-h-40 overflow-y-auto"></div>
+        <select id="element-add-guest" class="bg-surface-container border border-tertiary/20 rounded-lg py-2.5 px-4 text-on-surface focus:outline-none focus:border-tertiary mt-1">
+          <option value="">+ Agregar invitado a esta mesa…</option>
+        </select>
+      </div>
 
-        viewSeating.classList.remove('hidden');
-        viewSeating.classList.add('flex');
-        viewMaterials.classList.add('hidden');
-        viewMaterials.classList.remove('flex');
-      } else {
-        btnMaterials.classList.add('text-tertiary', 'opacity-100');
-        btnMaterials.classList.remove('text-on-surface-variant', 'opacity-60');
-        btnSeating.classList.add('text-on-surface-variant', 'opacity-60');
-        btnSeating.classList.remove('text-tertiary', 'opacity-100');
+      <p id="element-form-error" class="hidden text-error text-sm"></p>
 
-        viewMaterials.classList.remove('hidden');
-        viewMaterials.classList.add('flex');
-        viewSeating.classList.add('hidden');
-        viewSeating.classList.remove('flex');
-      }
+      <div class="flex justify-between items-center gap-3 mt-2">
+        <button type="button" id="element-delete-btn" class="px-4 py-3 rounded-lg text-error hover:bg-error/10 transition-colors font-button-text uppercase tracking-wider text-sm flex items-center gap-2">
+          <span class="material-symbols-outlined text-[18px]">delete</span>Eliminar
+        </button>
+        <div class="flex justify-end gap-3 flex-1">
+          <button type="button" id="element-modal-cancel" class="px-6 py-3 rounded-lg border border-tertiary/20 text-on-surface-variant hover:bg-surface-container transition-colors font-button-text uppercase tracking-wider text-sm">Cancelar</button>
+          <button type="submit" class="px-8 py-3 rounded-lg bg-tertiary text-on-tertiary font-button-text uppercase tracking-wider text-sm hover:brightness-110 transition-all">Guardar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script type="module">
+  const CELL = 40;
+  const canvas = document.getElementById("canvas");
+  const emptyMsg = document.getElementById("canvas-empty-msg");
+  const unassignedList = document.getElementById("unassigned-list");
+  const unassignedCount = document.getElementById("unassigned-count");
+  const guestSearchSidebar = document.getElementById("guest-search-sidebar");
+  const modal = document.getElementById("element-modal");
+  const form = document.getElementById("element-form");
+  const formError = document.getElementById("element-form-error");
+  const capacityWrap = document.getElementById("element-capacity-wrap");
+  const guestsWrap = document.getElementById("element-guests-wrap");
+  const assignedGuestsEl = document.getElementById("element-assigned-guests");
+  const addGuestSelect = document.getElementById("element-add-guest");
+
+  let currentEventId = null;
+  let allElements = [];
+  let allGuests = [];
+  let assignments = []; // [{seating_table_id, guest_id}]
+  let dragState = null;
+  let suppressNextClick = false;
+
+  function escapeHtml(str) {
+    if (str === null || str === undefined) return "";
+    return String(str).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  const TYPE_META = {
+    mesa_redonda:     { label: "Mesa Redonda",     icon: "panorama_fish_eye", isSeat: true,  shape: "round",  color: "bg-secondary-container" },
+    mesa_rectangular: { label: "Mesa Rectangular",  icon: "crop_landscape",    isSeat: true,  shape: "rect",   color: "bg-secondary-container" },
+    silla:            { label: "Silla",             icon: "chair",             isSeat: true,  shape: "rect",   color: "bg-surface-container-high" },
+    mesa_novios:      { label: "Mesa de Novios",    icon: "favorite",          isSeat: true,  shape: "rect",   color: "bg-tertiary/20" },
+    escenario:        { label: "Escenario",         icon: "theater_comedy",    isSeat: false, shape: "rect",   color: "bg-primary/20" },
+    pista_baile:      { label: "Pista de Baile",    icon: "nightlife",         isSeat: false, shape: "rect",   color: "bg-surface/40" },
+    cocina:           { label: "Cocina",            icon: "skillet",           isSeat: false, shape: "rect",   color: "bg-surface-container" },
+    banos:            { label: "Baños",             icon: "wc",                isSeat: false, shape: "rect",   color: "bg-surface-container" },
+    decoracion:       { label: "Decoración",        icon: "local_florist",     isSeat: false, shape: "rect",   color: "bg-secondary/10" }
+  };
+
+  function occupantsForElement(elementId) {
+    const guestIds = assignments.filter(a => a.seating_table_id === elementId).map(a => a.guest_id);
+    return allGuests.filter(g => guestIds.includes(g.id));
+  }
+
+  function seatsUsed(elementId) {
+    return occupantsForElement(elementId).reduce((sum, g) => sum + (g.plus_one ? 2 : 1), 0);
+  }
+
+  function renderCanvas() {
+    canvas.querySelectorAll(".layout-el").forEach(el => el.remove());
+    emptyMsg.classList.toggle("hidden", allElements.length > 0);
+
+    allElements.forEach(el => {
+      const meta = TYPE_META[el.element_type] || TYPE_META.decoracion;
+      const used = meta.isSeat ? seatsUsed(el.id) : null;
+      const node = document.createElement("div");
+      node.className = `layout-el group absolute ${meta.color} border border-tertiary/20 shadow-md flex flex-col items-center justify-center gap-1 cursor-grab active:cursor-grabbing select-none hover:ring-2 hover:ring-tertiary/50 transition-shadow ${meta.shape === 'round' ? 'rounded-full' : 'rounded-lg'}`;
+      node.style.touchAction = "none";
+      node.style.left = `${el.pos_x * CELL}px`;
+      node.style.top = `${el.pos_y * CELL}px`;
+      node.style.width = `${el.width * CELL}px`;
+      node.style.height = `${el.height * CELL}px`;
+      node.dataset.id = el.id;
+      node.innerHTML = `
+        <span class="material-symbols-outlined text-on-surface text-[20px]">${meta.icon}</span>
+        <span class="text-on-surface text-xs font-medium text-center px-1 leading-tight">${escapeHtml(el.label || meta.label)}</span>
+        ${meta.isSeat && el.capacity ? `<span class="text-[10px] ${used >= el.capacity ? 'text-error' : 'text-tertiary'}">${used}/${el.capacity}</span>` : ""}
+        <div class="resize-handle absolute -right-1 -bottom-1 w-3 h-3 bg-tertiary rounded-full cursor-nwse-resize opacity-0 group-hover:opacity-100"></div>
+      `;
+      canvas.appendChild(node);
+    });
+  }
+
+  function renderUnassigned() {
+    const term = (guestSearchSidebar.value || "").trim().toLowerCase();
+    const assignedIds = new Set(assignments.map(a => a.guest_id));
+    let unassigned = allGuests.filter(g => !assignedIds.has(g.id));
+    if (term) unassigned = unassigned.filter(g => (g.full_name || "").toLowerCase().includes(term));
+
+    unassignedCount.textContent = allGuests.filter(g => !assignedIds.has(g.id)).length;
+
+    if (unassigned.length === 0) {
+      unassignedList.innerHTML = `<p class="text-on-surface-variant text-sm text-center py-6">${allGuests.length === 0 ? "No hay invitados registrados todavía." : "Todos los invitados ya están asignados."}</p>`;
+      return;
+    }
+    unassignedList.innerHTML = unassigned.map(g => `
+      <div class="p-4 bg-surface rounded shadow-sm flex items-center justify-between group">
+        <div class="flex flex-col">
+          <span class="font-body-md text-body-md text-on-surface font-medium">${escapeHtml(g.full_name)}</span>
+          <span class="font-label-gold text-label-gold text-on-surface-variant mt-1">${g.plus_one ? "CON ACOMPAÑANTE" : ""}</span>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  async function loadAll() {
+    const [{ data: elements, error: elError }, { data: guests, error: gError }] = await Promise.all([
+      window.supabaseClient.from("layout_elements").select("*").eq("event_id", currentEventId),
+      window.supabaseClient.from("guests").select("*").eq("event_id", currentEventId)
+    ]);
+    if (elError) { console.error(elError); return; }
+    if (gError) { console.error(gError); return; }
+    allElements = elements || [];
+    allGuests = guests || [];
+
+    const elementIds = allElements.map(e => e.id);
+    if (elementIds.length > 0) {
+      const { data: assigns } = await window.supabaseClient
+        .from("seating_assignments")
+        .select("*")
+        .in("seating_table_id", elementIds);
+      assignments = assigns || [];
+    } else {
+      assignments = [];
     }
 
-    btnSeating.addEventListener('click', () => setActiveTab('seating'));
-    btnMaterials.addEventListener('click', () => setActiveTab('materials'));
+    renderCanvas();
+    renderUnassigned();
+  }
+
+  // ---- Agregar elemento nuevo ----
+  document.querySelectorAll(".btn-add-element").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const type = btn.dataset.type;
+      const meta = TYPE_META[type];
+      const defaults = {
+        mesa_redonda: { width: 2, height: 2, capacity: 10 },
+        mesa_rectangular: { width: 3, height: 1.5, capacity: 8 },
+        silla: { width: 1, height: 1, capacity: 1 },
+        mesa_novios: { width: 3, height: 1, capacity: 2 },
+        escenario: { width: 6, height: 2, capacity: null },
+        pista_baile: { width: 4, height: 4, capacity: null },
+        cocina: { width: 3, height: 2, capacity: null },
+        banos: { width: 2, height: 2, capacity: null },
+        decoracion: { width: 1, height: 1, capacity: null }
+      }[type];
+
+      const payload = {
+        event_id: currentEventId,
+        element_type: type,
+        label: meta.label,
+        pos_x: 1, pos_y: 1,
+        width: defaults.width, height: defaults.height,
+        capacity: defaults.capacity
+      };
+      const { error } = await window.supabaseClient.from("layout_elements").insert(payload);
+      if (error) { alert("No se pudo agregar: " + error.message); return; }
+      await loadAll();
+    });
   });
+
+  // ---- Drag & resize sobre el canvas ----
+  canvas.addEventListener("pointerdown", (e) => {
+    const node = e.target.closest(".layout-el");
+    if (!node) return;
+    const isResize = e.target.closest(".resize-handle");
+    const el = allElements.find(x => x.id === node.dataset.id);
+    if (!el) return;
+
+    dragState = {
+      id: el.id,
+      mode: isResize ? "resize" : "move",
+      startX: e.clientX,
+      startY: e.clientY,
+      origX: el.pos_x, origY: el.pos_y,
+      origW: el.width, origH: el.height,
+      node
+    };
+    node.setPointerCapture(e.pointerId);
+    e.stopPropagation();
+  });
+
+  canvas.addEventListener("pointermove", (e) => {
+    if (!dragState) return;
+    const dx = Math.round((e.clientX - dragState.startX) / CELL);
+    const dy = Math.round((e.clientY - dragState.startY) / CELL);
+    if (dx !== 0 || dy !== 0) suppressNextClick = true;
+
+    if (dragState.mode === "move") {
+      const newX = Math.max(0, dragState.origX + dx);
+      const newY = Math.max(0, dragState.origY + dy);
+      dragState.node.style.left = `${newX * CELL}px`;
+      dragState.node.style.top = `${newY * CELL}px`;
+      dragState.newX = newX; dragState.newY = newY;
+    } else {
+      const newW = Math.max(1, dragState.origW + dx);
+      const newH = Math.max(1, dragState.origH + dy);
+      dragState.node.style.width = `${newW * CELL}px`;
+      dragState.node.style.height = `${newH * CELL}px`;
+      dragState.newW = newW; dragState.newH = newH;
+    }
+  });
+
+  canvas.addEventListener("pointerup", async (e) => {
+    if (!dragState) return;
+    const { id, mode, newX, newY, newW, newH } = dragState;
+    dragState = null;
+
+    const el = allElements.find(x => x.id === id);
+    let payload = null;
+    if (mode === "move" && (newX !== undefined) && (newX !== el.pos_x || newY !== el.pos_y)) {
+      payload = { pos_x: newX, pos_y: newY };
+      el.pos_x = newX; el.pos_y = newY;
+    } else if (mode === "resize" && (newW !== undefined) && (newW !== el.width || newH !== el.height)) {
+      payload = { width: newW, height: newH };
+      el.width = newW; el.height = newH;
+    }
+    if (payload) {
+      await window.supabaseClient.from("layout_elements").update(payload).eq("id", id);
+    }
+  });
+
+  // ---- Clic simple (sin arrastrar) abre el modal de edición ----
+  let pointerDownPos = null;
+  canvas.addEventListener("pointerdown", (e) => {
+    pointerDownPos = { x: e.clientX, y: e.clientY };
+    suppressNextClick = false;
+  });
+  canvas.addEventListener("click", (e) => {
+    if (suppressNextClick) { suppressNextClick = false; return; }
+    const node = e.target.closest(".layout-el");
+    if (!node || e.target.closest(".resize-handle")) return;
+    const el = allElements.find(x => x.id === node.dataset.id);
+    if (el) openModal(el);
+  });
+
+  function refreshAssignedGuestsUI(elementId) {
+    const meta = TYPE_META[allElements.find(e => e.id === elementId)?.element_type];
+    const occupants = occupantsForElement(elementId);
+    assignedGuestsEl.innerHTML = occupants.length
+      ? occupants.map(g => `
+        <div class="flex items-center justify-between bg-surface-container rounded px-3 py-2">
+          <span class="text-on-surface text-sm">${escapeHtml(g.full_name)}${g.plus_one ? ' <span class="text-tertiary text-xs">+1</span>' : ""}</span>
+          <button type="button" class="btn-unassign-guest text-on-surface-variant hover:text-error transition-colors" data-guest-id="${g.id}"><span class="material-symbols-outlined text-[16px]">close</span></button>
+        </div>`).join("")
+      : `<p class="text-on-surface-variant text-xs">Ningún invitado asignado todavía.</p>`;
+
+    const assignedIds = new Set(assignments.map(a => a.guest_id));
+    const available = allGuests.filter(g => !assignedIds.has(g.id));
+    addGuestSelect.innerHTML = `<option value="">+ Agregar invitado a esta mesa…</option>` +
+      available.map(g => `<option value="${g.id}">${escapeHtml(g.full_name)}${g.plus_one ? " (+1)" : ""}</option>`).join("");
+  }
+
+  function openModal(el) {
+    formError.classList.add("hidden");
+    const meta = TYPE_META[el.element_type] || TYPE_META.decoracion;
+    document.getElementById("element-modal-title").textContent = `Editar ${meta.label}`;
+    document.getElementById("element-id").value = el.id;
+    document.getElementById("element-type").value = el.element_type;
+    document.getElementById("element-label").value = el.label || "";
+    document.getElementById("element-capacity").value = el.capacity || "";
+    document.getElementById("element-width").value = el.width;
+    document.getElementById("element-height").value = el.height;
+
+    capacityWrap.classList.toggle("hidden", !meta.isSeat);
+    guestsWrap.classList.toggle("hidden", !meta.isSeat);
+    if (meta.isSeat) refreshAssignedGuestsUI(el.id);
+
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+  }
+
+  function closeModal() {
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    form.reset();
+  }
+
+  document.getElementById("element-modal-close").addEventListener("click", closeModal);
+  document.getElementById("element-modal-cancel").addEventListener("click", closeModal);
+  document.getElementById("element-modal-backdrop").addEventListener("click", closeModal);
+
+  addGuestSelect.addEventListener("change", async () => {
+    const guestId = addGuestSelect.value;
+    if (!guestId) return;
+    const elementId = document.getElementById("element-id").value;
+
+    // un invitado solo puede estar en una mesa: quita cualquier asignación previa
+    await window.supabaseClient.from("seating_assignments").delete().eq("guest_id", guestId);
+    const { error } = await window.supabaseClient.from("seating_assignments").insert({ seating_table_id: elementId, guest_id: guestId });
+    if (error) { alert("No se pudo asignar: " + error.message); return; }
+
+    const { data: assigns } = await window.supabaseClient.from("seating_assignments").select("*").in("seating_table_id", allElements.map(e => e.id));
+    assignments = assigns || [];
+    refreshAssignedGuestsUI(elementId);
+    renderCanvas();
+    renderUnassigned();
+  });
+
+  assignedGuestsEl.addEventListener("click", async (e) => {
+    const btn = e.target.closest(".btn-unassign-guest");
+    if (!btn) return;
+    const guestId = btn.dataset.guestId;
+    const elementId = document.getElementById("element-id").value;
+    await window.supabaseClient.from("seating_assignments").delete().eq("seating_table_id", elementId).eq("guest_id", guestId);
+    assignments = assignments.filter(a => !(a.seating_table_id === elementId && a.guest_id === guestId));
+    refreshAssignedGuestsUI(elementId);
+    renderCanvas();
+    renderUnassigned();
+  });
+
+  document.getElementById("element-delete-btn").addEventListener("click", async () => {
+    const id = document.getElementById("element-id").value;
+    if (!confirm("¿Eliminar este elemento? También se quitarán los invitados asignados a él.")) return;
+    await window.supabaseClient.from("seating_assignments").delete().eq("seating_table_id", id);
+    const { error } = await window.supabaseClient.from("layout_elements").delete().eq("id", id);
+    if (error) { alert("No se pudo eliminar: " + error.message); return; }
+    closeModal();
+    await loadAll();
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    formError.classList.add("hidden");
+    const id = document.getElementById("element-id").value;
+    const meta = TYPE_META[document.getElementById("element-type").value];
+    const payload = {
+      label: document.getElementById("element-label").value.trim() || meta.label,
+      width: Number(document.getElementById("element-width").value) || 1,
+      height: Number(document.getElementById("element-height").value) || 1,
+      capacity: meta.isSeat && document.getElementById("element-capacity").value ? Number(document.getElementById("element-capacity").value) : null
+    };
+    const { error } = await window.supabaseClient.from("layout_elements").update(payload).eq("id", id);
+    if (error) {
+      formError.textContent = error.message;
+      formError.classList.remove("hidden");
+      return;
+    }
+    closeModal();
+    await loadAll();
+  });
+
+  guestSearchSidebar.addEventListener("input", renderUnassigned);
+
+  (async function init() {
+    const auth = await window.requireAuth();
+    if (!auth) return;
+
+    const currentEvent = await window.requireEvent();
+    if (!currentEvent) return;
+
+    currentEventId = currentEvent.id;
+    await loadAll();
+  })();
 </script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
