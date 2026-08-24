@@ -49,6 +49,9 @@ tailwind.config = {
     <span class="font-headline-md text-headline-md text-tertiary tracking-widest uppercase">GALA</span>
   </div>
   <div class="flex items-center gap-4">
+    <div id="role-badge" class="w-8 h-8 rounded-full flex items-center justify-center transition-colors" title="">
+      <span class="material-symbols-outlined role-badge-icon text-[18px]"></span>
+    </div>
     <button id="logout-btn" class="material-symbols-outlined text-on-surface-variant hover:text-error transition-colors" title="Cerrar sesión">logout</button>
     <div class="flex flex-col leading-tight text-right">
       <span id="current-user-name" class="text-sm text-on-surface">Cargando…</span>
@@ -207,6 +210,7 @@ tailwind.config = {
     if (nameEl && auth.profile) nameEl.textContent = auth.profile.full_name || auth.user.email;
     const roleEl = document.getElementById("current-user-role");
     if (roleEl && auth.profile) roleEl.textContent = auth.profile.role;
+    if (auth.profile) window.applyRoleBadge(auth.profile.role);
     document.getElementById("logout-btn").addEventListener("click", window.signOut);
 
     await loadProjects();

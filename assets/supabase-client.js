@@ -103,12 +103,36 @@ function applyEventToHeader(event) {
   const nameEl = document.getElementById("current-event-name");
   const countdownEl = document.getElementById("current-event-countdown");
   if (nameEl) nameEl.textContent = event.name || "Proyecto sin nombre";
-  if (countdownEl) countdownEl.textContent = formatCountdown(event.event_date);
 
   // Menciones sueltas del nombre del proyecto dentro del texto de cada página
   document.querySelectorAll("#current-event-name-inline").forEach((el) => {
     el.textContent = event.name || "tu evento";
   });
+
+  // Cuenta regresiva en vivo: se actualiza sola cada minuto, no solo al cargar
+  if (countdownEl) {
+    const tick = () => { countdownEl.textContent = formatCountdown(event.event_date); };
+    tick();
+    if (window.__galaCountdownInterval) clearInterval(window.__galaCountdownInterval);
+    window.__galaCountdownInterval = setInterval(tick, 60 * 1000);
+  }
+}
+
+/**
+ * Aplica una insignia visual junto al nombre del usuario que distingue su
+ * rol de un vistazo (admin vs. organizador/colaborador).
+ */
+function applyRoleBadge(role) {
+  const badge = document.getElementById("role-badge");
+  if (!badge) return;
+  const icon = badge.querySelector(".role-badge-icon");
+  const isAdmin = role === "admin";
+  badge.title = isAdmin ? "Administrador" : "Planner";
+  badge.classList.toggle("bg-tertiary/15", isAdmin);
+  badge.classList.toggle("text-tertiary", isAdmin);
+  badge.classList.toggle("bg-secondary-container/50", !isAdmin);
+  badge.classList.toggle("text-secondary", !isAdmin);
+  if (icon) icon.textContent = isAdmin ? "workspace_premium" : "event_available";
 }
 
 window.requireAuth = requireAuth;
@@ -118,3 +142,4 @@ window.selectProject = selectProject;
 window.exitProject = exitProject;
 window.applyEventToHeader = applyEventToHeader;
 window.formatCountdown = formatCountdown;
+window.applyRoleBadge = applyRoleBadge;

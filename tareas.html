@@ -153,6 +153,7 @@ tailwind.config = {
     }
     const logoutBtn = document.getElementById("logout-btn");
     if (logoutBtn) logoutBtn.addEventListener("click", window.signOut);
+    if (auth.profile) window.applyRoleBadge(auth.profile.role);
 
     const currentEvent = await window.requireEvent();
     if (!currentEvent) return; // requireEvent ya redirige a proyectos.html
@@ -204,7 +205,9 @@ tailwind.config = {
     </div>
     <div class="flex items-center gap-6 justify-end w-72 pr-8">
       <button class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors">notifications</button>
-      <button class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors">settings</button>
+      <div id="role-badge" class="w-8 h-8 rounded-full flex items-center justify-center transition-colors" title="">
+        <span class="material-symbols-outlined role-badge-icon text-[18px]"></span>
+      </div>
       <button id="logout-btn" class="material-symbols-outlined text-on-surface-variant hover:text-error transition-colors" title="Cerrar sesión">logout</button>
       <div class="flex items-center gap-2">
         <div class="w-10 h-10 rounded-full border border-tertiary/30 p-0.5 overflow-hidden ring-2 ring-tertiary/10">
@@ -234,24 +237,16 @@ tailwind.config = {
           <div class="mt-4 flex flex-col gap-2">
             <div class="flex justify-between items-center w-64">
               <span class="font-label-gold text-label-gold text-on-surface uppercase tracking-widest">Progreso Maestro</span>
-              <span class="font-button-text text-button-text text-tertiary">70%</span>
+              <span id="progress-percent" class="font-button-text text-button-text text-tertiary">0%</span>
             </div>
             <div class="w-64 h-1 bg-surface-container-high rounded-full overflow-hidden relative">
-              <div class="absolute top-0 left-0 h-full bg-tertiary w-[70%] rounded-full shadow-[0_0_10px_rgba(233,195,73,0.5)]"></div>
+              <div id="progress-bar" class="absolute top-0 left-0 h-full bg-tertiary w-0 rounded-full shadow-[0_0_10px_rgba(233,195,73,0.5)] transition-all duration-500"></div>
             </div>
-            <span class="font-body-md text-body-md text-on-surface-variant text-sm mt-1">42 de 60 tareas completadas</span>
+            <span id="progress-label" class="font-body-md text-body-md text-on-surface-variant text-sm mt-1">0 de 0 tareas completadas</span>
           </div>
         </div>
         <div class="flex items-center gap-6 shrink-0">
-          <div class="flex -space-x-4 mr-4">
-            <img class="w-10 h-10 rounded-full object-cover shadow-sm z-30" alt="Planner" src="assets/team/planner.jpg"/>
-            <img class="w-10 h-10 rounded-full object-cover shadow-sm z-20" alt="Diseñadora de eventos" src="assets/team/designer.jpg"/>
-            <img class="w-10 h-10 rounded-full object-cover shadow-sm z-10" alt="Coordinador de logística" src="assets/team/logistics.jpg"/>
-            <div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center shadow-sm z-0 relative before:content-[''] before:absolute before:inset-0 before:rounded-full before:bg-tertiary/10">
-              <span class="font-label-gold text-label-gold text-tertiary">+3</span>
-            </div>
-          </div>
-          <button class="bg-tertiary hover:bg-tertiary-fixed text-on-tertiary px-6 py-3 rounded-md font-button-text text-button-text flex items-center gap-2 transition-all shadow-[0_4px_14px_rgba(233,195,73,0.2)] hover:shadow-[0_6px_20px_rgba(233,195,73,0.4)]">
+          <button id="btn-add-task" class="bg-tertiary hover:bg-tertiary-fixed text-on-tertiary px-6 py-3 rounded-md font-button-text text-button-text flex items-center gap-2 transition-all shadow-[0_4px_14px_rgba(233,195,73,0.2)] hover:shadow-[0_6px_20px_rgba(233,195,73,0.4)]">
             <span class="material-symbols-outlined text-xl">add</span>
             NUEVA TAREA
           </button>
@@ -260,186 +255,55 @@ tailwind.config = {
 
       <!-- Kanban Board Area -->
       <section class="flex-1 px-container-padding pb-20 overflow-x-auto">
-        <div class="flex gap-8 min-w-max h-full pb-4">
+        <div class="flex gap-8 min-w-max h-full pb-4" id="kanban-board">
 
           <!-- TO DO Column -->
-          <div class="flex flex-col w-[340px] flex-shrink-0">
+          <div class="kanban-column flex flex-col w-[340px] flex-shrink-0" data-status="por_hacer">
             <div class="flex items-center justify-between mb-6 pb-2 border-b border-tertiary/10 relative">
               <h2 class="font-headline-md text-headline-md text-on-surface flex items-center gap-3">
                 <span class="w-2 h-2 rounded-full bg-surface-variant"></span>
                 Por Hacer
               </h2>
-              <span class="font-label-gold text-label-gold text-surface-variant px-2 py-1 rounded bg-surface-container">4</span>
+              <span class="column-count font-label-gold text-label-gold text-surface-variant px-2 py-1 rounded bg-surface-container">0</span>
             </div>
-            <div class="flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar pb-8">
-              <!-- Card 1 -->
-              <div class="bg-primary-container p-5 rounded-lg shadow-md group hover:-translate-y-1 transition-transform relative overflow-hidden cursor-grab active:cursor-grabbing">
-                <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div class="flex justify-between items-start mb-3">
-                  <span class="font-label-gold text-label-gold text-error flex items-center gap-1.5 bg-error/10 px-2 py-0.5 rounded-sm">
-                    <span class="w-1.5 h-1.5 rounded-full bg-error"></span> ALTA
-                  </span>
-                  <button class="text-on-surface-variant hover:text-tertiary transition-colors"><span class="material-symbols-outlined text-lg">more_horiz</span></button>
-                </div>
-                <h3 class="font-headline-md text-[18px] leading-[1.3] font-medium text-on-surface mb-2">Finalizar Arreglos Florales</h3>
-                <p class="font-body-md text-sm text-on-surface-variant line-clamp-2 mb-4">Confirmar variedades específicas de orquídeas con el proveedor.</p>
-                <div class="flex items-center justify-between mt-auto">
-                  <div class="flex items-center gap-2 text-on-surface-variant">
-                    <span class="material-symbols-outlined text-sm">schedule</span>
-                    <span class="font-body-md text-xs">Oct 12</span>
-                  </div>
-                  <img class="w-6 h-6 rounded-full object-cover" alt="Responsable" src="assets/team/avatar-1.jpg"/>
-                </div>
-              </div>
-              <!-- Card 2 -->
-              <div class="bg-primary-container p-5 rounded-lg shadow-md group hover:-translate-y-1 transition-transform relative overflow-hidden cursor-grab active:cursor-grabbing">
-                <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <div class="flex justify-between items-start mb-3">
-                  <span class="font-label-gold text-label-gold text-tertiary flex items-center gap-1.5 bg-tertiary/10 px-2 py-0.5 rounded-sm">
-                    <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> MEDIA
-                  </span>
-                  <button class="text-on-surface-variant hover:text-tertiary transition-colors"><span class="material-symbols-outlined text-lg">more_horiz</span></button>
-                </div>
-                <h3 class="font-headline-md text-[18px] leading-[1.3] font-medium text-on-surface mb-2">Revisar Plano de Iluminación</h3>
-                <p class="font-body-md text-sm text-on-surface-variant line-clamp-2 mb-4">Verificar los niveles de iluminación ambiental para el salón principal.</p>
-                <div class="flex items-center justify-between mt-auto">
-                  <div class="flex items-center gap-2 text-on-surface-variant">
-                    <span class="material-symbols-outlined text-sm">schedule</span>
-                    <span class="font-body-md text-xs">Oct 14</span>
-                  </div>
-                  <div class="w-6 h-6 rounded-full bg-surface-container flex items-center justify-center"><span class="font-label-gold text-[8px] text-tertiary">JD</span></div>
-                </div>
-              </div>
-            </div>
+            <div class="kanban-dropzone flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar pb-8 min-h-[80px]" data-status="por_hacer"></div>
           </div>
 
           <!-- IN PROGRESS Column -->
-          <div class="flex flex-col w-[340px] flex-shrink-0">
+          <div class="kanban-column flex flex-col w-[340px] flex-shrink-0" data-status="en_progreso">
             <div class="flex items-center justify-between mb-6 pb-2 border-b border-tertiary/30 relative">
               <div class="absolute bottom-[-1px] left-0 w-1/3 h-0.5 bg-tertiary"></div>
               <h2 class="font-headline-md text-headline-md text-on-surface flex items-center gap-3">
                 <span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
                 En Progreso
               </h2>
-              <span class="font-label-gold text-label-gold text-tertiary px-2 py-1 rounded bg-tertiary/10">2</span>
+              <span class="column-count font-label-gold text-label-gold text-tertiary px-2 py-1 rounded bg-tertiary/10">0</span>
             </div>
-            <div class="flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar pb-8">
-              <!-- Card 3 -->
-              <div class="bg-secondary-container p-5 rounded-lg shadow-lg relative overflow-hidden group cursor-grab active:cursor-grabbing border border-tertiary/20">
-                <div class="absolute inset-0 bg-gradient-to-br from-tertiary/5 to-transparent pointer-events-none"></div>
-                <div class="absolute left-0 top-0 bottom-0 w-1 bg-tertiary rounded-l-lg"></div>
-                <div class="flex justify-between items-start mb-3 relative z-10">
-                  <span class="font-label-gold text-label-gold text-error flex items-center gap-1.5 bg-error/10 px-2 py-0.5 rounded-sm">
-                    <span class="w-1.5 h-1.5 rounded-full bg-error"></span> ALTA
-                  </span>
-                  <button class="text-on-secondary-container hover:text-tertiary transition-colors"><span class="material-symbols-outlined text-lg">more_horiz</span></button>
-                </div>
-                <h3 class="font-headline-md text-[18px] leading-[1.3] font-medium text-on-surface mb-2 relative z-10">Degustación del Menú de Catering</h3>
-                <p class="font-body-md text-sm text-on-secondary-container line-clamp-2 mb-4 relative z-10">Realizar la sesión final de degustación con el chef ejecutivo.</p>
-                <div class="flex items-center justify-between mt-auto relative z-10">
-                  <div class="flex items-center gap-2 text-tertiary">
-                    <span class="material-symbols-outlined text-sm">schedule</span>
-                    <span class="font-body-md text-xs font-semibold">Hoy, 2:00 PM</span>
-                  </div>
-                  <img class="w-6 h-6 rounded-full object-cover border border-tertiary" alt="Coordinador principal" src="assets/team/avatar-2.jpg"/>
-                </div>
-              </div>
-              <!-- Card 4 -->
-              <div class="bg-secondary-container p-5 rounded-lg shadow-lg relative overflow-hidden group cursor-grab active:cursor-grabbing border border-tertiary/20">
-                <div class="absolute inset-0 bg-gradient-to-br from-tertiary/5 to-transparent pointer-events-none"></div>
-                <div class="absolute left-0 top-0 bottom-0 w-1 bg-tertiary/50 rounded-l-lg"></div>
-                <div class="flex justify-between items-start mb-3 relative z-10">
-                  <span class="font-label-gold text-label-gold text-surface-tint flex items-center gap-1.5 bg-surface-tint/10 px-2 py-0.5 rounded-sm">
-                    <span class="w-1.5 h-1.5 rounded-full bg-surface-tint"></span> BAJA
-                  </span>
-                  <button class="text-on-secondary-container hover:text-tertiary transition-colors"><span class="material-symbols-outlined text-lg">more_horiz</span></button>
-                </div>
-                <h3 class="font-headline-md text-[18px] leading-[1.3] font-medium text-on-surface mb-2 relative z-10">Imprimir Invitaciones</h3>
-                <p class="font-body-md text-sm text-on-secondary-container line-clamp-2 mb-4 relative z-10">Supervisar el proceso de impresión tipográfica para el lote VIP.</p>
-                <div class="w-full h-1 bg-surface-container/50 rounded-full mb-4 overflow-hidden">
-                  <div class="h-full bg-tertiary w-[45%] rounded-full"></div>
-                </div>
-                <div class="flex items-center justify-between mt-auto relative z-10">
-                  <div class="flex items-center gap-2 text-on-secondary-container">
-                    <span class="material-symbols-outlined text-sm">schedule</span>
-                    <span class="font-body-md text-xs">Oct 10</span>
-                  </div>
-                  <div class="flex -space-x-2">
-                    <img class="w-6 h-6 rounded-full object-cover ring-2 ring-secondary-container" alt="Avatar 1" src="assets/team/avatar-3.jpg"/>
-                    <img class="w-6 h-6 rounded-full object-cover ring-2 ring-secondary-container" alt="Avatar 2" src="assets/team/avatar-4.jpg"/>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <div class="kanban-dropzone flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar pb-8 min-h-[80px]" data-status="en_progreso"></div>
           </div>
 
           <!-- REVIEW Column -->
-          <div class="flex flex-col w-[340px] flex-shrink-0">
+          <div class="kanban-column flex flex-col w-[340px] flex-shrink-0" data-status="revision">
             <div class="flex items-center justify-between mb-6 pb-2 border-b border-tertiary/10 relative">
               <h2 class="font-headline-md text-headline-md text-on-surface flex items-center gap-3">
                 <span class="w-2 h-2 rounded-full bg-secondary"></span>
                 Revisión
               </h2>
-              <span class="font-label-gold text-label-gold text-secondary px-2 py-1 rounded bg-secondary/10">1</span>
+              <span class="column-count font-label-gold text-label-gold text-secondary px-2 py-1 rounded bg-secondary/10">0</span>
             </div>
-            <div class="flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar pb-8">
-              <!-- Card 5 -->
-              <div class="bg-primary-container p-5 rounded-lg shadow-md group hover:-translate-y-1 transition-transform relative overflow-hidden cursor-grab active:cursor-grabbing border-r-2 border-r-secondary/30">
-                <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSIvPjwvc3ZnPg==')] opacity-50 pointer-events-none"></div>
-                <div class="flex justify-between items-start mb-3">
-                  <span class="font-label-gold text-label-gold text-tertiary flex items-center gap-1.5 bg-tertiary/10 px-2 py-0.5 rounded-sm">
-                    <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span> MEDIA
-                  </span>
-                  <button class="text-on-surface-variant hover:text-tertiary transition-colors"><span class="material-symbols-outlined text-lg">more_horiz</span></button>
-                </div>
-                <h3 class="font-headline-md text-[18px] leading-[1.3] font-medium text-on-surface mb-2">Mapa de Asientos V1</h3>
-                <p class="font-body-md text-sm text-on-surface-variant line-clamp-2 mb-4">Borrador inicial de la distribución de asientos; requiere aprobación del cliente.</p>
-                <div class="flex items-center justify-between mt-auto">
-                  <div class="flex items-center gap-2 text-secondary">
-                    <span class="material-symbols-outlined text-sm">visibility</span>
-                    <span class="font-body-md text-xs font-semibold">Requiere Aprobación</span>
-                  </div>
-                  <img class="w-6 h-6 rounded-full object-cover" alt="Responsable" src="assets/team/avatar-5.jpg"/>
-                </div>
-              </div>
-            </div>
+            <div class="kanban-dropzone flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar pb-8 min-h-[80px]" data-status="revision"></div>
           </div>
 
           <!-- DONE Column -->
-          <div class="flex flex-col w-[340px] flex-shrink-0">
+          <div class="kanban-column flex flex-col w-[340px] flex-shrink-0" data-status="hecho">
             <div class="flex items-center justify-between mb-6 pb-2 border-b border-tertiary/10 relative opacity-60">
               <h2 class="font-headline-md text-headline-md text-on-surface flex items-center gap-3">
                 <span class="material-symbols-outlined text-sm text-on-surface-variant">check_circle</span>
                 Hecho
               </h2>
-              <span class="font-label-gold text-label-gold text-on-surface-variant px-2 py-1 rounded bg-surface-container">42</span>
+              <span class="column-count font-label-gold text-label-gold text-on-surface-variant px-2 py-1 rounded bg-surface-container">0</span>
             </div>
-            <div class="flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar pb-8">
-              <!-- Card 6 (Done state) -->
-              <div class="bg-surface-container-high p-5 rounded-lg shadow-sm opacity-60 hover:opacity-100 transition-opacity cursor-default">
-                <div class="flex justify-between items-start mb-2">
-                  <h3 class="font-headline-md text-[16px] leading-[1.3] font-medium text-on-surface line-through decoration-tertiary/50">Asegurar Contrato del Lugar</h3>
-                </div>
-                <div class="flex items-center justify-between mt-4">
-                  <div class="flex items-center gap-1 text-tertiary/70">
-                    <span class="material-symbols-outlined text-sm">done_all</span>
-                    <span class="font-body-md text-xs">Sep 15</span>
-                  </div>
-                </div>
-              </div>
-              <!-- Card 7 (Done state) -->
-              <div class="bg-surface-container-high p-5 rounded-lg shadow-sm opacity-60 hover:opacity-100 transition-opacity cursor-default">
-                <div class="flex justify-between items-start mb-2">
-                  <h3 class="font-headline-md text-[16px] leading-[1.3] font-medium text-on-surface line-through decoration-tertiary/50">Aprobación de Presupuesto Inicial</h3>
-                </div>
-                <div class="flex items-center justify-between mt-4">
-                  <div class="flex items-center gap-1 text-tertiary/70">
-                    <span class="material-symbols-outlined text-sm">done_all</span>
-                    <span class="font-body-md text-xs">Sep 10</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <div class="kanban-dropzone flex flex-col gap-4 overflow-y-auto pr-2 custom-scrollbar pb-8 min-h-[80px]" data-status="hecho"></div>
           </div>
 
         </div>
@@ -457,6 +321,285 @@ document.addEventListener('DOMContentLoaded', function () {
     try { localStorage.setItem('galaSidebarCollapsed', isCollapsed ? 'true' : 'false'); } catch (e) {}
   });
 });
+</script>
+
+<!-- Modal: Agregar / Editar Tarea -->
+<div id="task-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
+  <div id="task-modal-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+  <div class="relative w-full max-w-lg bg-surface-container-low rounded-2xl shadow-2xl border border-tertiary/10 p-8 max-h-[90vh] overflow-y-auto">
+    <div class="flex items-center justify-between mb-6">
+      <h2 id="task-modal-title" class="font-headline-lg text-headline-lg text-on-surface">Nueva Tarea</h2>
+      <button id="task-modal-close" class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors">close</button>
+    </div>
+    <form id="task-form" class="flex flex-col gap-4">
+      <input id="task-id" type="hidden"/>
+      <div class="flex flex-col gap-1">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="task-title">Título *</label>
+        <input id="task-title" required="" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="task-description">Descripción</label>
+        <textarea id="task-description" rows="3" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary resize-none"></textarea>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex flex-col gap-1">
+          <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="task-status">Columna</label>
+          <select id="task-status" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary">
+            <option value="por_hacer">Por Hacer</option>
+            <option value="en_progreso">En Progreso</option>
+            <option value="revision">Revisión</option>
+            <option value="hecho">Hecho</option>
+          </select>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="task-priority">Prioridad</label>
+          <select id="task-priority" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary">
+            <option value="alta">Alta</option>
+            <option value="media" selected="">Media</option>
+            <option value="baja">Baja</option>
+          </select>
+        </div>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="task-due-date">Fecha límite</label>
+        <input id="task-due-date" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="date"/>
+      </div>
+
+      <p id="task-form-error" class="hidden text-error text-sm"></p>
+
+      <div class="flex justify-between items-center gap-3 mt-2">
+        <button type="button" id="task-delete-btn" class="hidden px-4 py-3 rounded-lg text-error hover:bg-error/10 transition-colors font-button-text uppercase tracking-wider text-sm flex items-center gap-2">
+          <span class="material-symbols-outlined text-[18px]">delete</span>Eliminar
+        </button>
+        <div class="flex justify-end gap-3 flex-1">
+          <button type="button" id="task-modal-cancel" class="px-6 py-3 rounded-lg border border-tertiary/20 text-on-surface-variant hover:bg-surface-container transition-colors font-button-text uppercase tracking-wider text-sm">Cancelar</button>
+          <button type="submit" class="px-8 py-3 rounded-lg bg-tertiary text-on-tertiary font-button-text uppercase tracking-wider text-sm hover:brightness-110 transition-all">Guardar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script type="module">
+  const board = document.getElementById("kanban-board");
+  const modal = document.getElementById("task-modal");
+  const form = document.getElementById("task-form");
+  const formError = document.getElementById("task-form-error");
+  const deleteBtn = document.getElementById("task-delete-btn");
+
+  let currentEventId = null;
+  let allTasks = [];
+  let draggedTaskId = null;
+
+  function escapeHtml(str) {
+    if (str === null || str === undefined) return "";
+    return String(str).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  const priorityStyles = {
+    alta: { badge: "bg-error/10 text-error", dot: "bg-error", label: "ALTA" },
+    media: { badge: "bg-tertiary/10 text-tertiary", dot: "bg-tertiary", label: "MEDIA" },
+    baja: { badge: "bg-surface-tint/10 text-surface-tint", dot: "bg-surface-tint", label: "BAJA" }
+  };
+
+  function formatDate(dateStr) {
+    if (!dateStr) return "";
+    const d = new Date(dateStr + "T00:00:00");
+    return d.toLocaleDateString("es-MX", { day: "numeric", month: "short" });
+  }
+
+  function renderCard(t) {
+    const p = priorityStyles[t.priority] || priorityStyles.media;
+    const isDone = t.status === "hecho";
+    if (isDone) {
+      return `
+        <div class="kanban-card bg-surface-container-high p-5 rounded-lg shadow-sm opacity-60 hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing" draggable="true" data-id="${t.id}">
+          <h3 class="font-headline-md text-[16px] leading-[1.3] font-medium text-on-surface line-through decoration-tertiary/50">${escapeHtml(t.title)}</h3>
+          <div class="flex items-center justify-between mt-4">
+            <div class="flex items-center gap-1 text-tertiary/70">
+              <span class="material-symbols-outlined text-sm">done_all</span>
+              <span class="font-body-md text-xs">${formatDate(t.due_date) || "—"}</span>
+            </div>
+          </div>
+        </div>`;
+    }
+    return `
+      <div class="kanban-card bg-primary-container p-5 rounded-lg shadow-md group hover:-translate-y-1 transition-transform relative overflow-hidden cursor-grab active:cursor-grabbing" draggable="true" data-id="${t.id}">
+        <div class="flex justify-between items-start mb-3">
+          <span class="font-label-gold text-label-gold ${p.badge.split(' ')[1]} flex items-center gap-1.5 ${p.badge.split(' ')[0]} px-2 py-0.5 rounded-sm">
+            <span class="w-1.5 h-1.5 rounded-full ${p.dot}"></span> ${p.label}
+          </span>
+        </div>
+        <h3 class="font-headline-md text-[18px] leading-[1.3] font-medium text-on-surface mb-2">${escapeHtml(t.title)}</h3>
+        ${t.description ? `<p class="font-body-md text-sm text-on-surface-variant line-clamp-2 mb-4">${escapeHtml(t.description)}</p>` : ""}
+        <div class="flex items-center justify-between mt-auto">
+          <div class="flex items-center gap-2 text-on-surface-variant">
+            ${t.due_date ? `<span class="material-symbols-outlined text-sm">schedule</span><span class="font-body-md text-xs">${formatDate(t.due_date)}</span>` : ""}
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function renderBoard() {
+    document.querySelectorAll(".kanban-dropzone").forEach(zone => {
+      const status = zone.dataset.status;
+      const tasksInColumn = allTasks.filter(t => t.status === status);
+      zone.innerHTML = tasksInColumn.map(renderCard).join("");
+      const countEl = zone.closest(".kanban-column").querySelector(".column-count");
+      countEl.textContent = tasksInColumn.length;
+    });
+
+    const total = allTasks.length;
+    const done = allTasks.filter(t => t.status === "hecho").length;
+    const pct = total ? Math.round((done / total) * 100) : 0;
+    document.getElementById("progress-percent").textContent = `${pct}%`;
+    document.getElementById("progress-bar").style.width = `${pct}%`;
+    document.getElementById("progress-label").textContent = `${done} de ${total} tareas completadas`;
+  }
+
+  async function loadTasks() {
+    const { data, error } = await window.supabaseClient
+      .from("tasks")
+      .select("*")
+      .eq("event_id", currentEventId)
+      .order("created_at", { ascending: true });
+    if (error) {
+      board.innerHTML = `<p class="text-error py-10">Error al cargar tareas: ${escapeHtml(error.message)}</p>`;
+      return;
+    }
+    allTasks = data || [];
+    renderBoard();
+  }
+
+  function openModal(mode, task, defaultStatus) {
+    formError.classList.add("hidden");
+    document.getElementById("task-modal-title").textContent = mode === "edit" ? "Editar Tarea" : "Nueva Tarea";
+    document.getElementById("task-id").value = task ? task.id : "";
+    document.getElementById("task-title").value = task ? task.title || "" : "";
+    document.getElementById("task-description").value = task ? task.description || "" : "";
+    document.getElementById("task-status").value = task ? task.status : (defaultStatus || "por_hacer");
+    document.getElementById("task-priority").value = task ? task.priority || "media" : "media";
+    document.getElementById("task-due-date").value = task ? task.due_date || "" : "";
+    deleteBtn.classList.toggle("hidden", mode !== "edit");
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+  }
+
+  function closeModal() {
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    form.reset();
+  }
+
+  document.getElementById("btn-add-task").addEventListener("click", () => openModal("add", null, "por_hacer"));
+  document.getElementById("task-modal-close").addEventListener("click", closeModal);
+  document.getElementById("task-modal-cancel").addEventListener("click", closeModal);
+  document.getElementById("task-modal-backdrop").addEventListener("click", closeModal);
+
+  board.addEventListener("click", (e) => {
+    const card = e.target.closest(".kanban-card");
+    if (!card) return;
+    const task = allTasks.find(t => String(t.id) === card.dataset.id);
+    if (task) openModal("edit", task);
+  });
+
+  deleteBtn.addEventListener("click", async () => {
+    const id = document.getElementById("task-id").value;
+    if (!id) return;
+    if (!confirm("¿Eliminar esta tarea? Esta acción no se puede deshacer.")) return;
+    const { error } = await window.supabaseClient.from("tasks").delete().eq("id", id);
+    if (error) {
+      alert("No se pudo eliminar: " + error.message);
+      return;
+    }
+    closeModal();
+    await loadTasks();
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    formError.classList.add("hidden");
+    const id = document.getElementById("task-id").value;
+    const payload = {
+      event_id: currentEventId,
+      title: document.getElementById("task-title").value.trim(),
+      description: document.getElementById("task-description").value.trim() || null,
+      status: document.getElementById("task-status").value,
+      priority: document.getElementById("task-priority").value,
+      due_date: document.getElementById("task-due-date").value || null
+    };
+
+    let error;
+    if (id) {
+      ({ error } = await window.supabaseClient.from("tasks").update(payload).eq("id", id));
+    } else {
+      ({ error } = await window.supabaseClient.from("tasks").insert(payload));
+    }
+
+    if (error) {
+      formError.textContent = error.message;
+      formError.classList.remove("hidden");
+      return;
+    }
+    closeModal();
+    await loadTasks();
+  });
+
+  // ---- Drag & drop nativo entre columnas ----
+  board.addEventListener("dragstart", (e) => {
+    const card = e.target.closest(".kanban-card");
+    if (!card) return;
+    draggedTaskId = card.dataset.id;
+    card.classList.add("opacity-40");
+    e.dataTransfer.effectAllowed = "move";
+  });
+
+  board.addEventListener("dragend", (e) => {
+    const card = e.target.closest(".kanban-card");
+    if (card) card.classList.remove("opacity-40");
+    document.querySelectorAll(".kanban-dropzone").forEach(z => z.classList.remove("bg-tertiary/5", "ring-2", "ring-tertiary/30"));
+  });
+
+  document.querySelectorAll(".kanban-dropzone").forEach(zone => {
+    zone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+      zone.classList.add("bg-tertiary/5", "ring-2", "ring-tertiary/30");
+    });
+    zone.addEventListener("dragleave", () => {
+      zone.classList.remove("bg-tertiary/5", "ring-2", "ring-tertiary/30");
+    });
+    zone.addEventListener("drop", async (e) => {
+      e.preventDefault();
+      zone.classList.remove("bg-tertiary/5", "ring-2", "ring-tertiary/30");
+      if (!draggedTaskId) return;
+      const newStatus = zone.dataset.status;
+      const task = allTasks.find(t => String(t.id) === draggedTaskId);
+      if (!task || task.status === newStatus) return;
+
+      // Optimista: refleja el cambio de inmediato, luego confirma con la BD
+      task.status = newStatus;
+      renderBoard();
+
+      const { error } = await window.supabaseClient.from("tasks").update({ status: newStatus }).eq("id", draggedTaskId);
+      if (error) {
+        alert("No se pudo mover la tarea: " + error.message);
+        await loadTasks();
+      }
+      draggedTaskId = null;
+    });
+  });
+
+  (async function init() {
+    const auth = await window.requireAuth();
+    if (!auth) return;
+
+    const currentEvent = await window.requireEvent();
+    if (!currentEvent) return;
+
+    currentEventId = currentEvent.id;
+    await loadTasks();
+  })();
 </script>
 </body>
 </html>

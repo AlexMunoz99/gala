@@ -140,6 +140,7 @@ tailwind.config = {
     }
     const logoutBtn = document.getElementById("logout-btn");
     if (logoutBtn) logoutBtn.addEventListener("click", window.signOut);
+    if (auth.profile) window.applyRoleBadge(auth.profile.role);
 
     const currentEvent = await window.requireEvent();
     if (!currentEvent) return; // requireEvent ya redirige a proyectos.html
@@ -191,7 +192,9 @@ tailwind.config = {
     </div>
     <div class="flex items-center gap-6 justify-end w-72 pr-8">
       <button class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors">notifications</button>
-      <button class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors">settings</button>
+      <div id="role-badge" class="w-8 h-8 rounded-full flex items-center justify-center transition-colors" title="">
+        <span class="material-symbols-outlined role-badge-icon text-[18px]"></span>
+      </div>
       <button id="logout-btn" class="material-symbols-outlined text-on-surface-variant hover:text-error transition-colors" title="Cerrar sesión">logout</button>
       <div class="flex items-center gap-2">
         <div class="w-10 h-10 rounded-full border border-tertiary/30 p-0.5 overflow-hidden ring-2 ring-tertiary/10">
