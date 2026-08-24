@@ -218,7 +218,7 @@ tailwind.config = {
           <h1 class="font-display-lg text-display-lg text-on-surface">Aliados Selectos</h1>
           <p class="font-body-lg text-body-lg text-on-surface-variant">Supervise contratos, controle hitos de pago y gestione comunicaciones con sus especialistas de élite.</p>
         </div>
-        <button class="shrink-0 bg-tertiary text-on-tertiary font-button-text text-button-text px-8 py-4 rounded-lg flex items-center gap-3 hover:bg-tertiary-fixed transition-all duration-300 shadow-xl shadow-tertiary/20 group">
+        <button id="btn-add-vendor" class="shrink-0 bg-tertiary text-on-tertiary font-button-text text-button-text px-8 py-4 rounded-lg flex items-center gap-3 hover:bg-tertiary-fixed transition-all duration-300 shadow-xl shadow-tertiary/20 group">
           <span class="material-symbols-outlined group-hover:rotate-90 transition-transform duration-300">add</span>
           Añadir Proveedor
         </button>
@@ -226,56 +226,47 @@ tailwind.config = {
 
       <!-- Summary Metrics -->
       <div class="px-container-padding mt-16 grid grid-cols-1 lg:grid-cols-3 gap-gutter relative z-10">
-        <!-- Metric 1: Budget Overview -->
+        <!-- Metric 1: Total comprometido -->
         <div class="bg-surface-container rounded-xl p-8 flex flex-col justify-between shadow-lg relative overflow-hidden group">
           <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
           <div class="flex justify-between items-start mb-8 relative z-10">
             <div class="flex flex-col gap-1">
               <span class="font-label-gold text-label-gold text-on-surface-variant uppercase">Total Comprometido</span>
-              <span class="font-headline-lg text-headline-lg text-on-surface">$142,500 MXN</span>
+              <span id="stat-total-committed" class="font-headline-lg text-headline-lg text-on-surface">$0 MXN</span>
             </div>
             <div class="w-12 h-12 rounded-full bg-primary-container text-primary flex items-center justify-center">
               <span class="material-symbols-outlined">account_balance</span>
             </div>
           </div>
           <div class="flex items-center gap-4 relative z-10">
-            <div class="h-1 flex-1 bg-surface-variant rounded-full overflow-hidden">
-              <div class="h-full bg-tertiary w-[65%]"></div>
-            </div>
-            <span class="font-button-text text-button-text text-tertiary">65% del Presupuesto</span>
+            <span id="stat-total-count" class="font-button-text text-button-text text-tertiary">0 proveedores</span>
           </div>
         </div>
-        <!-- Metric 2: Payment Progress -->
+        <!-- Metric 2: Depósitos -->
         <div class="bg-surface-container rounded-xl p-8 flex items-center justify-between shadow-lg">
           <div class="flex flex-col gap-1">
             <span class="font-label-gold text-label-gold text-on-surface-variant uppercase">Depósitos Pagados</span>
-            <span class="font-headline-lg text-headline-lg text-on-surface">$85,000 MXN</span>
-            <span class="font-body-md text-body-md text-on-surface-variant mt-2">Próximo pago en 14 días</span>
+            <span id="stat-deposits-paid" class="font-headline-lg text-headline-lg text-on-surface">$0 MXN</span>
+            <span id="stat-deposits-count" class="font-body-md text-body-md text-on-surface-variant mt-2">0 de 0 proveedores</span>
           </div>
-          <div class="relative w-24 h-24 shrink-0">
-            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-              <circle class="stroke-surface-variant" cx="50" cy="50" fill="none" r="44" stroke-width="8"></circle>
-              <circle class="stroke-secondary" cx="50" cy="50" fill="none" r="44" stroke-dasharray="276.46" stroke-dashoffset="110.58" stroke-linecap="round" stroke-width="8"></circle>
-            </svg>
-            <div class="absolute inset-0 flex items-center justify-center">
-              <span class="font-button-text text-button-text text-on-surface">12/18</span>
-            </div>
+          <div class="w-12 h-12 rounded-full bg-secondary-container/30 text-secondary flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined">payments</span>
           </div>
         </div>
-        <!-- Metric 3: Active Negotiations -->
+        <!-- Metric 3: Negociando -->
         <div class="bg-primary-container rounded-xl p-8 flex flex-col justify-between shadow-lg">
           <div class="flex justify-between items-start mb-8">
             <div class="flex flex-col gap-1">
-              <span class="font-label-gold text-label-gold text-primary uppercase">Contratos Pendientes</span>
-              <span class="font-headline-lg text-headline-lg text-on-primary-container">3 Proveedores</span>
+              <span class="font-label-gold text-label-gold text-primary uppercase">En Negociación</span>
+              <span id="stat-negotiating" class="font-headline-lg text-headline-lg text-on-primary-container">0 Proveedores</span>
             </div>
             <div class="w-12 h-12 rounded-full bg-surface/20 text-on-primary-container flex items-center justify-center">
               <span class="material-symbols-outlined">draw</span>
             </div>
           </div>
-          <div class="flex items-center gap-2">
+          <div id="stat-action-required" class="flex items-center gap-2 hidden">
             <span class="w-2 h-2 rounded-full bg-error animate-pulse"></span>
-            <span class="font-body-md text-body-md text-on-primary-container">Acción requerida para Florista</span>
+            <span class="font-body-md text-body-md text-on-primary-container">Acción requerida en algún proveedor</span>
           </div>
         </div>
       </div>
@@ -286,142 +277,15 @@ tailwind.config = {
         <div class="flex-1 flex flex-col min-w-0">
           <!-- Tabs Navigation -->
           <div class="flex items-center gap-2 mb-10 overflow-x-auto pb-4 hide-scrollbar" id="vendor-tabs">
-            <button class="px-6 py-3 rounded-full font-button-text text-button-text bg-tertiary/10 text-tertiary whitespace-nowrap transition-colors" data-filter="all">Todos</button>
-            <button class="px-6 py-3 rounded-full font-button-text text-button-text bg-transparent hover:bg-surface-container-high text-on-surface-variant whitespace-nowrap transition-colors" data-filter="catering">Catering</button>
-            <button class="px-6 py-3 rounded-full font-button-text text-button-text bg-transparent hover:bg-surface-container-high text-on-surface-variant whitespace-nowrap transition-colors" data-filter="flowers">Diseño Floral</button>
-            <button class="px-6 py-3 rounded-full font-button-text text-button-text bg-transparent hover:bg-surface-container-high text-on-surface-variant whitespace-nowrap transition-colors" data-filter="photo">Fotografía</button>
-            <button class="px-6 py-3 rounded-full font-button-text text-button-text bg-transparent hover:bg-surface-container-high text-on-surface-variant whitespace-nowrap transition-colors" data-filter="music">Música</button>
+            <button class="vendor-tab px-6 py-3 rounded-full font-button-text text-button-text bg-tertiary/10 text-tertiary whitespace-nowrap transition-colors" data-filter="">Todos</button>
+            <button class="vendor-tab px-6 py-3 rounded-full font-button-text text-button-text bg-transparent hover:bg-surface-container-high text-on-surface-variant whitespace-nowrap transition-colors" data-filter="Catering">Catering</button>
+            <button class="vendor-tab px-6 py-3 rounded-full font-button-text text-button-text bg-transparent hover:bg-surface-container-high text-on-surface-variant whitespace-nowrap transition-colors" data-filter="Diseño Floral">Diseño Floral</button>
+            <button class="vendor-tab px-6 py-3 rounded-full font-button-text text-button-text bg-transparent hover:bg-surface-container-high text-on-surface-variant whitespace-nowrap transition-colors" data-filter="Fotografía">Fotografía</button>
+            <button class="vendor-tab px-6 py-3 rounded-full font-button-text text-button-text bg-transparent hover:bg-surface-container-high text-on-surface-variant whitespace-nowrap transition-colors" data-filter="Música">Música</button>
           </div>
           <!-- Vendor Cards Grid -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter w-full">
-            <!-- Card 1: Hired / Catering -->
-            <div class="bg-surface-container rounded-xl p-6 flex flex-col shadow-sm hover:shadow-xl transition-all duration-300 relative group overflow-hidden">
-              <div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary transform scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-300"></div>
-              <div class="flex items-start justify-between mb-6">
-                <div class="flex items-center gap-4">
-                  <div class="w-16 h-16 rounded-full overflow-hidden bg-surface-variant shrink-0">
-                    <img class="w-full h-full object-cover" alt="Maison de Saveur" src="assets/vendors/maison-de-saveur.jpg"/>
-                  </div>
-                  <div class="flex flex-col min-w-0">
-                    <h3 class="font-headline-md text-headline-md text-on-surface truncate">Maison de Saveur</h3>
-                    <span class="font-label-gold text-label-gold text-on-surface-variant uppercase tracking-widest mt-1">Catering</span>
-                  </div>
-                </div>
-                <div class="bg-secondary/10 text-secondary px-3 py-1.5 rounded-md font-label-gold text-label-gold flex items-center gap-1">
-                  <span class="material-symbols-outlined text-[16px]">check_circle</span> Contratado
-                </div>
-              </div>
-              <div class="grid grid-cols-2 gap-4 bg-surface/50 rounded-lg p-4 mb-4">
-                <div class="flex flex-col gap-1">
-                  <span class="font-label-gold text-label-gold text-on-surface-variant">Total Contrato</span>
-                  <span class="font-body-md text-body-md text-on-surface">$45,000 MXN</span>
-                </div>
-                <div class="flex flex-col gap-1">
-                  <span class="font-label-gold text-label-gold text-on-surface-variant">Estado de Pago</span>
-                  <span class="font-body-md text-body-md text-tertiary">Depósito Pagado (50%)</span>
-                </div>
-              </div>
-              <div class="mt-auto pt-4 flex justify-end gap-4">
-                <button class="font-button-text text-button-text text-on-surface-variant hover:text-on-surface transition-colors">Ver Contrato</button>
-                <button class="font-button-text text-button-text text-tertiary hover:text-tertiary-fixed transition-colors">Contactar</button>
-              </div>
-            </div>
-            <!-- Card 2: Negotiating / Flowers -->
-            <div class="bg-surface-container rounded-xl p-6 flex flex-col shadow-sm hover:shadow-xl transition-all duration-300 relative group overflow-hidden">
-              <div class="absolute left-0 top-0 bottom-0 w-1 bg-tertiary transform scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-300"></div>
-              <div class="flex items-start justify-between mb-6">
-                <div class="flex items-center gap-4">
-                  <div class="w-16 h-16 rounded-full overflow-hidden bg-surface-variant shrink-0">
-                    <img class="w-full h-full object-cover" alt="Botanica Grand" src="assets/vendors/botanica-grand.jpg"/>
-                  </div>
-                  <div class="flex flex-col min-w-0">
-                    <h3 class="font-headline-md text-headline-md text-on-surface truncate">Botanica Grand</h3>
-                    <span class="font-label-gold text-label-gold text-on-surface-variant uppercase tracking-widest mt-1">Diseño Floral</span>
-                  </div>
-                </div>
-                <div class="bg-tertiary/10 text-tertiary px-3 py-1.5 rounded-md font-label-gold text-label-gold flex items-center gap-1">
-                  <span class="material-symbols-outlined text-[16px]">sync</span> Negociando
-                </div>
-              </div>
-              <div class="grid grid-cols-2 gap-4 bg-surface/50 rounded-lg p-4 mb-4">
-                <div class="flex flex-col gap-1">
-                  <span class="font-label-gold text-label-gold text-on-surface-variant">Estimado</span>
-                  <span class="font-body-md text-body-md text-on-surface">$18,500 MXN</span>
-                </div>
-                <div class="flex flex-col gap-1">
-                  <span class="font-label-gold text-label-gold text-on-surface-variant">Estado de Pago</span>
-                  <span class="font-body-md text-body-md text-on-surface-variant">Pendiente Firma</span>
-                </div>
-              </div>
-              <div class="mt-auto pt-4 flex justify-end gap-4">
-                <button class="font-button-text text-button-text text-on-surface-variant hover:text-on-surface transition-colors">Revisar Términos</button>
-                <button class="font-button-text text-button-text text-tertiary hover:text-tertiary-fixed transition-colors">Mensaje</button>
-              </div>
-            </div>
-            <!-- Card 3: Hired / Music -->
-            <div class="bg-surface-container rounded-xl p-6 flex flex-col shadow-sm hover:shadow-xl transition-all duration-300 relative group overflow-hidden">
-              <div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary transform scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-300"></div>
-              <div class="flex items-start justify-between mb-6">
-                <div class="flex items-center gap-4">
-                  <div class="w-16 h-16 rounded-full overflow-hidden bg-surface-variant shrink-0">
-                    <img class="w-full h-full object-cover" alt="Symphony Collective" src="assets/vendors/symphony-collective.jpg"/>
-                  </div>
-                  <div class="flex flex-col min-w-0">
-                    <h3 class="font-headline-md text-headline-md text-on-surface truncate">Symphony Collective</h3>
-                    <span class="font-label-gold text-label-gold text-on-surface-variant uppercase tracking-widest mt-1">Música</span>
-                  </div>
-                </div>
-                <div class="bg-secondary/10 text-secondary px-3 py-1.5 rounded-md font-label-gold text-label-gold flex items-center gap-1">
-                  <span class="material-symbols-outlined text-[16px]">check_circle</span> Contratado
-                </div>
-              </div>
-              <div class="grid grid-cols-2 gap-4 bg-surface/50 rounded-lg p-4 mb-4">
-                <div class="flex flex-col gap-1">
-                  <span class="font-label-gold text-label-gold text-on-surface-variant">Total Contrato</span>
-                  <span class="font-body-md text-body-md text-on-surface">$12,000 MXN</span>
-                </div>
-                <div class="flex flex-col gap-1">
-                  <span class="font-label-gold text-label-gold text-on-surface-variant">Estado de Pago</span>
-                  <span class="font-body-md text-body-md text-secondary">Pagado Total</span>
-                </div>
-              </div>
-              <div class="mt-auto pt-4 flex justify-end gap-4">
-                <button class="font-button-text text-button-text text-on-surface-variant hover:text-on-surface transition-colors">Ver Contrato</button>
-                <button class="font-button-text text-button-text text-tertiary hover:text-tertiary-fixed transition-colors">Contactar</button>
-              </div>
-            </div>
-            <!-- Card 4: Action Needed / Decor -->
-            <div class="bg-error-container/10 rounded-xl p-6 flex flex-col shadow-sm hover:shadow-xl transition-all duration-300 relative group overflow-hidden">
-              <div class="absolute left-0 top-0 bottom-0 w-1 bg-error transform scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-300"></div>
-              <div class="flex items-start justify-between mb-6">
-                <div class="flex items-center gap-4">
-                  <div class="w-16 h-16 rounded-full overflow-hidden bg-surface-variant shrink-0">
-                    <img class="w-full h-full object-cover" alt="Atelier Productions" src="assets/vendors/atelier-productions.jpg"/>
-                  </div>
-                  <div class="flex flex-col min-w-0">
-                    <h3 class="font-headline-md text-headline-md text-on-surface truncate">Atelier Productions</h3>
-                    <span class="font-label-gold text-label-gold text-on-surface-variant uppercase tracking-widest mt-1">Producción</span>
-                  </div>
-                </div>
-                <div class="bg-error/10 text-error px-3 py-1.5 rounded-md font-label-gold text-label-gold flex items-center gap-1">
-                  <span class="material-symbols-outlined text-[16px]">warning</span> Acción Req
-                </div>
-              </div>
-              <div class="grid grid-cols-2 gap-4 bg-surface/50 rounded-lg p-4 mb-4">
-                <div class="flex flex-col gap-1">
-                  <span class="font-label-gold text-label-gold text-on-surface-variant">Total Contrato</span>
-                  <span class="font-body-md text-body-md text-on-surface">$68,000 MXN</span>
-                </div>
-                <div class="flex flex-col gap-1">
-                  <span class="font-label-gold text-label-gold text-on-surface-variant">Estado de Pago</span>
-                  <span class="font-body-md text-body-md text-error">Factura Vencida</span>
-                </div>
-              </div>
-              <div class="mt-auto pt-4 flex justify-end gap-4">
-                <button class="font-button-text text-button-text text-error hover:text-error-container transition-colors">Pagar Factura</button>
-                <button class="font-button-text text-button-text text-tertiary hover:text-tertiary-fixed transition-colors">Contactar</button>
-              </div>
-            </div>
+          <div id="vendors-grid" class="grid grid-cols-1 md:grid-cols-2 gap-gutter w-full">
+            <p class="text-on-surface-variant col-span-full py-10">Cargando proveedores…</p>
           </div>
         </div>
 
@@ -430,49 +294,10 @@ tailwind.config = {
           <div class="bg-surface-container-highest rounded-2xl p-8 sticky top-28 shadow-2xl">
             <div class="flex items-center justify-between mb-10">
               <h2 class="font-headline-md text-headline-md text-on-surface">Vencimientos de Pago</h2>
-              <button class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors">more_horiz</button>
             </div>
-            <div class="flex flex-col relative before:absolute before:inset-y-0 before:left-[11px] before:w-[2px] before:bg-surface-variant">
-              <!-- Item 1 (Overdue) -->
-              <div class="flex gap-6 relative mb-8">
-                <div class="w-6 h-6 rounded-full bg-surface-container-highest border-4 border-error flex-shrink-0 relative z-10 mt-1"></div>
-                <div class="flex flex-col min-w-0">
-                  <span class="font-label-gold text-label-gold text-error uppercase mb-1">Ayer</span>
-                  <span class="font-body-lg text-body-lg text-on-surface truncate">Atelier Productions</span>
-                  <span class="font-body-md text-body-md text-on-surface-variant">2da Cuota • $17,000 MXN</span>
-                </div>
-              </div>
-              <!-- Item 2 (Upcoming) -->
-              <div class="flex gap-6 relative mb-8">
-                <div class="w-6 h-6 rounded-full bg-tertiary flex-shrink-0 relative z-10 mt-1 shadow-[0_0_12px_rgba(233,195,73,0.4)]"></div>
-                <div class="flex flex-col min-w-0">
-                  <span class="font-label-gold text-label-gold text-tertiary uppercase mb-1">Próxima Semana • Oct 24</span>
-                  <span class="font-body-lg text-body-lg text-on-surface truncate">Maison de Saveur</span>
-                  <span class="font-body-md text-body-md text-on-surface-variant">Pago Final • $22,500 MXN</span>
-                </div>
-              </div>
-              <!-- Item 3 (Future) -->
-              <div class="flex gap-6 relative mb-8">
-                <div class="w-6 h-6 rounded-full bg-surface-container-highest border-4 border-surface-variant flex-shrink-0 relative z-10 mt-1"></div>
-                <div class="flex flex-col min-w-0">
-                  <span class="font-label-gold text-label-gold text-on-surface-variant uppercase mb-1">Nov 12</span>
-                  <span class="font-body-lg text-body-lg text-on-surface truncate">Botanica Grand</span>
-                  <span class="font-body-md text-body-md text-on-surface-variant">Depósito • $9,250 MXN</span>
-                </div>
-              </div>
-              <!-- Item 4 (Future) -->
-              <div class="flex gap-6 relative">
-                <div class="w-6 h-6 rounded-full bg-surface-container-highest border-4 border-surface-variant flex-shrink-0 relative z-10 mt-1"></div>
-                <div class="flex flex-col min-w-0">
-                  <span class="font-label-gold text-label-gold text-on-surface-variant uppercase mb-1">Dic 01</span>
-                  <span class="font-body-lg text-body-lg text-on-surface truncate">Saldo de la Sede</span>
-                  <span class="font-body-md text-body-md text-on-surface-variant">Final • $35,000 MXN</span>
-                </div>
-              </div>
+            <div id="deadlines-list" class="flex flex-col relative before:absolute before:inset-y-0 before:left-[11px] before:w-[2px] before:bg-surface-variant">
+              <p class="text-on-surface-variant text-sm">Cargando…</p>
             </div>
-            <button class="w-full mt-10 py-4 bg-transparent border border-outline-variant text-on-surface font-button-text text-button-text rounded-lg hover:bg-surface-variant transition-colors">
-              Ver Calendario Completo
-            </button>
           </div>
         </div>
       </div>
@@ -481,21 +306,396 @@ tailwind.config = {
   </main>
 </div>
 
-<script>
-  // Interacción simple de tabs
-  document.addEventListener('DOMContentLoaded', () => {
-    const tabs = document.querySelectorAll('#vendor-tabs button');
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => {
-          t.classList.remove('bg-tertiary/10', 'text-tertiary');
-          t.classList.add('bg-transparent', 'text-on-surface-variant');
-        });
-        tab.classList.remove('bg-transparent', 'text-on-surface-variant');
-        tab.classList.add('bg-tertiary/10', 'text-tertiary');
-      });
+<!-- Modal: Agregar / Editar Proveedor -->
+<div id="vendor-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
+  <div id="vendor-modal-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+  <div class="relative w-full max-w-lg bg-surface-container-low rounded-2xl shadow-2xl border border-tertiary/10 p-8 max-h-[90vh] overflow-y-auto">
+    <div class="flex items-center justify-between mb-6">
+      <h2 id="vendor-modal-title" class="font-headline-lg text-headline-lg text-on-surface">Añadir Proveedor</h2>
+      <button id="vendor-modal-close" class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors">close</button>
+    </div>
+    <form id="vendor-form" class="flex flex-col gap-4">
+      <input id="vendor-id" type="hidden"/>
+
+      <div class="flex flex-col gap-1">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="vendor-photo">Foto</label>
+        <div class="w-full h-36 rounded-lg bg-surface-container overflow-hidden flex items-center justify-center relative border border-tertiary/20">
+          <img id="vendor-photo-preview" class="hidden w-full h-full object-cover" src=""/>
+          <span id="vendor-photo-placeholder" class="material-symbols-outlined text-on-surface-variant text-4xl">business_center</span>
+        </div>
+        <input id="vendor-photo" accept="image/*" class="text-on-surface-variant text-sm mt-1" type="file"/>
+        <p id="vendor-photo-uploading" class="hidden text-tertiary text-xs mt-1">Subiendo foto…</p>
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="vendor-name">Nombre *</label>
+        <input id="vendor-name" required="" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex flex-col gap-1">
+          <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="vendor-category">Categoría</label>
+          <select id="vendor-category" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary">
+            <option value="Catering">Catering</option>
+            <option value="Diseño Floral">Diseño Floral</option>
+            <option value="Fotografía">Fotografía</option>
+            <option value="Música">Música</option>
+            <option value="Producción">Producción</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="vendor-status">Estatus</label>
+          <select id="vendor-status" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary">
+            <option value="negociando">Negociando</option>
+            <option value="contratado">Contratado</option>
+            <option value="accion_requerida">Acción Requerida</option>
+          </select>
+        </div>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="vendor-contract-total">Monto del contrato (MXN)</label>
+        <input id="vendor-contract-total" min="0" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="number"/>
+      </div>
+      <div class="grid grid-cols-2 gap-4 items-end">
+        <div class="flex flex-col gap-1">
+          <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="vendor-deposit-amount">Anticipo (MXN)</label>
+          <input id="vendor-deposit-amount" min="0" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="number"/>
+        </div>
+        <label class="flex items-center gap-3 py-3 cursor-pointer">
+          <input id="vendor-deposit-paid" class="w-5 h-5 accent-tertiary" type="checkbox"/>
+          <span class="text-on-surface text-sm">Ya se dio el anticipo</span>
+        </label>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="vendor-due-date">Fecha límite</label>
+        <input id="vendor-due-date" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="date"/>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="vendor-phone">Teléfono</label>
+        <input id="vendor-phone" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="vendor-profile-url">Link de perfil</label>
+        <input id="vendor-profile-url" placeholder="https://instagram.com/..." class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="url"/>
+      </div>
+
+      <p id="vendor-form-error" class="hidden text-error text-sm"></p>
+
+      <div class="flex justify-end gap-3 mt-2">
+        <button type="button" id="vendor-modal-cancel" class="px-6 py-3 rounded-lg border border-tertiary/20 text-on-surface-variant hover:bg-surface-container transition-colors font-button-text uppercase tracking-wider text-sm">Cancelar</button>
+        <button type="submit" id="vendor-form-submit" class="px-8 py-3 rounded-lg bg-tertiary text-on-tertiary font-button-text uppercase tracking-wider text-sm hover:brightness-110 transition-all">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script type="module">
+  const grid = document.getElementById("vendors-grid");
+  const modal = document.getElementById("vendor-modal");
+  const form = document.getElementById("vendor-form");
+  const formError = document.getElementById("vendor-form-error");
+  const photoInput = document.getElementById("vendor-photo");
+  const photoPreview = document.getElementById("vendor-photo-preview");
+  const photoPlaceholder = document.getElementById("vendor-photo-placeholder");
+  const photoUploading = document.getElementById("vendor-photo-uploading");
+  const deadlinesList = document.getElementById("deadlines-list");
+  const tabsWrap = document.getElementById("vendor-tabs");
+
+  let currentEventId = null;
+  let allVendors = [];
+  let uploadedImageUrl = null;
+  let activeFilter = "";
+
+  function escapeHtml(str) {
+    if (str === null || str === undefined) return "";
+    return String(str).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  function formatMoney(n) {
+    if (n === null || n === undefined) return null;
+    return `$${Number(n).toLocaleString("es-MX")} MXN`;
+  }
+
+  function formatDate(dateStr) {
+    if (!dateStr) return "";
+    const d = new Date(dateStr + "T00:00:00");
+    return d.toLocaleDateString("es-MX", { day: "numeric", month: "short" });
+  }
+
+  const statusStyles = {
+    contratado: { badge: "bg-secondary/10 text-secondary", icon: "check_circle", label: "Contratado" },
+    negociando: { badge: "bg-tertiary/10 text-tertiary", icon: "sync", label: "Negociando" },
+    accion_requerida: { badge: "bg-error/10 text-error", icon: "warning", label: "Acción Requerida" }
+  };
+
+  function renderVendors() {
+    const filtered = activeFilter ? allVendors.filter(v => v.category === activeFilter) : allVendors;
+
+    if (filtered.length === 0) {
+      grid.innerHTML = `<p class="text-on-surface-variant col-span-full py-10">${allVendors.length === 0 ? 'Aún no hay proveedores. Da clic en "Añadir Proveedor" para crear el primero.' : 'Ningún proveedor en esta categoría.'}</p>`;
+      return;
+    }
+
+    grid.innerHTML = filtered.map(v => {
+      const st = statusStyles[v.status] || statusStyles.negociando;
+      const isAccionRequerida = v.status === "accion_requerida";
+      return `
+        <div class="${isAccionRequerida ? 'bg-error-container/10' : 'bg-surface-container'} rounded-xl p-6 flex flex-col shadow-sm hover:shadow-xl transition-all duration-300 relative group overflow-hidden" data-id="${v.id}">
+          <div class="absolute left-0 top-0 bottom-0 w-1 ${isAccionRequerida ? 'bg-error' : 'bg-secondary'} transform scale-y-0 group-hover:scale-y-100 transition-transform origin-top duration-300"></div>
+          <div class="flex items-start justify-between mb-6">
+            <div class="flex items-center gap-4 min-w-0">
+              <div class="w-16 h-16 rounded-full overflow-hidden bg-surface-variant shrink-0 flex items-center justify-center">
+                ${v.image_url ? `<img class="w-full h-full object-cover" alt="${escapeHtml(v.name)}" src="${v.image_url}"/>` : `<span class="material-symbols-outlined text-on-surface-variant/40">business_center</span>`}
+              </div>
+              <div class="flex flex-col min-w-0">
+                <h3 class="font-headline-md text-headline-md text-on-surface truncate">${escapeHtml(v.name)}</h3>
+                ${v.category ? `<span class="font-label-gold text-label-gold text-on-surface-variant uppercase tracking-widest mt-1">${escapeHtml(v.category)}</span>` : ""}
+              </div>
+            </div>
+            <div class="${st.badge} px-3 py-1.5 rounded-md font-label-gold text-label-gold flex items-center gap-1 shrink-0">
+              <span class="material-symbols-outlined text-[16px]">${st.icon}</span> ${st.label}
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4 bg-surface/50 rounded-lg p-4 mb-4">
+            <div class="flex flex-col gap-1">
+              <span class="font-label-gold text-label-gold text-on-surface-variant">Total Contrato</span>
+              <span class="font-body-md text-body-md text-on-surface">${formatMoney(v.contract_total) || "—"}</span>
+            </div>
+            <div class="flex flex-col gap-1">
+              <span class="font-label-gold text-label-gold text-on-surface-variant">Anticipo</span>
+              <span class="font-body-md text-body-md ${v.deposit_paid ? 'text-secondary' : 'text-on-surface-variant'}">
+                ${v.deposit_amount ? formatMoney(v.deposit_amount) : "Sin definir"}${v.deposit_amount ? (v.deposit_paid ? " ✓ Pagado" : " · Pendiente") : ""}
+              </span>
+            </div>
+          </div>
+          ${v.due_date ? `<div class="flex items-center gap-2 text-on-surface-variant text-sm mb-4"><span class="material-symbols-outlined text-[16px]">event</span><span>Fecha límite: ${formatDate(v.due_date)}</span></div>` : ""}
+          <div class="mt-auto pt-4 flex justify-between items-center gap-2 border-t border-surface-container-high">
+            <div class="flex gap-3">
+              ${v.profile_url ? `<a href="${escapeHtml(v.profile_url)}" target="_blank" rel="noopener" class="font-button-text text-button-text text-tertiary hover:text-tertiary-fixed transition-colors flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">link</span>Perfil</a>` : ""}
+              ${v.contact_phone ? `<a href="tel:${escapeHtml(v.contact_phone)}" class="font-button-text text-button-text text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">call</span>${escapeHtml(v.contact_phone)}</a>` : ""}
+            </div>
+            <div class="flex gap-1">
+              <button class="btn-edit-vendor p-2 text-on-surface-variant hover:text-tertiary transition-colors"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+              <button class="btn-delete-vendor p-2 text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+            </div>
+          </div>
+        </div>`;
+    }).join("");
+  }
+
+  function renderStats() {
+    const total = allVendors.reduce((sum, v) => sum + (Number(v.contract_total) || 0), 0);
+    document.getElementById("stat-total-committed").textContent = formatMoney(total) || "$0 MXN";
+    document.getElementById("stat-total-count").textContent = `${allVendors.length} proveedor${allVendors.length === 1 ? "" : "es"}`;
+
+    const withDeposit = allVendors.filter(v => v.deposit_amount);
+    const paid = withDeposit.filter(v => v.deposit_paid);
+    const paidSum = paid.reduce((sum, v) => sum + (Number(v.deposit_amount) || 0), 0);
+    document.getElementById("stat-deposits-paid").textContent = formatMoney(paidSum) || "$0 MXN";
+    document.getElementById("stat-deposits-count").textContent = `${paid.length} de ${withDeposit.length} proveedores`;
+
+    const negotiating = allVendors.filter(v => v.status === "negociando").length;
+    document.getElementById("stat-negotiating").textContent = `${negotiating} Proveedor${negotiating === 1 ? "" : "es"}`;
+
+    const hasActionRequired = allVendors.some(v => v.status === "accion_requerida");
+    document.getElementById("stat-action-required").classList.toggle("hidden", !hasActionRequired);
+  }
+
+  function renderDeadlines() {
+    const withDueDate = allVendors
+      .filter(v => v.due_date)
+      .sort((a, b) => a.due_date.localeCompare(b.due_date));
+
+    if (withDueDate.length === 0) {
+      deadlinesList.innerHTML = `<p class="text-on-surface-variant text-sm">No hay fechas límite registradas todavía.</p>`;
+      return;
+    }
+
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+
+    deadlinesList.innerHTML = withDueDate.map((v, i) => {
+      const dueDate = new Date(v.due_date + "T00:00:00");
+      const isOverdue = dueDate < today;
+      const dotClass = isOverdue
+        ? "bg-surface-container-highest border-4 border-error"
+        : "bg-surface-container-highest border-4 border-surface-variant";
+      const labelClass = isOverdue ? "text-error" : "text-on-surface-variant";
+      const isLast = i === withDueDate.length - 1;
+      return `
+        <div class="flex gap-6 relative ${isLast ? '' : 'mb-8'}">
+          <div class="w-6 h-6 rounded-full ${dotClass} flex-shrink-0 relative z-10 mt-1"></div>
+          <div class="flex flex-col min-w-0">
+            <span class="font-label-gold text-label-gold ${labelClass} uppercase mb-1">${isOverdue ? "Vencido · " : ""}${formatDate(v.due_date)}</span>
+            <span class="font-body-lg text-body-lg text-on-surface truncate">${escapeHtml(v.name)}</span>
+            ${v.deposit_amount ? `<span class="font-body-md text-body-md text-on-surface-variant">Anticipo • ${formatMoney(v.deposit_amount)}</span>` : ""}
+          </div>
+        </div>`;
+    }).join("");
+  }
+
+  async function loadVendors() {
+    const { data, error } = await window.supabaseClient
+      .from("vendors")
+      .select("*")
+      .eq("event_id", currentEventId)
+      .order("created_at", { ascending: true });
+    if (error) {
+      grid.innerHTML = `<p class="text-error col-span-full py-10">Error al cargar proveedores: ${escapeHtml(error.message)}</p>`;
+      return;
+    }
+    allVendors = data || [];
+    renderVendors();
+    renderStats();
+    renderDeadlines();
+  }
+
+  tabsWrap.addEventListener("click", (e) => {
+    const tab = e.target.closest(".vendor-tab");
+    if (!tab) return;
+    activeFilter = tab.dataset.filter;
+    tabsWrap.querySelectorAll(".vendor-tab").forEach(t => {
+      const isActive = t === tab;
+      t.classList.toggle("bg-tertiary/10", isActive);
+      t.classList.toggle("text-tertiary", isActive);
+      t.classList.toggle("bg-transparent", !isActive);
+      t.classList.toggle("text-on-surface-variant", !isActive);
     });
+    renderVendors();
   });
+
+  function openModal(mode, vendor) {
+    formError.classList.add("hidden");
+    uploadedImageUrl = vendor ? vendor.image_url || null : null;
+    document.getElementById("vendor-modal-title").textContent = mode === "edit" ? "Editar Proveedor" : "Añadir Proveedor";
+    document.getElementById("vendor-id").value = vendor ? vendor.id : "";
+    document.getElementById("vendor-name").value = vendor ? vendor.name || "" : "";
+    document.getElementById("vendor-category").value = vendor ? vendor.category || "Catering" : "Catering";
+    document.getElementById("vendor-status").value = vendor ? vendor.status || "negociando" : "negociando";
+    document.getElementById("vendor-contract-total").value = vendor ? vendor.contract_total || "" : "";
+    document.getElementById("vendor-deposit-amount").value = vendor ? vendor.deposit_amount || "" : "";
+    document.getElementById("vendor-deposit-paid").checked = vendor ? !!vendor.deposit_paid : false;
+    document.getElementById("vendor-due-date").value = vendor ? vendor.due_date || "" : "";
+    document.getElementById("vendor-phone").value = vendor ? vendor.contact_phone || "" : "";
+    document.getElementById("vendor-profile-url").value = vendor ? vendor.profile_url || "" : "";
+    photoInput.value = "";
+    if (uploadedImageUrl) {
+      photoPreview.src = uploadedImageUrl;
+      photoPreview.classList.remove("hidden");
+      photoPlaceholder.classList.add("hidden");
+    } else {
+      photoPreview.classList.add("hidden");
+      photoPlaceholder.classList.remove("hidden");
+    }
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+  }
+
+  function closeModal() {
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    form.reset();
+    uploadedImageUrl = null;
+  }
+
+  document.getElementById("btn-add-vendor").addEventListener("click", () => openModal("add", null));
+  document.getElementById("vendor-modal-close").addEventListener("click", closeModal);
+  document.getElementById("vendor-modal-cancel").addEventListener("click", closeModal);
+  document.getElementById("vendor-modal-backdrop").addEventListener("click", closeModal);
+
+  photoInput.addEventListener("change", async () => {
+    const file = photoInput.files[0];
+    if (!file) return;
+
+    photoUploading.classList.remove("hidden");
+    const ext = file.name.split(".").pop();
+    const path = `${currentEventId}/${crypto.randomUUID()}.${ext}`;
+
+    const { error: uploadError } = await window.supabaseClient
+      .storage.from("vendor-photos")
+      .upload(path, file, { upsert: false });
+
+    photoUploading.classList.add("hidden");
+
+    if (uploadError) {
+      formError.textContent = "No se pudo subir la foto: " + uploadError.message;
+      formError.classList.remove("hidden");
+      return;
+    }
+
+    const { data: publicUrlData } = window.supabaseClient
+      .storage.from("vendor-photos")
+      .getPublicUrl(path);
+
+    uploadedImageUrl = publicUrlData.publicUrl;
+    photoPreview.src = uploadedImageUrl;
+    photoPreview.classList.remove("hidden");
+    photoPlaceholder.classList.add("hidden");
+  });
+
+  grid.addEventListener("click", async (e) => {
+    const card = e.target.closest("[data-id]");
+    if (!card) return;
+    const id = card.getAttribute("data-id");
+    const vendor = allVendors.find(v => String(v.id) === id);
+
+    if (e.target.closest(".btn-edit-vendor")) {
+      openModal("edit", vendor);
+    }
+    if (e.target.closest(".btn-delete-vendor")) {
+      if (!confirm(`¿Eliminar a "${vendor.name}"? Esta acción no se puede deshacer.`)) return;
+      const { error } = await window.supabaseClient.from("vendors").delete().eq("id", id);
+      if (error) {
+        alert("No se pudo eliminar: " + error.message);
+      } else {
+        await loadVendors();
+      }
+    }
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    formError.classList.add("hidden");
+    const id = document.getElementById("vendor-id").value;
+    const payload = {
+      event_id: currentEventId,
+      name: document.getElementById("vendor-name").value.trim(),
+      category: document.getElementById("vendor-category").value,
+      status: document.getElementById("vendor-status").value,
+      contract_total: document.getElementById("vendor-contract-total").value ? Number(document.getElementById("vendor-contract-total").value) : null,
+      deposit_amount: document.getElementById("vendor-deposit-amount").value ? Number(document.getElementById("vendor-deposit-amount").value) : null,
+      deposit_paid: document.getElementById("vendor-deposit-paid").checked,
+      due_date: document.getElementById("vendor-due-date").value || null,
+      contact_phone: document.getElementById("vendor-phone").value.trim() || null,
+      profile_url: document.getElementById("vendor-profile-url").value.trim() || null,
+      image_url: uploadedImageUrl
+    };
+
+    let error;
+    if (id) {
+      ({ error } = await window.supabaseClient.from("vendors").update(payload).eq("id", id));
+    } else {
+      ({ error } = await window.supabaseClient.from("vendors").insert(payload));
+    }
+
+    if (error) {
+      formError.textContent = error.message;
+      formError.classList.remove("hidden");
+      return;
+    }
+    closeModal();
+    await loadVendors();
+  });
+
+  (async function init() {
+    const auth = await window.requireAuth();
+    if (!auth) return;
+
+    const currentEvent = await window.requireEvent();
+    if (!currentEvent) return;
+
+    currentEventId = currentEvent.id;
+    await loadVendors();
+  })();
 </script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
