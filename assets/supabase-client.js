@@ -30,6 +30,14 @@ async function requireAuth() {
   if (error) {
     console.error("No se pudo cargar el perfil:", error);
   }
+
+  // Cuenta nueva sin aprobar por el admin: no dejar pasar (salvo admins)
+  const onPendingPage = window.location.pathname.endsWith("pendiente-aprobacion.html");
+  if (profile && !profile.is_approved && profile.role !== "admin" && !onPendingPage) {
+    window.location.href = "pendiente-aprobacion.html";
+    return null;
+  }
+
   return { user: session.user, profile };
 }
 

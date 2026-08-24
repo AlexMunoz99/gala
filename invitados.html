@@ -120,6 +120,7 @@ tailwind.config = {
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/supabase-client.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
 <body class="bg-surface font-body-md text-on-surface overflow-x-hidden">
 <script type="module">
@@ -222,7 +223,16 @@ tailwind.config = {
             <h1 class="font-display-lg text-display-lg text-on-surface">Invitados</h1>
             <p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl mt-2">Gestiona tu lista de invitados, da seguimiento a los RSVP y coordina los acomodos para el próximo evento.</p>
           </div>
-          <div class="flex items-center gap-4">
+          <div class="flex items-center gap-4 flex-wrap">
+            <button id="btn-download-template" class="px-6 py-3 bg-surface-container border border-tertiary/20 text-tertiary font-button-text text-button-text uppercase tracking-widest hover:bg-tertiary/5 transition-all flex items-center justify-center gap-2 rounded-lg backdrop-blur-sm shadow-md">
+              <span class="material-symbols-outlined text-[18px]">description</span>
+              Descargar Plantilla
+            </button>
+            <button id="btn-import-csv" class="px-6 py-3 bg-surface-container border border-tertiary/20 text-tertiary font-button-text text-button-text uppercase tracking-widest hover:bg-tertiary/5 transition-all flex items-center justify-center gap-2 rounded-lg backdrop-blur-sm shadow-md">
+              <span class="material-symbols-outlined text-[18px]">upload</span>
+              Importar CSV
+            </button>
+            <input id="csv-file-input" type="file" accept=".csv" class="hidden"/>
             <button id="btn-export-csv" class="px-6 py-3 bg-surface-container border border-tertiary/20 text-tertiary font-button-text text-button-text uppercase tracking-widest hover:bg-tertiary/5 transition-all flex items-center justify-center gap-2 rounded-lg backdrop-blur-sm shadow-md">
               <span class="material-symbols-outlined text-[18px]">download</span>
               Exportar CSV
@@ -233,6 +243,8 @@ tailwind.config = {
             </button>
           </div>
         </div>
+
+        <p id="import-summary" class="hidden text-sm rounded-lg px-4 py-3"></p>
 
         <!-- Summary Metrics -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative z-20">
@@ -289,11 +301,16 @@ tailwind.config = {
           <div class="flex flex-col lg:flex-row gap-4 justify-between items-center bg-surface-container-low/80 backdrop-blur-md p-4 rounded-xl border border-tertiary/5 shadow-md">
             <div class="relative w-full lg:w-96">
               <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-tertiary/50">search</span>
-              <input id="guest-search" class="w-full bg-surface-container border border-secondary-container text-on-surface font-body-md text-body-md py-3 pl-12 pr-4 rounded-lg focus:outline-none focus:border-tertiary/50 focus:shadow-[0_0_15px_rgba(204,167,48,0.1)] transition-all placeholder:text-on-surface-variant/50" placeholder="Buscar invitado por nombre o correo..." type="text"/>
+              <input id="guest-search" class="w-full bg-surface-container border border-secondary-container text-on-surface font-body-md text-body-md py-3 pl-12 pr-4 rounded-lg focus:outline-none focus:border-tertiary/50 focus:shadow-[0_0_15px_rgba(204,167,48,0.1)] transition-all placeholder:text-on-surface-variant/50" placeholder="Buscar invitado por nombre o teléfono..." type="text"/>
             </div>
-            <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto text-on-surface-variant text-sm">
-              <span class="material-symbols-outlined text-tertiary/70 text-[20px]">info</span>
-              <span>Los filtros por grupo llegan en la próxima actualización</span>
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-tertiary/70 text-[20px]">filter_list</span>
+              <select id="rsvp-filter" class="bg-surface-container border border-tertiary/20 text-on-surface font-body-md text-sm py-2.5 px-3 rounded-lg focus:outline-none focus:border-tertiary/50">
+                <option value="">Todos los RSVP</option>
+                <option value="confirmado">Confirmado</option>
+                <option value="pendiente">Pendiente</option>
+                <option value="declinado">Declinado</option>
+              </select>
             </div>
           </div>
 
@@ -423,6 +440,7 @@ document.addEventListener('DOMContentLoaded', function () {
   const tbody = document.getElementById("guests-tbody");
   const countLabel = document.getElementById("guests-count-label");
   const searchInput = document.getElementById("guest-search");
+  const rsvpFilter = document.getElementById("rsvp-filter");
   const modal = document.getElementById("guest-modal");
   const form = document.getElementById("guest-form");
   const formError = document.getElementById("guest-form-error");
@@ -507,14 +525,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function applyFilterAndRender() {
     const term = (searchInput.value || "").trim().toLowerCase();
-    const filtered = term
-      ? allGuests.filter(g =>
-          (g.full_name || "").toLowerCase().includes(term) ||
-          (g.phone || "").toLowerCase().includes(term))
-      : allGuests;
+    const rsvpValue = rsvpFilter.value;
+    let filtered = allGuests;
+    if (term) {
+      filtered = filtered.filter(g =>
+        (g.full_name || "").toLowerCase().includes(term) ||
+        (g.phone || "").toLowerCase().includes(term));
+    }
+    if (rsvpValue) {
+      filtered = filtered.filter(g => g.rsvp_status === rsvpValue);
+    }
     renderRows(filtered);
     updateStats(allGuests); // los contadores reflejan el total, no el filtro
-    if (term) {
+    if (term || rsvpValue) {
       countLabel.textContent = `Mostrando ${filtered.length} de ${allGuests.length} registros`;
     }
   }
@@ -581,6 +604,95 @@ document.addEventListener('DOMContentLoaded', function () {
 
   document.getElementById("btn-add-guest").addEventListener("click", () => openModal("add", null));
 
+  document.getElementById("btn-download-template").addEventListener("click", () => {
+    const headers = ["Nombre", "Grupo", "Teléfono", "RSVP", "Mesa", "Acompañante", "Notas dietéticas"];
+    const example = ["Juan Pérez", "Familia Novia", "+52 33 1234 5678", "Pendiente", "5", "No", "Vegetariano"];
+    const note = ["# RSVP: Confirmado / Pendiente / Declinado", "", "", "", "", "# Acompañante: Sí / No", ""];
+    const csv = [headers, example, note]
+      .map(row => row.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(","))
+      .join("\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "plantilla-invitados.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  const csvFileInput = document.getElementById("csv-file-input");
+  const importSummary = document.getElementById("import-summary");
+
+  document.getElementById("btn-import-csv").addEventListener("click", () => csvFileInput.click());
+
+  function showImportSummary(text, isError) {
+    importSummary.textContent = text;
+    importSummary.classList.remove("hidden");
+    importSummary.classList.toggle("bg-error/10", isError);
+    importSummary.classList.toggle("text-error", isError);
+    importSummary.classList.toggle("bg-tertiary/10", !isError);
+    importSummary.classList.toggle("text-tertiary", !isError);
+  }
+
+  function normalizeRsvp(value) {
+    const v = (value || "").trim().toLowerCase();
+    if (v.startsWith("confirm")) return "confirmado";
+    if (v.startsWith("declin")) return "declinado";
+    return "pendiente";
+  }
+
+  csvFileInput.addEventListener("change", () => {
+    const file = csvFileInput.files[0];
+    if (!file) return;
+
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: async (results) => {
+        const rows = (results.data || []).filter(r => (r["Nombre"] || "").trim());
+        if (rows.length === 0) {
+          showImportSummary("El archivo no tiene invitados válidos (revisa que la columna 'Nombre' esté llena).", true);
+          csvFileInput.value = "";
+          return;
+        }
+
+        // Crea sobre la marcha los grupos que vengan en el CSV y no existan todavía
+        const groupNameToId = { ...Object.fromEntries(allGroups.map(g => [g.name.toLowerCase(), g.id])) };
+        for (const row of rows) {
+          const groupName = (row["Grupo"] || "").trim();
+          if (groupName && !groupNameToId[groupName.toLowerCase()]) {
+            const { data: newGroup, error } = await window.supabaseClient
+              .from("guest_groups").insert({ event_id: currentEventId, name: groupName }).select().single();
+            if (!error && newGroup) groupNameToId[groupName.toLowerCase()] = newGroup.id;
+          }
+        }
+
+        const payload = rows.map(row => ({
+          event_id: currentEventId,
+          full_name: (row["Nombre"] || "").trim(),
+          group_id: groupNameToId[(row["Grupo"] || "").trim().toLowerCase()] || null,
+          phone: (row["Teléfono"] || "").trim() || null,
+          rsvp_status: normalizeRsvp(row["RSVP"]),
+          table_number: (row["Mesa"] || "").trim() || null,
+          plus_one: (row["Acompañante"] || "").trim().toLowerCase().startsWith("s"),
+          dietary_notes: (row["Notas dietéticas"] || "").trim() || null
+        }));
+
+        const { error: insertError } = await window.supabaseClient.from("guests").insert(payload);
+        csvFileInput.value = "";
+
+        if (insertError) {
+          showImportSummary("No se pudo importar: " + insertError.message, true);
+          return;
+        }
+        showImportSummary(`${payload.length} invitado${payload.length === 1 ? "" : "s"} importado${payload.length === 1 ? "" : "s"} correctamente.`, false);
+        await loadGroups();
+        await loadGuests();
+      },
+      error: (err) => showImportSummary("No se pudo leer el archivo: " + err.message, true)
+    });
+  });
+
   document.getElementById("btn-export-csv").addEventListener("click", () => {
     if (allGuests.length === 0) {
       alert("No hay invitados para exportar.");
@@ -604,6 +716,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   searchInput.addEventListener("input", applyFilterAndRender);
+  rsvpFilter.addEventListener("change", applyFilterAndRender);
 
   tbody.addEventListener("click", async (e) => {
     const row = e.target.closest("tr[data-id]");

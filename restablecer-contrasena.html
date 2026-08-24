@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gala ERP — Restablecer contraseña</title>
+<style>
+  html, body { margin: 0; padding: 0; }
+  ::-webkit-scrollbar { display: none; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script id="tailwind-config">
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        "surface": "#131411", "surface-container": "#20201d", "surface-container-low": "#1c1c19",
+        "on-surface": "#e5e2dd", "on-surface-variant": "#c4c6cc", "tertiary": "#e9c349", "on-tertiary": "#3c2f00", "error": "#ffb4ab"
+      },
+      fontFamily: { "headline-lg": ["Playfair Display"], "body-md": ["Inter"], "button-text": ["Inter"] }
+    }
+  }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/supabase-client.js"></script>
+</head>
+<body class="bg-surface font-body-md text-on-surface min-h-screen flex items-center justify-center px-6">
+
+<div class="w-full max-w-md">
+  <div class="flex flex-col items-center gap-3 mb-10">
+    <img alt="Logo" class="w-16 h-16 object-contain" src="assets/logo.png"/>
+    <span class="font-headline-lg text-3xl text-tertiary tracking-widest uppercase">GALA</span>
+  </div>
+
+  <div class="bg-surface-container rounded-2xl p-8 shadow-xl">
+    <h1 class="font-headline-lg text-xl text-on-surface mb-6">Elige tu nueva contraseña</h1>
+
+    <form id="reset-form" class="flex flex-col gap-4">
+      <div class="flex flex-col gap-1">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="new-password">Nueva contraseña</label>
+        <input class="bg-surface-container-low border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary transition-colors" id="new-password" required="" type="password" minlength="6" placeholder="••••••••"/>
+      </div>
+      <p id="reset-message" class="text-sm hidden"></p>
+      <button class="mt-2 py-3 bg-tertiary text-on-tertiary font-button-text uppercase tracking-widest rounded-lg hover:brightness-110 transition-all disabled:opacity-50" id="reset-submit-btn" type="submit">
+        Guardar contraseña
+      </button>
+    </form>
+  </div>
+</div>
+
+<script type="module">
+  const form = document.getElementById("reset-form");
+  const messageEl = document.getElementById("reset-message");
+  const submitBtn = document.getElementById("reset-submit-btn");
+
+  function showMessage(text, isError) {
+    messageEl.textContent = text;
+    messageEl.classList.remove("hidden");
+    messageEl.classList.toggle("text-error", isError);
+    messageEl.classList.toggle("text-tertiary", !isError);
+  }
+
+  // Supabase procesa automáticamente el token del enlace del correo (va en la URL)
+  // y crea una sesión temporal de tipo "recovery" para poder cambiar la contraseña.
+  window.supabaseClient.auth.onAuthStateChange((event) => {
+    if (event === "PASSWORD_RECOVERY") {
+      // listo para que el usuario escriba su nueva contraseña
+    }
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    const newPassword = document.getElementById("new-password").value;
+
+    const { error } = await window.supabaseClient.auth.updateUser({ password: newPassword });
+    if (error) {
+      showMessage(error.message, true);
+      submitBtn.disabled = false;
+    } else {
+      showMessage("Contraseña actualizada. Entrando…", false);
+      setTimeout(() => { window.location.href = "proyectos.html"; }, 1200);
+    }
+  });
+</script>
+</body>
+</html>

@@ -79,6 +79,7 @@ tailwind.config = {
         <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="password">Contraseña</label>
         <input class="bg-surface-container-low border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary transition-colors" id="password" required="" type="password" placeholder="••••••••" minlength="6"/>
       </div>
+      <button type="button" id="forgot-password-btn" class="text-xs text-tertiary hover:text-tertiary-fixed transition-colors self-end -mt-2">¿Olvidaste tu contraseña?</button>
 
       <p id="auth-message" class="text-sm hidden"></p>
 
@@ -111,6 +112,7 @@ tailwind.config = {
     tabSignup.classList.toggle("bg-tertiary", isSignup);
     tabSignup.classList.toggle("text-on-tertiary", isSignup);
     tabSignup.classList.toggle("text-on-surface-variant", !isSignup);
+    document.getElementById("forgot-password-btn").classList.toggle("hidden", isSignup);
     messageEl.classList.add("hidden");
   }
 
@@ -156,6 +158,22 @@ tailwind.config = {
       }
     }
     submitBtn.disabled = false;
+  });
+
+  document.getElementById("forgot-password-btn").addEventListener("click", async () => {
+    const email = document.getElementById("email").value.trim();
+    if (!email) {
+      showMessage("Escribe tu correo arriba primero, luego dale clic aquí.", true);
+      return;
+    }
+    const { error } = await window.supabaseClient.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + window.location.pathname.replace("login.html", "restablecer-contrasena.html")
+    });
+    if (error) {
+      showMessage(error.message, true);
+    } else {
+      showMessage("Te enviamos un correo con el enlace para restablecer tu contraseña.", false);
+    }
   });
 </script>
 
