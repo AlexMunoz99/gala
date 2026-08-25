@@ -52,7 +52,14 @@
     outline: 2px dashed #e9c349 !important;
   }
 
+  /* Pure Geometric Circles */
+  .round-circle {
+    border-radius: 50% !important;
+    aspect-ratio: 1 / 1 !important;
+  }
   .chair-node {
+    border-radius: 50% !important;
+    aspect-ratio: 1 / 1 !important;
     transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s;
   }
   .chair-node:hover {
@@ -138,7 +145,7 @@ tailwind.config = {
         "surface-bright": "#3a3936",
         "on-surface-variant": "#c4c6cc"
       },
-      borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+      borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "9999px" },
       spacing: { "gutter": "24px", "margin-mobile": "16px", "container-padding": "40px", "section-gap": "80px", "unit": "8px" },
       fontFamily: {
         "headline-lg-mobile": ["Playfair Display"],
@@ -555,17 +562,17 @@ tailwind.config = {
   }
 
   // ---- RENDERIZADO VISUAL DE SILLAS CON FORMA GEOMÉTRICA EXACTA ----
-  function renderTableChairsHTML(el, meta, occupants) {
+  function renderTableChairsHTML(el, meta, occupants, diameterPx) {
     if (!meta.isSeat) return "";
     const cap = el.capacity || meta.defaultCap;
-    const widthPx = el.width * CELL;
-    const heightPx = (meta.shape === "round" || meta.shape === "square") ? widthPx : (el.height * CELL);
+    const widthPx = meta.shape === "round" ? diameterPx : (el.width * CELL);
+    const heightPx = meta.shape === "round" ? diameterPx : (meta.shape === "square" ? widthPx : (el.height * CELL));
     const centerX = widthPx / 2;
     const centerY = heightPx / 2;
     let chairsHtml = "";
 
     if (meta.shape === "round") {
-      const radius = (widthPx / 2) + 16;
+      const radius = (diameterPx / 2) + 16;
       for (let i = 0; i < cap; i++) {
         const angle = (i * (2 * Math.PI / cap)) - (Math.PI / 2);
         const cx = centerX + radius * Math.cos(angle) - 14;
@@ -573,11 +580,11 @@ tailwind.config = {
         const occ = occupants[i] || null;
 
         chairsHtml += `
-          <div class="chair-node absolute w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold cursor-pointer border ${
+          <div class="chair-node absolute w-7 h-7 flex items-center justify-center text-[10px] font-bold cursor-pointer border ${
             occ 
               ? 'bg-[#e9c349] text-[#131411] border-white shadow-[0_0_8px_rgba(233,195,73,0.6)] ring-2 ring-[#e9c349]/30' 
               : 'bg-[#1c1c19]/90 text-on-surface-variant/40 border-dashed border-tertiary/40 hover:border-tertiary hover:text-tertiary'
-          }" style="left: ${cx}px; top: ${cy}px;" title="${occ ? `${escapeHtml(occ.full_name)} (Silla ${i+1})` : `Silla ${i+1} Libre`}" data-chair-idx="${i}">
+          }" style="border-radius: 50% !important; left: ${cx}px; top: ${cy}px;" title="${occ ? `${escapeHtml(occ.full_name)} (Silla ${i+1})` : `Silla ${i+1} Libre`}" data-chair-idx="${i}">
             ${occ ? escapeHtml(occ.full_name.split(' ').map(n=>n[0]).slice(0,2).join('')) : (i + 1)}
           </div>
         `;
@@ -586,10 +593,10 @@ tailwind.config = {
       const occ1 = occupants[0] || null;
       const occ2 = occupants[1] || null;
       chairsHtml += `
-        <div class="chair-node absolute w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold border ${occ1 ? 'bg-tertiary text-on-tertiary ring-2 ring-tertiary/50' : 'bg-surface border-dashed border-tertiary/50 text-tertiary'}" style="left: ${centerX - 35}px; top: -16px;" title="${occ1 ? `Novia: ${escapeHtml(occ1.full_name)}` : 'Silla Novia'}">
+        <div class="chair-node absolute w-9 h-9 flex items-center justify-center text-xs font-bold border ${occ1 ? 'bg-tertiary text-on-tertiary ring-2 ring-tertiary/50' : 'bg-surface border-dashed border-tertiary/50 text-tertiary'}" style="border-radius: 50% !important; left: ${centerX - 35}px; top: -16px;" title="${occ1 ? `Novia: ${escapeHtml(occ1.full_name)}` : 'Silla Novia'}">
           ${occ1 ? '👰' : '💍'}
         </div>
-        <div class="chair-node absolute w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold border ${occ2 ? 'bg-tertiary text-on-tertiary ring-2 ring-tertiary/50' : 'bg-surface border-dashed border-tertiary/50 text-tertiary'}" style="left: ${centerX + 5}px; top: -16px;" title="${occ2 ? `Novio: ${escapeHtml(occ2.full_name)}` : 'Silla Novio'}">
+        <div class="chair-node absolute w-9 h-9 flex items-center justify-center text-xs font-bold border ${occ2 ? 'bg-tertiary text-on-tertiary ring-2 ring-tertiary/50' : 'bg-surface border-dashed border-tertiary/50 text-tertiary'}" style="border-radius: 50% !important; left: ${centerX + 5}px; top: -16px;" title="${occ2 ? `Novio: ${escapeHtml(occ2.full_name)}` : 'Silla Novio'}">
           ${occ2 ? '🤵' : '👑'}
         </div>
       `;
@@ -601,9 +608,9 @@ tailwind.config = {
         const occ = occupants[i] || null;
         const cx = 20 + (i * stepX) - 14;
         chairsHtml += `
-          <div class="chair-node absolute w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold cursor-pointer border ${
+          <div class="chair-node absolute w-7 h-7 flex items-center justify-center text-[10px] font-bold cursor-pointer border ${
             occ ? 'bg-[#e9c349] text-[#131411] border-white shadow-md' : 'bg-[#1c1c19] text-on-surface-variant/40 border-dashed border-tertiary/40'
-          }" style="left: ${cx}px; top: -14px;" title="${occ ? escapeHtml(occ.full_name) : `Silla ${i+1} Libre`}">
+          }" style="border-radius: 50% !important; left: ${cx}px; top: -14px;" title="${occ ? escapeHtml(occ.full_name) : `Silla ${i+1} Libre`}">
             ${occ ? escapeHtml(occ.full_name[0]) : (i+1)}
           </div>
         `;
@@ -612,9 +619,9 @@ tailwind.config = {
         const occ = occupants[half + i] || null;
         const cx = 20 + (i * stepX) - 14;
         chairsHtml += `
-          <div class="chair-node absolute w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold cursor-pointer border ${
+          <div class="chair-node absolute w-7 h-7 flex items-center justify-center text-[10px] font-bold cursor-pointer border ${
             occ ? 'bg-[#e9c349] text-[#131411] border-white shadow-md' : 'bg-[#1c1c19] text-on-surface-variant/40 border-dashed border-tertiary/40'
-          }" style="left: ${cx}px; top: ${heightPx - 14}px;" title="${occ ? escapeHtml(occ.full_name) : `Silla ${half+i+1} Libre`}">
+          }" style="border-radius: 50% !important; left: ${cx}px; top: ${heightPx - 14}px;" title="${occ ? escapeHtml(occ.full_name) : `Silla ${half+i+1} Libre`}">
             ${occ ? escapeHtml(occ.full_name[0]) : (half + i + 1)}
           </div>
         `;
@@ -635,9 +642,11 @@ tailwind.config = {
       const used = occupants.length;
       const cap = el.capacity || meta.defaultCap;
       const isFull = meta.isSeat && used >= cap;
+      const isRound = meta.shape === "round";
 
-      const widthPx = el.width * CELL;
-      const heightPx = (meta.shape === "round" || meta.shape === "square") ? widthPx : (el.height * CELL);
+      const diameterPx = (el.width || 4.5) * CELL;
+      const widthPx = isRound ? diameterPx : (el.width * CELL);
+      const heightPx = isRound ? diameterPx : (meta.shape === "square" ? widthPx : (el.height * CELL));
 
       const node = document.createElement("div");
       node.className = `layout-el layout-table group absolute select-none transition-shadow ${
@@ -653,9 +662,9 @@ tailwind.config = {
 
       // Table Shape Body
       let shapeHtml = "";
-      if (meta.shape === "round") {
+      if (isRound) {
         shapeHtml = `
-          <div class="w-full h-full rounded-full ${meta.color} border-2 ${isFull ? 'border-[#4ade80]' : 'border-tertiary/40'} shadow-2xl flex flex-col items-center justify-center p-3 relative cursor-grab active:cursor-grabbing hover:border-tertiary transition-colors aspect-square">
+          <div class="round-circle w-full h-full ${meta.color} border-2 ${isFull ? 'border-[#4ade80]' : 'border-tertiary/40'} shadow-2xl flex flex-col items-center justify-center p-3 relative cursor-grab active:cursor-grabbing hover:border-tertiary transition-colors" style="border-radius: 50% !important; aspect-ratio: 1/1 !important;">
             <span class="text-on-surface text-xs font-bold text-center leading-tight truncate max-w-[85%]">${escapeHtml(el.label || meta.label)}</span>
             <span class="mt-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${isFull ? 'bg-[#4ade80]/20 text-[#4ade80] border border-[#4ade80]/40' : 'bg-tertiary/10 text-tertiary'}">${used}/${cap}</span>
           </div>
@@ -684,7 +693,7 @@ tailwind.config = {
         `;
       }
 
-      const chairsHtml = renderTableChairsHTML(el, meta, occupants);
+      const chairsHtml = renderTableChairsHTML(el, meta, occupants, diameterPx);
 
       // Floating Action Toolbar (HIGH Z-INDEX: 60 - NEVER COVERED BY CHAIRS)
       const toolbarHtml = `
@@ -781,7 +790,7 @@ tailwind.config = {
       return `
         <div class="guest-drag-card p-3.5 bg-surface rounded-xl border border-tertiary/15 hover:border-tertiary/50 hover:bg-surface-container-high transition-all shadow-sm flex items-center justify-between cursor-grab active:cursor-grabbing group" draggable="true" data-guest-id="${g.id}">
           <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full bg-tertiary/15 border border-tertiary/30 text-tertiary flex items-center justify-center text-xs font-bold">
+            <div class="w-8 h-8 rounded-full bg-tertiary/15 border border-tertiary/30 text-tertiary flex items-center justify-center text-xs font-bold" style="border-radius: 50%;">
               ${escapeHtml(g.full_name.split(' ').map(n=>n[0]).slice(0,2).join(''))}
             </div>
             <div class="flex flex-col">
@@ -893,8 +902,8 @@ tailwind.config = {
 
     if (e.target.closest(".btn-table-grow")) {
       e.stopPropagation();
-      el.width = Math.min(10, (el.width || 4) + 0.5);
-      el.height = Math.min(10, (el.height || 4) + 0.5);
+      el.width = Math.min(12, (Number(el.width) || 4.5) + 0.5);
+      el.height = el.width;
       await window.supabaseClient.from("layout_elements").update({ width: el.width, height: el.height }).eq("id", el.id);
       renderCanvas();
       return;
@@ -902,8 +911,8 @@ tailwind.config = {
 
     if (e.target.closest(".btn-table-shrink")) {
       e.stopPropagation();
-      el.width = Math.max(2, (el.width || 4) - 0.5);
-      el.height = Math.max(2, (el.height || 4) - 0.5);
+      el.width = Math.max(2.5, (Number(el.width) || 4.5) - 0.5);
+      el.height = el.width;
       await window.supabaseClient.from("layout_elements").update({ width: el.width, height: el.height }).eq("id", el.id);
       renderCanvas();
       return;
@@ -994,7 +1003,7 @@ tailwind.config = {
       ? occupants.map((g, idx) => `
         <div class="flex items-center justify-between bg-surface-container rounded-xl p-3 border border-tertiary/10">
           <div class="flex items-center gap-2.5">
-            <span class="w-6 h-6 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center text-[10px] font-bold">#${idx+1}</span>
+            <span class="w-6 h-6 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center text-[10px] font-bold" style="border-radius: 50%;">#${idx+1}</span>
             <div class="flex flex-col">
               <span class="text-on-surface text-sm font-medium">${escapeHtml(g.full_name)}</span>
               ${g.dietary_notes ? `<span class="text-[10px] text-error">${escapeHtml(g.dietary_notes)}</span>` : ""}
@@ -1243,10 +1252,13 @@ tailwind.config = {
       const meta = TYPE_META[el.element_type] || TYPE_META.mesa_redonda;
       const occupants = occupantsForElement(el.id);
       const cap = el.capacity || meta.defaultCap;
+      const isRound = meta.shape === "round";
+
       const relX = (el.pos_x * CELL) - minX + 60;
       const relY = (el.pos_y * CELL) - minY + 60;
-      const widthPx = el.width * CELL;
-      const heightPx = (meta.shape === "round" || meta.shape === "square") ? widthPx : (el.height * CELL);
+      const diameterPx = (el.width || 4.5) * CELL;
+      const widthPx = isRound ? diameterPx : (el.width * CELL);
+      const heightPx = isRound ? diameterPx : (meta.shape === "square" ? widthPx : (el.height * CELL));
 
       const tableNode = document.createElement("div");
       tableNode.className = "absolute flex items-center justify-center select-none";
@@ -1256,17 +1268,17 @@ tailwind.config = {
       tableNode.style.height = `${heightPx}px`;
       tableNode.style.transform = `rotate(${el.rotation || 0}deg)`;
 
-      if (meta.shape === "round") {
+      if (isRound) {
         tableNode.innerHTML = `
-          <div class="w-full h-full rounded-full border-2 border-gray-400 bg-gray-100/90 flex flex-col items-center justify-center shadow-sm">
+          <div class="round-circle w-full h-full border-2 border-gray-400 bg-gray-100/90 flex flex-col items-center justify-center shadow-sm" style="border-radius: 50% !important; aspect-ratio: 1/1 !important;">
             <span class="font-headline-lg font-bold text-gray-800 text-lg leading-none">${index + 1}</span>
             <span class="text-[9px] font-sans uppercase tracking-widest text-gray-500 mt-0.5 truncate max-w-[80%]">${escapeHtml(el.label)}</span>
           </div>
         `;
 
-        const radius = (widthPx / 2) + 20;
-        const centerX = widthPx / 2;
-        const centerY = heightPx / 2;
+        const radius = (diameterPx / 2) + 20;
+        const centerX = diameterPx / 2;
+        const centerY = diameterPx / 2;
 
         for (let i = 0; i < cap; i++) {
           const angle = (i * (2 * Math.PI / cap)) - (Math.PI / 2);
@@ -1281,9 +1293,8 @@ tailwind.config = {
           const alignLeft = Math.cos(angle) > 0.2;
 
           const chairEl = document.createElement("div");
-          chairEl.className = "absolute w-5 h-5 rounded-full border border-gray-500 bg-gray-300 flex items-center justify-center text-[8px] font-bold text-gray-800";
-          chairEl.style.left = `${cx}px`;
-          chairEl.style.top = `${cy}px`;
+          chairEl.className = "chair-node absolute w-5 h-5 border border-gray-500 bg-gray-300 flex items-center justify-center text-[8px] font-bold text-gray-800";
+          chairEl.style.cssText = `border-radius: 50% !important; left: ${cx}px; top: ${cy}px;`;
           chairEl.textContent = occ ? "" : (i+1);
           tableNode.appendChild(chairEl);
 
@@ -1334,9 +1345,8 @@ tailwind.config = {
           const occ = occupants[i];
           const cx = 15 + (i * stepX) - 10;
           const chair = document.createElement("div");
-          chair.className = "absolute w-5 h-5 rounded-full border border-gray-500 bg-gray-300";
-          chair.style.left = `${cx}px`;
-          chair.style.top = `-10px`;
+          chair.className = "chair-node absolute w-5 h-5 border border-gray-500 bg-gray-300";
+          chair.style.cssText = `border-radius: 50% !important; left: ${cx}px; top: -10px;`;
           tableNode.appendChild(chair);
 
           if (occ) {
@@ -1352,9 +1362,8 @@ tailwind.config = {
           const occ = occupants[half + i];
           const cx = 15 + (i * stepX) - 10;
           const chair = document.createElement("div");
-          chair.className = "absolute w-5 h-5 rounded-full border border-gray-500 bg-gray-300";
-          chair.style.left = `${cx}px`;
-          chair.style.top = `${heightPx - 10}px`;
+          chair.className = "chair-node absolute w-5 h-5 border border-gray-500 bg-gray-300";
+          chair.style.cssText = `border-radius: 50% !important; left: ${cx}px; top: ${heightPx - 10}px;`;
           tableNode.appendChild(chair);
 
           if (occ) {
