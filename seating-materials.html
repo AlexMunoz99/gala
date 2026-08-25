@@ -24,7 +24,7 @@
 </style>
 
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Gala ERP — Asientos</title>
+<title>Gala ERP — Plano de Asientos</title>
 <style>
   @layer base {
     html, body { margin: 0; padding: 0; }
@@ -32,7 +32,33 @@
     main > :first-child { margin-top: 0 !important; }
     main > :last-child { margin-bottom: 0 !important; }
   }
-  ::-webkit-scrollbar { display: none; }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #1c1c19; }
+  ::-webkit-scrollbar-thumb { background: #353532; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #e9c349; }
+
+  /* Canvas Grid */
+  .canvas-grid {
+    background-image: 
+      radial-gradient(circle, rgba(233, 195, 73, 0.18) 1.5px, transparent 1.5px),
+      linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 40px 40px, 40px 40px, 40px 40px;
+  }
+
+  /* Table Dropzone Hover Glow */
+  .layout-table.drag-over {
+    box-shadow: 0 0 25px rgba(233, 195, 73, 0.6) !important;
+    outline: 2px dashed #e9c349 !important;
+  }
+
+  .chair-node {
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s, background-color 0.2s;
+  }
+  .chair-node:hover {
+    transform: scale(1.22);
+    z-index: 40;
+  }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet"/>
@@ -121,15 +147,13 @@ tailwind.config = {
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/supabase-client.js"></script>
 </head>
-<body class="bg-surface font-body-md text-on-surface overflow-x-hidden">
+<body class="bg-surface font-body-md text-on-surface overflow-x-hidden select-none">
 <script type="module">
   (async function () {
     const auth = await window.requireAuth();
-    if (!auth) return; // requireAuth ya redirige a login.html
+    if (!auth) return;
     const nameEl = document.getElementById("current-user-name");
-    if (nameEl && auth.profile) {
-      nameEl.textContent = auth.profile.full_name || auth.user.email;
-    }
+    if (nameEl && auth.profile) nameEl.textContent = auth.profile.full_name || auth.user.email;
     const roleBadge = document.getElementById("current-user-role");
     if (roleBadge && auth.profile) {
       roleBadge.textContent = auth.profile.role;
@@ -142,21 +166,22 @@ tailwind.config = {
     if (auth.profile) window.applyRoleBadge(auth.profile.role);
 
     const currentEvent = await window.requireEvent();
-    if (!currentEvent) return; // requireEvent ya redirige a proyectos.html
+    if (!currentEvent) return;
     window.applyEventToHeader(currentEvent);
     window.currentEventId = currentEvent.id;
   })();
 </script>
 
-
 <aside id="app-sidebar" class="fixed left-0 top-0 h-full bg-secondary-container z-50 flex flex-col border-r border-tertiary/10" style="width: var(--sidebar-w);">
-<button id="sidebar-toggle" class="absolute -right-3.5 top-9 w-7 h-7 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center shadow-lg border-2 border-surface hover:brightness-110 hover:scale-110 transition-all z-[60]" aria-label="Colapsar/expandir menú" title="Colapsar/expandir menú"><span class="material-symbols-outlined text-[16px]" id="sidebar-toggle-icon">chevron_left</span></button>
+  <button id="sidebar-toggle" class="absolute -right-3.5 top-9 w-7 h-7 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center shadow-lg border-2 border-surface hover:brightness-110 hover:scale-110 transition-all z-[60]" aria-label="Colapsar/expandir menú" title="Colapsar/expandir menú">
+    <span class="material-symbols-outlined text-[16px]" id="sidebar-toggle-icon">chevron_left</span>
+  </button>
   <div class="h-20 flex items-center gap-3 px-5 border-b border-tertiary/10 shrink-0 overflow-hidden">
     <img alt="Logo" class="w-8 h-8 object-contain shrink-0" src="assets/logo.png"/>
     <span class="font-headline-md text-headline-md text-tertiary tracking-widest uppercase sidebar-label whitespace-nowrap">GALA</span>
   </div>
   <div class="flex-1 flex flex-col pt-4 pb-6 overflow-y-auto overflow-x-hidden">
-    <nav class="flex-1 flex flex-col gap-1 px-4" data-active-classes="border-l-4 border-tertiary bg-white/5 text-tertiary font-bold px-[20px]">
+    <nav class="flex-1 flex flex-col gap-1 px-4">
       <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="dashboard" href="index.html"><span class="material-symbols-outlined mr-3 nav-icon">dashboard</span><span class="sidebar-label">Panel</span></a>
       <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="invitados" href="invitados.html"><span class="material-symbols-outlined mr-3 nav-icon">group</span><span class="sidebar-label">Invitados</span></a>
       <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="invitacion" href="personalizar-invitacion.html"><span class="material-symbols-outlined mr-3 nav-icon">auto_awesome</span><span class="sidebar-label">Invitación Web</span></a>
@@ -191,11 +216,6 @@ tailwind.config = {
       </div>
     </div>
     <div class="flex items-center gap-6 justify-end w-72 pr-8">
-      <button class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors">notifications</button>
-      <div id="role-badge" class="w-8 h-8 rounded-full flex items-center justify-center transition-colors" title="">
-        <span class="material-symbols-outlined role-badge-icon text-[18px]"></span>
-      </div>
-      <button id="logout-btn" class="material-symbols-outlined text-on-surface-variant hover:text-error transition-colors" title="Cerrar sesión">logout</button>
       <div class="flex items-center gap-2">
         <div class="w-10 h-10 rounded-full border border-tertiary/30 p-0.5 overflow-hidden ring-2 ring-tertiary/10">
           <img alt="Perfil" class="w-full h-full rounded-full object-cover" src="assets/avatar.png"/>
@@ -208,130 +228,205 @@ tailwind.config = {
     </div>
   </header>
 
-  <main class="flex-1 pt-20 bg-on-surface-variant/5 min-h-screen relative">
-    <div class="flex flex-col w-full h-[calc(100vh-80px)]">
-
-      <!-- Toolbar -->
-      <div class="flex items-center justify-between px-container-padding py-4 bg-surface z-10 shadow-md flex-wrap gap-3">
+  <main class="flex-1 pt-20 bg-[#10110e] min-h-screen relative flex flex-col">
+    <!-- Top KPI Bar & Controls -->
+    <div class="px-6 py-3 bg-surface-container border-b border-tertiary/15 flex items-center justify-between flex-wrap gap-4 z-20 shadow-md">
+      <div class="flex items-center gap-4 flex-wrap">
         <div>
-          <h1 class="font-headline-lg text-2xl text-on-surface">Plano de Asientos</h1>
-          <p class="text-on-surface-variant text-sm">Arrastra los elementos para acomodarlos. Da clic para editar, asignar invitados o eliminar.</p>
+          <span class="font-label-gold text-[10px] uppercase tracking-[0.2em] text-tertiary block">DISEÑO ARQUITECTÓNICO DE SALÓN</span>
+          <h1 class="font-headline-lg text-xl text-on-surface">Plano de Mesas & Asientos</h1>
         </div>
-        <div class="flex items-center gap-2 flex-wrap">
-          <button id="btn-auto-assign" class="px-4 py-2 bg-gradient-to-r from-tertiary/20 to-tertiary/40 border border-tertiary text-tertiary font-button-text text-button-text uppercase tracking-wider rounded-lg text-xs hover:brightness-125 transition-all flex items-center gap-1.5 shadow-md" title="Asignar automáticamente invitados a las mesas según su grupo o número de mesa">
-            <span class="material-symbols-outlined text-[18px]">auto_fix_high</span>Auto-Asignar
-          </button>
-          <button id="btn-print-seating" class="px-4 py-2 bg-surface-container border border-tertiary/20 text-on-surface font-button-text text-button-text uppercase tracking-wider rounded-lg text-xs hover:bg-tertiary/10 transition-colors flex items-center gap-1.5" title="Imprimir plano de mesas para el salón">
-            <span class="material-symbols-outlined text-[18px]">print</span>Imprimir
-          </button>
-          <button class="btn-add-element px-4 py-2 bg-surface-container border border-tertiary/20 text-on-surface rounded-lg text-sm hover:bg-tertiary/10 hover:text-tertiary transition-colors flex items-center gap-1.5" data-type="mesa_redonda">
-            <span class="material-symbols-outlined text-[18px]">panorama_fish_eye</span>Mesa Redonda
-          </button>
-          <button class="btn-add-element px-4 py-2 bg-surface-container border border-tertiary/20 text-on-surface rounded-lg text-sm hover:bg-tertiary/10 hover:text-tertiary transition-colors flex items-center gap-1.5" data-type="mesa_rectangular">
-            <span class="material-symbols-outlined text-[18px]">crop_landscape</span>Mesa Rectangular
-          </button>
-          <button class="btn-add-element px-4 py-2 bg-surface-container border border-tertiary/20 text-on-surface rounded-lg text-sm hover:bg-tertiary/10 hover:text-tertiary transition-colors flex items-center gap-1.5" data-type="silla">
-            <span class="material-symbols-outlined text-[18px]">chair</span>Silla
-          </button>
-          <button class="btn-add-element px-4 py-2 bg-surface-container border border-tertiary/20 text-on-surface rounded-lg text-sm hover:bg-tertiary/10 hover:text-tertiary transition-colors flex items-center gap-1.5" data-type="mesa_novios">
-            <span class="material-symbols-outlined text-[18px]">favorite</span>Mesa de Novios
-          </button>
-          <button class="btn-add-element px-4 py-2 bg-surface-container border border-tertiary/20 text-on-surface rounded-lg text-sm hover:bg-tertiary/10 hover:text-tertiary transition-colors flex items-center gap-1.5" data-type="escenario">
-            <span class="material-symbols-outlined text-[18px]">theater_comedy</span>Escenario
-          </button>
-          <button class="btn-add-element px-4 py-2 bg-surface-container border border-tertiary/20 text-on-surface rounded-lg text-sm hover:bg-tertiary/10 hover:text-tertiary transition-colors flex items-center gap-1.5" data-type="pista_baile">
-            <span class="material-symbols-outlined text-[18px]">nightlife</span>Pista de Baile
-          </button>
-          <button class="btn-add-element px-4 py-2 bg-surface-container border border-tertiary/20 text-on-surface rounded-lg text-sm hover:bg-tertiary/10 hover:text-tertiary transition-colors flex items-center gap-1.5" data-type="cocina">
-            <span class="material-symbols-outlined text-[18px]">skillet</span>Cocina
-          </button>
-          <button class="btn-add-element px-4 py-2 bg-surface-container border border-tertiary/20 text-on-surface rounded-lg text-sm hover:bg-tertiary/10 hover:text-tertiary transition-colors flex items-center gap-1.5" data-type="banos">
-            <span class="material-symbols-outlined text-[18px]">wc</span>Baños
-          </button>
-          <button class="btn-add-element px-4 py-2 bg-surface-container border border-tertiary/20 text-on-surface rounded-lg text-sm hover:bg-tertiary/10 hover:text-tertiary transition-colors flex items-center gap-1.5" data-type="decoracion">
-            <span class="material-symbols-outlined text-[18px]">local_florist</span>Decoración
-          </button>
+        
+        <!-- Live Occupancy Metrics -->
+        <div class="flex items-center gap-2 pl-4 border-l border-tertiary/20 flex-wrap text-xs">
+          <div class="px-3 py-1.5 bg-surface rounded-lg border border-tertiary/20 flex items-center gap-2">
+            <span class="material-symbols-outlined text-tertiary text-[16px]">chair</span>
+            <span class="text-on-surface-variant">Capacidad:</span>
+            <strong id="stat-total-capacity" class="text-on-surface">0</strong>
+          </div>
+          <div class="px-3 py-1.5 bg-surface rounded-lg border border-tertiary/20 flex items-center gap-2">
+            <span class="material-symbols-outlined text-[#4ade80] text-[16px]">how_to_reg</span>
+            <span class="text-on-surface-variant">Sentados:</span>
+            <strong id="stat-assigned-count" class="text-[#4ade80]">0</strong>
+          </div>
+          <div class="px-3 py-1.5 bg-surface rounded-lg border border-tertiary/20 flex items-center gap-2">
+            <span class="material-symbols-outlined text-secondary text-[16px]">event_seat</span>
+            <span class="text-on-surface-variant">Libres:</span>
+            <strong id="stat-free-seats" class="text-secondary">0</strong>
+          </div>
         </div>
       </div>
 
-      <!-- Main Area: Canvas + Sidebar de invitados -->
-      <div class="flex-1 flex overflow-hidden">
-        <!-- Canvas -->
-        <div id="canvas-wrap" class="flex-1 overflow-auto relative bg-primary-container p-8">
-          <div id="canvas" class="relative" style="width: 1200px; height: 900px; background-image: radial-gradient(circle, rgba(233,195,73,0.15) 1px, transparent 1px); background-size: 40px 40px;">
-            <p id="canvas-empty-msg" class="hidden absolute inset-0 flex items-center justify-center text-on-surface-variant">Agrega tu primer elemento desde la barra de arriba.</p>
-          </div>
+      <!-- Actions -->
+      <div class="flex items-center gap-2 flex-wrap">
+        <button id="btn-auto-assign" class="px-4 py-2 bg-gradient-to-r from-tertiary/20 to-tertiary/40 border border-tertiary text-tertiary font-button-text uppercase tracking-wider rounded-lg text-xs hover:brightness-125 transition-all flex items-center gap-1.5 shadow-md" title="Asignar automáticamente a los invitados respetando el límite estricto de sillas">
+          <span class="material-symbols-outlined text-[16px]">auto_fix_high</span>
+          Auto-Asignar
+        </button>
+        <button id="btn-clear-assignments" class="px-3 py-2 bg-surface border border-error/30 text-error font-button-text uppercase tracking-wider rounded-lg text-xs hover:bg-error/10 transition-all flex items-center gap-1" title="Liberar todos los asientos">
+          <span class="material-symbols-outlined text-[16px]">person_remove</span>
+          Despejar
+        </button>
+        <button id="btn-print-seating" class="px-3 py-2 bg-surface border border-tertiary/20 text-on-surface font-button-text uppercase tracking-wider rounded-lg text-xs hover:bg-tertiary/10 transition-colors flex items-center gap-1.5" title="Imprimir plano oficial de salón para meseros y hostesses">
+          <span class="material-symbols-outlined text-[16px]">print</span>
+          Imprimir
+        </button>
+      </div>
+    </div>
+
+    <!-- Component Library Ribbon -->
+    <div class="px-6 py-2.5 bg-surface-container-low border-b border-tertiary/10 flex items-center gap-2 overflow-x-auto z-10 text-xs">
+      <span class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant mr-2 shrink-0">AGREGAR ELEMENTO:</span>
+      <button class="btn-add-element px-3 py-1.5 bg-surface border border-tertiary/20 text-on-surface rounded-lg hover:border-tertiary hover:text-tertiary transition-all flex items-center gap-1.5 shrink-0" data-type="mesa_redonda">
+        <span class="material-symbols-outlined text-[16px]">panorama_fish_eye</span>Mesa Redonda (10p)
+      </button>
+      <button class="btn-add-element px-3 py-1.5 bg-surface border border-tertiary/20 text-on-surface rounded-lg hover:border-tertiary hover:text-tertiary transition-all flex items-center gap-1.5 shrink-0" data-type="mesa_rectangular">
+        <span class="material-symbols-outlined text-[16px]">crop_landscape</span>Mesa Rectangular (8p)
+      </button>
+      <button class="btn-add-element px-3 py-1.5 bg-surface border border-tertiary/20 text-on-surface rounded-lg hover:border-tertiary hover:text-tertiary transition-all flex items-center gap-1.5 shrink-0" data-type="mesa_novios">
+        <span class="material-symbols-outlined text-[16px] text-tertiary">favorite</span>Mesa de Novios (2p)
+      </button>
+      <button class="btn-add-element px-3 py-1.5 bg-surface border border-tertiary/20 text-on-surface rounded-lg hover:border-tertiary hover:text-tertiary transition-all flex items-center gap-1.5 shrink-0" data-type="mesa_cuadrada">
+        <span class="material-symbols-outlined text-[16px]">crop_square</span>Mesa Cuadrada (8p)
+      </button>
+      <button class="btn-add-element px-3 py-1.5 bg-surface border border-tertiary/20 text-on-surface rounded-lg hover:border-tertiary hover:text-tertiary transition-all flex items-center gap-1.5 shrink-0" data-type="pista_baile">
+        <span class="material-symbols-outlined text-[16px] text-[#abc9f2]">nightlife</span>Pista de Baile
+      </button>
+      <button class="btn-add-element px-3 py-1.5 bg-surface border border-tertiary/20 text-on-surface rounded-lg hover:border-tertiary hover:text-tertiary transition-all flex items-center gap-1.5 shrink-0" data-type="escenario">
+        <span class="material-symbols-outlined text-[16px]">theater_comedy</span>Escenario / DJ
+      </button>
+      <button class="btn-add-element px-3 py-1.5 bg-surface border border-tertiary/20 text-on-surface rounded-lg hover:border-tertiary hover:text-tertiary transition-all flex items-center gap-1.5 shrink-0" data-type="barra_bar">
+        <span class="material-symbols-outlined text-[16px]">local_bar</span>Barra Cócteles
+      </button>
+      <button class="btn-add-element px-3 py-1.5 bg-surface border border-tertiary/20 text-on-surface rounded-lg hover:border-tertiary hover:text-tertiary transition-all flex items-center gap-1.5 shrink-0" data-type="banos">
+        <span class="material-symbols-outlined text-[16px]">wc</span>Sanitarios
+      </button>
+    </div>
+
+    <!-- Main Workspace (Canvas + Sidebar) -->
+    <div class="flex-1 flex overflow-hidden relative" style="height: calc(100vh - 185px);">
+      
+      <!-- Canvas Wrapper -->
+      <div id="canvas-viewport" class="flex-1 overflow-auto relative bg-[#0b0c09] p-12 canvas-grid">
+        <div id="canvas" class="relative transition-transform duration-100 origin-top-left" style="width: 1600px; height: 1200px;">
+          <p id="canvas-empty-msg" class="hidden absolute inset-0 flex flex-col items-center justify-center text-on-surface-variant/40 gap-2">
+            <span class="material-symbols-outlined text-6xl text-tertiary/20">chair</span>
+            Agrega mesas desde la barra superior o arrastra elementos para diseñar el salón.
+          </p>
         </div>
 
-        <!-- Sidebar: Invitados sin asignar -->
-        <div class="w-80 bg-surface-container flex flex-col shadow-lg shrink-0">
-          <div class="p-6 bg-surface-container-high shadow-sm z-10 flex flex-col gap-4">
-            <h2 class="font-headline-md text-headline-md text-on-surface flex items-center justify-between">
-              Sin Asignar
-              <span id="unassigned-count" class="px-2 py-1 bg-tertiary/10 text-tertiary font-label-gold text-label-gold rounded-full">0</span>
-            </h2>
-            <div class="relative">
-              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
-              <input id="guest-search-sidebar" class="w-full bg-surface py-2 pl-10 pr-4 rounded text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none shadow-inner" placeholder="Buscar invitados..." type="text"/>
+        <!-- Floating Zoom Controls -->
+        <div class="fixed bottom-6 left-56 bg-surface-container-high/90 backdrop-blur-md border border-tertiary/20 rounded-xl p-1.5 flex items-center gap-1 shadow-2xl z-30">
+          <button id="btn-zoom-out" class="p-2 text-on-surface-variant hover:text-tertiary rounded-lg transition-colors" title="Alejar"><span class="material-symbols-outlined text-[20px]">zoom_out</span></button>
+          <span id="zoom-level-label" class="px-2 font-mono text-xs text-tertiary font-bold">100%</span>
+          <button id="btn-zoom-in" class="p-2 text-on-surface-variant hover:text-tertiary rounded-lg transition-colors" title="Acercar"><span class="material-symbols-outlined text-[20px]">zoom_in</span></button>
+          <button id="btn-zoom-reset" class="px-2.5 py-1 text-xs text-on-surface-variant hover:text-on-surface hover:bg-surface rounded-md transition-colors" title="Restablecer">100%</button>
+        </div>
+      </div>
+
+      <!-- Right Sidebar: Unassigned Guests (Drag & Drop) -->
+      <div class="w-84 bg-surface-container flex flex-col border-l border-tertiary/15 shadow-2xl z-20 shrink-0" style="width: 340px;">
+        <div class="p-5 bg-surface-container-high border-b border-tertiary/10 flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-tertiary text-[20px]">group</span>
+              <h2 class="font-headline-md text-lg text-on-surface">Invitados</h2>
             </div>
+            <span id="unassigned-count-badge" class="px-2.5 py-0.5 bg-tertiary/15 border border-tertiary/30 text-tertiary font-label-gold text-xs rounded-full">0 Sin Asignar</span>
           </div>
-          <div id="unassigned-list" class="flex-1 overflow-y-auto p-4 flex flex-col gap-2">
-            <p class="text-on-surface-variant text-sm text-center py-6">Cargando…</p>
+
+          <!-- Search Input -->
+          <div class="relative">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+            <input id="guest-search-sidebar" class="w-full bg-surface border border-tertiary/20 py-2 pl-9 pr-3 rounded-lg text-sm text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none focus:border-tertiary" placeholder="Buscar por nombre..." type="text"/>
+          </div>
+
+          <!-- Group Filter Tabs -->
+          <div id="group-filter-pills" class="flex items-center gap-1.5 overflow-x-auto pb-1 text-[11px]">
+            <button class="group-tab-btn active px-2.5 py-1 rounded-full bg-tertiary text-on-tertiary font-bold" data-group="">Todos</button>
           </div>
         </div>
+
+        <!-- Draggable Guests List -->
+        <div id="unassigned-list" class="flex-1 overflow-y-auto p-4 flex flex-col gap-2.5">
+          <p class="text-on-surface-variant text-sm text-center py-10">Cargando invitados…</p>
+        </div>
       </div>
+
     </div>
   </main>
 </div>
 
-<!-- Modal: Editar Elemento -->
+<!-- Modal: Detalle / Edición de Mesa & Asientos -->
 <div id="element-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
-  <div id="element-modal-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
-  <div class="relative w-full max-w-md bg-surface-container-low rounded-2xl shadow-2xl border border-tertiary/10 p-8 max-h-[90vh] overflow-y-auto">
-    <div class="flex items-center justify-between mb-6">
-      <h2 id="element-modal-title" class="font-headline-lg text-headline-lg text-on-surface">Editar Elemento</h2>
+  <div id="element-modal-backdrop" class="absolute inset-0 bg-black/70 backdrop-blur-md"></div>
+  <div class="relative w-full max-w-lg bg-surface-container-low rounded-3xl shadow-2xl border border-tertiary/20 p-8 max-h-[90vh] overflow-y-auto flex flex-col gap-6">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-tertiary/10 border border-tertiary/30 flex items-center justify-center text-tertiary">
+          <span id="modal-element-icon" class="material-symbols-outlined text-[22px]">chair</span>
+        </div>
+        <div>
+          <h2 id="element-modal-title" class="font-headline-lg text-2xl text-on-surface">Configurar Mesa</h2>
+          <p id="modal-table-occupancy-sub" class="text-xs text-on-surface-variant">Capacidad y lista de comensales</p>
+        </div>
+      </div>
       <button id="element-modal-close" class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors">close</button>
     </div>
+
     <form id="element-form" class="flex flex-col gap-4">
       <input id="element-id" type="hidden"/>
       <input id="element-type" type="hidden"/>
-      <div class="flex flex-col gap-1">
-        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="element-label">Nombre / Etiqueta</label>
-        <input id="element-label" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
-      </div>
-      <div id="element-capacity-wrap" class="flex flex-col gap-1">
-        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="element-capacity">Capacidad (asientos)</label>
-        <input id="element-capacity" min="0" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="number"/>
-      </div>
+
       <div class="grid grid-cols-2 gap-4">
         <div class="flex flex-col gap-1">
-          <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="element-width">Ancho (celdas)</label>
-          <input id="element-width" min="1" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="number"/>
+          <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="element-label">Nombre / Etiqueta</label>
+          <input id="element-label" required class="bg-surface-container border border-tertiary/20 rounded-xl py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary text-sm" type="text"/>
         </div>
-        <div class="flex flex-col gap-1">
-          <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="element-height">Alto (celdas)</label>
-          <input id="element-height" min="1" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="number"/>
+        <div id="element-capacity-wrap" class="flex flex-col gap-1">
+          <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="element-capacity">Número de Sillas</label>
+          <input id="element-capacity" min="1" max="30" class="bg-surface-container border border-tertiary/20 rounded-xl py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary text-sm" type="number"/>
         </div>
       </div>
 
-      <!-- Invitados asignados (solo mesas/sillas) -->
-      <div id="element-guests-wrap" class="flex flex-col gap-2 hidden">
-        <label class="text-xs uppercase tracking-wider text-on-surface-variant">Invitados en esta mesa</label>
-        <div id="element-assigned-guests" class="flex flex-col gap-2 max-h-40 overflow-y-auto"></div>
-        <select id="element-add-guest" class="bg-surface-container border border-tertiary/20 rounded-lg py-2.5 px-4 text-on-surface focus:outline-none focus:border-tertiary mt-1">
-          <option value="">+ Agregar invitado a esta mesa…</option>
-        </select>
+      <!-- Quick Rotation Selector -->
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant">Rotación de la Mesa</label>
+        <div class="grid grid-cols-4 gap-2">
+          <button type="button" class="btn-set-rotation py-2 bg-surface-container border border-tertiary/20 rounded-lg text-xs text-on-surface hover:border-tertiary" data-rot="0">0° (Normal)</button>
+          <button type="button" class="btn-set-rotation py-2 bg-surface-container border border-tertiary/20 rounded-lg text-xs text-on-surface hover:border-tertiary" data-rot="45">45°</button>
+          <button type="button" class="btn-set-rotation py-2 bg-surface-container border border-tertiary/20 rounded-lg text-xs text-on-surface hover:border-tertiary" data-rot="90">90° (Vertical)</button>
+          <button type="button" class="btn-set-rotation py-2 bg-surface-container border border-tertiary/20 rounded-lg text-xs text-on-surface hover:border-tertiary" data-rot="180">180°</button>
+        </div>
+        <input id="element-rotation" type="hidden" value="0"/>
+      </div>
+
+      <!-- Asientos asignados a esta mesa -->
+      <div id="element-guests-wrap" class="flex flex-col gap-3 pt-2 border-t border-tertiary/10">
+        <div class="flex items-center justify-between">
+          <span class="text-xs uppercase tracking-wider text-on-surface-variant font-bold">Comensales Sentados (<span id="modal-count-indicator">0</span>)</span>
+          <span id="modal-full-warning" class="hidden text-xs text-[#4ade80] font-bold">MESA COMPLETA</span>
+        </div>
+
+        <div id="element-assigned-guests" class="flex flex-col gap-2 max-h-48 overflow-y-auto pr-1"></div>
+
+        <!-- Add guest to table dropdown -->
+        <div id="modal-add-guest-container" class="flex flex-col gap-1 mt-1">
+          <select id="element-add-guest" class="bg-surface-container border border-tertiary/30 rounded-xl py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary text-sm">
+            <option value="">+ Sentar a un invitado sin mesa…</option>
+          </select>
+        </div>
       </div>
 
       <p id="element-form-error" class="hidden text-error text-sm"></p>
 
-      <div class="flex justify-between items-center gap-3 mt-2">
-        <button type="button" id="element-delete-btn" class="px-4 py-3 rounded-lg text-error hover:bg-error/10 transition-colors font-button-text uppercase tracking-wider text-sm flex items-center gap-2">
+      <div class="flex justify-between items-center gap-3 pt-4 border-t border-tertiary/10 mt-2">
+        <button type="button" id="element-delete-btn" class="px-4 py-3 rounded-xl text-error hover:bg-error/10 transition-colors font-button-text uppercase tracking-wider text-xs flex items-center gap-1.5">
           <span class="material-symbols-outlined text-[18px]">delete</span>Eliminar
         </button>
-        <div class="flex justify-end gap-3 flex-1">
-          <button type="button" id="element-modal-cancel" class="px-6 py-3 rounded-lg border border-tertiary/20 text-on-surface-variant hover:bg-surface-container transition-colors font-button-text uppercase tracking-wider text-sm">Cancelar</button>
-          <button type="submit" class="px-8 py-3 rounded-lg bg-tertiary text-on-tertiary font-button-text uppercase tracking-wider text-sm hover:brightness-110 transition-all">Guardar</button>
+        <div class="flex justify-end gap-2">
+          <button type="button" id="element-modal-cancel" class="px-5 py-3 rounded-xl border border-tertiary/20 text-on-surface-variant hover:bg-surface-container transition-colors font-button-text uppercase tracking-wider text-xs">Cerrar</button>
+          <button type="submit" class="px-7 py-3 rounded-xl bg-tertiary text-on-tertiary font-button-text uppercase tracking-wider text-xs hover:brightness-110 transition-all shadow-lg">Guardar</button>
         </div>
       </div>
     </form>
@@ -343,8 +438,10 @@ tailwind.config = {
   const canvas = document.getElementById("canvas");
   const emptyMsg = document.getElementById("canvas-empty-msg");
   const unassignedList = document.getElementById("unassigned-list");
-  const unassignedCount = document.getElementById("unassigned-count");
+  const unassignedCountBadge = document.getElementById("unassigned-count-badge");
   const guestSearchSidebar = document.getElementById("guest-search-sidebar");
+  const groupFilterPills = document.getElementById("group-filter-pills");
+  
   const modal = document.getElementById("element-modal");
   const form = document.getElementById("element-form");
   const formError = document.getElementById("element-form-error");
@@ -356,7 +453,10 @@ tailwind.config = {
   let currentEventId = null;
   let allElements = [];
   let allGuests = [];
+  let allGroups = [];
   let assignments = []; // [{seating_table_id, guest_id}]
+  let currentGroupFilter = "";
+  let currentZoom = 1;
   let dragState = null;
   let suppressNextClick = false;
 
@@ -366,15 +466,14 @@ tailwind.config = {
   }
 
   const TYPE_META = {
-    mesa_redonda:     { label: "Mesa Redonda",     icon: "panorama_fish_eye", isSeat: true,  shape: "round",  color: "bg-secondary-container" },
-    mesa_rectangular: { label: "Mesa Rectangular",  icon: "crop_landscape",    isSeat: true,  shape: "rect",   color: "bg-secondary-container" },
-    silla:            { label: "Silla",             icon: "chair",             isSeat: true,  shape: "rect",   color: "bg-surface-container-high" },
-    mesa_novios:      { label: "Mesa de Novios",    icon: "favorite",          isSeat: true,  shape: "rect",   color: "bg-tertiary/20" },
-    escenario:        { label: "Escenario",         icon: "theater_comedy",    isSeat: false, shape: "rect",   color: "bg-primary/20" },
-    pista_baile:      { label: "Pista de Baile",    icon: "nightlife",         isSeat: false, shape: "rect",   color: "bg-surface/40" },
-    cocina:           { label: "Cocina",            icon: "skillet",           isSeat: false, shape: "rect",   color: "bg-surface-container" },
-    banos:            { label: "Baños",             icon: "wc",                isSeat: false, shape: "rect",   color: "bg-surface-container" },
-    decoracion:       { label: "Decoración",        icon: "local_florist",     isSeat: false, shape: "rect",   color: "bg-secondary/10" }
+    mesa_redonda:     { label: "Mesa Redonda",     icon: "panorama_fish_eye", isSeat: true,  shape: "round",     defaultCap: 10, defaultW: 4, defaultH: 4, color: "bg-[#1e1e1a]" },
+    mesa_rectangular: { label: "Mesa Rectangular",  icon: "crop_landscape",    isSeat: true,  shape: "rect",      defaultCap: 8,  defaultW: 5, defaultH: 3, color: "bg-[#1e1e1a]" },
+    mesa_novios:      { label: "Mesa de Novios",    icon: "favorite",          isSeat: true,  shape: "sweetheart",defaultCap: 2,  defaultW: 4, defaultH: 2.5, color: "bg-[#282415]" },
+    mesa_cuadrada:    { label: "Mesa Cuadrada",    icon: "crop_square",       isSeat: true,  shape: "square",    defaultCap: 8,  defaultW: 3.5, defaultH: 3.5, color: "bg-[#1e1e1a]" },
+    pista_baile:      { label: "Pista de Baile",    icon: "nightlife",         isSeat: false, shape: "floor",     defaultCap: 0,  defaultW: 6, defaultH: 5, color: "bg-[#181a20]" },
+    escenario:        { label: "Escenario / DJ",    icon: "theater_comedy",    isSeat: false, shape: "stage",     defaultCap: 0,  defaultW: 7, defaultH: 3, color: "bg-[#151a24]" },
+    barra_bar:        { label: "Barra Cócteles",    icon: "local_bar",         isSeat: false, shape: "bar",       defaultCap: 0,  defaultW: 5, defaultH: 2, color: "bg-[#221c16]" },
+    banos:            { label: "Sanitarios",        icon: "wc",                isSeat: false, shape: "facility",  defaultCap: 0,  defaultW: 3, defaultH: 2, color: "bg-[#1a1a1a]" }
   };
 
   function occupantsForElement(elementId) {
@@ -383,65 +482,282 @@ tailwind.config = {
   }
 
   function seatsUsed(elementId) {
-    return occupantsForElement(elementId).reduce((sum, g) => sum + (g.plus_one ? 2 : 1), 0);
+    return occupantsForElement(elementId).length;
   }
 
+  function updateKPIs() {
+    let totalCap = 0;
+    allElements.forEach(el => {
+      const meta = TYPE_META[el.element_type];
+      if (meta?.isSeat) totalCap += (el.capacity || 0);
+    });
+
+    const totalAssigned = assignments.length;
+    const freeSeats = Math.max(0, totalCap - totalAssigned);
+    const unassignedCount = allGuests.length - totalAssigned;
+
+    document.getElementById("stat-total-capacity").textContent = `${totalCap} Sillas`;
+    document.getElementById("stat-assigned-count").textContent = `${totalAssigned} (${totalCap ? Math.round((totalAssigned / totalCap) * 100) : 0}%)`;
+    document.getElementById("stat-free-seats").textContent = freeSeats;
+    unassignedCountBadge.textContent = `${Math.max(0, unassignedCount)} Sin Asignar`;
+  }
+
+  // ---- RENDERIZADO VISUAL DE SILLAS SEGÚN LA FORMA GEOMÉTRICA ----
+  function renderTableChairsHTML(el, meta, occupants) {
+    if (!meta.isSeat) return "";
+    const cap = el.capacity || meta.defaultCap;
+    const widthPx = el.width * CELL;
+    const heightPx = el.height * CELL;
+    const centerX = widthPx / 2;
+    const centerY = heightPx / 2;
+    let chairsHtml = "";
+
+    if (meta.shape === "round") {
+      const radius = (Math.min(widthPx, heightPx) / 2) + 14;
+      for (let i = 0; i < cap; i++) {
+        const angle = (i * (2 * Math.PI / cap)) - (Math.PI / 2);
+        const cx = centerX + radius * Math.cos(angle) - 14;
+        const cy = centerY + radius * Math.sin(angle) - 14;
+        const occ = occupants[i] || null;
+
+        chairsHtml += `
+          <div class="chair-node absolute w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold cursor-pointer border ${
+            occ 
+              ? 'bg-[#e9c349] text-[#131411] border-white shadow-[0_0_8px_rgba(233,195,73,0.6)] ring-2 ring-[#e9c349]/30' 
+              : 'bg-[#1c1c19]/90 text-on-surface-variant/40 border-dashed border-tertiary/40 hover:border-tertiary hover:text-tertiary'
+          }" style="left: ${cx}px; top: ${cy}px;" title="${occ ? `${escapeHtml(occ.full_name)} (Silla ${i+1})` : `Silla ${i+1} Libre`}" data-chair-idx="${i}" data-guest-id="${occ ? occ.id : ''}">
+            ${occ ? escapeHtml(occ.full_name.split(' ').map(n=>n[0]).slice(0,2).join('')) : (i + 1)}
+          </div>
+        `;
+      }
+    } else if (meta.shape === "sweetheart") {
+      // 2 sillas frontales para los novios
+      const occ1 = occupants[0] || null;
+      const occ2 = occupants[1] || null;
+      chairsHtml += `
+        <div class="chair-node absolute w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold border ${occ1 ? 'bg-tertiary text-on-tertiary ring-2 ring-tertiary/50' : 'bg-surface border-dashed border-tertiary/50 text-tertiary'}" style="left: ${centerX - 35}px; top: -16px;" title="${occ1 ? `Novia: ${escapeHtml(occ1.full_name)}` : 'Silla Novia'}">
+          ${occ1 ? '👰' : '💍'}
+        </div>
+        <div class="chair-node absolute w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold border ${occ2 ? 'bg-tertiary text-on-tertiary ring-2 ring-tertiary/50' : 'bg-surface border-dashed border-tertiary/50 text-tertiary'}" style="left: ${centerX + 5}px; top: -16px;" title="${occ2 ? `Novio: ${escapeHtml(occ2.full_name)}` : 'Silla Novio'}">
+          ${occ2 ? '🤵' : '👑'}
+        </div>
+      `;
+    } else {
+      // Rectangular / Cuadrada: distribuir arriba y abajo
+      const half = Math.ceil(cap / 2);
+      const stepX = (widthPx - 40) / Math.max(1, half - 1);
+
+      for (let i = 0; i < half; i++) {
+        const occ = occupants[i] || null;
+        const cx = 20 + (i * stepX) - 14;
+        chairsHtml += `
+          <div class="chair-node absolute w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold cursor-pointer border ${
+            occ ? 'bg-[#e9c349] text-[#131411] border-white shadow-md' : 'bg-[#1c1c19] text-on-surface-variant/40 border-dashed border-tertiary/40'
+          }" style="left: ${cx}px; top: -14px;" title="${occ ? escapeHtml(occ.full_name) : `Silla ${i+1} Libre`}">
+            ${occ ? escapeHtml(occ.full_name[0]) : (i+1)}
+          </div>
+        `;
+      }
+      for (let i = 0; i < (cap - half); i++) {
+        const occ = occupants[half + i] || null;
+        const cx = 20 + (i * stepX) - 14;
+        chairsHtml += `
+          <div class="chair-node absolute w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold cursor-pointer border ${
+            occ ? 'bg-[#e9c349] text-[#131411] border-white shadow-md' : 'bg-[#1c1c19] text-on-surface-variant/40 border-dashed border-tertiary/40'
+          }" style="left: ${cx}px; top: ${heightPx - 14}px;" title="${occ ? escapeHtml(occ.full_name) : `Silla ${half+i+1} Libre`}">
+            ${occ ? escapeHtml(occ.full_name[0]) : (half + i + 1)}
+          </div>
+        `;
+      }
+    }
+
+    return chairsHtml;
+  }
+
+  // ---- RENDERIZADO DEL LIENZO ----
   function renderCanvas() {
     canvas.querySelectorAll(".layout-el").forEach(el => el.remove());
     emptyMsg.classList.toggle("hidden", allElements.length > 0);
 
     allElements.forEach(el => {
-      const meta = TYPE_META[el.element_type] || TYPE_META.decoracion;
-      const used = meta.isSeat ? seatsUsed(el.id) : null;
+      const meta = TYPE_META[el.element_type] || TYPE_META.mesa_redonda;
+      const occupants = occupantsForElement(el.id);
+      const used = occupants.length;
+      const cap = el.capacity || meta.defaultCap;
+      const isFull = meta.isSeat && used >= cap;
+
       const node = document.createElement("div");
-      node.className = `layout-el group absolute ${meta.color} border border-tertiary/20 shadow-md flex flex-col items-center justify-center gap-1 cursor-grab active:cursor-grabbing select-none hover:ring-2 hover:ring-tertiary/50 transition-shadow ${meta.shape === 'round' ? 'rounded-full' : 'rounded-lg'}`;
+      node.className = `layout-el layout-table group absolute select-none transition-shadow ${
+        isFull ? 'ring-1 ring-[#4ade80]/60' : ''
+      }`;
       node.style.touchAction = "none";
       node.style.left = `${el.pos_x * CELL}px`;
       node.style.top = `${el.pos_y * CELL}px`;
       node.style.width = `${el.width * CELL}px`;
       node.style.height = `${el.height * CELL}px`;
+      node.style.transform = `rotate(${el.rotation || 0}deg)`;
       node.dataset.id = el.id;
+
+      // Table Shape Body
+      let shapeHtml = "";
+      if (meta.shape === "round") {
+        shapeHtml = `
+          <div class="w-full h-full rounded-full ${meta.color} border-2 ${isFull ? 'border-[#4ade80]' : 'border-tertiary/40'} shadow-2xl flex flex-col items-center justify-center p-3 relative cursor-grab active:cursor-grabbing hover:border-tertiary transition-colors">
+            <span class="text-on-surface text-xs font-bold text-center leading-tight truncate max-w-[90%]">${escapeHtml(el.label || meta.label)}</span>
+            <span class="mt-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${isFull ? 'bg-[#4ade80]/20 text-[#4ade80] border border-[#4ade80]/40' : 'bg-tertiary/10 text-tertiary'}">${used}/${cap}</span>
+          </div>
+        `;
+      } else if (meta.shape === "sweetheart") {
+        shapeHtml = `
+          <div class="w-full h-full rounded-2xl bg-gradient-to-r from-tertiary/20 via-surface-container to-tertiary/20 border-2 border-tertiary shadow-2xl flex flex-col items-center justify-center p-3 relative cursor-grab active:cursor-grabbing">
+            <span class="material-symbols-outlined text-tertiary text-[18px]">favorite</span>
+            <span class="text-on-surface text-xs font-bold text-center truncate max-w-[90%]">${escapeHtml(el.label || meta.label)}</span>
+            <span class="text-[10px] text-tertiary font-bold">${used}/${cap}</span>
+          </div>
+        `;
+      } else if (meta.isSeat) {
+        shapeHtml = `
+          <div class="w-full h-full rounded-xl ${meta.color} border-2 ${isFull ? 'border-[#4ade80]' : 'border-tertiary/40'} shadow-2xl flex flex-col items-center justify-center p-3 relative cursor-grab active:cursor-grabbing hover:border-tertiary transition-colors">
+            <span class="text-on-surface text-xs font-bold text-center leading-tight truncate max-w-[90%]">${escapeHtml(el.label || meta.label)}</span>
+            <span class="mt-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${isFull ? 'bg-[#4ade80]/20 text-[#4ade80]' : 'bg-tertiary/10 text-tertiary'}">${used}/${cap}</span>
+          </div>
+        `;
+      } else {
+        // Non-seating facility / venue items
+        shapeHtml = `
+          <div class="w-full h-full rounded-2xl ${meta.color} border border-tertiary/30 shadow-2xl flex flex-col items-center justify-center p-4 relative cursor-grab active:cursor-grabbing hover:border-tertiary">
+            <span class="material-symbols-outlined text-tertiary text-3xl mb-1">${meta.icon}</span>
+            <span class="text-on-surface text-xs font-bold tracking-wider uppercase text-center">${escapeHtml(el.label || meta.label)}</span>
+          </div>
+        `;
+      }
+
+      const chairsHtml = renderTableChairsHTML(el, meta, occupants);
+
       node.innerHTML = `
-        <span class="material-symbols-outlined text-on-surface text-[20px]">${meta.icon}</span>
-        <span class="text-on-surface text-xs font-medium text-center px-1 leading-tight">${escapeHtml(el.label || meta.label)}</span>
-        ${meta.isSeat && el.capacity ? `<span class="text-[10px] ${used >= el.capacity ? 'text-error' : 'text-tertiary'}">${used}/${el.capacity}</span>` : ""}
-        <div class="resize-handle absolute -right-1 -bottom-1 w-3 h-3 bg-tertiary rounded-full cursor-nwse-resize opacity-0 group-hover:opacity-100"></div>
+        ${shapeHtml}
+        ${chairsHtml}
+        <div class="btn-quick-rotate absolute -top-3 -right-3 w-6 h-6 rounded-full bg-surface border border-tertiary text-tertiary flex items-center justify-center cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110 shadow-lg z-30" title="Rotar 45°">
+          <span class="material-symbols-outlined text-[14px]">rotate_right</span>
+        </div>
       `;
+
+      // HTML5 Drag & Drop Target for Guest Assignment
+      node.addEventListener("dragover", (e) => {
+        if (!meta.isSeat) return;
+        e.preventDefault();
+        node.classList.add("drag-over");
+      });
+      node.addEventListener("dragleave", () => {
+        node.classList.remove("drag-over");
+      });
+      node.addEventListener("drop", async (e) => {
+        e.preventDefault();
+        node.classList.remove("drag-over");
+        if (!meta.isSeat) return;
+        const guestId = e.dataTransfer.getData("text/plain");
+        if (!guestId) return;
+
+        if (used >= cap) {
+          window.showToast(`⚠️ "${el.label}" está completa (Capacidad máxima: ${cap} personas).`, "error");
+          return;
+        }
+
+        await assignGuestToTable(guestId, el.id, el.label);
+      });
+
       canvas.appendChild(node);
     });
+
+    updateKPIs();
   }
 
-  function renderUnassigned() {
+  // ---- ASIGNACIÓN DE INVITADO A MESA ----
+  async function assignGuestToTable(guestId, tableId, tableLabel) {
+    await window.supabaseClient.from("seating_assignments").delete().eq("guest_id", guestId);
+    const { error } = await window.supabaseClient.from("seating_assignments").insert({
+      seating_table_id: tableId,
+      guest_id: guestId
+    });
+
+    if (error) {
+      window.showToast("Error al asignar: " + error.message, "error");
+      return;
+    }
+
+    await window.supabaseClient.from("guests").update({ table_number: tableLabel }).eq("id", guestId);
+    const g = allGuests.find(x => x.id === guestId);
+    if (g) g.table_number = tableLabel;
+
+    window.showToast(`¡${g ? g.full_name : 'Invitado'} asignado a ${tableLabel}!`, "success");
+    await loadAll();
+  }
+
+  // ---- RENDERIZADO DE BARRA LATERAL (INVITADOS SIN ASIGNAR) ----
+  function renderUnassignedSidebar() {
     const term = (guestSearchSidebar.value || "").trim().toLowerCase();
     const assignedIds = new Set(assignments.map(a => a.guest_id));
     let unassigned = allGuests.filter(g => !assignedIds.has(g.id));
-    if (term) unassigned = unassigned.filter(g => (g.full_name || "").toLowerCase().includes(term));
 
-    unassignedCount.textContent = allGuests.filter(g => !assignedIds.has(g.id)).length;
+    if (currentGroupFilter) {
+      unassigned = unassigned.filter(g => g.group_id === currentGroupFilter);
+    }
+    if (term) {
+      unassigned = unassigned.filter(g => (g.full_name || "").toLowerCase().includes(term));
+    }
 
     if (unassigned.length === 0) {
-      unassignedList.innerHTML = `<p class="text-on-surface-variant text-sm text-center py-6">${allGuests.length === 0 ? "No hay invitados registrados todavía." : "Todos los invitados ya están asignados."}</p>`;
+      unassignedList.innerHTML = `
+        <div class="text-center py-12 text-on-surface-variant/60 flex flex-col items-center gap-2">
+          <span class="material-symbols-outlined text-4xl text-[#4ade80]">check_circle</span>
+          <p class="text-sm font-medium text-on-surface">${allGuests.length === 0 ? "No hay invitados registrados." : "¡Todos los invitados ya tienen asiento asignado!"}</p>
+        </div>`;
       return;
     }
-    unassignedList.innerHTML = unassigned.map(g => `
-      <div class="p-4 bg-surface rounded shadow-sm flex items-center justify-between group">
-        <div class="flex flex-col">
-          <span class="font-body-md text-body-md text-on-surface font-medium">${escapeHtml(g.full_name)}</span>
-          <span class="font-label-gold text-label-gold text-on-surface-variant mt-1">${g.plus_one ? "CON ACOMPAÑANTE" : ""}</span>
-        </div>
-      </div>
-    `).join("");
+
+    unassignedList.innerHTML = unassigned.map(g => {
+      const groupObj = allGroups.find(gr => gr.id === g.group_id);
+      return `
+        <div class="guest-drag-card p-3.5 bg-surface rounded-xl border border-tertiary/15 hover:border-tertiary/50 hover:bg-surface-container-high transition-all shadow-sm flex items-center justify-between cursor-grab active:cursor-grabbing group" draggable="true" data-guest-id="${g.id}">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-tertiary/15 border border-tertiary/30 text-tertiary flex items-center justify-center text-xs font-bold">
+              ${escapeHtml(g.full_name.split(' ').map(n=>n[0]).slice(0,2).join(''))}
+            </div>
+            <div class="flex flex-col">
+              <span class="text-on-surface text-sm font-medium leading-tight group-hover:text-tertiary transition-colors">${escapeHtml(g.full_name)}</span>
+              <div class="flex items-center gap-2 text-[10px] text-on-surface-variant mt-0.5">
+                ${groupObj ? `<span class="text-tertiary">${escapeHtml(groupObj.name)}</span>` : "Sin grupo"}
+                ${g.dietary_notes ? `<span class="text-[#ffb4ab]">· ${escapeHtml(g.dietary_notes)}</span>` : ""}
+              </div>
+            </div>
+          </div>
+          <span class="material-symbols-outlined text-on-surface-variant/40 text-[18px] group-hover:text-tertiary">drag_indicator</span>
+        </div>`;
+    }).join("");
+
+    // Setup drag events on cards
+    document.querySelectorAll(".guest-drag-card").forEach(card => {
+      card.addEventListener("dragstart", (e) => {
+        e.dataTransfer.setData("text/plain", card.dataset.guestId);
+        card.classList.add("opacity-50");
+      });
+      card.addEventListener("dragend", () => {
+        card.classList.remove("opacity-50");
+      });
+    });
   }
 
+  // ---- CARGA DE DATOS DESDE SUPABASE ----
   async function loadAll() {
-    const [{ data: elements, error: elError }, { data: guests, error: gError }] = await Promise.all([
+    const [{ data: elements }, { data: guests }, { data: groups }] = await Promise.all([
       window.supabaseClient.from("layout_elements").select("*").eq("event_id", currentEventId),
-      window.supabaseClient.from("guests").select("*").eq("event_id", currentEventId)
+      window.supabaseClient.from("guests").select("*").eq("event_id", currentEventId).order("full_name"),
+      window.supabaseClient.from("guest_groups").select("*").eq("event_id", currentEventId).order("name")
     ]);
-    if (elError) { console.error(elError); return; }
-    if (gError) { console.error(gError); return; }
+
     allElements = elements || [];
     allGuests = guests || [];
+    allGroups = groups || [];
 
     const elementIds = allElements.map(e => e.id);
     if (elementIds.length > 0) {
@@ -454,56 +770,87 @@ tailwind.config = {
       assignments = [];
     }
 
+    renderGroupTabs();
     renderCanvas();
-    renderUnassigned();
+    renderUnassignedSidebar();
   }
 
-  // ---- Agregar elemento nuevo ----
+  function renderGroupTabs() {
+    groupFilterPills.innerHTML = `
+      <button class="group-tab-btn px-3 py-1 rounded-full text-xs font-medium transition-all ${!currentGroupFilter ? 'bg-tertiary text-on-tertiary font-bold' : 'bg-surface text-on-surface-variant hover:text-on-surface'}" data-group="">Todos</button>` +
+      allGroups.map(g => `
+        <button class="group-tab-btn px-3 py-1 rounded-full text-xs font-medium transition-all whitespace-nowrap ${currentGroupFilter === g.id ? 'bg-tertiary text-on-tertiary font-bold' : 'bg-surface text-on-surface-variant hover:text-on-surface'}" data-group="${g.id}">
+          ${escapeHtml(g.name)}
+        </button>
+      `).join("");
+  }
+
+  groupFilterPills.addEventListener("click", (e) => {
+    const btn = e.target.closest(".group-tab-btn");
+    if (!btn) return;
+    currentGroupFilter = btn.dataset.group;
+    renderGroupTabs();
+    renderUnassignedSidebar();
+  });
+
+  guestSearchSidebar.addEventListener("input", renderUnassignedSidebar);
+
+  // ---- AGREGAR NUEVO ELEMENTO AL PLANO ----
   document.querySelectorAll(".btn-add-element").forEach(btn => {
     btn.addEventListener("click", async () => {
       const type = btn.dataset.type;
       const meta = TYPE_META[type];
-      const defaults = {
-        mesa_redonda: { width: 2, height: 2, capacity: 10 },
-        mesa_rectangular: { width: 3, height: 1.5, capacity: 8 },
-        silla: { width: 1, height: 1, capacity: 1 },
-        mesa_novios: { width: 3, height: 1, capacity: 2 },
-        escenario: { width: 6, height: 2, capacity: null },
-        pista_baile: { width: 4, height: 4, capacity: null },
-        cocina: { width: 3, height: 2, capacity: null },
-        banos: { width: 2, height: 2, capacity: null },
-        decoracion: { width: 1, height: 1, capacity: null }
-      }[type];
+      const countOfType = allElements.filter(e => e.element_type === type).length + 1;
 
       const payload = {
         event_id: currentEventId,
         element_type: type,
-        label: meta.label,
-        pos_x: 1, pos_y: 1,
-        width: defaults.width, height: defaults.height,
-        capacity: defaults.capacity
+        label: `${meta.label} ${countOfType}`,
+        pos_x: 2 + (countOfType % 3) * 5,
+        pos_y: 2 + Math.floor(countOfType / 3) * 5,
+        width: meta.defaultW,
+        height: meta.defaultH,
+        capacity: meta.isSeat ? meta.defaultCap : null
       };
+
       const { error } = await window.supabaseClient.from("layout_elements").insert(payload);
-      if (error) { alert("No se pudo agregar: " + error.message); return; }
+      if (error) { window.showToast("No se pudo agregar: " + error.message, "error"); return; }
+      window.showToast(`${meta.label} agregada al plano.`, "success");
       await loadAll();
     });
   });
 
-  // ---- Drag & resize sobre el canvas ----
+  // ---- INTERACCIÓN DEL LIENZO (DRAG DE MESAS, ROTACIÓN Y CLIC) ----
+  let pointerDownPos = null;
+
   canvas.addEventListener("pointerdown", (e) => {
+    pointerDownPos = { x: e.clientX, y: e.clientY };
+    suppressNextClick = false;
+
+    // Quick Rotate button click
+    if (e.target.closest(".btn-quick-rotate")) {
+      const node = e.target.closest(".layout-el");
+      const el = allElements.find(x => x.id === node.dataset.id);
+      if (el) {
+        el.rotation = ((el.rotation || 0) + 45) % 360;
+        node.style.transform = `rotate(${el.rotation}deg)`;
+        window.supabaseClient.from("layout_elements").update({ rotation: el.rotation }).eq("id", el.id);
+      }
+      e.stopPropagation();
+      return;
+    }
+
     const node = e.target.closest(".layout-el");
     if (!node) return;
-    const isResize = e.target.closest(".resize-handle");
     const el = allElements.find(x => x.id === node.dataset.id);
     if (!el) return;
 
     dragState = {
       id: el.id,
-      mode: isResize ? "resize" : "move",
       startX: e.clientX,
       startY: e.clientY,
-      origX: el.pos_x, origY: el.pos_y,
-      origW: el.width, origH: el.height,
+      origX: el.pos_x,
+      origY: el.pos_y,
       node
     };
     node.setPointerCapture(e.pointerId);
@@ -512,89 +859,85 @@ tailwind.config = {
 
   canvas.addEventListener("pointermove", (e) => {
     if (!dragState) return;
-    const dx = Math.round((e.clientX - dragState.startX) / CELL);
-    const dy = Math.round((e.clientY - dragState.startY) / CELL);
+    const dx = Math.round((e.clientX - dragState.startX) / (CELL * currentZoom));
+    const dy = Math.round((e.clientY - dragState.startY) / (CELL * currentZoom));
     if (dx !== 0 || dy !== 0) suppressNextClick = true;
 
-    if (dragState.mode === "move") {
-      const newX = Math.max(0, dragState.origX + dx);
-      const newY = Math.max(0, dragState.origY + dy);
-      dragState.node.style.left = `${newX * CELL}px`;
-      dragState.node.style.top = `${newY * CELL}px`;
-      dragState.newX = newX; dragState.newY = newY;
-    } else {
-      const newW = Math.max(1, dragState.origW + dx);
-      const newH = Math.max(1, dragState.origH + dy);
-      dragState.node.style.width = `${newW * CELL}px`;
-      dragState.node.style.height = `${newH * CELL}px`;
-      dragState.newW = newW; dragState.newH = newH;
-    }
+    const newX = Math.max(0, dragState.origX + dx);
+    const newY = Math.max(0, dragState.origY + dy);
+    dragState.node.style.left = `${newX * CELL}px`;
+    dragState.node.style.top = `${newY * CELL}px`;
+    dragState.newX = newX;
+    dragState.newY = newY;
   });
 
   canvas.addEventListener("pointerup", async (e) => {
     if (!dragState) return;
-    const { id, mode, newX, newY, newW, newH } = dragState;
+    const { id, newX, newY } = dragState;
     dragState = null;
 
     const el = allElements.find(x => x.id === id);
-    let payload = null;
-    if (mode === "move" && (newX !== undefined) && (newX !== el.pos_x || newY !== el.pos_y)) {
-      payload = { pos_x: newX, pos_y: newY };
+    if (newX !== undefined && (newX !== el.pos_x || newY !== el.pos_y)) {
       el.pos_x = newX; el.pos_y = newY;
-    } else if (mode === "resize" && (newW !== undefined) && (newW !== el.width || newH !== el.height)) {
-      payload = { width: newW, height: newH };
-      el.width = newW; el.height = newH;
-    }
-    if (payload) {
-      await window.supabaseClient.from("layout_elements").update(payload).eq("id", id);
+      await window.supabaseClient.from("layout_elements").update({ pos_x: newX, pos_y: newY }).eq("id", id);
     }
   });
 
-  // ---- Clic simple (sin arrastrar) abre el modal de edición ----
-  let pointerDownPos = null;
-  canvas.addEventListener("pointerdown", (e) => {
-    pointerDownPos = { x: e.clientX, y: e.clientY };
-    suppressNextClick = false;
-  });
   canvas.addEventListener("click", (e) => {
     if (suppressNextClick) { suppressNextClick = false; return; }
     const node = e.target.closest(".layout-el");
-    if (!node || e.target.closest(".resize-handle")) return;
+    if (!node || e.target.closest(".btn-quick-rotate")) return;
     const el = allElements.find(x => x.id === node.dataset.id);
     if (el) openModal(el);
   });
 
-  function refreshAssignedGuestsUI(elementId) {
-    const meta = TYPE_META[allElements.find(e => e.id === elementId)?.element_type];
+  // ---- MODAL DE CONFIGURACIÓN Y ASIGNACIÓN DE MESA ----
+  function refreshModalGuestsUI(elementId) {
+    const el = allElements.find(e => e.id === elementId);
     const occupants = occupantsForElement(elementId);
+    const cap = el.capacity || 10;
+    const isFull = occupants.length >= cap;
+
+    document.getElementById("modal-count-indicator").textContent = `${occupants.length} / ${cap}`;
+    document.getElementById("modal-full-warning").classList.toggle("hidden", !isFull);
+    document.getElementById("modal-add-guest-container").classList.toggle("hidden", isFull);
+
     assignedGuestsEl.innerHTML = occupants.length
-      ? occupants.map(g => `
-        <div class="flex items-center justify-between bg-surface-container rounded px-3 py-2">
-          <span class="text-on-surface text-sm">${escapeHtml(g.full_name)}${g.plus_one ? ' <span class="text-tertiary text-xs">+1</span>' : ""}</span>
-          <button type="button" class="btn-unassign-guest text-on-surface-variant hover:text-error transition-colors" data-guest-id="${g.id}"><span class="material-symbols-outlined text-[16px]">close</span></button>
+      ? occupants.map((g, idx) => `
+        <div class="flex items-center justify-between bg-surface-container rounded-xl p-3 border border-tertiary/10">
+          <div class="flex items-center gap-2.5">
+            <span class="w-6 h-6 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center text-[10px] font-bold">#${idx+1}</span>
+            <div class="flex flex-col">
+              <span class="text-on-surface text-sm font-medium">${escapeHtml(g.full_name)}</span>
+              ${g.dietary_notes ? `<span class="text-[10px] text-error">${escapeHtml(g.dietary_notes)}</span>` : ""}
+            </div>
+          </div>
+          <button type="button" class="btn-unassign-guest p-1 text-on-surface-variant hover:text-error transition-colors" data-guest-id="${g.id}" title="Quitar de la mesa">
+            <span class="material-symbols-outlined text-[18px]">close</span>
+          </button>
         </div>`).join("")
-      : `<p class="text-on-surface-variant text-xs">Ningún invitado asignado todavía.</p>`;
+      : `<p class="text-on-surface-variant text-xs py-2">Ningún comensal sentado en esta mesa.</p>`;
 
     const assignedIds = new Set(assignments.map(a => a.guest_id));
     const available = allGuests.filter(g => !assignedIds.has(g.id));
-    addGuestSelect.innerHTML = `<option value="">+ Agregar invitado a esta mesa…</option>` +
-      available.map(g => `<option value="${g.id}">${escapeHtml(g.full_name)}${g.plus_one ? " (+1)" : ""}</option>`).join("");
+    addGuestSelect.innerHTML = `<option value="">+ Sentar a un invitado…</option>` +
+      available.map(g => `<option value="${g.id}">${escapeHtml(g.full_name)}</option>`).join("");
   }
 
   function openModal(el) {
     formError.classList.add("hidden");
-    const meta = TYPE_META[el.element_type] || TYPE_META.decoracion;
+    const meta = TYPE_META[el.element_type] || TYPE_META.mesa_redonda;
+    document.getElementById("modal-element-icon").textContent = meta.icon;
     document.getElementById("element-modal-title").textContent = `Editar ${meta.label}`;
     document.getElementById("element-id").value = el.id;
     document.getElementById("element-type").value = el.element_type;
     document.getElementById("element-label").value = el.label || "";
-    document.getElementById("element-capacity").value = el.capacity || "";
-    document.getElementById("element-width").value = el.width;
-    document.getElementById("element-height").value = el.height;
+    document.getElementById("element-capacity").value = el.capacity || meta.defaultCap;
+    document.getElementById("element-rotation").value = el.rotation || 0;
 
     capacityWrap.classList.toggle("hidden", !meta.isSeat);
     guestsWrap.classList.toggle("hidden", !meta.isSeat);
-    if (meta.isSeat) refreshAssignedGuestsUI(el.id);
+    if (meta.isSeat) refreshModalGuestsUI(el.id);
 
     modal.classList.remove("hidden");
     modal.classList.add("flex");
@@ -610,56 +953,57 @@ tailwind.config = {
   document.getElementById("element-modal-cancel").addEventListener("click", closeModal);
   document.getElementById("element-modal-backdrop").addEventListener("click", closeModal);
 
+  // Rotation preset buttons
+  document.querySelectorAll(".btn-set-rotation").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const rot = Number(btn.dataset.rot);
+      document.getElementById("element-rotation").value = rot;
+      const elementId = document.getElementById("element-id").value;
+      const el = allElements.find(x => x.id === elementId);
+      if (el) {
+        el.rotation = rot;
+        const node = canvas.querySelector(`[data-id="${el.id}"]`);
+        if (node) node.style.transform = `rotate(${rot}deg)`;
+      }
+    });
+  });
+
+  // Sentar desde el selector del modal
   addGuestSelect.addEventListener("change", async () => {
     const guestId = addGuestSelect.value;
     if (!guestId) return;
     const elementId = document.getElementById("element-id").value;
-
-    // un invitado solo puede estar en una mesa: quita cualquier asignación previa
-    await window.supabaseClient.from("seating_assignments").delete().eq("guest_id", guestId);
-    const { error } = await window.supabaseClient.from("seating_assignments").insert({ seating_table_id: elementId, guest_id: guestId });
-    if (error) { alert("No se pudo asignar: " + error.message); return; }
-
-    const { data: assigns } = await window.supabaseClient.from("seating_assignments").select("*").in("seating_table_id", allElements.map(e => e.id));
-    assignments = assigns || [];
-    refreshAssignedGuestsUI(elementId);
-    renderCanvas();
-    renderUnassigned();
+    const el = allElements.find(e => e.id === elementId);
+    await assignGuestToTable(guestId, elementId, el.label);
+    refreshModalGuestsUI(elementId);
   });
 
+  // Quitar comensal
   assignedGuestsEl.addEventListener("click", async (e) => {
     const btn = e.target.closest(".btn-unassign-guest");
     if (!btn) return;
     const guestId = btn.dataset.guestId;
     const elementId = document.getElementById("element-id").value;
     await window.supabaseClient.from("seating_assignments").delete().eq("seating_table_id", elementId).eq("guest_id", guestId);
-    assignments = assignments.filter(a => !(a.seating_table_id === elementId && a.guest_id === guestId));
-    refreshAssignedGuestsUI(elementId);
-    renderCanvas();
-    renderUnassigned();
-  });
-
-  document.getElementById("element-delete-btn").addEventListener("click", async () => {
-    const id = document.getElementById("element-id").value;
-    if (!confirm("¿Eliminar este elemento? También se quitarán los invitados asignados a él.")) return;
-    await window.supabaseClient.from("seating_assignments").delete().eq("seating_table_id", id);
-    const { error } = await window.supabaseClient.from("layout_elements").delete().eq("id", id);
-    if (error) { alert("No se pudo eliminar: " + error.message); return; }
-    closeModal();
+    await window.supabaseClient.from("guests").update({ table_number: null }).eq("id", guestId);
+    const g = allGuests.find(x => x.id === guestId);
+    if (g) g.table_number = null;
+    window.showToast("Asiento liberado.", "info");
     await loadAll();
+    refreshModalGuestsUI(elementId);
   });
 
+  // Guardar cambios de mesa
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    formError.classList.add("hidden");
     const id = document.getElementById("element-id").value;
     const meta = TYPE_META[document.getElementById("element-type").value];
     const payload = {
       label: document.getElementById("element-label").value.trim() || meta.label,
-      width: Number(document.getElementById("element-width").value) || 1,
-      height: Number(document.getElementById("element-height").value) || 1,
-      capacity: meta.isSeat && document.getElementById("element-capacity").value ? Number(document.getElementById("element-capacity").value) : null
+      capacity: meta.isSeat ? Number(document.getElementById("element-capacity").value) : null,
+      rotation: Number(document.getElementById("element-rotation").value) || 0
     };
+
     const { error } = await window.supabaseClient.from("layout_elements").update(payload).eq("id", id);
     if (error) {
       formError.textContent = error.message;
@@ -670,18 +1014,35 @@ tailwind.config = {
     await loadAll();
   });
 
-  guestSearchSidebar.addEventListener("input", renderUnassigned);
+  // Eliminar elemento
+  document.getElementById("element-delete-btn").addEventListener("click", async () => {
+    const id = document.getElementById("element-id").value;
+    if (!confirm("¿Eliminar este elemento del plano? Los comensales sentados quedarán sin asignar.")) return;
+    await window.supabaseClient.from("seating_assignments").delete().eq("seating_table_id", id);
+    await window.supabaseClient.from("layout_elements").delete().eq("id", id);
+    closeModal();
+    await loadAll();
+  });
 
-  document.getElementById("btn-print-seating").addEventListener("click", () => window.print());
+  // ---- ZOOM CONTROLS ----
+  function setZoom(newZoom) {
+    currentZoom = Math.min(2, Math.max(0.5, newZoom));
+    canvas.style.transform = `scale(${currentZoom})`;
+    document.getElementById("zoom-level-label").textContent = `${Math.round(currentZoom * 100)}%`;
+  }
+  document.getElementById("btn-zoom-in").addEventListener("click", () => setZoom(currentZoom + 0.15));
+  document.getElementById("btn-zoom-out").addEventListener("click", () => setZoom(currentZoom - 0.15));
+  document.getElementById("btn-zoom-reset").addEventListener("click", () => setZoom(1));
 
+  // ---- AUTO-ASIGNAR CON LÍMITE ESTRICTO DE SILLAS ----
   document.getElementById("btn-auto-assign").addEventListener("click", async () => {
     const seatingTables = allElements.filter(e => TYPE_META[e.element_type]?.isSeat);
     if (seatingTables.length === 0) {
-      alert("Primero agrega al menos una mesa al plano.");
+      alert("Primero agrega mesas al plano.");
       return;
     }
     if (allGuests.length === 0) {
-      alert("No hay invitados registrados para asignar.");
+      alert("No hay invitados registrados.");
       return;
     }
 
@@ -689,62 +1050,67 @@ tailwind.config = {
     const unassigned = allGuests.filter(g => !assignedIds.has(g.id));
 
     if (unassigned.length === 0) {
-      window.showToast("Todos los invitados ya tienen mesa asignada.", "info");
+      window.showToast("Todos los invitados ya están asignados a sus mesas.", "info");
       return;
     }
 
+    let assignedCount = 0;
     const newAssignments = [];
-    let tableIndex = 0;
 
     for (const g of unassigned) {
-      // 1. Si el invitado ya tiene un table_number definido, buscar si coincide con el label de una mesa
       let targetTable = null;
       if (g.table_number) {
-        targetTable = seatingTables.find(t => t.label.toLowerCase().includes(g.table_number.toLowerCase()) || g.table_number.toLowerCase().includes(t.label.toLowerCase()));
+        targetTable = seatingTables.find(t => {
+          const used = assignments.filter(a => a.seating_table_id === t.id).length;
+          return (t.label.toLowerCase().includes(g.table_number.toLowerCase()) || g.table_number.toLowerCase().includes(t.label.toLowerCase())) && (used < (t.capacity || 10));
+        });
       }
-      // 2. Si no coincide, asignar a la mesa actual por orden de capacidad
       if (!targetTable) {
-        targetTable = seatingTables[tableIndex % seatingTables.length];
-        tableIndex++;
+        targetTable = seatingTables.find(t => {
+          const used = assignments.filter(a => a.seating_table_id === t.id).length;
+          return used < (t.capacity || 10);
+        });
       }
 
-      newAssignments.push({
-        seating_table_id: targetTable.id,
-        guest_id: g.id
-      });
+      if (targetTable) {
+        newAssignments.push({ seating_table_id: targetTable.id, guest_id: g.id });
+        assignments.push({ seating_table_id: targetTable.id, guest_id: g.id });
+        assignedCount++;
+      }
     }
 
     if (newAssignments.length > 0) {
-      const { error } = await window.supabaseClient.from("seating_assignments").insert(newAssignments);
-      if (error) {
-        alert("Error al auto-asignar: " + error.message);
-        return;
-      }
-      window.showToast(`¡${newAssignments.length} invitados asignados automáticamente a sus mesas!`, "success");
+      await window.supabaseClient.from("seating_assignments").insert(newAssignments);
+      window.showToast(`¡${assignedCount} comensales asignados a sus sillas!`, "success");
       await loadAll();
+    } else {
+      window.showToast("⚠️ No hay suficientes sillas libres en las mesas del salón.", "error");
     }
   });
 
+  // Despejar todas las asignaciones
+  document.getElementById("btn-clear-assignments").addEventListener("click", async () => {
+    if (!confirm("¿Liberar todos los asientos del salón? Los invitados volverán a la lista de 'Sin Asignar'.")) return;
+    const elementIds = allElements.map(e => e.id);
+    if (elementIds.length > 0) {
+      await window.supabaseClient.from("seating_assignments").delete().in("seating_table_id", elementIds);
+    }
+    window.showToast("Plano de asientos despejado.", "info");
+    await loadAll();
+  });
+
+  // Imprimir plano
+  document.getElementById("btn-print-seating").addEventListener("click", () => window.print());
+
+  // Inicialización
   (async function init() {
     const auth = await window.requireAuth();
     if (!auth) return;
-
     const currentEvent = await window.requireEvent();
     if (!currentEvent) return;
-
     currentEventId = currentEvent.id;
     await loadAll();
   })();
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  var btn = document.getElementById('sidebar-toggle');
-  if (!btn) return;
-  btn.addEventListener('click', function () {
-    var isCollapsed = document.documentElement.classList.toggle('sidebar-collapsed');
-    try { localStorage.setItem('galaSidebarCollapsed', isCollapsed ? 'true' : 'false'); } catch (e) {}
-  });
-});
 </script>
 </body>
 </html>
