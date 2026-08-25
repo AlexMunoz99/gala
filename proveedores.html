@@ -179,26 +179,25 @@ tailwind.config = {
 </aside>
 
 <div id="app-content-wrapper" class="flex flex-col min-h-screen" style="padding-left: var(--sidebar-w);">
-  <header class="fixed top-0 right-0 left-0 h-20 bg-primary-container z-40 px-gutter flex items-center justify-between border-b border-tertiary/5 shadow-xl">
-    <div id="app-header-logo" style="width: var(--sidebar-w);"></div>
-    <div class="flex-1 flex items-center justify-center gap-6">
-      <a href="proyectos.html" title="Cambiar de proyecto" class="font-headline-md text-headline-md text-on-surface hover:text-tertiary transition-colors flex items-center gap-2">
-        <span id="current-event-name">Cargando…</span>
-        <span class="material-symbols-outlined text-[18px] opacity-60">unfold_more</span>
+  <header class="fixed top-0 right-0 left-0 h-20 bg-primary-container z-40 px-4 md:px-8 flex items-center justify-between border-b border-tertiary/5 shadow-xl">
+    <div id="app-header-logo" style="width: var(--sidebar-w);" class="hidden md:block"></div>
+    <div class="flex-1 flex items-center justify-center gap-2 sm:gap-6 px-2 overflow-hidden">
+      <a href="proyectos.html" title="Cambiar de proyecto" class="font-headline-md text-base sm:text-headline-md text-on-surface hover:text-tertiary transition-colors flex items-center gap-1 sm:gap-2 truncate">
+        <span id="current-event-name" class="truncate">Cargando…</span>
+        <span class="material-symbols-outlined text-[18px] opacity-60 shrink-0">unfold_more</span>
       </a>
-      <div class="px-4 py-1.5 bg-tertiary/10 border border-tertiary/20 rounded-full flex items-center gap-2">
-        <span class="material-symbols-outlined text-tertiary text-sm">timer</span>
-        <span id="current-event-countdown" class="font-label-gold text-label-gold text-tertiary">--</span>
+      <div class="hidden sm:flex px-3 sm:px-4 py-1.5 bg-tertiary/10 border border-tertiary/20 rounded-full items-center gap-2 shrink-0">
+        <span class="material-symbols-outlined text-tertiary text-xs sm:text-sm">timer</span>
+        <span id="current-event-countdown" class="font-label-gold text-xs sm:text-label-gold text-tertiary">--</span>
       </div>
     </div>
-    <div class="flex items-center gap-6 justify-end w-72 pr-8">
-      <button class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors">notifications</button>
+    <div class="flex items-center gap-3 sm:gap-6 justify-end w-auto md:w-72 shrink-0">
       <div id="role-badge" class="w-8 h-8 rounded-full flex items-center justify-center transition-colors" title="">
         <span class="material-symbols-outlined role-badge-icon text-[18px]"></span>
       </div>
       <button id="logout-btn" class="material-symbols-outlined text-on-surface-variant hover:text-error transition-colors" title="Cerrar sesión">logout</button>
       <div class="flex items-center gap-2">
-        <div class="w-10 h-10 rounded-full border border-tertiary/30 p-0.5 overflow-hidden ring-2 ring-tertiary/10">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-tertiary/30 p-0.5 overflow-hidden ring-2 ring-tertiary/10">
           <img alt="Perfil" class="w-full h-full rounded-full object-cover" src="assets/avatar.png"/>
         </div>
         <div class="hidden md:flex flex-col leading-tight">

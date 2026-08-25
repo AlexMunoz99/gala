@@ -320,17 +320,22 @@ tailwind.config = {
   });
 
   (async function init() {
-    const auth = await window.requireAuth();
-    if (!auth) return;
-    const nameEl = document.getElementById("current-user-name");
-    if (nameEl && auth.profile) nameEl.textContent = auth.profile.full_name || auth.user.email;
-    const roleEl = document.getElementById("current-user-role");
-    if (roleEl && auth.profile) roleEl.textContent = auth.profile.role;
-    if (auth.profile) window.applyRoleBadge(auth.profile.role);
-    if (auth.profile && auth.profile.role !== "admin") {
-      document.querySelectorAll(".admin-only").forEach(el => el.remove());
+    try {
+      const auth = await window.requireAuth();
+      if (!auth) return;
+      const nameEl = document.getElementById("current-user-name");
+      if (nameEl && auth.profile) nameEl.textContent = auth.profile.full_name || auth.user.email;
+      const roleEl = document.getElementById("current-user-role");
+      if (roleEl && auth.profile) roleEl.textContent = auth.profile.role;
+      if (auth.profile) window.applyRoleBadge(auth.profile.role);
+      if (auth.profile && auth.profile.role !== "admin") {
+        document.querySelectorAll(".admin-only").forEach(el => el.remove());
+      }
+      const logoutBtn = document.getElementById("logout-btn");
+      if (logoutBtn) logoutBtn.addEventListener("click", window.signOut);
+    } catch(err) {
+      console.warn("Init auth warning:", err);
     }
-    document.getElementById("logout-btn").addEventListener("click", window.signOut);
 
     await loadProjects();
   })();
