@@ -289,17 +289,36 @@ tailwind.config = {
         log("9 Actividades registradas en el cronograma oficial.", "text-[#4ade80]");
       }
 
-      // 7. Tareas
+      // 7. Programa Detallado (program_items)
+      setProgress(85, "Creando programa cronológico...");
+      log("7. Insertando Sucesos del Programa Oficial...", "text-tertiary");
+
+      const programData = [
+        { title: "Entrada Triunfal de los Novios", start_time: "20:30", duration_minutes: 15, part_label: "RECEPCIÓN", mc_script: "Damas y caballeros, pongámonos de pie para recibir por primera vez como esposos a: ¡Valentina y Sebastián!", technical_notes: "Activar pirotecnia fría en entrada\nSubir iluminación central al 100%", sort_order: 1, event_id: eventId },
+        { title: "Brindis de Honor de los Padres", start_time: "20:45", duration_minutes: 15, part_label: "PROTOCOLO", mc_script: "Cedemos la palabra a Don Guillermo Martínez y Don Armando Jiménez para el brindis oficial.", technical_notes: "Tener listos 4 micrófonos inalámbricos\nCopas de champaña servidas en Mesa de Honor", sort_order: 2, event_id: eventId },
+        { title: "Cena de Gala en 4 Tiempos", start_time: "21:00", duration_minutes: 90, part_label: "BANQUETE", mc_script: "Buen provecho a todos. Iniciamos con la crema de espárragos al vino blanco.", technical_notes: "Música ambiental acústica al 30% volumen\nCoordinar salida de tiempos con Chef Javier", sort_order: 3, event_id: eventId },
+        { title: "Primer Vals de Esposos & Vals Familiar", start_time: "22:30", duration_minutes: 20, part_label: "MOMENTO CUMBRE", mc_script: "Los novios abren la pista con su canción 'Hasta Mi Final'.", technical_notes: "Disparar máquina de humo bajo (nubes)\nFoco seguidor cenital cálido sobre novios", sort_order: 4, event_id: eventId },
+        { title: "Apertura de Fiesta con Banda en Vivo", start_time: "23:00", duration_minutes: 180, part_label: "FIESTA", mc_script: "¡Que comience la gran fiesta con AudioBeat Live Band!", technical_notes: "Iluminación robótica y láseres activos\nRepartir props y artículos de animación", sort_order: 5, event_id: eventId }
+      ];
+
+      const { error: prgErr } = await window.supabaseClient.from("program_items").insert(programData);
+      if (prgErr) {
+        log("Aviso en programa: " + prgErr.message, "text-tertiary");
+      } else {
+        log("5 Sucesos registrados en el Programa oficial.", "text-[#4ade80]");
+      }
+
+      // 8. Tareas Kanban (tasks)
       setProgress(90, "Insertando tareas del planificador...");
-      log("7. Insertando Tareas de Planificación...", "text-tertiary");
+      log("8. Insertando Tareas de Planificación...", "text-tertiary");
 
       const tasksData = [
-        { title: "Confirmar degustación final del menú de 4 tiempos", description: "Reunión con Chef Javier en Altamira", status: "completada", priority: "alta", due_date: "2026-10-15", event_id: eventId },
+        { title: "Confirmar degustación final del menú de 4 tiempos", description: "Reunión con Chef Javier en Altamira", status: "hecho", priority: "alta", due_date: "2026-10-15", event_id: eventId },
         { title: "Definir playlist y canción del primer vals", description: "Entregar lista a DJ Mauricio Beats", status: "en_progreso", priority: "alta", due_date: "2026-11-01", event_id: eventId },
-        { title: "Prueba final de vestido y smoking", description: "Cita en Haute Couture", status: "pendiente", priority: "media", due_date: "2026-11-10", event_id: eventId },
-        { title: "Enviar recordatorios de confirmación de asistencia RSVP", description: "Vía WhatsApp a los pendientes", status: "pendiente", priority: "alta", due_date: "2026-11-12", event_id: eventId },
-        { title: "Liquidación de anticipos a proveedores", description: "Pago final a foto y flores", status: "pendiente", priority: "alta", due_date: "2026-11-20", event_id: eventId },
-        { title: "Armado de kit de emergencia y protocolo de mesa de novios", description: "Para el día de la boda", status: "pendiente", priority: "baja", due_date: "2026-11-25", event_id: eventId }
+        { title: "Prueba final de vestido y smoking", description: "Cita en Haute Couture", status: "por_hacer", priority: "media", due_date: "2026-11-10", event_id: eventId },
+        { title: "Enviar recordatorios de confirmación de asistencia RSVP", description: "Vía WhatsApp a los pendientes", status: "por_hacer", priority: "alta", due_date: "2026-11-12", event_id: eventId },
+        { title: "Liquidación de anticipos a proveedores", description: "Pago final a foto y flores", status: "por_hacer", priority: "alta", due_date: "2026-11-20", event_id: eventId },
+        { title: "Armado de kit de emergencia y protocolo de mesa de novios", description: "Para el día de la boda", status: "por_hacer", priority: "baja", due_date: "2026-11-25", event_id: eventId }
       ];
 
       const { error: tskErr } = await window.supabaseClient.from("tasks").insert(tasksData);
@@ -309,9 +328,30 @@ tailwind.config = {
         log("6 Tareas registradas en el tablero Kanban.", "text-[#4ade80]");
       }
 
-      // 8. Guardar configuración de Invitación Digital
-      setProgress(95, "Personalizando invitación digital web...");
-      log("8. Configurando Invitación Web personalizada...", "text-tertiary");
+      // 9. Plano de Asientos (layout_elements)
+      setProgress(93, "Generando distribución del plano de asientos...");
+      log("9. Insertando Mesas en Plano de Asientos...", "text-tertiary");
+
+      const layoutData = [
+        { element_type: "mesa_novios", label: "Mesa de Honor", pos_x: 6, pos_y: 2, width: 3, height: 1.5, capacity: 4, event_id: eventId },
+        { element_type: "pista_baile", label: "Pista Central", pos_x: 5, pos_y: 4, width: 5, height: 4, capacity: null, event_id: eventId },
+        { element_type: "mesa_redonda", label: "Mesa 1 (VIP)", pos_x: 2, pos_y: 3, width: 2, height: 2, capacity: 10, event_id: eventId },
+        { element_type: "mesa_redonda", label: "Mesa 2 (Novia)", pos_x: 2, pos_y: 6, width: 2, height: 2, capacity: 10, event_id: eventId },
+        { element_type: "mesa_redonda", label: "Mesa 3 (Novio)", pos_x: 11, pos_y: 3, width: 2, height: 2, capacity: 10, event_id: eventId },
+        { element_type: "mesa_redonda", label: "Mesa 4 (Amigos)", pos_x: 11, pos_y: 6, width: 2, height: 2, capacity: 10, event_id: eventId },
+        { element_type: "escenario", label: "Escenario Banda", pos_x: 5, pos_y: 9, width: 5, height: 2, capacity: null, event_id: eventId }
+      ];
+
+      const { error: layErr } = await window.supabaseClient.from("layout_elements").insert(layoutData);
+      if (layErr) {
+        log("Aviso en layout: " + layErr.message, "text-tertiary");
+      } else {
+        log("7 Elementos y mesas agregados al Plano de Asientos.", "text-[#4ade80]");
+      }
+
+      // 10. Guardar configuración de Invitación Digital
+      setProgress(97, "Personalizando invitación digital web...");
+      log("10. Configurando Invitación Web personalizada...", "text-tertiary");
 
       const invitationSettings = {
         cover_image: "assets/hero-gala.jpg",

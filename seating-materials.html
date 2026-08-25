@@ -218,6 +218,12 @@ tailwind.config = {
           <p class="text-on-surface-variant text-sm">Arrastra los elementos para acomodarlos. Da clic para editar, asignar invitados o eliminar.</p>
         </div>
         <div class="flex items-center gap-2 flex-wrap">
+          <button id="btn-auto-assign" class="px-4 py-2 bg-gradient-to-r from-tertiary/20 to-tertiary/40 border border-tertiary text-tertiary font-button-text text-button-text uppercase tracking-wider rounded-lg text-xs hover:brightness-125 transition-all flex items-center gap-1.5 shadow-md" title="Asignar automáticamente invitados a las mesas según su grupo o número de mesa">
+            <span class="material-symbols-outlined text-[18px]">auto_fix_high</span>Auto-Asignar
+          </button>
+          <button id="btn-print-seating" class="px-4 py-2 bg-surface-container border border-tertiary/20 text-on-surface font-button-text text-button-text uppercase tracking-wider rounded-lg text-xs hover:bg-tertiary/10 transition-colors flex items-center gap-1.5" title="Imprimir plano de mesas para el salón">
+            <span class="material-symbols-outlined text-[18px]">print</span>Imprimir
+          </button>
           <button class="btn-add-element px-4 py-2 bg-surface-container border border-tertiary/20 text-on-surface rounded-lg text-sm hover:bg-tertiary/10 hover:text-tertiary transition-colors flex items-center gap-1.5" data-type="mesa_redonda">
             <span class="material-symbols-outlined text-[18px]">panorama_fish_eye</span>Mesa Redonda
           </button>
@@ -665,6 +671,59 @@ tailwind.config = {
   });
 
   guestSearchSidebar.addEventListener("input", renderUnassigned);
+
+  document.getElementById("btn-print-seating").addEventListener("click", () => window.print());
+
+  document.getElementById("btn-auto-assign").addEventListener("click", async () => {
+    const seatingTables = allElements.filter(e => TYPE_META[e.element_type]?.isSeat);
+    if (seatingTables.length === 0) {
+      alert("Primero agrega al menos una mesa al plano.");
+      return;
+    }
+    if (allGuests.length === 0) {
+      alert("No hay invitados registrados para asignar.");
+      return;
+    }
+
+    const assignedIds = new Set(assignments.map(a => a.guest_id));
+    const unassigned = allGuests.filter(g => !assignedIds.has(g.id));
+
+    if (unassigned.length === 0) {
+      window.showToast("Todos los invitados ya tienen mesa asignada.", "info");
+      return;
+    }
+
+    const newAssignments = [];
+    let tableIndex = 0;
+
+    for (const g of unassigned) {
+      // 1. Si el invitado ya tiene un table_number definido, buscar si coincide con el label de una mesa
+      let targetTable = null;
+      if (g.table_number) {
+        targetTable = seatingTables.find(t => t.label.toLowerCase().includes(g.table_number.toLowerCase()) || g.table_number.toLowerCase().includes(t.label.toLowerCase()));
+      }
+      // 2. Si no coincide, asignar a la mesa actual por orden de capacidad
+      if (!targetTable) {
+        targetTable = seatingTables[tableIndex % seatingTables.length];
+        tableIndex++;
+      }
+
+      newAssignments.push({
+        seating_table_id: targetTable.id,
+        guest_id: g.id
+      });
+    }
+
+    if (newAssignments.length > 0) {
+      const { error } = await window.supabaseClient.from("seating_assignments").insert(newAssignments);
+      if (error) {
+        alert("Error al auto-asignar: " + error.message);
+        return;
+      }
+      window.showToast(`¡${newAssignments.length} invitados asignados automáticamente a sus mesas!`, "success");
+      await loadAll();
+    }
+  });
 
   (async function init() {
     const auth = await window.requireAuth();

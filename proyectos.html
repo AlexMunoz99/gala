@@ -179,24 +179,42 @@ tailwind.config = {
       </div>`;
       return;
     }
-    grid.innerHTML = events.map(ev => `
-      <div class="project-card relative text-left bg-surface-container rounded-2xl p-6 shadow-lg hover:-translate-y-1 hover:shadow-2xl transition-all border border-tertiary/10 flex flex-col gap-4 cursor-pointer" data-id="${ev.id}">
-        <button class="btn-edit-project absolute top-4 right-4 w-8 h-8 rounded-full bg-surface/60 backdrop-blur flex items-center justify-center text-on-surface-variant hover:text-tertiary transition-colors" title="Editar">
-          <span class="material-symbols-outlined text-[18px]">edit</span>
-        </button>
-        <div class="w-12 h-12 rounded-full bg-tertiary/10 flex items-center justify-center">
-          <span class="material-symbols-outlined text-tertiary">celebration</span>
+    grid.innerHTML = events.map(ev => {
+      const now = new Date();
+      const evDate = ev.event_date ? new Date(ev.event_date + "T00:00:00") : null;
+      let badgeHtml = `<span class="px-2.5 py-0.5 rounded-full bg-tertiary/10 border border-tertiary/20 text-tertiary text-[10px] font-label-gold uppercase">En Planificación</span>`;
+      if (evDate) {
+        const diffDays = Math.ceil((evDate - now) / (1000 * 60 * 60 * 24));
+        if (diffDays < 0) {
+          badgeHtml = `<span class="px-2.5 py-0.5 rounded-full bg-surface-container-high border border-surface-variant text-on-surface-variant text-[10px] font-label-gold uppercase">Finalizado</span>`;
+        } else if (diffDays <= 30) {
+          badgeHtml = `<span class="px-2.5 py-0.5 rounded-full bg-[#4ade80]/15 border border-[#4ade80]/30 text-[#4ade80] text-[10px] font-label-gold uppercase">¡Próxima (${diffDays}d)!</span>`;
+        }
+      }
+
+      return `
+      <div class="project-card relative text-left bg-surface-container rounded-2xl p-6 shadow-lg hover:-translate-y-1 hover:shadow-2xl transition-all border border-tertiary/10 hover:border-tertiary/30 flex flex-col gap-4 cursor-pointer group" data-id="${ev.id}">
+        <div class="flex items-center justify-between">
+          <div class="w-12 h-12 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary border border-tertiary/20">
+            <span class="material-symbols-outlined">celebration</span>
+          </div>
+          <div class="flex items-center gap-2">
+            ${badgeHtml}
+            <button class="btn-edit-project w-8 h-8 rounded-full bg-surface/60 backdrop-blur flex items-center justify-center text-on-surface-variant hover:text-tertiary transition-colors" title="Editar proyecto">
+              <span class="material-symbols-outlined text-[18px]">edit</span>
+            </button>
+          </div>
         </div>
         <div>
-          <h3 class="font-headline-lg text-xl text-on-surface mb-1 pr-8">${escapeHtml(ev.name)}</h3>
+          <h3 class="font-headline-lg text-xl text-on-surface mb-1 pr-4 group-hover:text-tertiary transition-colors">${escapeHtml(ev.name)}</h3>
           <p class="text-on-surface-variant text-sm">${formatDate(ev.event_date)}</p>
         </div>
         <div class="mt-auto pt-4 border-t border-tertiary/10 flex items-center justify-between">
           <span class="text-tertiary text-xs uppercase tracking-widest font-button-text">${window.formatCountdown(ev.event_date)}</span>
-          <span class="material-symbols-outlined text-on-surface-variant">arrow_forward</span>
+          <span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">arrow_forward</span>
         </div>
-      </div>
-    `).join("");
+      </div>`;
+    }).join("");
   }
 
   function applySearchAndRender() {
@@ -407,14 +425,36 @@ tailwind.config = {
           { title: "Primer Vals de Esposos", start_time: "22:30", day_offset: 0, location: "Pista Central", description: "Canción: 'Hasta Mi Final' con humo bajo", event_id: eventId }
         ]);
 
-        // 7. Tareas
-        await window.supabaseClient.from("tasks").insert([
-          { title: "Confirmar menú de degustación", description: "Reunión en Altamira", status: "completada", priority: "alta", due_date: "2026-10-15", event_id: eventId },
-          { title: "Definir canciones del vals y fiesta", description: "Entregar lista a DJ", status: "en_progreso", priority: "alta", due_date: "2026-11-01", event_id: eventId },
-          { title: "Enviar recordatorios de RSVP", description: "Por WhatsApp", status: "pendiente", priority: "alta", due_date: "2026-11-12", event_id: eventId }
+        // 7. Programa Detallado (program_items)
+        await window.supabaseClient.from("program_items").insert([
+          { title: "Entrada Triunfal de los Novios", start_time: "20:30", duration_minutes: 15, part_label: "RECEPCIÓN", mc_script: "Damas y caballeros, pongámonos de pie para recibir por primera vez como esposos a: ¡Valentina y Sebastián!", technical_notes: "Activar pirotecnia fría en entrada\nSubir iluminación central al 100%", sort_order: 1, event_id: eventId },
+          { title: "Brindis de Honor de los Padres", start_time: "20:45", duration_minutes: 15, part_label: "PROTOCOLO", mc_script: "Cedemos la palabra a Don Guillermo Martínez y Don Armando Jiménez para el brindis oficial.", technical_notes: "Tener listos 4 micrófonos inalámbricos\nCopas de champaña servidas en Mesa de Honor", sort_order: 2, event_id: eventId },
+          { title: "Cena de Gala en 4 Tiempos", start_time: "21:00", duration_minutes: 90, part_label: "BANQUETE", mc_script: "Buen provecho a todos. Iniciamos con la crema de espárragos al vino blanco.", technical_notes: "Música ambiental acústica al 30% volumen\nCoordinar salida de tiempos con Chef Javier", sort_order: 3, event_id: eventId },
+          { title: "Primer Vals de Esposos & Vals Familiar", start_time: "22:30", duration_minutes: 20, part_label: "MOMENTO CUMBRE", mc_script: "Los novios abren la pista con su canción 'Hasta Mi Final'.", technical_notes: "Disparar máquina de humo bajo (nubes)\nFoco seguidor cenital cálido sobre novios", sort_order: 4, event_id: eventId },
+          { title: "Apertura de Fiesta con Banda en Vivo", start_time: "23:00", duration_minutes: 180, part_label: "FIESTA", mc_script: "¡Que comience la gran fiesta con AudioBeat Live Band!", technical_notes: "Iluminación robótica y láseres activos\nRepartir props y artículos de animación", sort_order: 5, event_id: eventId }
         ]);
 
-        // 8. Invitación Settings
+        // 8. Tareas Kanban (tasks con status: por_hacer, en_progreso, hecho)
+        await window.supabaseClient.from("tasks").insert([
+          { title: "Confirmar menú de degustación 4 tiempos", description: "Reunión con Chef Javier en Altamira", status: "hecho", priority: "alta", due_date: "2026-10-15", event_id: eventId },
+          { title: "Definir canciones del vals y playlist de fiesta", description: "Entregar lista a DJ Mauricio", status: "en_progreso", priority: "alta", due_date: "2026-11-01", event_id: eventId },
+          { title: "Prueba final de vestido y smoking", description: "Cita en Haute Couture Novias", status: "por_hacer", priority: "media", due_date: "2026-11-10", event_id: eventId },
+          { title: "Enviar recordatorios masivos de RSVP", description: "Vía WhatsApp a los invitados pendientes", status: "por_hacer", priority: "alta", due_date: "2026-11-12", event_id: eventId },
+          { title: "Liquidación final de anticipos", description: "Pago final a fotógrafo y florería", status: "por_hacer", priority: "alta", due_date: "2026-11-20", event_id: eventId }
+        ]);
+
+        // 9. Plano de Asientos (layout_elements)
+        await window.supabaseClient.from("layout_elements").insert([
+          { element_type: "mesa_novios", label: "Mesa de Honor", pos_x: 6, pos_y: 2, width: 3, height: 1.5, capacity: 4, event_id: eventId },
+          { element_type: "pista_baile", label: "Pista Central", pos_x: 5, pos_y: 4, width: 5, height: 4, capacity: null, event_id: eventId },
+          { element_type: "mesa_redonda", label: "Mesa 1 (VIP)", pos_x: 2, pos_y: 3, width: 2, height: 2, capacity: 10, event_id: eventId },
+          { element_type: "mesa_redonda", label: "Mesa 2 (Novia)", pos_x: 2, pos_y: 6, width: 2, height: 2, capacity: 10, event_id: eventId },
+          { element_type: "mesa_redonda", label: "Mesa 3 (Novio)", pos_x: 11, pos_y: 3, width: 2, height: 2, capacity: 10, event_id: eventId },
+          { element_type: "mesa_redonda", label: "Mesa 4 (Amigos)", pos_x: 11, pos_y: 6, width: 2, height: 2, capacity: 10, event_id: eventId },
+          { element_type: "escenario", label: "Escenario Banda", pos_x: 5, pos_y: 9, width: 5, height: 2, capacity: null, event_id: eventId }
+        ]);
+
+        // 10. Invitación Settings
         const invitationSettings = {
           cover_image: "assets/hero-gala.jpg",
           quote: "“A donde tú vayas, iré yo; y donde tú vivas, viviré.”",

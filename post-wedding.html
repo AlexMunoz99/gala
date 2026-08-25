@@ -498,16 +498,33 @@ tailwind.config = {
             ${escapeHtml(g.phone) || '—'}
           </td>
           <td class="py-4 px-6 text-right">
-            ${isSent 
-              ? `<span class="px-2.5 py-1 bg-tertiary/10 text-tertiary font-label-gold text-label-gold rounded border border-tertiary/20 text-xs">ENVIADO</span>`
-              : `<span class="px-2.5 py-1 bg-surface-container-high text-on-surface-variant font-label-gold text-label-gold rounded text-xs">PENDIENTE</span>`
-            }
+            <div class="inline-flex items-center gap-2">
+              <a href="https://wa.me/${(g.phone || '').replace(/\D/g, '')}?text=${encodeURIComponent(`¡Hola ${g.full_name}! ✨\n\nQueremos agradecerte de todo corazón por habernos acompañado y celebrado con nosotros en nuestra boda. Tu presencia hizo que nuestro día fuera verdaderamente mágico e inolvidable.\n\n¡Gracias por tus buenos deseos y por compartir este inicio con nosotros! 💕`)}" target="_blank" class="btn-wa-thankyou px-3 py-1.5 bg-[#25D366]/20 border border-[#25D366]/40 text-[#4ade80] hover:bg-[#25D366]/40 rounded-lg text-xs font-button-text uppercase tracking-wider flex items-center gap-1 transition-all" data-id="${g.id}">
+                <span class="material-symbols-outlined text-[16px]">chat</span>
+                WhatsApp
+              </a>
+              ${isSent 
+                ? `<span class="px-2.5 py-1 bg-tertiary/10 text-tertiary font-label-gold text-label-gold rounded border border-tertiary/20 text-xs">ENVIADO</span>`
+                : `<span class="px-2.5 py-1 bg-surface-container-high text-on-surface-variant font-label-gold text-label-gold rounded text-xs">PENDIENTE</span>`
+              }
+            </div>
           </td>
         </tr>`;
     }).join("");
   }
 
   document.getElementById("gratitude-search").addEventListener("input", renderGratitudeList);
+
+  document.getElementById("gratitude-tbody").addEventListener("click", (e) => {
+    const btn = e.target.closest(".btn-wa-thankyou");
+    if (btn) {
+      const id = btn.dataset.id;
+      const sentSet = getSentSet();
+      sentSet.add(id);
+      saveSentSet(sentSet);
+      setTimeout(renderGratitudeList, 300);
+    }
+  });
 
   document.getElementById("gratitude-tbody").addEventListener("change", (e) => {
     if (e.target.classList.contains("cb-thank-you")) {

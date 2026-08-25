@@ -272,14 +272,23 @@ tailwind.config = {
     </div>
 
     <!-- Reserved Seats Card (Personalized) -->
-    <div class="w-full max-w-sm bg-white border border-gold/40 rounded-2xl p-6 shadow-md mb-10 text-center">
+    <div class="w-full max-w-sm bg-white border border-gold/40 rounded-2xl p-6 shadow-md mb-10 text-center flex flex-col items-center">
       <span id="guest-greeting" class="font-serif-title italic text-lg text-gold-dark block mb-1">Estimada Familia / Invitado</span>
       <span class="font-sans text-[10px] uppercase tracking-[0.25em] text-ink-muted block mb-2">HEMOS RESERVADO</span>
       <div class="flex items-center justify-center gap-2 my-2">
         <span id="passes-count-display" class="font-display text-4xl text-ink font-bold">2</span>
         <span class="font-serif-title text-2xl text-gold-dark uppercase tracking-wider font-semibold">LUGARES</span>
       </div>
-      <span class="font-sans text-[10px] uppercase tracking-[0.2em] text-ink-light block">EN SU HONOR</span>
+      <span class="font-sans text-[10px] uppercase tracking-[0.2em] text-ink-light block mb-4">EN SU HONOR</span>
+
+      <!-- Pase de Acceso QR Dinámico -->
+      <div class="p-3 bg-[#fbf9f5] border border-gold/30 rounded-xl flex flex-col items-center gap-2 shadow-inner">
+        <img id="guest-access-qr" alt="Pase QR" class="w-32 h-32 object-contain rounded-lg border border-gold/20" src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=GALA-PASS-DEMO"/>
+        <span class="font-sans text-[9px] uppercase tracking-widest text-ink-muted font-bold flex items-center gap-1">
+          <span class="material-symbols-outlined text-[14px] text-gold-dark">qr_code_2</span>
+          Pase Digital para Entrada
+        </span>
+      </div>
     </div>
 
     <!-- RSVP Section -->
@@ -552,6 +561,10 @@ tailwind.config = {
         document.getElementById("passes-count-display").textContent = passes;
         document.getElementById("btn-rsvp-portal").href = `rsvp.html?event=${g.event_id}`;
         document.getElementById("btn-rsvp-whatsapp").href = `https://wa.me/?text=${encodeURIComponent(`¡Hola! Confirmo con gusto mi asistencia para ${passes} persona(s) a nombre de ${g.full_name} a la boda.`)}`;
+        const qrEl = document.getElementById("guest-access-qr");
+        if (qrEl) {
+          qrEl.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(`GALA-PASS:${g.id}:${g.full_name}`)}&color=20201d`;
+        }
       }
     } else if (passesParam) {
       document.getElementById("passes-count-display").textContent = passesParam;

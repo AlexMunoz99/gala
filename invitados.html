@@ -235,6 +235,14 @@ tailwind.config = {
               <span class="material-symbols-outlined text-[18px]">public</span>
               Portal RSVP
             </a>
+            <button id="btn-checkin-scanner" class="px-5 py-3 bg-surface-container border border-tertiary/30 text-tertiary font-button-text text-button-text uppercase tracking-widest hover:bg-tertiary/10 transition-all flex items-center justify-center gap-2 rounded-lg backdrop-blur-sm shadow-md" title="Recepción y validación de pases QR en puerta">
+              <span class="material-symbols-outlined text-[18px]">qr_code_scanner</span>
+              Check-In QR
+            </button>
+            <button id="btn-remind-pending" class="px-5 py-3 bg-[#25D366]/20 border border-[#25D366]/40 text-[#4ade80] font-button-text text-button-text uppercase tracking-widest hover:bg-[#25D366]/30 transition-all flex items-center justify-center gap-2 rounded-lg backdrop-blur-sm shadow-md" title="Recordatorios automáticos por WhatsApp a invitados pendientes">
+              <span class="material-symbols-outlined text-[18px]">campaign</span>
+              Recordar Pendientes
+            </button>
             <button id="btn-download-template" class="px-5 py-3 bg-surface-container border border-tertiary/20 text-tertiary font-button-text text-button-text uppercase tracking-widest hover:bg-tertiary/5 transition-all flex items-center justify-center gap-2 rounded-lg backdrop-blur-sm shadow-md">
               <span class="material-symbols-outlined text-[18px]">description</span>
               Plantilla
@@ -444,6 +452,63 @@ document.addEventListener('DOMContentLoaded', function () {
       <button type="submit" class="px-4 py-2.5 rounded-lg bg-tertiary text-on-tertiary font-button-text uppercase tracking-wider text-sm hover:brightness-110 transition-all">Agregar</button>
     </form>
     <p id="groups-error" class="hidden text-error text-sm mt-2"></p>
+  </div>
+</div>
+
+<!-- Modal: Recepción & Check-In QR -->
+<div id="checkin-modal" class="hidden fixed inset-0 z-[120] flex items-center justify-center p-4">
+  <div id="checkin-modal-backdrop" class="absolute inset-0 bg-black/70 backdrop-blur-md"></div>
+  <div class="relative w-full max-w-lg bg-surface-container-low rounded-3xl shadow-2xl border border-tertiary/20 p-8 flex flex-col gap-6">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-tertiary/10 border border-tertiary/30 flex items-center justify-center text-tertiary">
+          <span class="material-symbols-outlined text-[22px]">qr_code_scanner</span>
+        </div>
+        <div>
+          <h2 class="font-headline-lg text-2xl text-on-surface">Recepción & Check-In</h2>
+          <p class="text-xs text-on-surface-variant">Valida pases, asignación de mesa y acceso en puerta</p>
+        </div>
+      </div>
+      <button id="checkin-modal-close" class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors">close</button>
+    </div>
+
+    <!-- Input Scanner / Search -->
+    <div class="relative">
+      <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-tertiary text-[20px]">search</span>
+      <input id="checkin-search-input" autofocus class="w-full bg-surface-container border border-tertiary/30 rounded-xl py-3.5 pl-12 pr-4 text-on-surface focus:outline-none focus:border-tertiary focus:ring-1 focus:ring-tertiary transition-all placeholder:text-on-surface-variant/50 text-sm" placeholder="Escribe nombre o escanea código QR..."/>
+    </div>
+
+    <!-- Checkin Result Card -->
+    <div id="checkin-result-card" class="bg-surface-container rounded-2xl p-6 border border-tertiary/10 flex flex-col gap-4">
+      <div class="text-center py-6 text-on-surface-variant text-sm">
+        Ingresa el nombre del invitado o lee el código de su pase digital para verificar su acceso.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Recordatorios WhatsApp a Pendientes -->
+<div id="remind-modal" class="hidden fixed inset-0 z-[120] flex items-center justify-center p-4">
+  <div id="remind-modal-backdrop" class="absolute inset-0 bg-black/70 backdrop-blur-md"></div>
+  <div class="relative w-full max-w-2xl bg-surface-container-low rounded-3xl shadow-2xl border border-tertiary/20 p-8 flex flex-col gap-6 max-h-[85vh]">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-[#25D366]/20 border border-[#25D366]/40 flex items-center justify-center text-[#4ade80]">
+          <span class="material-symbols-outlined text-[22px]">campaign</span>
+        </div>
+        <div>
+          <h2 class="font-headline-lg text-2xl text-on-surface">Recordar a Pendientes</h2>
+          <p id="remind-modal-count" class="text-xs text-on-surface-variant">Enviando recordatorios personalizados con 1 clic</p>
+        </div>
+      </div>
+      <button id="remind-modal-close" class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors">close</button>
+    </div>
+
+    <div class="overflow-y-auto max-h-[50vh] pr-2">
+      <div id="remind-guests-list" class="flex flex-col gap-3">
+        <p class="text-on-surface-variant text-center py-6 text-sm">Cargando lista de pendientes…</p>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -910,6 +975,142 @@ document.addEventListener('DOMContentLoaded', function () {
       renderGroupsList();
       applyFilterAndRender();
     }
+  });
+
+  // ---- CHECK-IN QR & RECEPCIÓN ----
+  const checkinModal = document.getElementById("checkin-modal");
+  const checkinSearchInput = document.getElementById("checkin-search-input");
+  const checkinResultCard = document.getElementById("checkin-result-card");
+
+  document.getElementById("btn-checkin-scanner").addEventListener("click", () => {
+    checkinSearchInput.value = "";
+    renderCheckinResult(null);
+    checkinModal.classList.remove("hidden");
+    checkinModal.classList.add("flex");
+    setTimeout(() => checkinSearchInput.focus(), 100);
+  });
+  document.getElementById("checkin-modal-close").addEventListener("click", () => {
+    checkinModal.classList.add("hidden");
+    checkinModal.classList.remove("flex");
+  });
+  document.getElementById("checkin-modal-backdrop").addEventListener("click", () => {
+    checkinModal.classList.add("hidden");
+    checkinModal.classList.remove("flex");
+  });
+
+  function renderCheckinResult(guest) {
+    if (!guest) {
+      checkinResultCard.innerHTML = `
+        <div class="text-center py-6 text-on-surface-variant text-sm">
+          <span class="material-symbols-outlined text-4xl text-tertiary/40 block mb-2">qr_code_2</span>
+          Escribe el nombre del invitado o escanea su código QR para registrar su llegada.
+        </div>`;
+      return;
+    }
+
+    const groupName = guest.group_id && groupsById[guest.group_id] ? groupsById[guest.group_id] : "Sin grupo";
+    const isArrived = localStorage.getItem("galaCheckIn_" + guest.id) === "true";
+
+    checkinResultCard.innerHTML = `
+      <div class="flex items-start justify-between border-b border-tertiary/10 pb-4">
+        <div>
+          <span class="inline-block px-2.5 py-0.5 rounded-full bg-tertiary/10 border border-tertiary/30 text-tertiary font-label-gold text-xs uppercase mb-1">${escapeHtml(groupName)}</span>
+          <h3 class="font-headline-lg text-2xl text-on-surface">${escapeHtml(guest.full_name)}</h3>
+          <span class="text-xs text-on-surface-variant">${guest.phone || "Sin teléfono"}</span>
+        </div>
+        <div class="text-right">
+          <span class="text-[10px] uppercase tracking-widest text-on-surface-variant block">Mesa Asignada</span>
+          <span class="font-headline-md text-2xl text-tertiary font-bold">${escapeHtml(guest.table_number || "Por asignar")}</span>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4 py-2 text-sm">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-tertiary text-[20px]">${guest.plus_one ? "group" : "person"}</span>
+          <span class="text-on-surface">${guest.plus_one ? "Pase Doble (2 Personas)" : "Pase Individual (1 Persona)"}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-tertiary text-[20px]">restaurant</span>
+          <span class="text-on-surface-variant truncate">${escapeHtml(guest.dietary_notes || "Sin restricciones")}</span>
+        </div>
+      </div>
+      <button id="btn-toggle-checkin" class="w-full py-4 ${isArrived ? 'bg-[#4ade80]/20 text-[#4ade80] border border-[#4ade80]/40' : 'bg-tertiary text-on-tertiary hover:brightness-110'} font-button-text text-sm uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg">
+        <span class="material-symbols-outlined text-[20px]">${isArrived ? "check_circle" : "how_to_reg"}</span>
+        ${isArrived ? "¡Acceso Registrado (En Salón)!" : "Registrar Entrada al Salón"}
+      </button>
+    `;
+
+    document.getElementById("btn-toggle-checkin").addEventListener("click", () => {
+      const current = localStorage.getItem("galaCheckIn_" + guest.id) === "true";
+      localStorage.setItem("galaCheckIn_" + guest.id, current ? "false" : "true");
+      window.showToast(!current ? `¡Bienvenido(a) ${guest.full_name}!` : `Acceso removido para ${guest.full_name}`, !current ? "success" : "info");
+      renderCheckinResult(guest);
+    });
+  }
+
+  checkinSearchInput.addEventListener("input", (e) => {
+    let q = e.target.value.trim().toLowerCase();
+    if (!q) { renderCheckinResult(null); return; }
+    if (q.startsWith("gala-pass:")) {
+      const parts = q.split(":");
+      const id = parts[1];
+      const match = allGuests.find(g => String(g.id) === id);
+      if (match) { renderCheckinResult(match); return; }
+    }
+    const match = allGuests.find(g => (g.full_name || "").toLowerCase().includes(q) || (g.phone || "").includes(q));
+    renderCheckinResult(match || null);
+  });
+
+  // ---- RECORDATORIOS WHATSAPP A PENDIENTES ----
+  const remindModal = document.getElementById("remind-modal");
+  const remindList = document.getElementById("remind-guests-list");
+  const remindCount = document.getElementById("remind-modal-count");
+
+  function renderRemindList() {
+    const pendings = allGuests.filter(g => g.rsvp_status === "pendiente");
+    remindCount.textContent = `${pendings.length} invitados pendientes por confirmar asistencia`;
+
+    if (pendings.length === 0) {
+      remindList.innerHTML = `
+        <div class="text-center py-8 text-on-surface-variant">
+          <span class="material-symbols-outlined text-4xl text-[#4ade80] block mb-2">celebration</span>
+          <p class="font-headline-md text-lg text-on-surface mb-1">¡Excelente!</p>
+          <p class="text-sm">Todos los invitados ya respondieron a su confirmación de asistencia.</p>
+        </div>`;
+      return;
+    }
+
+    remindList.innerHTML = pendings.map(g => {
+      const invUrl = `${window.location.origin + window.location.pathname.replace('invitados.html', '')}invitacion.html?g=${g.id}`;
+      const msg = `¡Hola ${g.full_name}! 👋 Te escribimos con mucho cariño para recordarte confirmar tu asistencia a nuestra boda.\n\nPuedes ver todos los detalles y confirmar tus pases directamente aquí:\n${invUrl}\n\n¡Esperamos contar contigo! ✨`;
+      const cleanPhone = (g.phone || "").replace(/\D/g, "");
+      const waLink = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
+
+      return `
+        <div class="flex items-center justify-between p-4 bg-surface rounded-2xl border border-tertiary/10 hover:border-tertiary/30 transition-all">
+          <div class="flex flex-col">
+            <span class="font-headline-md text-base text-on-surface font-medium">${escapeHtml(g.full_name)}</span>
+            <span class="text-xs text-on-surface-variant">${escapeHtml(g.phone || "Sin teléfono registrado")} · ${g.plus_one ? "2 Pases" : "1 Pase"}</span>
+          </div>
+          <a href="${waLink}" target="_blank" class="px-4 py-2.5 bg-[#25D366] text-white rounded-xl font-button-text text-xs uppercase tracking-wider flex items-center gap-1.5 hover:brightness-110 transition-all shadow-md">
+            <span class="material-symbols-outlined text-[16px]">chat</span>
+            Enviar WhatsApp
+          </a>
+        </div>`;
+    }).join("");
+  }
+
+  document.getElementById("btn-remind-pending").addEventListener("click", () => {
+    renderRemindList();
+    remindModal.classList.remove("hidden");
+    remindModal.classList.add("flex");
+  });
+  document.getElementById("remind-modal-close").addEventListener("click", () => {
+    remindModal.classList.add("hidden");
+    remindModal.classList.remove("flex");
+  });
+  document.getElementById("remind-modal-backdrop").addEventListener("click", () => {
+    remindModal.classList.add("hidden");
+    remindModal.classList.remove("flex");
   });
 </script>
 </body>
