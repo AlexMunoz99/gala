@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Personalizar Invitación Digital — Gala</title>
+<style>
+  :root { --sidebar-w: 260px; }
+  html.sidebar-collapsed { --sidebar-w: 72px; }
+  .sidebar-collapsed .sidebar-label { display: none !important; }
+  .sidebar-collapsed .sidebar-cta { display: none !important; }
+  .sidebar-collapsed #sidebar-toggle-icon { transform: rotate(180deg); }
+  .sidebar-collapsed #app-sidebar nav a { justify-content: center; padding-left: 0; padding-right: 0; }
+  .sidebar-collapsed #app-sidebar nav a .nav-icon { margin-right: 0 !important; }
+  .sidebar-collapsed #app-sidebar nav a[aria-current="page"] { border-left-width: 0 !important; border-bottom: 3px solid #e9c349; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Alex+Brush&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script id="tailwind-config">
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        "surface": "#131411",
+        "surface-container": "#20201d",
+        "surface-container-low": "#1c1c19",
+        "surface-container-high": "#2a2a27",
+        "surface-container-highest": "#353532",
+        "primary-container": "#0d1b2a",
+        "on-surface": "#e5e2dd",
+        "on-surface-variant": "#c4c6cc",
+        "tertiary": "#e9c349",
+        "on-tertiary": "#3c2f00",
+        "error": "#ffb4ab",
+        "secondary-container": "#2a486b",
+        "secondary": "#abc9f2"
+      },
+      fontFamily: {
+        "headline-lg": ["Playfair Display"],
+        "headline-md": ["Playfair Display"],
+        "body-md": ["Inter"],
+        "button-text": ["Inter"],
+        "label-gold": ["Inter"],
+        "script": ["Alex Brush", "cursive"]
+      }
+    }
+  }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/supabase-client.js"></script>
+</head>
+<body class="bg-surface font-body-md text-on-surface overflow-x-hidden">
+
+<script type="module">
+  (async function () {
+    const auth = await window.requireAuth();
+    if (!auth) return;
+    const nameEl = document.getElementById("current-user-name");
+    if (nameEl && auth.profile) {
+      nameEl.textContent = auth.profile.full_name || auth.user.email;
+    }
+    const roleBadge = document.getElementById("current-user-role");
+    if (roleBadge && auth.profile) {
+      roleBadge.textContent = auth.profile.role;
+      if (auth.profile.role !== "admin") {
+        document.querySelectorAll(".admin-only").forEach(el => el.remove());
+      }
+    }
+    const logoutBtn = document.getElementById("logout-btn");
+    if (logoutBtn) logoutBtn.addEventListener("click", window.signOut);
+    if (auth.profile) window.applyRoleBadge(auth.profile.role);
+
+    const currentEvent = await window.requireEvent();
+    if (!currentEvent) return;
+    window.applyEventToHeader(currentEvent);
+    window.currentEventId = currentEvent.id;
+  })();
+</script>
+
+<aside id="app-sidebar" class="fixed left-0 top-0 h-full bg-secondary-container z-50 flex flex-col border-r border-tertiary/10" style="width: var(--sidebar-w);">
+  <button id="sidebar-toggle" class="absolute -right-3.5 top-9 w-7 h-7 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center shadow-lg border-2 border-surface hover:brightness-110 hover:scale-110 transition-all z-[60]" aria-label="Colapsar/expandir menú" title="Colapsar/expandir menú">
+    <span class="material-symbols-outlined text-[16px]" id="sidebar-toggle-icon">chevron_left</span>
+  </button>
+  <div class="h-20 flex items-center gap-3 px-5 border-b border-tertiary/10 shrink-0 overflow-hidden">
+    <img alt="Logo" class="w-8 h-8 object-contain shrink-0" src="assets/logo.png"/>
+    <span class="font-headline-md text-headline-md text-tertiary tracking-widest uppercase sidebar-label whitespace-nowrap">GALA</span>
+  </div>
+  <div class="flex-1 flex flex-col pt-4 pb-6 overflow-y-auto overflow-x-hidden">
+    <nav class="flex-1 flex flex-col gap-1 px-4">
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="dashboard" href="index.html"><span class="material-symbols-outlined mr-3 nav-icon">dashboard</span><span class="sidebar-label">Panel</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="invitados" href="invitados.html"><span class="material-symbols-outlined mr-3 nav-icon">group</span><span class="sidebar-label">Invitados</span></a>
+      <a aria-current="page" class="flex items-center py-3 transition-all border-l-4 border-tertiary bg-white/5 text-tertiary font-bold px-[16px]" data-path="invitacion" href="personalizar-invitacion.html"><span class="material-symbols-outlined mr-3 nav-icon">auto_awesome</span><span class="sidebar-label">Invitación Web</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="presupuesto" href="presupuesto.html"><span class="material-symbols-outlined mr-3 nav-icon">payments</span><span class="sidebar-label">Presupuesto</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="itinerario" href="itinerario.html"><span class="material-symbols-outlined mr-3 nav-icon">calendar_today</span><span class="sidebar-label">Itinerario</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="lugares" href="lugares.html"><span class="material-symbols-outlined mr-3 nav-icon">location_on</span><span class="sidebar-label">Lugares</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="proveedores" href="proveedores.html"><span class="material-symbols-outlined mr-3 nav-icon">business_center</span><span class="sidebar-label">Proveedores</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="tareas" href="tareas.html"><span class="material-symbols-outlined mr-3 nav-icon">check_circle</span><span class="sidebar-label">Tareas</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="programa" href="programa.html"><span class="material-symbols-outlined mr-3 nav-icon">list_alt</span><span class="sidebar-label">Programa</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="seating-materials" href="seating-materials.html"><span class="material-symbols-outlined mr-3 nav-icon">chair</span><span class="sidebar-label">Asientos</span></a>
+      <a class="flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all" data-path="post-wedding" href="post-wedding.html"><span class="material-symbols-outlined mr-3 nav-icon">celebration</span><span class="sidebar-label">Post-Boda</span></a>
+    </nav>
+    <div class="px-8 mt-auto pt-8 sidebar-cta">
+      <a href="proyectos.html" class="w-full py-4 bg-tertiary text-on-tertiary font-button-text text-button-text uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-2 rounded-lg">
+        <span class="material-symbols-outlined nav-icon">apps</span><span class="sidebar-label">Mis Proyectos</span>
+      </a>
+    </div>
+  </div>
+</aside>
+
+<div id="app-content-wrapper" class="flex flex-col min-h-screen" style="padding-left: var(--sidebar-w);">
+  <header class="fixed top-0 right-0 left-0 h-20 bg-primary-container z-40 px-6 flex items-center justify-between border-b border-tertiary/5 shadow-xl">
+    <div id="app-header-logo" style="width: var(--sidebar-w);"></div>
+    <div class="flex-1 flex items-center justify-center gap-6">
+      <a href="proyectos.html" title="Cambiar de proyecto" class="font-headline-md text-headline-md text-on-surface hover:text-tertiary transition-colors flex items-center gap-2">
+        <span id="current-event-name">Cargando…</span>
+        <span class="material-symbols-outlined text-[18px] opacity-60">unfold_more</span>
+      </a>
+      <div class="px-4 py-1.5 bg-tertiary/10 border border-tertiary/20 rounded-full flex items-center gap-2">
+        <span class="material-symbols-outlined text-tertiary text-sm">timer</span>
+        <span id="current-event-countdown" class="font-label-gold text-label-gold text-tertiary">--</span>
+      </div>
+    </div>
+    <div class="flex items-center gap-6 justify-end w-72 pr-8">
+      <div id="role-badge" class="w-8 h-8 rounded-full flex items-center justify-center transition-colors">
+        <span class="material-symbols-outlined role-badge-icon text-[18px]"></span>
+      </div>
+      <button id="logout-btn" class="material-symbols-outlined text-on-surface-variant hover:text-error transition-colors" title="Cerrar sesión">logout</button>
+      <div class="flex items-center gap-2">
+        <div class="w-10 h-10 rounded-full border border-tertiary/30 p-0.5 overflow-hidden ring-2 ring-tertiary/10">
+          <img alt="Perfil" class="w-full h-full rounded-full object-cover" src="assets/avatar.png"/>
+        </div>
+        <div class="hidden md:flex flex-col leading-tight">
+          <span id="current-user-name" class="text-sm text-on-surface">Cargando…</span>
+          <span id="current-user-role" class="text-[10px] uppercase tracking-wider text-tertiary"></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 pt-24 px-6 md:px-12 pb-16 bg-on-surface-variant/5 min-h-screen">
+    <div class="max-w-6xl mx-auto flex flex-col gap-8">
+      
+      <!-- Top Title & Action Bar -->
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-tertiary/10 pb-6">
+        <div>
+          <span class="font-label-gold text-xs uppercase tracking-[0.25em] text-tertiary block mb-1">EDITOR DE INVITACIÓN DIGITAL</span>
+          <h1 class="font-headline-lg text-3xl md:text-4xl text-on-surface">Personalizar Invitación Web</h1>
+          <p class="font-body-md text-on-surface-variant text-sm mt-1">Configura cada detalle de la invitación que recibirán tus invitados en sus teléfonos.</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <a id="btn-view-invitation-live" href="invitacion.html" target="_blank" class="px-6 py-3.5 bg-surface-container border border-tertiary/30 text-tertiary font-button-text text-button-text rounded-xl uppercase tracking-widest hover:bg-tertiary/10 transition-all flex items-center gap-2 shadow-lg">
+            <span class="material-symbols-outlined text-[20px]">visibility</span>
+            Ver en Vivo
+          </a>
+          <button id="btn-save-invitation-settings" class="px-8 py-3.5 bg-tertiary text-on-tertiary font-button-text text-button-text rounded-xl uppercase tracking-widest hover:brightness-110 transition-all flex items-center gap-2 font-semibold shadow-xl shadow-tertiary/20">
+            <span class="material-symbols-outlined text-[20px]">save</span>
+            Guardar Cambios
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Form Grid -->
+      <form id="invitation-form" class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Left Column: Portada, Pareja, Cita y Música (7 cols) -->
+        <div class="lg:col-span-7 flex flex-col gap-6">
+
+          <!-- Card 1: Portada & Foto de la Pareja -->
+          <div class="bg-surface-container rounded-2xl p-6 md:p-8 border border-tertiary/15 shadow-xl flex flex-col gap-5">
+            <div class="flex items-center justify-between">
+              <h2 class="font-headline-md text-xl text-on-surface flex items-center gap-2">
+                <span class="material-symbols-outlined text-tertiary">photo_camera</span>
+                Portada & Foto de los Novios
+              </h2>
+              <span class="font-label-gold text-[11px] uppercase tracking-wider text-tertiary">Páginas 1 y 2</span>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-6 items-center">
+              <div class="w-36 h-48 rounded-xl overflow-hidden bg-surface-container-high border-2 border-dashed border-tertiary/30 flex items-center justify-center relative group shrink-0">
+                <img id="cover-photo-preview" src="assets/hero-gala.jpg" alt="Foto de portada" class="w-full h-full object-cover"/>
+                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer" onclick="document.getElementById('cover-file-input').click()">
+                  <span class="material-symbols-outlined text-white text-3xl">cloud_upload</span>
+                </div>
+              </div>
+
+              <div class="flex-1 flex flex-col gap-3 w-full">
+                <div>
+                  <label class="text-xs uppercase tracking-wider text-on-surface-variant font-medium block mb-1">Subir Foto de la Pareja</label>
+                  <input id="cover-file-input" type="file" accept="image/*" class="text-xs text-on-surface file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-tertiary file:text-on-tertiary hover:file:brightness-110 cursor-pointer"/>
+                </div>
+                <div>
+                  <label class="text-xs uppercase tracking-wider text-on-surface-variant font-medium block mb-1">O URL de imagen externa</label>
+                  <input id="cover-image-url-input" type="url" placeholder="https://ejemplo.com/foto-novios.jpg" class="w-full bg-surface-container-low border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cita Bíblica / Frase de Amor -->
+            <div class="flex flex-col gap-1.5 mt-2">
+              <label class="text-xs uppercase tracking-wider text-on-surface-variant font-medium" for="quote-text-input">Cita de Amor / Frase Bíblica</label>
+              <textarea id="quote-text-input" rows="2" class="w-full bg-surface-container-low border border-tertiary/20 rounded-lg p-3 text-sm text-on-surface focus:outline-none focus:border-tertiary" placeholder="“A donde tú vayas, iré yo; y donde tú vivas, viviré...”">“A donde tú vayas, iré yo; y donde tú vivas, viviré. Tu pueblo será mi pueblo, y tu Dios mi Dios.”</textarea>
+              <div class="flex justify-between items-center text-xs text-on-surface-variant/70">
+                <input id="quote-author-input" type="text" placeholder="— Rut 1:16" value="— Rut 1:16" class="bg-transparent border-b border-tertiary/20 py-1 text-xs text-tertiary focus:outline-none"/>
+                <span>Aparece en la portada principal</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Música de Fondo & Canción de los Novios -->
+          <div class="bg-surface-container rounded-2xl p-6 md:p-8 border border-tertiary/15 shadow-xl flex flex-col gap-5">
+            <div class="flex items-center justify-between">
+              <h2 class="font-headline-md text-xl text-on-surface flex items-center gap-2">
+                <span class="material-symbols-outlined text-tertiary">music_note</span>
+                Música & Canción de los Novios
+              </h2>
+              <span class="font-label-gold text-[11px] uppercase tracking-wider text-tertiary">Página 5</span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="flex flex-col gap-1.5">
+                <label class="text-xs uppercase tracking-wider text-on-surface-variant font-medium">Título de la Canción</label>
+                <input id="song-title-input" type="text" value="Hasta Mi Final — Il Divo" placeholder="Ej. Perfect — Ed Sheeran" class="bg-surface-container-low border border-tertiary/20 rounded-lg p-3 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <label class="text-xs uppercase tracking-wider text-on-surface-variant font-medium">Plataforma Principal</label>
+                <select id="song-platform-select" class="bg-surface-container-low border border-tertiary/20 rounded-lg p-3 text-sm text-on-surface focus:outline-none focus:border-tertiary">
+                  <option value="spotify">Spotify</option>
+                  <option value="youtube">YouTube Music</option>
+                  <option value="amazon">Amazon Music</option>
+                  <option value="apple">Apple Music</option>
+                  <option value="acoustic">Melodía Acústica Gala</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs uppercase tracking-wider text-on-surface-variant font-medium">Enlace Directo a la Canción (Spotify / YouTube)</label>
+              <input id="song-url-input" type="url" placeholder="https://open.spotify.com/track/..." class="bg-surface-container-low border border-tertiary/20 rounded-lg p-3 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
+            </div>
+          </div>
+
+          <!-- Card 3: Padres & Padrinos -->
+          <div class="bg-surface-container rounded-2xl p-6 md:p-8 border border-tertiary/15 shadow-xl flex flex-col gap-5">
+            <div class="flex items-center justify-between">
+              <h2 class="font-headline-md text-xl text-on-surface flex items-center gap-2">
+                <span class="material-symbols-outlined text-tertiary">family_restroom</span>
+                Padres & Padrinos
+              </h2>
+              <button type="button" id="btn-sync-padrinos" class="text-xs text-tertiary hover:underline flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">sync</span>
+                Auto-cargar Padrinos de Invitados
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="flex flex-col gap-1.5 bg-surface-container-low p-4 rounded-xl border border-tertiary/10">
+                <span class="font-label-gold text-xs uppercase tracking-wider text-tertiary font-bold mb-1">Padres de la Novia</span>
+                <input id="bride-father-input" type="text" placeholder="Papá de la novia" value="Guillermo Martínez Gómez" class="bg-surface border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface mb-2 focus:outline-none focus:border-tertiary"/>
+                <input id="bride-mother-input" type="text" placeholder="Mamá de la novia" value="María Elena Padilla Gutiérrez" class="bg-surface border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
+              </div>
+
+              <div class="flex flex-col gap-1.5 bg-surface-container-low p-4 rounded-xl border border-tertiary/10">
+                <span class="font-label-gold text-xs uppercase tracking-wider text-tertiary font-bold mb-1">Padres del Novio</span>
+                <input id="groom-father-input" type="text" placeholder="Papá del novio" value="Armando Jiménez Jiménez" class="bg-surface border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface mb-2 focus:outline-none focus:border-tertiary"/>
+                <input id="groom-mother-input" type="text" placeholder="Mamá del novio" value="Blanca Delia González Lozano" class="bg-surface border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-1.5 bg-surface-container-low p-4 rounded-xl border border-tertiary/10">
+              <span class="font-label-gold text-xs uppercase tracking-wider text-tertiary font-bold mb-1">Padrinos de Velación / Honor</span>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <input id="padrino-1-input" type="text" placeholder="Padrino 1" value="Lauro Coss Y León Rubio" class="bg-surface border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
+                <input id="padrino-2-input" type="text" placeholder="Padrino 2" value="Itzel Durand Cortés" class="bg-surface border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Column: Lugares (Misa/Recepción), Dress Code, Regalos & Hoteles (5 cols) -->
+        <div class="lg:col-span-5 flex flex-col gap-6">
+
+          <!-- Card 4: Lugares de Ceremonia y Recepción -->
+          <div class="bg-surface-container rounded-2xl p-6 md:p-8 border border-tertiary/15 shadow-xl flex flex-col gap-5">
+            <div class="flex items-center justify-between">
+              <h2 class="font-headline-md text-xl text-on-surface flex items-center gap-2">
+                <span class="material-symbols-outlined text-tertiary">church</span>
+                Ceremonia & Recepción
+              </h2>
+              <button type="button" id="btn-sync-venues" class="text-xs text-tertiary hover:underline flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px]">sync</span>
+                Auto-cargar de Lugares
+              </button>
+            </div>
+
+            <!-- Ceremonia -->
+            <div class="flex flex-col gap-2.5 bg-surface-container-low p-4 rounded-xl border border-tertiary/10">
+              <span class="font-label-gold text-xs uppercase tracking-wider text-tertiary font-bold">1. Ceremonia Religiosa (Misa)</span>
+              <input id="ceremony-name-input" type="text" placeholder="Nombre de la Iglesia" value="Parroquia de San Francisco de Asís" class="bg-surface border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
+              <div class="grid grid-cols-2 gap-2">
+                <input id="ceremony-time-input" type="text" placeholder="Horario (ej. 6:00 PM)" value="6:00 PM" class="bg-surface border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
+                <input id="ceremony-city-input" type="text" placeholder="Ciudad / Municipio" value="Tepatitlán de Morelos, Jalisco" class="bg-surface border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
+              </div>
+              <input id="ceremony-map-input" type="url" placeholder="Link de Google Maps / Waze" value="https://maps.google.com/?q=Parroquia+de+San+Francisco+de+Asis+Tepatitlan" class="bg-surface border border-tertiary/20 rounded-lg p-2.5 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+            </div>
+
+            <!-- Recepción -->
+            <div class="flex flex-col gap-2.5 bg-surface-container-low p-4 rounded-xl border border-tertiary/10">
+              <span class="font-label-gold text-xs uppercase tracking-wider text-tertiary font-bold">2. Recepción (Fiesta / Banquete)</span>
+              <input id="reception-name-input" type="text" placeholder="Nombre del Salón o Terraza" value="Mítico Terraza y Jardín" class="bg-surface border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
+              <div class="grid grid-cols-2 gap-2">
+                <input id="reception-time-input" type="text" placeholder="Horario (ej. 8:00 PM)" value="8:00 PM" class="bg-surface border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
+                <input id="reception-city-input" type="text" placeholder="Ciudad / Municipio" value="Capilla de Guadalupe, Jalisco" class="bg-surface border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
+              </div>
+              <input id="reception-map-input" type="url" placeholder="Link de Google Maps / Waze" value="https://maps.google.com/?q=Mitico+Terraza+y+Jardin+Capilla+de+Guadalupe" class="bg-surface border border-tertiary/20 rounded-lg p-2.5 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+            </div>
+          </div>
+
+          <!-- Card 5: Dress Code & Política de Niños -->
+          <div class="bg-surface-container rounded-2xl p-6 md:p-8 border border-tertiary/15 shadow-xl flex flex-col gap-5">
+            <h2 class="font-headline-md text-xl text-on-surface flex items-center gap-2">
+              <span class="material-symbols-outlined text-tertiary">styler</span>
+              Código de Vestimenta
+            </h2>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="flex flex-col gap-1.5">
+                <label class="text-xs uppercase tracking-wider text-on-surface-variant font-medium">Dress Code</label>
+                <input id="dress-code-input" type="text" value="Riguroso Formal" placeholder="Ej. Riguroso Formal, Playa, etc." class="bg-surface-container-low border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <label class="text-xs uppercase tracking-wider text-on-surface-variant font-medium">Acceso de Niños</label>
+                <select id="kids-policy-select" class="bg-surface-container-low border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary">
+                  <option value="NO NIÑOS · EVENTO DE ADULTOS">NO NIÑOS · Solo Adultos</option>
+                  <option value="NIÑOS BIENVENIDOS">Niños Bienvenidos</option>
+                  <option value="SOLO FAMILIA CERCANA">Solo Niños de Familia Cercana</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 6: Mesa de Regalos & CLABE Bancaria -->
+          <div class="bg-surface-container rounded-2xl p-6 md:p-8 border border-tertiary/15 shadow-xl flex flex-col gap-5">
+            <h2 class="font-headline-md text-xl text-on-surface flex items-center gap-2">
+              <span class="material-symbols-outlined text-tertiary">redeem</span>
+              Mesa de Regalos & Cuenta Bancaria
+            </h2>
+
+            <div class="flex flex-col gap-1.5">
+              <label class="text-xs uppercase tracking-wider text-on-surface-variant font-medium">Enlace de Amazon / Liverpool</label>
+              <input id="gift-amazon-url" type="url" placeholder="https://www.amazon.com.mx/baby-reg" value="https://www.amazon.com.mx" class="bg-surface-container-low border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div class="flex flex-col gap-1.5">
+                <label class="text-xs uppercase tracking-wider text-on-surface-variant font-medium">Banco</label>
+                <input id="bank-name-input" type="text" placeholder="BBVA, Banorte, Santander" value="BBVA" class="bg-surface-container-low border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
+              </div>
+              <div class="flex flex-col gap-1.5">
+                <label class="text-xs uppercase tracking-wider text-on-surface-variant font-medium">CLABE Interbancaria (18 dígitos)</label>
+                <input id="bank-clabe-input" type="text" placeholder="012345678901234567" value="012345678901234567" class="bg-surface-container-low border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary font-mono"/>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </form>
+    </div>
+  </main>
+</div>
+
+<script type="module">
+  let currentEventId = null;
+  const SETTINGS_KEY = "galaInvitationSettings_";
+
+  function getStoredSettings() {
+    try {
+      const raw = localStorage.getItem(SETTINGS_KEY + currentEventId);
+      return raw ? JSON.parse(raw) : null;
+    } catch(e) {
+      return null;
+    }
+  }
+
+  function saveStoredSettings(obj) {
+    try {
+      localStorage.setItem(SETTINGS_KEY + currentEventId, JSON.stringify(obj));
+    } catch(e) {}
+  }
+
+  // Previsualizar foto subida
+  document.getElementById("cover-file-input").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        document.getElementById("cover-photo-preview").src = ev.target.result;
+        document.getElementById("cover-image-url-input").value = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  document.getElementById("cover-image-url-input").addEventListener("input", (e) => {
+    if (e.target.value.trim()) {
+      document.getElementById("cover-photo-preview").src = e.target.value.trim();
+    }
+  });
+
+  // Auto-cargar padrinos desde el grupo "Padrinos" de la tabla guests
+  document.getElementById("btn-sync-padrinos").addEventListener("click", async () => {
+    const { data: groups } = await window.supabaseClient.from("guest_groups").select("*").eq("event_id", currentEventId);
+    const padrinosGroup = (groups || []).find(g => g.name.toLowerCase().includes("padrino"));
+    
+    if (!padrinosGroup) {
+      window.showToast("No se encontró ningún grupo llamado 'Padrinos' en la lista de invitados.", "info");
+      return;
+    }
+
+    const { data: padrinos } = await window.supabaseClient.from("guests").select("*").eq("event_id", currentEventId).eq("group_id", padrinosGroup.id);
+    if (!padrinos || padrinos.length === 0) {
+      window.showToast("El grupo 'Padrinos' no tiene invitados asignados todavía.", "info");
+      return;
+    }
+
+    if (padrinos[0]) document.getElementById("padrino-1-input").value = padrinos[0].full_name;
+    if (padrinos[1]) document.getElementById("padrino-2-input").value = padrinos[1].full_name;
+    window.showToast(`Se cargaron ${padrinos.length} padrinos automáticamente desde tu lista de invitados.`, "success");
+  });
+
+  // Auto-cargar lugares desde la tabla venues / itinerario
+  document.getElementById("btn-sync-venues").addEventListener("click", async () => {
+    const { data: venues } = await window.supabaseClient.from("venues").select("*").eq("event_id", currentEventId);
+    if (venues && venues.length > 0) {
+      const church = venues.find(v => v.name.toLowerCase().includes("iglesia") || v.name.toLowerCase().includes("parroquia") || v.name.toLowerCase().includes("templo")) || venues[0];
+      const reception = venues.find(v => v.name.toLowerCase().includes("terraza") || v.name.toLowerCase().includes("jardin") || v.name.toLowerCase().includes("salon") || v.name.toLowerCase().includes("hacienda")) || (venues[1] || venues[0]);
+
+      if (church) {
+        document.getElementById("ceremony-name-input").value = church.name;
+        if (church.address) document.getElementById("ceremony-city-input").value = church.address;
+      }
+      if (reception) {
+        document.getElementById("reception-name-input").value = reception.name;
+        if (reception.address) document.getElementById("reception-city-input").value = reception.address;
+      }
+      window.showToast("Lugares sincronizados desde tu catálogo de sedes.", "success");
+    } else {
+      window.showToast("Aún no tienes sedes registradas en el módulo de Lugares.", "info");
+    }
+  });
+
+  // Guardar configuración
+  document.getElementById("btn-save-invitation-settings").addEventListener("click", () => {
+    const payload = {
+      cover_image: document.getElementById("cover-image-url-input").value.trim() || document.getElementById("cover-photo-preview").src,
+      quote: document.getElementById("quote-text-input").value.trim(),
+      quote_author: document.getElementById("quote-author-input").value.trim(),
+      song_title: document.getElementById("song-title-input").value.trim(),
+      song_platform: document.getElementById("song-platform-select").value,
+      song_url: document.getElementById("song-url-input").value.trim(),
+      bride_father: document.getElementById("bride-father-input").value.trim(),
+      bride_mother: document.getElementById("bride-mother-input").value.trim(),
+      groom_father: document.getElementById("groom-father-input").value.trim(),
+      groom_mother: document.getElementById("groom-mother-input").value.trim(),
+      padrino_1: document.getElementById("padrino-1-input").value.trim(),
+      padrino_2: document.getElementById("padrino-2-input").value.trim(),
+      ceremony_name: document.getElementById("ceremony-name-input").value.trim(),
+      ceremony_time: document.getElementById("ceremony-time-input").value.trim(),
+      ceremony_city: document.getElementById("ceremony-city-input").value.trim(),
+      ceremony_map: document.getElementById("ceremony-map-input").value.trim(),
+      reception_name: document.getElementById("reception-name-input").value.trim(),
+      reception_time: document.getElementById("reception-time-input").value.trim(),
+      reception_city: document.getElementById("reception-city-input").value.trim(),
+      reception_map: document.getElementById("reception-map-input").value.trim(),
+      dress_code: document.getElementById("dress-code-input").value.trim(),
+      kids_policy: document.getElementById("kids-policy-select").value,
+      gift_amazon: document.getElementById("gift-amazon-url").value.trim(),
+      bank_name: document.getElementById("bank-name-input").value.trim(),
+      bank_clabe: document.getElementById("bank-clabe-input").value.trim()
+    };
+
+    saveStoredSettings(payload);
+    window.showToast("¡Configuración de la invitación guardada con éxito!", "success");
+  });
+
+  // Inicialización
+  (async function init() {
+    const auth = await window.requireAuth();
+    if (!auth) return;
+    const currentEvent = await window.requireEvent();
+    if (!currentEvent) return;
+    currentEventId = currentEvent.id;
+
+    document.getElementById("btn-view-invitation-live").href = `invitacion.html?event=${currentEventId}`;
+
+    const saved = getStoredSettings();
+    if (saved) {
+      if (saved.cover_image) {
+        document.getElementById("cover-photo-preview").src = saved.cover_image;
+        document.getElementById("cover-image-url-input").value = saved.cover_image.startsWith("data:") ? "" : saved.cover_image;
+      }
+      if (saved.quote) document.getElementById("quote-text-input").value = saved.quote;
+      if (saved.quote_author) document.getElementById("quote-author-input").value = saved.quote_author;
+      if (saved.song_title) document.getElementById("song-title-input").value = saved.song_title;
+      if (saved.song_platform) document.getElementById("song-platform-select").value = saved.song_platform;
+      if (saved.song_url) document.getElementById("song-url-input").value = saved.song_url;
+      if (saved.bride_father) document.getElementById("bride-father-input").value = saved.bride_father;
+      if (saved.bride_mother) document.getElementById("bride-mother-input").value = saved.bride_mother;
+      if (saved.groom_father) document.getElementById("groom-father-input").value = saved.groom_father;
+      if (saved.groom_mother) document.getElementById("groom-mother-input").value = saved.groom_mother;
+      if (saved.padrino_1) document.getElementById("padrino-1-input").value = saved.padrino_1;
+      if (saved.padrino_2) document.getElementById("padrino-2-input").value = saved.padrino_2;
+      if (saved.ceremony_name) document.getElementById("ceremony-name-input").value = saved.ceremony_name;
+      if (saved.ceremony_time) document.getElementById("ceremony-time-input").value = saved.ceremony_time;
+      if (saved.ceremony_city) document.getElementById("ceremony-city-input").value = saved.ceremony_city;
+      if (saved.ceremony_map) document.getElementById("ceremony-map-input").value = saved.ceremony_map;
+      if (saved.reception_name) document.getElementById("reception-name-input").value = saved.reception_name;
+      if (saved.reception_time) document.getElementById("reception-time-input").value = saved.reception_time;
+      if (saved.reception_city) document.getElementById("reception-city-input").value = saved.reception_city;
+      if (saved.reception_map) document.getElementById("reception-map-input").value = saved.reception_map;
+      if (saved.dress_code) document.getElementById("dress-code-input").value = saved.dress_code;
+      if (saved.kids_policy) document.getElementById("kids-policy-select").value = saved.kids_policy;
+      if (saved.gift_amazon) document.getElementById("gift-amazon-url").value = saved.gift_amazon;
+      if (saved.bank_name) document.getElementById("bank-name-input").value = saved.bank_name;
+      if (saved.bank_clabe) document.getElementById("bank-clabe-input").value = saved.bank_clabe;
+    }
+  })();
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var btn = document.getElementById('sidebar-toggle');
+  if (!btn) return;
+  btn.addEventListener('click', function () {
+    var isCollapsed = document.documentElement.classList.toggle('sidebar-collapsed');
+    try { localStorage.setItem('galaSidebarCollapsed', isCollapsed ? 'true' : 'false'); } catch (e) {}
+  });
+});
+</script>
+</body>
+</html>

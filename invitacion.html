@@ -119,13 +119,13 @@ tailwind.config = {
 <div id="invitation-container" class="w-full max-w-[480px] bg-parchment shadow-2xl flex flex-col relative min-h-screen">
 
   <!-- PAGE 2: PORTADA EDITORIAL CON FOTO Y CITA BÍBLICA -->
-  <section class="relative min-h-[640px] flex flex-col justify-between p-8 bg-cover bg-center overflow-hidden" style="background-image: linear-gradient(to bottom, rgba(30,25,22,0.4) 0%, rgba(30,25,22,0.1) 40%, rgba(30,25,22,0.7) 100%), url('assets/hero-gala.jpg');">
+  <section id="hero-cover-section" class="relative min-h-[640px] flex flex-col justify-between p-8 bg-cover bg-center overflow-hidden" style="background-image: linear-gradient(to bottom, rgba(30,25,22,0.4) 0%, rgba(30,25,22,0.1) 40%, rgba(30,25,22,0.7) 100%), url('assets/hero-gala.jpg');">
     <!-- Biblical Quote -->
     <div class="pt-8 text-center text-white relative z-10">
-      <p class="font-serif-title italic text-lg sm:text-xl leading-relaxed text-[#f9f5ed] drop-shadow-md">
+      <p id="quote-text-display" class="font-serif-title italic text-lg sm:text-xl leading-relaxed text-[#f9f5ed] drop-shadow-md">
         “A donde tú vayas, iré yo; y donde tú vivas, viviré.<br/>Tu pueblo será mi pueblo, y tu Dios mi Dios.”
       </p>
-      <span class="font-sans text-[11px] tracking-widest uppercase text-gold-light mt-1 block drop-shadow">— Rut 1:16</span>
+      <span id="quote-author-display" class="font-sans text-[11px] tracking-widest uppercase text-gold-light mt-1 block drop-shadow">— Rut 1:16</span>
     </div>
 
     <!-- Couple Names -->
@@ -152,13 +152,13 @@ tailwind.config = {
     <!-- Parents list -->
     <div class="grid grid-cols-1 gap-6 w-full max-w-xs mb-8">
       <div class="flex flex-col gap-0.5">
-        <p class="font-serif-title text-lg text-ink font-medium">Guillermo Martínez Gómez</p>
-        <p class="font-serif-title text-lg text-ink font-medium">María Elena Padilla Gutiérrez</p>
+        <p id="bride-father-display" class="font-serif-title text-lg text-ink font-medium">Guillermo Martínez Gómez</p>
+        <p id="bride-mother-display" class="font-serif-title text-lg text-ink font-medium">María Elena Padilla Gutiérrez</p>
       </div>
       <div class="w-8 h-px bg-gold-dark/30 mx-auto"></div>
       <div class="flex flex-col gap-0.5">
-        <p class="font-serif-title text-lg text-ink font-medium">Armando Jiménez Jiménez</p>
-        <p class="font-serif-title text-lg text-ink font-medium">Blanca Delia González Lozano</p>
+        <p id="groom-father-display" class="font-serif-title text-lg text-ink font-medium">Armando Jiménez Jiménez</p>
+        <p id="groom-mother-display" class="font-serif-title text-lg text-ink font-medium">Blanca Delia González Lozano</p>
       </div>
     </div>
 
@@ -168,15 +168,15 @@ tailwind.config = {
 
     <!-- Formal Date Presentation -->
     <div class="my-8 flex flex-col items-center">
-      <span class="font-script text-5xl sm:text-6xl text-gold-dark leading-none">Sábado</span>
+      <span id="date-weekday-display" class="font-script text-5xl sm:text-6xl text-gold-dark leading-none">Sábado</span>
       <div class="flex items-center gap-3 my-1">
-        <span class="font-display text-4xl sm:text-5xl text-ink font-semibold">14</span>
+        <span id="date-day-display" class="font-display text-4xl sm:text-5xl text-ink font-semibold">14</span>
         <div class="flex flex-col text-left leading-none">
           <span class="font-serif-title italic text-xl text-gold-dark">de</span>
-          <span class="font-sans text-sm tracking-[0.25em] uppercase text-ink font-bold">NOVIEMBRE</span>
+          <span id="date-month-display" class="font-sans text-sm tracking-[0.25em] uppercase text-ink font-bold">NOVIEMBRE</span>
         </div>
       </div>
-      <span class="font-serif-title italic text-2xl text-ink-light">del 2026</span>
+      <span id="date-year-display" class="font-serif-title italic text-2xl text-ink-light">del 2026</span>
     </div>
 
     <!-- Countdown Timer -->
@@ -193,8 +193,8 @@ tailwind.config = {
     <!-- Godparents -->
     <div class="mt-8 pt-6 border-t border-gold-dark/20 w-full max-w-xs">
       <span class="font-sans text-[10px] uppercase tracking-[0.25em] text-gold-dark font-bold block mb-4">NUESTROS PADRINOS DE VELACIÓN</span>
-      <p class="font-serif-title text-lg text-ink font-medium">Lauro Coss Y León Rubio</p>
-      <p class="font-serif-title text-lg text-ink font-medium">Itzel Durand Cortés</p>
+      <p id="padrino-1-display" class="font-serif-title text-lg text-ink font-medium">Lauro Coss Y León Rubio</p>
+      <p id="padrino-2-display" class="font-serif-title text-lg text-ink font-medium">Itzel Durand Cortés</p>
     </div>
   </section>
 
@@ -211,13 +211,13 @@ tailwind.config = {
         <span class="material-symbols-outlined text-2xl">church</span>
       </div>
       <span class="font-script text-4xl text-gold-dark mb-1">Ceremonia</span>
-      <h3 class="font-serif-title text-xl font-bold text-ink uppercase tracking-wider">Parroquia de San Francisco de Asís</h3>
+      <h3 id="ceremony-name-display" class="font-serif-title text-xl font-bold text-ink uppercase tracking-wider">Parroquia de San Francisco de Asís</h3>
       <div class="inline-flex items-center gap-1 my-3 px-3 py-1 bg-parchment rounded-full text-ink font-sans text-xs font-semibold">
         <span class="material-symbols-outlined text-[16px] text-gold-dark">schedule</span>
-        6:00 PM
+        <span id="ceremony-time-display">6:00 PM</span>
       </div>
-      <p class="font-sans text-xs text-ink-muted max-w-xs mb-6">Tepatitlán de Morelos, Jalisco</p>
-      <a href="https://maps.google.com/?q=Parroquia+de+San+Francisco+de+Asis+Tepatitlan" target="_blank" class="w-full max-w-xs py-3.5 bg-accent-btn text-white rounded-xl font-sans text-xs uppercase tracking-[0.2em] font-semibold flex items-center justify-center gap-2 hover:bg-black transition-all shadow-md">
+      <p id="ceremony-city-display" class="font-sans text-xs text-ink-muted max-w-xs mb-6">Tepatitlán de Morelos, Jalisco</p>
+      <a id="ceremony-map-link" href="https://maps.google.com/?q=Parroquia+de+San+Francisco+de+Asis+Tepatitlan" target="_blank" class="w-full max-w-xs py-3.5 bg-accent-btn text-white rounded-xl font-sans text-xs uppercase tracking-[0.2em] font-semibold flex items-center justify-center gap-2 hover:bg-black transition-all shadow-md">
         <span class="material-symbols-outlined text-[18px]">location_on</span>
         Ver Ubicación
       </a>
@@ -229,13 +229,13 @@ tailwind.config = {
         <span class="material-symbols-outlined text-2xl">celebration</span>
       </div>
       <span class="font-script text-4xl text-gold-dark mb-1">Recepción</span>
-      <h3 class="font-serif-title text-xl font-bold text-ink uppercase tracking-wider">Mítico Terraza y Jardín</h3>
+      <h3 id="reception-name-display" class="font-serif-title text-xl font-bold text-ink uppercase tracking-wider">Mítico Terraza y Jardín</h3>
       <div class="inline-flex items-center gap-1 my-3 px-3 py-1 bg-parchment rounded-full text-ink font-sans text-xs font-semibold">
         <span class="material-symbols-outlined text-[16px] text-gold-dark">schedule</span>
-        8:00 PM
+        <span id="reception-time-display">8:00 PM</span>
       </div>
-      <p class="font-sans text-xs text-ink-muted max-w-xs mb-6">Capilla de Guadalupe, Jalisco</p>
-      <a href="https://maps.google.com/?q=Mitico+Terraza+y+Jardin+Capilla+de+Guadalupe" target="_blank" class="w-full max-w-xs py-3.5 bg-accent-btn text-white rounded-xl font-sans text-xs uppercase tracking-[0.2em] font-semibold flex items-center justify-center gap-2 hover:bg-black transition-all shadow-md">
+      <p id="reception-city-display" class="font-sans text-xs text-ink-muted max-w-xs mb-6">Capilla de Guadalupe, Jalisco</p>
+      <a id="reception-map-link" href="https://maps.google.com/?q=Mitico+Terraza+y+Jardin+Capilla+de+Guadalupe" target="_blank" class="w-full max-w-xs py-3.5 bg-accent-btn text-white rounded-xl font-sans text-xs uppercase tracking-[0.2em] font-semibold flex items-center justify-center gap-2 hover:bg-black transition-all shadow-md">
         <span class="material-symbols-outlined text-[18px]">location_on</span>
         Ver Ubicación
       </a>
@@ -253,6 +253,9 @@ tailwind.config = {
       </button>
 
       <span id="song-title-text" class="font-serif-title italic text-xl text-white drop-shadow-md">"Hasta Mi Final — Il Divo"</span>
+      <a id="song-platform-link" href="#" target="_blank" class="hidden font-sans text-[10px] uppercase tracking-widest text-gold-light bg-black/40 px-4 py-1.5 rounded-full backdrop-blur border border-gold/30 hover:bg-black/60 transition-colors">
+        Abrir en Plataforma
+      </a>
     </div>
   </section>
 
@@ -264,7 +267,7 @@ tailwind.config = {
         <span class="material-symbols-outlined text-2xl">styler</span>
       </div>
       <span class="font-sans text-[10px] uppercase tracking-[0.25em] text-ink-muted">DRESS CODE</span>
-      <h3 class="font-script text-4xl sm:text-5xl text-ink">Riguroso Formal</h3>
+      <h3 id="dress-code-display" class="font-script text-4xl sm:text-5xl text-ink">Riguroso Formal</h3>
       <p class="font-sans text-xs text-ink-light max-w-xs mt-1">Mujeres: Vestido largo de noche<br/>Hombres: Traje formal oscuro o esmoquin</p>
     </div>
 
@@ -304,7 +307,7 @@ tailwind.config = {
 
       <!-- No Children Badge -->
       <div class="mt-4 px-6 py-2 border border-gold-dark/30 rounded-full bg-white/60">
-        <span class="font-sans text-xs uppercase tracking-[0.25em] text-ink font-bold">NO NIÑOS · EVENTO DE ADULTOS</span>
+        <span id="kids-policy-display" class="font-sans text-xs uppercase tracking-[0.25em] text-ink font-bold">NO NIÑOS · EVENTO DE ADULTOS</span>
       </div>
     </div>
   </section>
@@ -322,17 +325,17 @@ tailwind.config = {
       <div class="w-full max-w-xs flex flex-col gap-4">
         <!-- Amazon Wishlist -->
         <div class="border border-border-card p-4 rounded-xl flex flex-col items-center gap-2 bg-[#fbf9f5]">
-          <span class="font-sans text-xs font-bold uppercase tracking-widest text-ink">MESA DE REGALOS AMAZON</span>
-          <span class="font-serif-title italic text-sm text-ink-muted">Yariana Martínez y Daniel Jiménez</span>
-          <a href="https://www.amazon.com.mx/baby-reg" target="_blank" class="mt-2 px-6 py-2.5 bg-accent-btn text-white rounded-lg font-sans text-[11px] uppercase tracking-widest hover:bg-black transition-all">
-            Ir al Sitio
+          <span class="font-sans text-xs font-bold uppercase tracking-widest text-ink">MESA DE REGALOS</span>
+          <span class="font-serif-title italic text-sm text-ink-muted">Mesa de Regalos en Línea</span>
+          <a id="gift-amazon-link" href="https://www.amazon.com.mx" target="_blank" class="mt-2 px-6 py-2.5 bg-accent-btn text-white rounded-lg font-sans text-[11px] uppercase tracking-widest hover:bg-black transition-all">
+            Ir a la Mesa de Regalos
           </a>
         </div>
 
         <!-- Sobre / Transferencia -->
         <div class="border border-border-card p-4 rounded-xl flex flex-col items-center gap-2 bg-[#fbf9f5]">
           <span class="font-sans text-xs font-bold uppercase tracking-widest text-ink">SOBRE O TRANSFERENCIA (CLABE)</span>
-          <span class="font-sans text-xs text-ink-muted">BBVA &bull; Cuenta de los Novios</span>
+          <span id="bank-name-display" class="font-sans text-xs text-ink-muted">BBVA &bull; Cuenta de los Novios</span>
           <button id="btn-copy-clabe" class="mt-2 px-5 py-2.5 border border-gold-dark/40 bg-white text-gold-dark rounded-lg font-sans text-[11px] uppercase tracking-widest hover:bg-gold/10 transition-all flex items-center gap-1.5 font-medium">
             <span class="material-symbols-outlined text-[16px]">content_copy</span>
             Copiar CLABE Interbancaria
@@ -378,10 +381,10 @@ tailwind.config = {
   <section class="relative min-h-[500px] flex flex-col justify-end p-8 bg-cover bg-center text-center text-white" style="background-image: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.85) 100%), url('assets/terraza.jpg');">
     <div class="relative z-10 flex flex-col items-center gap-2 pb-6">
       <div class="w-12 h-12 rounded-full border border-white/40 flex items-center justify-center mb-2">
-        <span class="font-serif-title italic text-2xl text-gold-light">YD</span>
+        <span id="monogram-bottom" class="font-serif-title italic text-2xl text-gold-light">YD</span>
       </div>
       <span class="font-sans text-xs uppercase tracking-[0.3em] text-white/90">NOVIEMBRE &bull; DOS MIL VEINTISÉIS</span>
-      <h3 class="font-script text-4xl sm:text-5xl text-gold-light">Tepatitlán de Morelos, Jalisco</h3>
+      <h3 id="footer-city-display" class="font-script text-4xl sm:text-5xl text-gold-light">Tepatitlán de Morelos, Jalisco</h3>
       <p class="font-serif-title italic text-base text-white/80 mt-2 max-w-xs">
         Esperamos contar con el honor de su compañía en el día más feliz de nuestras vidas.
       </p>
@@ -396,6 +399,18 @@ tailwind.config = {
   let isPlaying = false;
   let audioContext = null;
   let audioInterval = null;
+  let clabeNumber = "012345678901234567";
+
+  const SETTINGS_KEY = "galaInvitationSettings_";
+
+  function getStoredSettings() {
+    try {
+      const raw = localStorage.getItem(SETTINGS_KEY + currentEventId);
+      return raw ? JSON.parse(raw) : null;
+    } catch(e) {
+      return null;
+    }
+  }
 
   // Manejo de la apertura del sobre
   const envelopeScreen = document.getElementById("envelope-screen");
@@ -483,10 +498,10 @@ tailwind.config = {
 
   // Copiar CLABE al portapapeles
   document.getElementById("btn-copy-clabe").addEventListener("click", () => {
-    navigator.clipboard.writeText("012345678901234567").then(() => {
-      window.showToast("CLABE interbancaria copiada al portapapeles: 012345678901234567", "success");
+    navigator.clipboard.writeText(clabeNumber).then(() => {
+      window.showToast("CLABE interbancaria copiada al portapapeles: " + clabeNumber, "success");
     }).catch(() => {
-      window.showToast("CLABE: 012345678901234567", "info");
+      window.showToast("CLABE: " + clabeNumber, "info");
     });
   });
 
@@ -515,7 +530,7 @@ tailwind.config = {
     document.getElementById("cd-secs").textContent = secs;
   }
 
-  // Carga de datos de invitado / evento
+  // Carga y aplicación de datos dinámicos
   async function initInvitation() {
     const urlParams = new URLSearchParams(window.location.search);
     const guestId = urlParams.get("g");
@@ -526,6 +541,7 @@ tailwind.config = {
 
     let eventDateStr = "2026-11-14";
 
+    // 1. Cargar invitado si viene por link personalizado
     if (guestId) {
       const { data: g } = await window.supabaseClient.from("guests").select("*").eq("id", guestId).single();
       if (g) {
@@ -541,6 +557,7 @@ tailwind.config = {
       document.getElementById("passes-count-display").textContent = passesParam;
     }
 
+    // 2. Cargar evento de Supabase
     if (currentEventId) {
       const { data: ev } = await window.supabaseClient.from("events").select("*").eq("id", currentEventId).single();
       if (ev) {
@@ -551,13 +568,67 @@ tailwind.config = {
           if (initials) {
             document.getElementById("monogram-seal").textContent = initials;
             document.getElementById("monogram-text").textContent = initials;
+            const bottomMonogram = document.getElementById("monogram-bottom");
+            if (bottomMonogram) bottomMonogram.textContent = initials;
           }
         }
         if (ev.event_date) {
           eventDateStr = ev.event_date;
           document.getElementById("invitation-date-short").textContent = ev.event_date.replace(/-/g, " · ");
+          
+          const d = new Date(ev.event_date + "T00:00:00");
+          const weekday = d.toLocaleDateString("es-MX", { weekday: "long" });
+          const day = d.getDate();
+          const month = d.toLocaleDateString("es-MX", { month: "long" }).toUpperCase();
+          const year = d.getFullYear();
+
+          document.getElementById("date-weekday-display").textContent = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+          document.getElementById("date-day-display").textContent = day;
+          document.getElementById("date-month-display").textContent = month;
+          document.getElementById("date-year-display").textContent = `del ${year}`;
         }
       }
+    }
+
+    // 3. Aplicar personalizaciones guardadas
+    const saved = getStoredSettings();
+    if (saved) {
+      if (saved.cover_image) {
+        document.getElementById("hero-cover-section").style.backgroundImage = `linear-gradient(to bottom, rgba(30,25,22,0.4) 0%, rgba(30,25,22,0.1) 40%, rgba(30,25,22,0.7) 100%), url('${saved.cover_image}')`;
+      }
+      if (saved.quote) document.getElementById("quote-text-display").textContent = saved.quote;
+      if (saved.quote_author) document.getElementById("quote-author-display").textContent = saved.quote_author;
+      if (saved.bride_father) document.getElementById("bride-father-display").textContent = saved.bride_father;
+      if (saved.bride_mother) document.getElementById("bride-mother-display").textContent = saved.bride_mother;
+      if (saved.groom_father) document.getElementById("groom-father-display").textContent = saved.groom_father;
+      if (saved.groom_mother) document.getElementById("groom-mother-display").textContent = saved.groom_mother;
+      if (saved.padrino_1) document.getElementById("padrino-1-display").textContent = saved.padrino_1;
+      if (saved.padrino_2) document.getElementById("padrino-2-display").textContent = saved.padrino_2;
+      
+      if (saved.ceremony_name) document.getElementById("ceremony-name-display").textContent = saved.ceremony_name;
+      if (saved.ceremony_time) document.getElementById("ceremony-time-display").textContent = saved.ceremony_time;
+      if (saved.ceremony_city) document.getElementById("ceremony-city-display").textContent = saved.ceremony_city;
+      if (saved.ceremony_map) document.getElementById("ceremony-map-link").href = saved.ceremony_map;
+
+      if (saved.reception_name) document.getElementById("reception-name-display").textContent = saved.reception_name;
+      if (saved.reception_time) document.getElementById("reception-time-display").textContent = saved.reception_time;
+      if (saved.reception_city) document.getElementById("reception-city-display").textContent = saved.reception_city;
+      if (saved.reception_map) document.getElementById("reception-map-link").href = saved.reception_map;
+
+      if (saved.song_title) document.getElementById("song-title-text").textContent = `"${saved.song_title}"`;
+      if (saved.song_url) {
+        const pLink = document.getElementById("song-platform-link");
+        pLink.href = saved.song_url;
+        pLink.textContent = `Escuchar en ${saved.song_platform ? saved.song_platform.toUpperCase() : 'Plataforma'}`;
+        pLink.classList.remove("hidden");
+      }
+
+      if (saved.dress_code) document.getElementById("dress-code-display").textContent = saved.dress_code;
+      if (saved.kids_policy) document.getElementById("kids-policy-display").textContent = saved.kids_policy;
+      if (saved.gift_amazon) document.getElementById("gift-amazon-link").href = saved.gift_amazon;
+      if (saved.bank_name) document.getElementById("bank-name-display").textContent = `${saved.bank_name} • Cuenta de los Novios`;
+      if (saved.bank_clabe) clabeNumber = saved.bank_clabe;
+      if (saved.ceremony_city) document.getElementById("footer-city-display").textContent = saved.ceremony_city;
     }
 
     updateCountdown(eventDateStr);
