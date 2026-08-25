@@ -224,6 +224,10 @@ tailwind.config = {
             <p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl mt-2">Gestiona tu lista de invitados, da seguimiento a los RSVP y coordina los acomodos para el próximo evento.</p>
           </div>
           <div class="flex items-center gap-3 flex-wrap">
+            <a id="btn-open-invitation" href="invitacion.html" target="_blank" class="px-5 py-3 bg-gradient-to-r from-tertiary/20 to-tertiary/40 border border-tertiary text-tertiary font-button-text text-button-text uppercase tracking-widest hover:brightness-125 transition-all flex items-center justify-center gap-2 rounded-lg backdrop-blur-sm shadow-lg shadow-tertiary/10" title="Ver invitación digital interactiva personalizada">
+              <span class="material-symbols-outlined text-[18px]">auto_awesome</span>
+              Invitación Digital
+            </a>
             <a id="btn-open-rsvp" href="rsvp.html" target="_blank" class="px-5 py-3 bg-secondary-container/60 border border-secondary/30 text-secondary font-button-text text-button-text uppercase tracking-widest hover:bg-secondary-container transition-all flex items-center justify-center gap-2 rounded-lg backdrop-blur-sm shadow-md" title="Abrir portal público para que los invitados confirmen">
               <span class="material-symbols-outlined text-[18px]">public</span>
               Portal RSVP
@@ -507,8 +511,16 @@ document.addEventListener('DOMContentLoaded', function () {
             ${g.table_number ? `<span class="font-headline-md text-headline-md text-tertiary">${escapeHtml(g.table_number)}</span>` : `<span class="text-on-surface-variant/50 italic font-body-md text-body-md">Sin asignar</span>`}
           </td>
           <td class="py-4 px-6 text-right whitespace-nowrap">
-            <button class="btn-edit-guest p-2 text-on-surface-variant hover:text-tertiary transition-colors"><span class="material-symbols-outlined text-[20px]">edit</span></button>
-            <button class="btn-delete-guest p-2 text-on-surface-variant hover:text-error transition-colors"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+            <div class="inline-flex items-center gap-1">
+              <a href="invitacion.html?g=${g.id}" target="_blank" class="p-2 text-tertiary hover:bg-tertiary/10 rounded-lg transition-colors" title="Ver invitación personalizada de ${escapeHtml(g.full_name)}">
+                <span class="material-symbols-outlined text-[20px]">drafts</span>
+              </a>
+              <a href="https://wa.me/${(g.phone || '').replace(/\D/g, '')}?text=${encodeURIComponent(`¡Hola ${g.full_name}! Te compartimos nuestra invitación digital de boda con todos los detalles y pases reservados:\n\n${window.location.origin + window.location.pathname.replace('invitados.html', '')}invitacion.html?g=${g.id}`)}" target="_blank" class="p-2 text-[#4ade80] hover:bg-[#4ade80]/10 rounded-lg transition-colors" title="Enviar invitación personalizada por WhatsApp">
+                <span class="material-symbols-outlined text-[20px]">chat</span>
+              </a>
+              <button class="btn-edit-guest p-2 text-on-surface-variant hover:text-tertiary rounded-lg transition-colors" title="Editar datos"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+              <button class="btn-delete-guest p-2 text-on-surface-variant hover:text-error rounded-lg transition-colors" title="Eliminar"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+            </div>
           </td>
         </tr>`;
     }).join("");
@@ -794,6 +806,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const rsvpBtn = document.getElementById("btn-open-rsvp");
     if (rsvpBtn) {
       rsvpBtn.href = `rsvp.html?event=${currentEventId}`;
+    }
+    const invBtn = document.getElementById("btn-open-invitation");
+    if (invBtn) {
+      invBtn.href = `invitacion.html?event=${currentEventId}`;
     }
 
     await loadGroups();
