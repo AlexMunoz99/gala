@@ -483,7 +483,7 @@ tailwind.config = {
     </div>
 
     <!-- Poster Footer -->
-    <div class="mt-auto pt-6 text-center text-xs text-gray-400 font-serif-title italic">
+    <div class="mt-auto pt-6 text-center text-xs text-gray-400 font-serif italic">
       Gala ERP Luxury Seating Chart Architecture
     </div>
   </div>
@@ -1217,7 +1217,6 @@ tailwind.config = {
       return;
     }
 
-    // Find bounding box of elements
     let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
     allElements.forEach(el => {
       const px = el.pos_x * CELL;
@@ -1257,7 +1256,6 @@ tailwind.config = {
       tableNode.style.height = `${heightPx}px`;
       tableNode.style.transform = `rotate(${el.rotation || 0}deg)`;
 
-      // Architectural Clean Line Drawing
       if (meta.shape === "round") {
         tableNode.innerHTML = `
           <div class="w-full h-full rounded-full border-2 border-gray-400 bg-gray-100/90 flex flex-col items-center justify-center shadow-sm">
@@ -1266,7 +1264,6 @@ tailwind.config = {
           </div>
         `;
 
-        // Render Guest Names radiating outward next to each chair
         const radius = (widthPx / 2) + 20;
         const centerX = widthPx / 2;
         const centerY = heightPx / 2;
@@ -1277,7 +1274,6 @@ tailwind.config = {
           const cy = centerY + radius * Math.sin(angle) - 10;
           const occ = occupants[i] || null;
 
-          // Name label placement outside the chair
           const nameRadius = radius + 22;
           const nameX = centerX + nameRadius * Math.cos(angle);
           const nameY = centerY + nameRadius * Math.sin(angle);
@@ -1296,7 +1292,7 @@ tailwind.config = {
             nameEl.className = `absolute text-[10px] font-medium text-gray-800 whitespace-nowrap leading-none ${alignRight ? 'text-right -translate-x-full' : alignLeft ? 'text-left' : 'text-center -translate-x-1/2'}`;
             nameEl.style.left = `${nameX}px`;
             nameEl.style.top = `${nameY - 5}px`;
-            nameEl.style.transform = `rotate(${-(el.rotation || 0)}deg)`; // counter rotate so text is always horizontal
+            nameEl.style.transform = `rotate(${-(el.rotation || 0)}deg)`;
             nameEl.textContent = occ.full_name;
             tableNode.appendChild(nameEl);
           }
@@ -1373,10 +1369,9 @@ tailwind.config = {
         }
 
       } else {
-        // Architectural Venue Marker (Dance area, stage, WC, Bar)
         tableNode.innerHTML = `
           <div class="w-full h-full rounded-xl border border-dashed border-gray-400 bg-gray-50 flex flex-col items-center justify-center p-2 text-gray-700">
-            <span class="text-xs font-serif-title uppercase tracking-widest font-semibold">${escapeHtml(el.label)}</span>
+            <span class="text-xs font-serif uppercase tracking-widest font-semibold">${escapeHtml(el.label)}</span>
           </div>
         `;
       }
