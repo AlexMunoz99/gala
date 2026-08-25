@@ -127,20 +127,122 @@ function applyEventToHeader(event) {
 }
 
 /**
- * Aplica una insignia visual junto al nombre del usuario que distingue su
- * rol de un vistazo (admin vs. organizador/colaborador).
+ * Sistema de Notificaciones Toast Luxury Dark
+ * @param {string} message - Mensaje a mostrar
+ * @param {'success'|'error'|'info'} type - Tipo de notificación
+ * @param {number} duration - Duración en milisegundos
  */
-function applyRoleBadge(role) {
-  const badge = document.getElementById("role-badge");
-  if (!badge) return;
-  const icon = badge.querySelector(".role-badge-icon");
-  const isAdmin = role === "admin";
-  badge.title = isAdmin ? "Administrador" : "Planner";
-  badge.classList.toggle("bg-tertiary/15", isAdmin);
-  badge.classList.toggle("text-tertiary", isAdmin);
-  badge.classList.toggle("bg-secondary-container/50", !isAdmin);
-  badge.classList.toggle("text-secondary", !isAdmin);
-  if (icon) icon.textContent = isAdmin ? "workspace_premium" : "event_available";
+function showToast(message, type = "success", duration = 3500) {
+  let container = document.getElementById("gala-toast-container");
+  if (!container) {
+    container = document.createElement("div");
+    container.id = "gala-toast-container";
+    container.className = "fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 pointer-events-none max-w-md w-full px-4";
+    document.body.appendChild(container);
+  }
+
+  const toast = document.createElement("div");
+  toast.className = "pointer-events-auto flex items-center gap-3 p-4 rounded-xl shadow-2xl backdrop-blur-xl border transition-all duration-300 transform translate-y-4 opacity-0";
+
+  let iconName = "check_circle";
+  let borderClass = "border-tertiary/40 bg-surface-container/95 text-on-surface";
+  let iconClass = "text-tertiary";
+
+  if (type === "error") {
+    iconName = "error";
+    borderClass = "border-error/40 bg-surface-container/95 text-on-surface";
+    iconClass = "text-error";
+  } else if (type === "info") {
+    iconName = "info";
+    borderClass = "border-secondary/40 bg-surface-container/95 text-on-surface";
+    iconClass = "text-secondary";
+  }
+
+  toast.className += ` ${borderClass}`;
+  toast.innerHTML = `
+    <span class="material-symbols-outlined ${iconClass} text-[22px] shrink-0">${iconName}</span>
+    <span class="font-body-md text-sm leading-snug flex-1">${message}</span>
+  `;
+
+  container.appendChild(toast);
+
+  // Trigger animation
+  requestAnimationFrame(() => {
+    toast.classList.remove("translate-y-4", "opacity-0");
+    toast.classList.add("translate-y-0", "opacity-100");
+  });
+
+  setTimeout(() => {
+    toast.classList.remove("translate-y-0", "opacity-100");
+    toast.classList.add("translate-y-2", "opacity-0");
+    setTimeout(() => toast.remove(), 300);
+  }, duration);
+}
+
+/**
+ * Diálogo de Confirmación Luxury Dark
+ * @param {Object} options - { title, message, confirmText, cancelText, isDestructive }
+ * @returns {Promise<boolean>}
+ */
+function showConfirmDialog({ title = "¿Estás seguro?", message = "Esta acción no se puede deshacer.", confirmText = "Confirmar", cancelText = "Cancelar", isDestructive = true } = {}) {
+  return new Promise((resolve) => {
+    const existing = document.getElementById("gala-confirm-modal");
+    if (existing) existing.remove();
+
+    const modal = document.createElement("div");
+    modal.id = "gala-confirm-modal";
+    modal.className = "fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm transition-opacity duration-200 opacity-0";
+
+    const confirmBtnClass = isDestructive 
+      ? "bg-error/20 border border-error/40 text-error hover:bg-error/30"
+      : "bg-tertiary text-on-tertiary hover:brightness-110";
+
+    modal.innerHTML = `
+      <div class="bg-surface-container-high border border-tertiary/20 rounded-2xl p-6 max-w-md w-full shadow-2xl flex flex-col gap-4 transform scale-95 transition-transform duration-200">
+        <div class="flex items-start gap-4">
+          <div class="w-10 h-10 rounded-full ${isDestructive ? 'bg-error/15 text-error border border-error/30' : 'bg-tertiary/15 text-tertiary border border-tertiary/30'} flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[22px]">${isDestructive ? 'warning' : 'help'}</span>
+          </div>
+          <div class="flex-1">
+            <h3 class="font-headline-md text-lg text-on-surface">${title}</h3>
+            <p class="font-body-md text-sm text-on-surface-variant mt-1 leading-relaxed">${message}</p>
+          </div>
+        </div>
+        <div class="flex items-center justify-end gap-3 mt-2 pt-3 border-t border-tertiary/10">
+          <button id="gala-modal-cancel" class="px-4 py-2 rounded-lg border border-tertiary/20 text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all text-xs font-button-text uppercase tracking-wider">
+            ${cancelText}
+          </button>
+          <button id="gala-modal-confirm" class="px-5 py-2 rounded-lg ${confirmBtnClass} transition-all text-xs font-button-text uppercase tracking-wider font-semibold shadow-lg">
+            ${confirmText}
+          </button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    requestAnimationFrame(() => {
+      modal.classList.remove("opacity-0");
+      modal.classList.add("opacity-100");
+      modal.querySelector("div").classList.remove("scale-95");
+      modal.querySelector("div").classList.add("scale-100");
+    });
+
+    function cleanUp(result) {
+      modal.classList.remove("opacity-100");
+      modal.classList.add("opacity-0");
+      setTimeout(() => {
+        modal.remove();
+        resolve(result);
+      }, 150);
+    }
+
+    modal.querySelector("#gala-modal-cancel").addEventListener("click", () => cleanUp(false));
+    modal.querySelector("#gala-modal-confirm").addEventListener("click", () => cleanUp(true));
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) cleanUp(false);
+    });
+  });
 }
 
 window.requireAuth = requireAuth;
@@ -151,3 +253,6 @@ window.exitProject = exitProject;
 window.applyEventToHeader = applyEventToHeader;
 window.formatCountdown = formatCountdown;
 window.applyRoleBadge = applyRoleBadge;
+window.showToast = showToast;
+window.showConfirmDialog = showConfirmDialog;
+

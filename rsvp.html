@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Confirmación de Asistencia (RSVP) — Gala</title>
+<style>
+  html, body { margin: 0; padding: 0; }
+  ::-webkit-scrollbar { display: none; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script id="tailwind-config">
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        "surface": "#131411",
+        "surface-container": "#20201d",
+        "surface-container-low": "#1c1c19",
+        "surface-container-high": "#2a2a27",
+        "primary-container": "#0d1b2a",
+        "on-surface": "#e5e2dd",
+        "on-surface-variant": "#c4c6cc",
+        "tertiary": "#e9c349",
+        "on-tertiary": "#3c2f00",
+        "error": "#ffb4ab",
+        "secondary-container": "#2a486b",
+        "secondary": "#abc9f2"
+      },
+      fontFamily: {
+        "headline-lg": ["Playfair Display"],
+        "headline-md": ["Playfair Display"],
+        "body-md": ["Inter"],
+        "button-text": ["Inter"],
+        "label-gold": ["Inter"]
+      }
+    }
+  }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/supabase-client.js"></script>
+</head>
+<body class="bg-surface font-body-md text-on-surface min-h-screen flex flex-col items-center justify-between px-4 py-8 relative overflow-x-hidden">
+
+<!-- Subtle Background Radial Gradients -->
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+  <div class="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-tertiary/5 blur-[140px] rounded-full"></div>
+  <div class="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-secondary-container/10 blur-[150px] rounded-full"></div>
+</div>
+
+<!-- Header -->
+<header class="w-full max-w-xl flex flex-col items-center gap-2 mb-8 relative z-10 text-center">
+  <img alt="Logo" class="w-14 h-14 object-contain mb-1" src="assets/logo.png"/>
+  <span class="font-label-gold text-xs uppercase tracking-[0.25em] text-tertiary">CONFIRMACIÓN DE ASISTENCIA</span>
+  <h1 id="event-name" class="font-headline-lg text-3xl sm:text-4xl text-on-surface">Cargando Evento…</h1>
+  <div class="flex items-center gap-2 text-on-surface-variant text-sm mt-1">
+    <span class="material-symbols-outlined text-tertiary text-sm">calendar_month</span>
+    <span id="event-date">--</span>
+  </div>
+</header>
+
+<!-- Main Container -->
+<main class="w-full max-w-xl relative z-10 flex flex-col gap-6">
+
+  <!-- Step 1: Search Guest -->
+  <div id="step-search" class="bg-surface-container/80 backdrop-blur-xl border border-tertiary/15 rounded-2xl p-6 sm:p-8 shadow-2xl flex flex-col gap-6">
+    <div>
+      <h2 class="font-headline-md text-2xl text-on-surface mb-1">Busca tu invitación</h2>
+      <p class="text-on-surface-variant text-sm">Ingresa tu nombre o apellido como aparece en la invitación.</p>
+    </div>
+
+    <div class="relative">
+      <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-tertiary/50">search</span>
+      <input id="guest-search-input" class="w-full bg-surface-container-low border border-tertiary/20 text-on-surface font-body-md py-3.5 pl-12 pr-4 rounded-xl focus:outline-none focus:border-tertiary transition-all placeholder:text-on-surface-variant/40" placeholder="Ej. Elena Morales..." type="text"/>
+    </div>
+
+    <div id="search-results" class="flex flex-col gap-2.5 max-h-60 overflow-y-auto">
+      <p class="text-on-surface-variant text-xs text-center py-4">Comienza a escribir para ver resultados</p>
+    </div>
+  </div>
+
+  <!-- Step 2: Confirm RSVP Form -->
+  <div id="step-form" class="hidden bg-surface-container/90 backdrop-blur-xl border border-tertiary/20 rounded-2xl p-6 sm:p-8 shadow-2xl flex flex-col gap-6">
+    <div class="flex justify-between items-start border-b border-tertiary/10 pb-4">
+      <div>
+        <span class="font-label-gold text-[10px] uppercase tracking-widest text-tertiary block mb-1">INVITACIÓN PERSONALIZADA</span>
+        <h2 id="guest-name-display" class="font-headline-md text-2xl text-on-surface">Nombre del Invitado</h2>
+        <span id="guest-badge-plus-one" class="hidden inline-flex items-center gap-1 mt-1 text-xs text-secondary bg-secondary/10 px-2 py-0.5 rounded">
+          <span class="material-symbols-outlined text-[14px]">person_add</span> Incluye Acompañante
+        </span>
+      </div>
+      <button id="btn-change-guest" class="text-xs text-on-surface-variant hover:text-tertiary underline">Cambiar</button>
+    </div>
+
+    <form id="rsvp-submit-form" class="flex flex-col gap-5">
+      <input id="selected-guest-id" type="hidden"/>
+
+      <!-- Decision buttons -->
+      <div class="flex flex-col gap-2">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant">¿Asistirás al evento? *</label>
+        <div class="grid grid-cols-2 gap-3">
+          <button type="button" id="opt-attending" class="rsvp-opt py-4 px-4 rounded-xl border border-tertiary/20 bg-surface-container-low text-on-surface hover:border-tertiary flex flex-col items-center gap-1.5 transition-all">
+            <span class="material-symbols-outlined text-[#4ade80] text-2xl">check_circle</span>
+            <span class="font-button-text text-sm font-semibold">Sí, asistiré</span>
+          </button>
+          <button type="button" id="opt-declining" class="rsvp-opt py-4 px-4 rounded-xl border border-tertiary/20 bg-surface-container-low text-on-surface hover:border-tertiary flex flex-col items-center gap-1.5 transition-all">
+            <span class="material-symbols-outlined text-error text-2xl">cancel</span>
+            <span class="font-button-text text-sm font-semibold">No podré asistir</span>
+          </button>
+        </div>
+        <input id="rsvp-status-val" required="" type="hidden"/>
+      </div>
+
+      <!-- Dietary / Notes -->
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="guest-dietary-input">Restricciones dietéticas o alergias (opcional)</label>
+        <input id="guest-dietary-input" class="bg-surface-container-low border border-tertiary/20 text-on-surface font-body-md py-3 px-4 rounded-lg focus:outline-none focus:border-tertiary" placeholder="Ej. Vegetariano, celíaco, sin mariscos..." type="text"/>
+      </div>
+
+      <!-- Phone for WhatsApp reminder -->
+      <div class="flex flex-col gap-1.5">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="guest-phone-input">Teléfono / WhatsApp</label>
+        <input id="guest-phone-input" class="bg-surface-container-low border border-tertiary/20 text-on-surface font-body-md py-3 px-4 rounded-lg focus:outline-none focus:border-tertiary" placeholder="+52 55 1234 5678" type="tel"/>
+      </div>
+
+      <p id="rsvp-error-msg" class="hidden text-error text-sm"></p>
+
+      <button type="submit" id="btn-submit-rsvp" class="mt-2 py-4 bg-tertiary text-on-tertiary font-button-text uppercase tracking-widest rounded-xl hover:brightness-110 transition-all font-semibold shadow-lg shadow-tertiary/20">
+        Confirmar Respuesta
+      </button>
+    </form>
+  </div>
+
+  <!-- Step 3: Success Screen -->
+  <div id="step-success" class="hidden bg-surface-container/90 backdrop-blur-xl border border-tertiary/30 rounded-2xl p-8 shadow-2xl flex flex-col items-center text-center gap-4">
+    <div class="w-16 h-16 rounded-full bg-tertiary/15 text-tertiary flex items-center justify-center shadow-lg border border-tertiary/30 mb-2">
+      <span class="material-symbols-outlined text-3xl">celebration</span>
+    </div>
+    <h2 class="font-headline-lg text-3xl text-on-surface">¡Gracias por confirmar!</h2>
+    <p id="success-message" class="text-on-surface-variant max-w-md text-sm leading-relaxed">
+      Tu respuesta ha sido registrada exitosamente. Nos emociona mucho celebrar juntos este día tan especial.
+    </p>
+    <button id="btn-reset-form" class="mt-4 px-6 py-3 border border-tertiary/30 text-tertiary rounded-xl font-button-text uppercase tracking-wider text-xs hover:bg-tertiary/10 transition-all">
+      Confirmar otro invitado
+    </button>
+  </div>
+
+</main>
+
+<!-- Footer -->
+<footer class="w-full max-w-xl text-center mt-12 relative z-10">
+  <p class="text-on-surface-variant/40 text-xs font-label-gold uppercase tracking-widest">
+    GALA ERP &bull; PLATAFORMA DE GESTIÓN DE EVENTOS
+  </p>
+</footer>
+
+<script type="module">
+  let currentEventId = null;
+  let allGuests = [];
+
+  function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str).replace(/[&<>'"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  function formatDate(dateStr) {
+    if (!dateStr) return 'Fecha por definir';
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  async function resolveEvent() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const eventParam = urlParams.get('event');
+
+    if (eventParam) {
+      currentEventId = eventParam;
+    } else {
+      currentEventId = localStorage.getItem('galaCurrentEventId');
+    }
+
+    let eventData = null;
+    if (currentEventId) {
+      const { data } = await window.supabaseClient.from('events').select('*').eq('id', currentEventId).single();
+      eventData = data;
+    }
+
+    if (!eventData) {
+      const { data: latestEvents } = await window.supabaseClient.from('events').select('*').order('created_at', { ascending: false }).limit(1);
+      if (latestEvents && latestEvents.length > 0) {
+        eventData = latestEvents[0];
+        currentEventId = eventData.id;
+      }
+    }
+
+    if (eventData) {
+      document.getElementById('event-name').textContent = eventData.name || 'Boda de Gala';
+      document.getElementById('event-date').textContent = formatDate(eventData.event_date);
+    } else {
+      document.getElementById('event-name').textContent = 'Boda de Gala';
+    }
+
+    await loadGuests();
+  }
+
+  async function loadGuests() {
+    if (!currentEventId) return;
+    const { data, error } = await window.supabaseClient
+      .from('guests')
+      .select('*')
+      .eq('event_id', currentEventId)
+      .order('full_name', { ascending: true });
+    
+    if (error) {
+      console.error(error);
+      return;
+    }
+    allGuests = data || [];
+  }
+
+  const searchInput = document.getElementById('guest-search-input');
+  const resultsContainer = document.getElementById('search-results');
+
+  searchInput.addEventListener('input', () => {
+    const term = searchInput.value.trim().toLowerCase();
+    if (!term) {
+      resultsContainer.innerHTML = '<p class="text-on-surface-variant text-xs text-center py-4">Comienza a escribir para ver resultados</p>';
+      return;
+    }
+
+    const matches = allGuests.filter(g => (g.full_name || '').toLowerCase().includes(term));
+    if (matches.length === 0) {
+      resultsContainer.innerHTML = '<p class="text-on-surface-variant text-xs text-center py-4">No se encontró ningún invitado con ese nombre.</p>';
+      return;
+    }
+
+    resultsContainer.innerHTML = matches.map(g => `
+      <button class="guest-result-item w-full text-left bg-surface-container-low hover:bg-surface-container-high border border-tertiary/10 hover:border-tertiary/40 rounded-xl p-4 flex items-center justify-between transition-all" data-id="${g.id}">
+        <div class="flex flex-col">
+          <span class="font-headline-md text-lg text-on-surface">${escapeHtml(g.full_name)}</span>
+          <span class="text-xs text-on-surface-variant">${g.plus_one ? 'Invitación para 2 personas (+1)' : 'Invitación individual'}</span>
+        </div>
+        <span class="material-symbols-outlined text-tertiary text-xl">arrow_forward</span>
+      </button>
+    `).join('');
+  });
+
+  resultsContainer.addEventListener('click', (e) => {
+    const item = e.target.closest('.guest-result-item');
+    if (!item) return;
+    const id = item.dataset.id;
+    const guest = allGuests.find(g => String(g.id) === id);
+    if (!guest) return;
+
+    document.getElementById('selected-guest-id').value = guest.id;
+    document.getElementById('guest-name-display').textContent = guest.full_name;
+    document.getElementById('guest-dietary-input').value = guest.dietary_notes || '';
+    document.getElementById('guest-phone-input').value = guest.phone || '';
+    document.getElementById('guest-badge-plus-one').classList.toggle('hidden', !guest.plus_one);
+
+    document.getElementById('rsvp-status-val').value = '';
+    document.getElementById('opt-attending').classList.remove('border-[#4ade80]', 'bg-[#4ade80]/10');
+    document.getElementById('opt-declining').classList.remove('border-error', 'bg-error/10');
+
+    if (guest.rsvp_status === 'confirmado') {
+      setRsvpOption('confirmado');
+    } else if (guest.rsvp_status === 'declinado') {
+      setRsvpOption('declinado');
+    }
+
+    document.getElementById('step-search').classList.add('hidden');
+    document.getElementById('step-form').classList.remove('hidden');
+  });
+
+  document.getElementById('btn-change-guest').addEventListener('click', () => {
+    document.getElementById('step-form').classList.add('hidden');
+    document.getElementById('step-search').classList.remove('hidden');
+  });
+
+  function setRsvpOption(status) {
+    document.getElementById('rsvp-status-val').value = status;
+    const optAttending = document.getElementById('opt-attending');
+    const optDeclining = document.getElementById('opt-declining');
+    if (status === 'confirmado') {
+      optAttending.classList.add('border-[#4ade80]', 'bg-[#4ade80]/10');
+      optDeclining.classList.remove('border-error', 'bg-error/10');
+    } else {
+      optDeclining.classList.add('border-error', 'bg-error/10');
+      optAttending.classList.remove('border-[#4ade80]', 'bg-[#4ade80]/10');
+    }
+  }
+
+  document.getElementById('opt-attending').addEventListener('click', () => setRsvpOption('confirmado'));
+  document.getElementById('opt-declining').addEventListener('click', () => setRsvpOption('declinado'));
+
+  document.getElementById('rsvp-submit-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const guestId = document.getElementById('selected-guest-id').value;
+    const status = document.getElementById('rsvp-status-val').value;
+    const dietary = document.getElementById('guest-dietary-input').value.trim() || null;
+    const phone = document.getElementById('guest-phone-input').value.trim() || null;
+    const errorEl = document.getElementById('rsvp-error-msg');
+
+    if (!status) {
+      errorEl.textContent = 'Por favor selecciona si asistirás o no al evento.';
+      errorEl.classList.remove('hidden');
+      return;
+    }
+
+    const { error } = await window.supabaseClient
+      .from('guests')
+      .update({
+        rsvp_status: status,
+        dietary_notes: dietary,
+        phone: phone
+      })
+      .eq('id', guestId);
+
+    if (error) {
+      errorEl.textContent = 'No se pudo registrar la respuesta: ' + error.message;
+      errorEl.classList.remove('hidden');
+      return;
+    }
+
+    document.getElementById('step-form').classList.add('hidden');
+    const successMsg = document.getElementById('success-message');
+    if (status === 'confirmado') {
+      successMsg.textContent = '¡Tu asistencia ha sido confirmada con éxito! Nos llena de felicidad contar contigo en esta gran celebración.';
+    } else {
+      successMsg.textContent = 'Agradecemos tu aviso. Lamentamos que no puedas acompañarnos físicamente, pero sabemos que celebrarás con nosotros en el corazón.';
+    }
+    document.getElementById('step-success').classList.remove('hidden');
+  });
+
+  document.getElementById('btn-reset-form').addEventListener('click', () => {
+    searchInput.value = '';
+    resultsContainer.innerHTML = '<p class="text-on-surface-variant text-xs text-center py-4">Comienza a escribir para ver resultados</p>';
+    document.getElementById('step-success').classList.add('hidden');
+    document.getElementById('step-search').classList.remove('hidden');
+    loadGuests();
+  });
+
+  window.addEventListener('load', resolveEvent);
+</script>
+
+</body>
+</html>

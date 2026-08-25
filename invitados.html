@@ -223,21 +223,25 @@ tailwind.config = {
             <h1 class="font-display-lg text-display-lg text-on-surface">Invitados</h1>
             <p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl mt-2">Gestiona tu lista de invitados, da seguimiento a los RSVP y coordina los acomodos para el próximo evento.</p>
           </div>
-          <div class="flex items-center gap-4 flex-wrap">
-            <button id="btn-download-template" class="px-6 py-3 bg-surface-container border border-tertiary/20 text-tertiary font-button-text text-button-text uppercase tracking-widest hover:bg-tertiary/5 transition-all flex items-center justify-center gap-2 rounded-lg backdrop-blur-sm shadow-md">
+          <div class="flex items-center gap-3 flex-wrap">
+            <a id="btn-open-rsvp" href="rsvp.html" target="_blank" class="px-5 py-3 bg-secondary-container/60 border border-secondary/30 text-secondary font-button-text text-button-text uppercase tracking-widest hover:bg-secondary-container transition-all flex items-center justify-center gap-2 rounded-lg backdrop-blur-sm shadow-md" title="Abrir portal público para que los invitados confirmen">
+              <span class="material-symbols-outlined text-[18px]">public</span>
+              Portal RSVP
+            </a>
+            <button id="btn-download-template" class="px-5 py-3 bg-surface-container border border-tertiary/20 text-tertiary font-button-text text-button-text uppercase tracking-widest hover:bg-tertiary/5 transition-all flex items-center justify-center gap-2 rounded-lg backdrop-blur-sm shadow-md">
               <span class="material-symbols-outlined text-[18px]">description</span>
-              Descargar Plantilla
+              Plantilla
             </button>
-            <button id="btn-import-csv" class="px-6 py-3 bg-surface-container border border-tertiary/20 text-tertiary font-button-text text-button-text uppercase tracking-widest hover:bg-tertiary/5 transition-all flex items-center justify-center gap-2 rounded-lg backdrop-blur-sm shadow-md">
+            <button id="btn-import-csv" class="px-5 py-3 bg-surface-container border border-tertiary/20 text-tertiary font-button-text text-button-text uppercase tracking-widest hover:bg-tertiary/5 transition-all flex items-center justify-center gap-2 rounded-lg backdrop-blur-sm shadow-md">
               <span class="material-symbols-outlined text-[18px]">upload</span>
               Importar CSV
             </button>
             <input id="csv-file-input" type="file" accept=".csv" class="hidden"/>
-            <button id="btn-export-csv" class="px-6 py-3 bg-surface-container border border-tertiary/20 text-tertiary font-button-text text-button-text uppercase tracking-widest hover:bg-tertiary/5 transition-all flex items-center justify-center gap-2 rounded-lg backdrop-blur-sm shadow-md">
+            <button id="btn-export-csv" class="px-5 py-3 bg-surface-container border border-tertiary/20 text-tertiary font-button-text text-button-text uppercase tracking-widest hover:bg-tertiary/5 transition-all flex items-center justify-center gap-2 rounded-lg backdrop-blur-sm shadow-md">
               <span class="material-symbols-outlined text-[18px]">download</span>
               Exportar CSV
             </button>
-            <button id="btn-add-guest" class="px-8 py-3 bg-tertiary text-on-tertiary font-button-text text-button-text uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-2 rounded-lg shadow-xl shadow-tertiary/20">
+            <button id="btn-add-guest" class="px-6 py-3 bg-tertiary text-on-tertiary font-button-text text-button-text uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-2 rounded-lg shadow-xl shadow-tertiary/20">
               <span class="material-symbols-outlined text-[18px]">person_add</span>
               Agregar Invitado
             </button>
@@ -728,11 +732,19 @@ document.addEventListener('DOMContentLoaded', function () {
       openModal("edit", guest);
     }
     if (e.target.closest(".btn-delete-guest")) {
-      if (!confirm(`¿Eliminar a ${guest.full_name}? Esta acción no se puede deshacer.`)) return;
+      const ok = await window.showConfirmDialog({
+        title: `¿Eliminar a ${guest.full_name}?`,
+        message: "El invitado y sus datos de asistencia serán removidos permanentemente.",
+        confirmText: "Eliminar Invitado",
+        isDestructive: true
+      });
+      if (!ok) return;
+
       const { error } = await window.supabaseClient.from("guests").delete().eq("id", id);
       if (error) {
-        alert("No se pudo eliminar: " + error.message);
+        window.showToast("No se pudo eliminar: " + error.message, "error");
       } else {
+        window.showToast(`Invitado ${guest.full_name} eliminado.`, "info");
         await loadGuests();
       }
     }
@@ -763,9 +775,11 @@ document.addEventListener('DOMContentLoaded', function () {
     if (error) {
       formError.textContent = error.message;
       formError.classList.remove("hidden");
+      window.showToast(error.message, "error");
       return;
     }
     closeModal();
+    window.showToast(id ? "Invitado actualizado con éxito." : "Invitado registrado con éxito.", "success");
     await loadGuests();
   });
 
@@ -777,6 +791,11 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!currentEvent) return; // requireEvent ya redirige a proyectos.html si no hay proyecto activo
 
     currentEventId = currentEvent.id;
+    const rsvpBtn = document.getElementById("btn-open-rsvp");
+    if (rsvpBtn) {
+      rsvpBtn.href = `rsvp.html?event=${currentEventId}`;
+    }
+
     await loadGroups();
     await loadGuests();
   })();
@@ -821,13 +840,15 @@ document.addEventListener('DOMContentLoaded', function () {
     if (error) {
       errEl.textContent = error.message;
       errEl.classList.remove("hidden");
+      window.showToast(error.message, "error");
       return;
     }
     errEl.classList.add("hidden");
     input.value = "";
+    window.showToast(`Grupo "${name}" creado.`, "success");
     await loadGroups();
     renderGroupsList();
-    applyFilterAndRender(); // refresca las etiquetas de grupo en la tabla
+    applyFilterAndRender();
   });
 
   groupsList.addEventListener("click", async (e) => {
@@ -847,6 +868,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const newName = nameEdit.value.trim();
         if (newName) {
           await window.supabaseClient.from("guest_groups").update({ name: newName }).eq("id", id);
+          window.showToast(`Grupo renombrado a "${newName}".`, "success");
           await loadGroups();
           renderGroupsList();
           applyFilterAndRender();
@@ -856,8 +878,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (e.target.closest(".btn-delete-group")) {
       const groupName = nameDisplay.textContent;
-      if (!confirm(`¿Eliminar el grupo "${groupName}"? Los invitados que lo tengan quedarán sin grupo.`)) return;
+      const ok = await window.showConfirmDialog({
+        title: `¿Eliminar el grupo "${groupName}"?`,
+        message: "Los invitados que pertenecían a este grupo quedarán sin grupo asignado.",
+        confirmText: "Eliminar Grupo",
+        isDestructive: true
+      });
+      if (!ok) return;
       await window.supabaseClient.from("guest_groups").delete().eq("id", id);
+      window.showToast(`Grupo "${groupName}" eliminado.`, "info");
       await loadGroups();
       renderGroupsList();
       applyFilterAndRender();

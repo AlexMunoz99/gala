@@ -645,11 +645,19 @@ tailwind.config = {
       openModal("edit", vendor);
     }
     if (e.target.closest(".btn-delete-vendor")) {
-      if (!confirm(`¿Eliminar a "${vendor.name}"? Esta acción no se puede deshacer.`)) return;
+      const ok = await window.showConfirmDialog({
+        title: `¿Eliminar a "${vendor.name}"?`,
+        message: "El contrato y pagos de este proveedor se eliminarán de la base de datos y afectarán el presupuesto.",
+        confirmText: "Eliminar Proveedor",
+        isDestructive: true
+      });
+      if (!ok) return;
+
       const { error } = await window.supabaseClient.from("vendors").delete().eq("id", id);
       if (error) {
-        alert("No se pudo eliminar: " + error.message);
+        window.showToast("No se pudo eliminar: " + error.message, "error");
       } else {
+        window.showToast(`Proveedor "${vendor.name}" eliminado.`, "info");
         await loadVendors();
       }
     }
@@ -683,9 +691,11 @@ tailwind.config = {
     if (error) {
       formError.textContent = error.message;
       formError.classList.remove("hidden");
+      window.showToast(error.message, "error");
       return;
     }
     closeModal();
+    window.showToast(id ? "Proveedor actualizado." : "Proveedor registrado con éxito.", "success");
     await loadVendors();
   });
 
