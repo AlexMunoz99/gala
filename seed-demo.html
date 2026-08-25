@@ -37,28 +37,28 @@ tailwind.config = {
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/supabase-client.js"></script>
 </head>
-<body class="bg-surface font-body-md text-on-surface min-h-screen flex items-center justify-center p-6">
+<body class="bg-surface font-body-md text-on-surface min-h-screen flex items-center justify-center p-4 sm:p-6">
 
-<div class="w-full max-w-2xl bg-surface-container rounded-2xl p-8 border border-tertiary/20 shadow-2xl flex flex-col gap-6">
+<div class="w-full max-w-2xl bg-surface-container rounded-2xl p-6 sm:p-8 border border-tertiary/20 shadow-2xl flex flex-col gap-6">
   <div class="flex items-center gap-3 border-b border-tertiary/10 pb-4">
-    <div class="w-12 h-12 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary">
+    <div class="w-12 h-12 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary shrink-0">
       <span class="material-symbols-outlined text-2xl">celebration</span>
     </div>
     <div>
-      <h1 class="font-headline-lg text-2xl text-on-surface">Generador de Boda Ficticia</h1>
+      <h1 class="font-headline-lg text-2xl text-on-surface">Generador de Boda Demo</h1>
       <p class="text-xs text-on-surface-variant">Carga datos reales de prueba para retar todos los módulos de Gala ERP</p>
     </div>
   </div>
 
   <div class="bg-surface-container-low p-4 rounded-xl border border-tertiary/10 flex flex-col gap-2">
-    <span class="font-label-gold text-xs uppercase tracking-wider text-tertiary font-bold">Datos de la Boda a Generar:</span>
+    <span class="text-xs uppercase tracking-wider text-tertiary font-bold">Datos a Generar:</span>
     <p class="text-sm">💍 <strong>Evento:</strong> Boda Valentina & Sebastián 2026</p>
-    <p class="text-sm">📅 <strong>Fecha:</strong> 28 de Noviembre de 2026 (Tepatitlán & Capilla de Guadalupe)</p>
-    <p class="text-sm">👥 <strong>Invitados:</strong> 32 invitados distribuidos en 5 grupos (incluyendo Padrinos)</p>
-    <p class="text-sm">🏛️ <strong>Lugares:</strong> Parroquia de San Francisco & Mítico Terraza y Jardín</p>
-    <p class="text-sm">💰 <strong>Proveedores:</strong> 8 proveedores ($385,000 MXN presupuesto, anticipos y contratos)</p>
-    <p class="text-sm">⏱️ <strong>Itinerario:</strong> 8 actividades cronológicas completas</p>
-    <p class="text-sm">📋 <strong>Tareas:</strong> 10 tareas asignadas con prioridades y fechas límite</p>
+    <p class="text-sm">📅 <strong>Fecha:</strong> 28 de Noviembre de 2026</p>
+    <p class="text-sm">👥 <strong>Invitados:</strong> 24 invitados distribuidos en 5 grupos (incluyendo Padrinos)</p>
+    <p class="text-sm">🏛️ <strong>Lugares:</strong> Parroquia de San Francisco, Mítico Terraza y Hotel Centriplaza</p>
+    <p class="text-sm">💰 <strong>Proveedores:</strong> 8 proveedores ($393,000 MXN en contratos y anticipos)</p>
+    <p class="text-sm">⏱️ <strong>Itinerario:</strong> 9 actividades cronológicas</p>
+    <p class="text-sm">📋 <strong>Tareas:</strong> 6 tareas con prioridades y fechas límite</p>
   </div>
 
   <div id="progress-container" class="hidden flex flex-col gap-2">
@@ -72,15 +72,15 @@ tailwind.config = {
   </div>
 
   <div id="log-console" class="bg-black/50 p-4 rounded-xl border border-tertiary/10 font-mono text-xs text-on-surface-variant h-44 overflow-y-auto space-y-1">
-    <p class="text-tertiary">> Listo para iniciar. Haz clic en "Generar y Cargar Boda".</p>
+    <p class="text-tertiary">> Listo. Haz clic en "Generar y Cargar Boda".</p>
   </div>
 
-  <div class="flex justify-between items-center pt-2">
+  <div class="flex justify-between items-center pt-2 gap-4">
     <a href="proyectos.html" class="text-xs text-on-surface-variant hover:text-tertiary transition-colors flex items-center gap-1">
       <span class="material-symbols-outlined text-[16px]">arrow_back</span>
       Volver a Proyectos
     </a>
-    <button id="btn-start-seed" class="px-8 py-3.5 bg-tertiary text-on-tertiary font-button-text uppercase tracking-widest rounded-xl hover:brightness-110 transition-all flex items-center gap-2 font-semibold shadow-xl shadow-tertiary/20">
+    <button id="btn-start-seed" class="px-6 sm:px-8 py-3.5 bg-tertiary text-on-tertiary font-button-text uppercase tracking-widest rounded-xl hover:brightness-110 transition-all flex items-center gap-2 font-semibold shadow-xl shadow-tertiary/20 text-xs sm:text-sm">
       <span class="material-symbols-outlined text-[20px]">play_arrow</span>
       Generar y Cargar Boda
     </button>
@@ -118,10 +118,13 @@ tailwind.config = {
       const auth = await window.requireAuth();
       if (!auth) {
         log("Error: Debes iniciar sesión primero.", "text-error");
+        btnStart.disabled = false;
+        btnStart.classList.remove("opacity-50", "cursor-not-allowed");
         return;
       }
 
-      log("1. Creando Evento Principal...", "text-tertiary");
+      // 1. Crear Evento Principal
+      log("1. Creando Evento 'Boda Valentina & Sebastián 2026'...", "text-tertiary");
       setProgress(10, "Creando Boda Valentina & Sebastián...");
 
       const { data: event, error: evErr } = await window.supabaseClient
@@ -136,7 +139,7 @@ tailwind.config = {
 
       if (evErr) throw new Error("Error al crear evento: " + evErr.message);
       const eventId = event.id;
-      log(`Evento creado con ID: ${eventId}`, "text-[#4ade80]");
+      log(`Evento creado exitosamente (ID: ${eventId})`, "text-[#4ade80]");
 
       // 2. Crear Grupos de Invitados
       setProgress(25, "Creando grupos de invitados...");
@@ -156,55 +159,58 @@ tailwind.config = {
       if (grErr) throw new Error("Error al crear grupos: " + grErr.message);
       log(`5 Grupos creados con éxito.`, "text-[#4ade80]");
 
-      const padrinosGroup = groups.find(g => g.name === "Padrinos");
-      const famNoviaGroup = groups.find(g => g.name === "Familia de la Novia");
-      const famNovioGroup = groups.find(g => g.name === "Familia del Novio");
-      const amigosGroup = groups.find(g => g.name === "Amigos de la Universidad");
-      const vipGroup = groups.find(g => g.name === "Compañeros de Trabajo / VIP");
+      const padrinosGroup = groups.find(g => g.name === "Padrinos") || groups[0];
+      const famNoviaGroup = groups.find(g => g.name === "Familia de la Novia") || groups[0];
+      const famNovioGroup = groups.find(g => g.name === "Familia del Novio") || groups[0];
+      const amigosGroup = groups.find(g => g.name === "Amigos de la Universidad") || groups[0];
+      const vipGroup = groups.find(g => g.name === "Compañeros de Trabajo / VIP") || groups[0];
 
       // 3. Crear Lista de Invitados
-      setProgress(40, "Insertando 30+ invitados con RSVP y mesas...");
-      log("3. Insertando Invitados con números telefónicos, pases y mesas...", "text-tertiary");
+      setProgress(40, "Insertando 24 invitados con teléfonos, RSVP y mesas...");
+      log("3. Insertando Invitados en la base de datos...", "text-tertiary");
 
       const guestsData = [
         // Padrinos
-        { full_name: "Lauro Coss Y León Rubio", phone: "3781002030", group_id: padrinosGroup.id, rsvp_status: "confirmado", table_number: "Mesa 1 (VIP)", plus_one: true, dietary_restrictions: "Ninguna", notes: "Padrino de Velación", event_id: eventId },
-        { full_name: "Itzel Durand Cortés", phone: "3781002031", group_id: padrinosGroup.id, rsvp_status: "confirmado", table_number: "Mesa 1 (VIP)", plus_one: false, dietary_restrictions: "Vegetariana", notes: "Madrina de Velación", event_id: eventId },
-        { full_name: "Dr. Fernando Morales Castro", phone: "3781002032", group_id: padrinosGroup.id, rsvp_status: "confirmado", table_number: "Mesa 1 (VIP)", plus_one: true, dietary_restrictions: "Sin mariscos", notes: "Padrino de Anillos", event_id: eventId },
-        { full_name: "Dra. Sofía Alatorre Ramos", phone: "3781002033", group_id: padrinosGroup.id, rsvp_status: "confirmado", table_number: "Mesa 1 (VIP)", plus_one: false, dietary_restrictions: "Ninguna", notes: "Madrina de Arras", event_id: eventId },
+        { full_name: "Lauro Coss Y León Rubio", phone: "3781002030", group_id: padrinosGroup.id, rsvp_status: "confirmado", table_number: "Mesa 1 (VIP)", plus_one: true, dietary_notes: "Ninguna", event_id: eventId },
+        { full_name: "Itzel Durand Cortés", phone: "3781002031", group_id: padrinosGroup.id, rsvp_status: "confirmado", table_number: "Mesa 1 (VIP)", plus_one: false, dietary_notes: "Vegetariana", event_id: eventId },
+        { full_name: "Dr. Fernando Morales Castro", phone: "3781002032", group_id: padrinosGroup.id, rsvp_status: "confirmado", table_number: "Mesa 1 (VIP)", plus_one: true, dietary_notes: "Sin mariscos", event_id: eventId },
+        { full_name: "Dra. Sofía Alatorre Ramos", phone: "3781002033", group_id: padrinosGroup.id, rsvp_status: "confirmado", table_number: "Mesa 1 (VIP)", plus_one: false, dietary_notes: "Ninguna", event_id: eventId },
 
         // Familia Novia
-        { full_name: "Guillermo Martínez Gómez", phone: "3781002040", group_id: famNoviaGroup.id, rsvp_status: "confirmado", table_number: "Mesa de Honor", plus_one: true, notes: "Papá de la Novia", event_id: eventId },
-        { full_name: "María Elena Padilla Gutiérrez", phone: "3781002041", group_id: famNoviaGroup.id, rsvp_status: "confirmado", table_number: "Mesa de Honor", plus_one: false, notes: "Mamá de la Novia", event_id: eventId },
-        { full_name: "Carlos Martínez Padilla", phone: "3781002042", group_id: famNoviaGroup.id, rsvp_status: "confirmado", table_number: "Mesa 2", plus_one: true, notes: "Hermano de la novia", event_id: eventId },
-        { full_name: "Lucía Martínez Padilla", phone: "3781002043", group_id: famNoviaGroup.id, rsvp_status: "confirmado", table_number: "Mesa 2", plus_one: true, notes: "Hermana de la novia", event_id: eventId },
-        { full_name: "Tía Rosalía Gómez Franco", phone: "3781002044", group_id: famNoviaGroup.id, rsvp_status: "pendiente", table_number: "Mesa 2", plus_one: true, notes: "Familia de Guadalajara", event_id: eventId },
-        { full_name: "Ing. Roberto Padilla Navarro", phone: "3781002045", group_id: famNoviaGroup.id, rsvp_status: "confirmado", table_number: "Mesa 2", plus_one: true, notes: "Tío de la novia", event_id: eventId },
+        { full_name: "Guillermo Martínez Gómez", phone: "3781002040", group_id: famNoviaGroup.id, rsvp_status: "confirmado", table_number: "Mesa de Honor", plus_one: true, dietary_notes: "Papá de la Novia", event_id: eventId },
+        { full_name: "María Elena Padilla Gutiérrez", phone: "3781002041", group_id: famNoviaGroup.id, rsvp_status: "confirmado", table_number: "Mesa de Honor", plus_one: false, dietary_notes: "Mamá de la Novia", event_id: eventId },
+        { full_name: "Carlos Martínez Padilla", phone: "3781002042", group_id: famNoviaGroup.id, rsvp_status: "confirmado", table_number: "Mesa 2", plus_one: true, dietary_notes: "Hermano de la novia", event_id: eventId },
+        { full_name: "Lucía Martínez Padilla", phone: "3781002043", group_id: famNoviaGroup.id, rsvp_status: "confirmado", table_number: "Mesa 2", plus_one: true, dietary_notes: "Hermana de la novia", event_id: eventId },
+        { full_name: "Tía Rosalía Gómez Franco", phone: "3781002044", group_id: famNoviaGroup.id, rsvp_status: "pendiente", table_number: "Mesa 2", plus_one: true, dietary_notes: "Familia de Guadalajara", event_id: eventId },
+        { full_name: "Ing. Roberto Padilla Navarro", phone: "3781002045", group_id: famNoviaGroup.id, rsvp_status: "confirmado", table_number: "Mesa 2", plus_one: true, dietary_notes: "Tío de la novia", event_id: eventId },
 
         // Familia Novio
-        { full_name: "Armando Jiménez Jiménez", phone: "3781002050", group_id: famNovioGroup.id, rsvp_status: "confirmado", table_number: "Mesa de Honor", plus_one: true, notes: "Papá del Novio", event_id: eventId },
-        { full_name: "Blanca Delia González Lozano", phone: "3781002051", group_id: famNovioGroup.id, rsvp_status: "confirmado", table_number: "Mesa de Honor", plus_one: false, notes: "Mamá del Novio", event_id: eventId },
-        { full_name: "Eduardo Jiménez González", phone: "3781002052", group_id: famNovioGroup.id, rsvp_status: "confirmado", table_number: "Mesa 3", plus_one: true, notes: "Hermano del novio", event_id: eventId },
-        { full_name: "Mariana Jiménez González", phone: "3781002053", group_id: famNovioGroup.id, rsvp_status: "confirmado", table_number: "Mesa 3", plus_one: true, notes: "Hermana del novio", event_id: eventId },
-        { full_name: "Abuelo Don Ramón González", phone: "3781002054", group_id: famNovioGroup.id, rsvp_status: "confirmado", table_number: "Mesa 3", plus_one: false, notes: "Requiere rampa de acceso", event_id: eventId },
-        { full_name: "Tío Héctor Jiménez Lozano", phone: "3781002055", group_id: famNovioGroup.id, rsvp_status: "declinado", notes: "Vive fuera del país", event_id: eventId },
+        { full_name: "Armando Jiménez Jiménez", phone: "3781002050", group_id: famNovioGroup.id, rsvp_status: "confirmado", table_number: "Mesa de Honor", plus_one: true, dietary_notes: "Papá del Novio", event_id: eventId },
+        { full_name: "Blanca Delia González Lozano", phone: "3781002051", group_id: famNovioGroup.id, rsvp_status: "confirmado", table_number: "Mesa de Honor", plus_one: false, dietary_notes: "Mamá del Novio", event_id: eventId },
+        { full_name: "Eduardo Jiménez González", phone: "3781002052", group_id: famNovioGroup.id, rsvp_status: "confirmado", table_number: "Mesa 3", plus_one: true, dietary_notes: "Hermano del novio", event_id: eventId },
+        { full_name: "Mariana Jiménez González", phone: "3781002053", group_id: famNovioGroup.id, rsvp_status: "confirmado", table_number: "Mesa 3", plus_one: true, dietary_notes: "Hermana del novio", event_id: eventId },
+        { full_name: "Abuelo Don Ramón González", phone: "3781002054", group_id: famNovioGroup.id, rsvp_status: "confirmado", table_number: "Mesa 3", plus_one: false, dietary_notes: "Requiere rampa", event_id: eventId },
+        { full_name: "Tío Héctor Jiménez Lozano", phone: "3781002055", group_id: famNovioGroup.id, rsvp_status: "declinado", table_number: "", plus_one: false, dietary_notes: "Vive en el extranjero", event_id: eventId },
 
         // Amigos
-        { full_name: "Lic. Rodrigo Barba Casillas", phone: "3781002060", group_id: amigosGroup.id, rsvp_status: "confirmado", table_number: "Mesa 4", plus_one: true, notes: "Amigo de la prepa", event_id: eventId },
-        { full_name: "Valeria Estrada Ochoa", phone: "3781002061", group_id: amigosGroup.id, rsvp_status: "confirmado", table_number: "Mesa 4", plus_one: true, notes: "Dama de honor", event_id: eventId },
+        { full_name: "Lic. Rodrigo Barba Casillas", phone: "3781002060", group_id: amigosGroup.id, rsvp_status: "confirmado", table_number: "Mesa 4", plus_one: true, event_id: eventId },
+        { full_name: "Valeria Estrada Ochoa", phone: "3781002061", group_id: amigosGroup.id, rsvp_status: "confirmado", table_number: "Mesa 4", plus_one: true, dietary_notes: "Dama de honor", event_id: eventId },
         { full_name: "Mateo Villalobos Peña", phone: "3781002062", group_id: amigosGroup.id, rsvp_status: "pendiente", table_number: "Mesa 4", plus_one: false, event_id: eventId },
         { full_name: "Camila De la Torre", phone: "3781002063", group_id: amigosGroup.id, rsvp_status: "confirmado", table_number: "Mesa 4", plus_one: true, event_id: eventId },
-        { full_name: "Santiago Orozco Lomelí", phone: "3781002064", group_id: amigosGroup.id, rsvp_status: "pendiente", plus_one: true, event_id: eventId },
+        { full_name: "Santiago Orozco Lomelí", phone: "3781002064", group_id: amigosGroup.id, rsvp_status: "pendiente", table_number: "", plus_one: true, event_id: eventId },
 
         // VIP / Trabajo
-        { full_name: "Ing. Alejandro Fuentes R.", phone: "3781002070", group_id: vipGroup.id, rsvp_status: "confirmado", table_number: "Mesa 5", plus_one: true, notes: "Socio comercial", event_id: eventId },
-        { full_name: "Lic. Lorena Castellanos", phone: "3781002071", group_id: vipGroup.id, rsvp_status: "confirmado", table_number: "Mesa 5", plus_one: true, notes: "Directora de Operaciones", event_id: eventId },
-        { full_name: "Dr. Gustavo Medina Mora", phone: "3781002072", group_id: vipGroup.id, rsvp_status: "declinado", plus_one: true, event_id: eventId }
+        { full_name: "Ing. Alejandro Fuentes R.", phone: "3781002070", group_id: vipGroup.id, rsvp_status: "confirmado", table_number: "Mesa 5", plus_one: true, dietary_notes: "Socio comercial", event_id: eventId },
+        { full_name: "Lic. Lorena Castellanos", phone: "3781002071", group_id: vipGroup.id, rsvp_status: "confirmado", table_number: "Mesa 5", plus_one: true, dietary_notes: "Directora de Operaciones", event_id: eventId },
+        { full_name: "Dr. Gustavo Medina Mora", phone: "3781002072", group_id: vipGroup.id, rsvp_status: "declinado", table_number: "", plus_one: false, event_id: eventId }
       ];
 
       const { error: gstErr } = await window.supabaseClient.from("guests").insert(guestsData);
-      if (gstErr) throw new Error("Error al insertar invitados: " + gstErr.message);
-      log(`24 Invitados registrados con teléfonos y acomodos de mesa.`, "text-[#4ade80]");
+      if (gstErr) {
+        log("Aviso en invitados: " + gstErr.message, "text-tertiary");
+      } else {
+        log(`24 Invitados registrados exitosamente.`, "text-[#4ade80]");
+      }
 
       // 4. Crear Sedes / Lugares
       setProgress(55, "Registrando sedes y salones...");
@@ -212,56 +218,85 @@ tailwind.config = {
 
       const venuesData = [
         { name: "Parroquia de San Francisco de Asís", capacity: 400, price_tier: "$$", status: "reservado", address: "Plaza Principal, Centro, Tepatitlán de Morelos, Jal.", notes: "Misa a las 6:00 PM con órgano monumental", image_url: "assets/hero-gala.jpg", event_id: eventId },
-        { name: "Mítico Terraza y Jardín", capacity: 350, price_tier: "$$$$", status: "reservado", address: "Carretera Capilla de Guadalupe Km 4.5, Jalisco", notes: "Recepción de 8:00 PM a 4:00 AM. Área techada y jardín iluminado", image_url: "assets/terraza.jpg", event_id: eventId },
-        { name: "Hotel Boutique Centriplaza", capacity: 80, price_tier: "$$$", status: "en_consideracion", address: "Av. Hidalgo 120, Tepatitlán de Morelos", notes: "Bloque de 15 habitaciones reservado con tarifa especial", image_url: "assets/cena.jpg", event_id: eventId }
+        { name: "Mítico Terraza y Jardín", capacity: 350, price_tier: "$$$$", status: "reservado", address: "Carretera Capilla de Guadalupe Km 4.5, Jalisco", notes: "Recepción de 8:00 PM a 4:00 AM", image_url: "assets/terraza.jpg", event_id: eventId },
+        { name: "Hotel Boutique Centriplaza", capacity: 80, price_tier: "$$$", status: "en_consideracion", address: "Av. Hidalgo 120, Tepatitlán de Morelos", notes: "Bloque de 15 habitaciones reservado", image_url: "assets/cena.jpg", event_id: eventId }
       ];
 
       const { error: venErr } = await window.supabaseClient.from("venues").insert(venuesData);
-      if (venErr) throw new Error("Error al insertar lugares: " + venErr.message);
-      log("3 Sedes registradas (Ceremonia, Recepción y Hotel).", "text-[#4ade80]");
+      if (venErr) {
+        log("Aviso en lugares: " + venErr.message, "text-tertiary");
+      } else {
+        log("3 Sedes registradas correctamente.", "text-[#4ade80]");
+      }
 
       // 5. Crear Proveedores y Presupuesto
       setProgress(70, "Insertando proveedores y pagos de presupuesto...");
       log("5. Insertando Proveedores con cotizaciones y anticipos...", "text-tertiary");
 
       const vendorsData = [
-        { name: "Gourmet Banquetes Altamira", category: "banquete", contact_name: "Chef Javier Orozco", email: "banquetes@altamira.mx", phone: "3787123300", notes: "Cena 4 tiempos, barra libre nacional e internacional", contract_amount: 165000, paid_amount: 85000, status: "contratado", payment_status: "anticipo_pagado", event_id: eventId },
-        { name: "Lumière Cinematografía y Foto", category: "fotografia", contact_name: "Esteban Lumière", email: "contacto@lumiere.com", phone: "3318223344", notes: "2 fotógrafos, dron, sesión pre-boda y video teaser 4K", contract_amount: 48000, paid_amount: 24000, status: "contratado", payment_status: "anticipo_pagado", event_id: eventId },
-        { name: "AudioBeat Live Band & DJ Pro", category: "musica", contact_name: "Mauricio Beats", email: "booking@audiobeat.mx", phone: "3319001122", notes: "7 horas de música continua + Mariachi sorpresa", contract_amount: 55000, paid_amount: 30000, status: "contratado", payment_status: "anticipo_pagado", event_id: eventId },
-        { name: "Atelier Floral Jardín Secreto", category: "flores", contact_name: "Florencia Ramos", email: "jardinsecreto@gmail.com", phone: "3781229988", notes: "Arreglos colgantes, centros de mesa altos y ramo novia", contract_amount: 42000, paid_amount: 20000, status: "contratado", payment_status: "anticipo_pagado", event_id: eventId },
-        { name: "Haute Couture Novias & Tux", category: "vestuario", contact_name: "Madame Elena", email: "couture@novias.com", phone: "3331122334", notes: "Vestido confección especial + Smoking novio", contract_amount: 36000, paid_amount: 36000, status: "contratado", payment_status: "pagado", event_id: eventId },
-        { name: "La Petite Pâtisserie Fina", category: "pastel", contact_name: "Chef Paulina", email: "mesapostres@lapetite.mx", phone: "3787881122", notes: "Pastel 4 pisos red velvet + 300 postres individuales", contract_amount: 18000, paid_amount: 9000, status: "contratado", payment_status: "anticipo_pagado", event_id: eventId },
-        { name: "Pyrotech Magic Sparks", category: "otros", contact_name: "Ing. Arturo Piro", email: "efectos@pyrotech.mx", phone: "3781112233", notes: "Chispas frías para vals y salida de iglesia + humo bajo", contract_amount: 15000, paid_amount: 0, status: "contratado", payment_status: "pendiente", event_id: eventId },
-        { name: "Glam & Glow Bridal Hair & Makeup", category: "belleza", contact_name: "Daniela Makeup", email: "glam@beauty.com", phone: "3789998877", notes: "Prueba de peinado y maquillaje para novia y 4 damas", contract_amount: 14000, paid_amount: 7000, status: "contratado", payment_status: "anticipo_pagado", event_id: eventId }
+        { name: "Gourmet Banquetes Altamira", category: "Catering", status: "contratado", contract_total: 165000, deposit_amount: 85000, deposit_paid: true, due_date: "2026-11-15", contact_phone: "3787123300", profile_url: "https://instagram.com/gourmetaltamira", event_id: eventId },
+        { name: "Lumière Cinematografía y Foto", category: "Fotografía", status: "contratado", contract_total: 48000, deposit_amount: 24000, deposit_paid: true, due_date: "2026-11-01", contact_phone: "3318223344", profile_url: "https://instagram.com/lumierefoto", event_id: eventId },
+        { name: "AudioBeat Live Band & DJ Pro", category: "Música", status: "contratado", contract_total: 55000, deposit_amount: 30000, deposit_paid: true, due_date: "2026-11-10", contact_phone: "3319001122", profile_url: "https://instagram.com/audiobeatmx", event_id: eventId },
+        { name: "Atelier Floral Jardín Secreto", category: "Flores", status: "contratado", contract_total: 42000, deposit_amount: 20000, deposit_paid: true, due_date: "2026-11-20", contact_phone: "3781229988", profile_url: "https://instagram.com/jardinsecreto", event_id: eventId },
+        { name: "Haute Couture Novias & Tux", category: "Vestimenta", status: "contratado", contract_total: 36000, deposit_amount: 36000, deposit_paid: true, due_date: "2026-10-15", contact_phone: "3331122334", profile_url: "https://instagram.com/hautecouture", event_id: eventId },
+        { name: "La Petite Pâtisserie Fina", category: "Catering", status: "contratado", contract_total: 18000, deposit_amount: 9000, deposit_paid: true, due_date: "2026-11-25", contact_phone: "3787881122", profile_url: "https://instagram.com/lapetite", event_id: eventId },
+        { name: "Pyrotech Magic Sparks", category: "Otros", status: "negociando", contract_total: 15000, deposit_amount: 0, deposit_paid: false, due_date: "2026-11-20", contact_phone: "3781112233", profile_url: "https://instagram.com/pyrotech", event_id: eventId },
+        { name: "Glam & Glow Bridal Hair & Makeup", category: "Otros", status: "contratado", contract_total: 14000, deposit_amount: 7000, deposit_paid: true, due_date: "2026-11-28", contact_phone: "3789998877", profile_url: "https://instagram.com/glamglow", event_id: eventId }
       ];
 
       const { error: vndErr } = await window.supabaseClient.from("vendors").insert(vendorsData);
-      if (vndErr) throw new Error("Error al insertar proveedores: " + vndErr.message);
-      log("8 Proveedores contratados con desglose presupuestal total de $393,000 MXN.", "text-[#4ade80]");
+      if (vndErr) {
+        log("Aviso en proveedores: " + vndErr.message, "text-tertiary");
+      } else {
+        log("8 Proveedores contratados ($393,000 MXN en contratos).", "text-[#4ade80]");
+      }
 
       // 6. Itinerario y Actividades
-      setProgress(85, "Creando categorías y timeline de itinerario...");
+      setProgress(80, "Creando cronograma de actividades...");
       log("6. Insertando Cronograma de Actividades...", "text-tertiary");
 
       const activitiesData = [
-        { title: "Sesión de Maquillaje y Peinado de Novia", start_time: "13:00:00", day_offset: 0, location: "Suite Nupcial Hotel Centriplaza", description: "Llegada del equipo Glam & Glow para novia y damas", event_id: eventId },
-        { title: "First Look & Sesión Fotográfica de Pareja", start_time: "16:00:00", day_offset: 0, location: "Jardines Históricos Tepatitlán", description: "Encuentro privado de los novios antes de la misa con equipo Lumière", event_id: eventId },
-        { title: "Misa Solemne de Matrimonio", start_time: "18:00:00", day_offset: 0, location: "Parroquia de San Francisco de Asís", description: "Ceremonia religiosa, entrada de cortejo, anillos y arras", event_id: eventId },
-        { title: "Cóctel de Bienvenida y Música Acústica", start_time: "19:30:00", day_offset: 0, location: "Terraza Mítico Jardín", description: "Canapés finos, mixología de bienvenida y fotos con invitados", event_id: eventId },
-        { title: "Gran Entrada de los Novios y Brindis", start_time: "20:30:00", day_offset: 0, location: "Salón Principal Mítico", description: "Entrada triunfal con pirotecnia fría y palabras de los padres", event_id: eventId },
-        { title: "Cena de Gala en 4 Tiempos", start_time: "21:00:00", day_offset: 0, location: "Salón Principal Mítico", description: "Servicio de banquete gourmet Altamira con maridaje de vinos", event_id: eventId },
-        { title: "Primer Vals de Esposos & Vals con Padres", start_time: "22:30:00", day_offset: 0, location: "Pista Central Iluminada", description: "Canción: 'Hasta Mi Final' de Il Divo con efecto de nubes de humo bajo", event_id: eventId },
-        { title: "Apertura de Pista con Grupo en Vivo & DJ", start_time: "23:00:00", day_offset: 0, location: "Pista Central", description: "Comienza la fiesta con AudioBeat Live Band", event_id: eventId },
-        { title: "Tornaboda & Mariachi Monumental", start_time: "02:00:00", day_offset: 0, location: "Terraza Mítico", description: "Chilaquiles, tacos al pastor y serenata de mariachi para el cierre", event_id: eventId }
+        { title: "Sesión de Maquillaje y Peinado de Novia", start_time: "13:00", day_offset: 0, location: "Suite Nupcial Hotel Centriplaza", description: "Llegada del equipo Glam & Glow para novia y damas", event_id: eventId },
+        { title: "First Look & Sesión Fotográfica de Pareja", start_time: "16:00", day_offset: 0, location: "Jardines Históricos Tepatitlán", description: "Encuentro privado de los novios antes de la misa", event_id: eventId },
+        { title: "Misa Solemne de Matrimonio", start_time: "18:00", day_offset: 0, location: "Parroquia de San Francisco de Asís", description: "Ceremonia religiosa, entrada de cortejo, anillos y arras", event_id: eventId },
+        { title: "Cóctel de Bienvenida y Música Acústica", start_time: "19:30", day_offset: 0, location: "Terraza Mítico Jardín", description: "Canapés finos, mixología de bienvenida y fotos", event_id: eventId },
+        { title: "Gran Entrada de los Novios y Brindis", start_time: "20:30", day_offset: 0, location: "Salón Principal Mítico", description: "Entrada triunfal con pirotecnia fría y palabras de honor", event_id: eventId },
+        { title: "Cena de Gala en 4 Tiempos", start_time: "21:00", day_offset: 0, location: "Salón Principal Mítico", description: "Servicio de banquete gourmet Altamira", event_id: eventId },
+        { title: "Primer Vals de Esposos & Vals con Padres", start_time: "22:30", day_offset: 0, location: "Pista Central Iluminada", description: "Canción: 'Hasta Mi Final' de Il Divo con humo bajo", event_id: eventId },
+        { title: "Apertura de Pista con DJ & Grupo en Vivo", start_time: "23:00", day_offset: 0, location: "Pista Central", description: "Comienza la fiesta con AudioBeat Live Band", event_id: eventId },
+        { title: "Tornaboda & Mariachi Monumental", start_time: "02:00", day_offset: 0, location: "Terraza Mítico", description: "Chilaquiles y serenata de mariachi para el cierre", event_id: eventId }
       ];
 
       const { error: actErr } = await window.supabaseClient.from("itinerary_items").insert(activitiesData);
-      if (actErr) throw new Error("Error al insertar actividades: " + actErr.message);
-      log("9 Actividades registradas en el cronograma oficial.", "text-[#4ade80]");
+      if (actErr) {
+        log("Aviso en actividades: " + actErr.message, "text-tertiary");
+      } else {
+        log("9 Actividades registradas en el cronograma oficial.", "text-[#4ade80]");
+      }
 
-      // 7. Guardar configuración de Invitación Digital
+      // 7. Tareas
+      setProgress(90, "Insertando tareas del planificador...");
+      log("7. Insertando Tareas de Planificación...", "text-tertiary");
+
+      const tasksData = [
+        { title: "Confirmar degustación final del menú de 4 tiempos", description: "Reunión con Chef Javier en Altamira", status: "completada", priority: "alta", due_date: "2026-10-15", event_id: eventId },
+        { title: "Definir playlist y canción del primer vals", description: "Entregar lista a DJ Mauricio Beats", status: "en_progreso", priority: "alta", due_date: "2026-11-01", event_id: eventId },
+        { title: "Prueba final de vestido y smoking", description: "Cita en Haute Couture", status: "pendiente", priority: "media", due_date: "2026-11-10", event_id: eventId },
+        { title: "Enviar recordatorios de confirmación de asistencia RSVP", description: "Vía WhatsApp a los pendientes", status: "pendiente", priority: "alta", due_date: "2026-11-12", event_id: eventId },
+        { title: "Liquidación de anticipos a proveedores", description: "Pago final a foto y flores", status: "pendiente", priority: "alta", due_date: "2026-11-20", event_id: eventId },
+        { title: "Armado de kit de emergencia y protocolo de mesa de novios", description: "Para el día de la boda", status: "pendiente", priority: "baja", due_date: "2026-11-25", event_id: eventId }
+      ];
+
+      const { error: tskErr } = await window.supabaseClient.from("tasks").insert(tasksData);
+      if (tskErr) {
+        log("Aviso en tareas: " + tskErr.message, "text-tertiary");
+      } else {
+        log("6 Tareas registradas en el tablero Kanban.", "text-[#4ade80]");
+      }
+
+      // 8. Guardar configuración de Invitación Digital
       setProgress(95, "Personalizando invitación digital web...");
-      log("7. Configurando Invitación Web personalizada...", "text-tertiary");
+      log("8. Configurando Invitación Web personalizada...", "text-tertiary");
 
       const invitationSettings = {
         cover_image: "assets/hero-gala.jpg",
@@ -292,18 +327,18 @@ tailwind.config = {
       };
 
       localStorage.setItem("galaInvitationSettings_" + eventId, JSON.stringify(invitationSettings));
-      window.selectProject(eventId);
+      localStorage.setItem("galaCurrentEventId", eventId);
 
       setProgress(100, "¡Boda ficticia generada con éxito!");
-      log("🎉 Boda cargada y configurada exitosamente.", "text-[#4ade80] font-bold");
-      log("Redirigiendo al Panel principal en 2 segundos...", "text-tertiary");
+      log("🎉 ¡Boda generada exitosamente!", "text-[#4ade80] font-bold text-sm");
+      log("Redirigiendo al Panel principal...", "text-tertiary");
 
       setTimeout(() => {
         window.location.href = "index.html";
-      }, 2000);
+      }, 1500);
 
     } catch (err) {
-      log("Error: " + err.message, "text-error font-bold");
+      log("Error al generar boda: " + err.message, "text-error font-bold");
       btnStart.disabled = false;
       btnStart.classList.remove("opacity-50", "cursor-not-allowed");
     }
