@@ -388,19 +388,16 @@ tailwind.config = {
 
         <!-- Thank You Cards Section -->
         <section class="w-full flex flex-col gap-8">
-          <div class="flex items-center justify-between">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div class="flex items-center gap-4">
               <h2 class="font-display-lg text-display-lg text-on-surface text-[32px]">Libro de Gratitud</h2>
-              <span class="px-3 py-1 rounded-full bg-secondary-container/50 text-secondary border border-secondary/20 font-button-text text-button-text text-[12px]">PENDIENTES: 68</span>
+              <span id="gratitude-pending-badge" class="px-3 py-1 rounded-full bg-secondary-container/50 text-secondary border border-secondary/20 font-button-text text-button-text text-[12px]">PENDIENTES: 0</span>
             </div>
             <div class="flex gap-4">
               <div class="relative">
                 <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
-                <input class="w-64 bg-surface-container-low border border-tertiary/20 rounded-lg py-2 pl-10 pr-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-tertiary focus:ring-1 focus:ring-tertiary/50 transition-all placeholder:text-on-surface-variant/50" placeholder="Buscar invitados..." type="text"/>
+                <input id="gratitude-search" class="w-64 bg-surface-container-low border border-tertiary/20 rounded-lg py-2 pl-10 pr-4 font-body-md text-body-md text-on-surface focus:outline-none focus:border-tertiary focus:ring-1 focus:ring-tertiary/50 transition-all placeholder:text-on-surface-variant/50" placeholder="Buscar invitados..." type="text"/>
               </div>
-              <button class="w-10 h-10 rounded-lg border border-tertiary/20 bg-surface-container-low flex items-center justify-center text-on-surface-variant hover:text-tertiary hover:border-tertiary transition-colors">
-                <span class="material-symbols-outlined text-[20px]">filter_list</span>
-              </button>
             </div>
           </div>
           <div class="bg-surface-container-low/40 rounded-2xl shadow-lg overflow-hidden border border-surface-container-highest">
@@ -409,111 +406,18 @@ tailwind.config = {
                 <thead>
                   <tr class="bg-surface-container/80 border-b border-surface-container-highest">
                     <th class="py-4 px-6 font-label-gold text-label-gold text-on-surface-variant w-16">ESTADO</th>
-                    <th class="py-4 px-6 font-label-gold text-label-gold text-on-surface-variant">INVITADO / GRUPO</th>
-                    <th class="py-4 px-6 font-label-gold text-label-gold text-on-surface-variant">REGALO RECIBIDO</th>
-                    <th class="py-4 px-6 font-label-gold text-label-gold text-on-surface-variant">DIRECCIÓN</th>
+                    <th class="py-4 px-6 font-label-gold text-label-gold text-on-surface-variant">INVITADO / MESA</th>
+                    <th class="py-4 px-6 font-label-gold text-label-gold text-on-surface-variant">NOTAS / ASISTENCIA</th>
+                    <th class="py-4 px-6 font-label-gold text-label-gold text-on-surface-variant">CONTACTO</th>
                     <th class="py-4 px-6 font-label-gold text-label-gold text-on-surface-variant text-right">ACCIÓN</th>
                   </tr>
                 </thead>
-                <tbody class="font-body-md text-body-md">
-                  <!-- Row 1: Pending -->
-                  <tr class="border-b border-surface-container-highest hover:bg-surface-container/30 transition-colors group">
-                    <td class="py-4 px-6">
-                      <label class="flex items-center justify-center cursor-pointer">
-                        <div class="w-6 h-6 rounded flex items-center justify-center border-2 border-tertiary/40 hover:border-tertiary bg-surface-container transition-colors relative">
-                          <input class="absolute opacity-0 w-full h-full cursor-pointer peer" type="checkbox"/>
-                          <span class="material-symbols-outlined text-[18px] text-tertiary opacity-0 peer-checked:opacity-100 scale-50 peer-checked:scale-100 transition-all duration-300">check</span>
-                        </div>
-                      </label>
-                    </td>
-                    <td class="py-4 px-6">
-                      <div class="flex flex-col">
-                        <span class="text-on-surface font-medium">Sr. y Sra. Sterling</span>
-                        <span class="text-on-surface-variant text-sm">Mesa 04</span>
-                      </div>
-                    </td>
-                    <td class="py-4 px-6">
-                      <div class="flex items-center gap-2">
-                        <span class="material-symbols-outlined text-tertiary text-[18px]">redeem</span>
-                        <span class="text-on-surface">Jarrón de Cristal Baccarat</span>
-                      </div>
-                    </td>
-                    <td class="py-3 px-5 text-on-surface-variant text-sm max-w-[200px] truncate">
-                      1450 Park Avenue, NY 10021
-                    </td>
-                    <td class="py-4 px-6 text-right">
-                      <button class="text-on-surface-variant hover:text-tertiary opacity-0 group-hover:opacity-100 transition-all">
-                        <span class="material-symbols-outlined">edit_note</span>
-                      </button>
-                    </td>
-                  </tr>
-                  <!-- Row 2: Sent -->
-                  <tr class="border-b border-surface-container-highest hover:bg-surface-container/30 transition-colors group bg-surface-container/20">
-                    <td class="py-4 px-6">
-                      <label class="flex items-center justify-center cursor-pointer">
-                        <div class="w-6 h-6 rounded flex items-center justify-center border-2 border-tertiary bg-surface-container transition-colors relative">
-                          <input checked="" class="absolute opacity-0 w-full h-full cursor-pointer peer" type="checkbox"/>
-                          <span class="material-symbols-outlined text-[18px] text-tertiary opacity-0 peer-checked:opacity-100 scale-50 peer-checked:scale-100 transition-all duration-300">check</span>
-                        </div>
-                      </label>
-                    </td>
-                    <td class="py-4 px-6">
-                      <div class="flex flex-col opacity-50">
-                        <span class="text-on-surface font-medium line-through">Dra. Eleanor Vance</span>
-                        <span class="text-on-surface-variant text-sm">Mesa 01</span>
-                      </div>
-                    </td>
-                    <td class="py-4 px-6 opacity-50">
-                      <div class="flex items-center gap-2">
-                        <span class="material-symbols-outlined text-tertiary text-[18px]">attach_money</span>
-                        <span class="text-on-surface">Contribución Fondo de Luna de Miel</span>
-                      </div>
-                    </td>
-                    <td class="py-3 px-5 text-on-surface-variant text-sm max-w-[200px] truncate opacity-50">
-                      88 Via Veneto, Rome, Italy
-                    </td>
-                    <td class="py-4 px-6 text-right">
-                      <span class="px-2 py-1 bg-tertiary/10 text-tertiary font-label-gold text-label-gold rounded border border-tertiary/20">ENVIADO</span>
-                    </td>
-                  </tr>
-                  <!-- Row 3: Pending -->
-                  <tr class="border-b border-surface-container-highest hover:bg-surface-container/30 transition-colors group">
-                    <td class="py-4 px-6">
-                      <label class="flex items-center justify-center cursor-pointer">
-                        <div class="w-6 h-6 rounded flex items-center justify-center border-2 border-tertiary/40 hover:border-tertiary bg-surface-container transition-colors relative">
-                          <input class="absolute opacity-0 w-full h-full cursor-pointer peer" type="checkbox"/>
-                          <span class="material-symbols-outlined text-[18px] text-tertiary opacity-0 peer-checked:opacity-100 scale-50 peer-checked:scale-100 transition-all duration-300">check</span>
-                        </div>
-                      </label>
-                    </td>
-                    <td class="py-4 px-6">
-                      <div class="flex flex-col">
-                        <span class="text-on-surface font-medium">Familia Hastings</span>
-                        <span class="text-on-surface-variant text-sm">Mesa 12</span>
-                      </div>
-                    </td>
-                    <td class="py-4 px-6">
-                      <div class="flex items-center gap-2">
-                        <span class="material-symbols-outlined text-on-surface-variant text-[18px]">hourglass_empty</span>
-                        <span class="text-on-surface-variant italic">Sin regalo registrado</span>
-                      </div>
-                    </td>
-                    <td class="py-3 px-5 text-on-surface-variant text-sm max-w-[200px] truncate">
-                      221B Baker St, London NW1 6XE
-                    </td>
-                    <td class="py-4 px-6 text-right">
-                      <button class="text-on-surface-variant hover:text-tertiary opacity-0 group-hover:opacity-100 transition-all">
-                        <span class="material-symbols-outlined">edit_note</span>
-                      </button>
-                    </td>
+                <tbody id="gratitude-tbody" class="font-body-md text-body-md">
+                  <tr>
+                    <td colspan="5" class="py-8 px-6 text-center text-on-surface-variant">Cargando lista de invitados…</td>
                   </tr>
                 </tbody>
               </table>
-            </div>
-            <div class="bg-surface-container/50 p-4 border-t border-surface-container-highest flex justify-center">
-              <button class="font-button-text text-button-text text-tertiary hover:text-tertiary-fixed transition-colors tracking-widest uppercase flex items-center gap-2">
-                Cargar más invitados <span class="material-symbols-outlined text-[16px]">expand_more</span>
-              </button>
             </div>
           </div>
         </section>
@@ -522,6 +426,127 @@ tailwind.config = {
     </div>
   </main>
 </div>
+
+<script type="module">
+  let currentEventId = null;
+  let allGuests = [];
+  const THANK_YOU_KEY = "galaThankYouSent_";
+
+  function getSentSet() {
+    try {
+      const raw = localStorage.getItem(THANK_YOU_KEY + currentEventId);
+      return new Set(raw ? JSON.parse(raw) : []);
+    } catch(e) {
+      return new Set();
+    }
+  }
+
+  function saveSentSet(set) {
+    try {
+      localStorage.setItem(THANK_YOU_KEY + currentEventId, JSON.stringify([...set]));
+    } catch(e) {}
+  }
+
+  function escapeHtml(str) {
+    if (str === null || str === undefined) return "";
+    return String(str).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  function renderGratitudeList() {
+    const tbody = document.getElementById("gratitude-tbody");
+    const term = (document.getElementById("gratitude-search").value || "").trim().toLowerCase();
+    const sentSet = getSentSet();
+
+    let list = allGuests;
+    if (term) {
+      list = list.filter(g => (g.full_name || "").toLowerCase().includes(term) || (g.phone || "").toLowerCase().includes(term));
+    }
+
+    const totalConfirmed = allGuests.filter(g => g.rsvp_status === "confirmado").length;
+    const sentCount = allGuests.filter(g => sentSet.has(g.id)).length;
+    const pendingCount = Math.max(0, (totalConfirmed || allGuests.length) - sentCount);
+    document.getElementById("gratitude-pending-badge").textContent = `PENDIENTES: ${pendingCount}`;
+
+    if (list.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" class="py-8 px-6 text-center text-on-surface-variant">No hay invitados que coincidan.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = list.map(g => {
+      const isSent = sentSet.has(g.id);
+      return `
+        <tr class="border-b border-surface-container-highest hover:bg-surface-container/30 transition-colors group ${isSent ? 'bg-surface-container/20 opacity-60' : ''}" data-id="${g.id}">
+          <td class="py-4 px-6">
+            <label class="flex items-center justify-center cursor-pointer">
+              <input type="checkbox" class="cb-thank-you w-5 h-5 accent-tertiary rounded cursor-pointer" ${isSent ? 'checked' : ''} data-id="${g.id}"/>
+            </label>
+          </td>
+          <td class="py-4 px-6">
+            <div class="flex flex-col">
+              <span class="text-on-surface font-medium ${isSent ? 'line-through' : ''}">${escapeHtml(g.full_name)}</span>
+              <span class="text-on-surface-variant text-xs">${g.table_number ? `Mesa: ${escapeHtml(g.table_number)}` : 'Sin mesa asignada'}</span>
+            </div>
+          </td>
+          <td class="py-4 px-6">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-tertiary text-[18px]">${g.plus_one ? 'group' : 'person'}</span>
+              <span class="text-on-surface text-sm">${g.plus_one ? 'Con Acompañante (+1)' : 'Individual'} · RSVP: ${escapeHtml(g.rsvp_status || 'pendiente')}</span>
+            </div>
+          </td>
+          <td class="py-3 px-5 text-on-surface-variant text-sm truncate max-w-[200px]">
+            ${escapeHtml(g.phone) || '—'}
+          </td>
+          <td class="py-4 px-6 text-right">
+            ${isSent 
+              ? `<span class="px-2.5 py-1 bg-tertiary/10 text-tertiary font-label-gold text-label-gold rounded border border-tertiary/20 text-xs">ENVIADO</span>`
+              : `<span class="px-2.5 py-1 bg-surface-container-high text-on-surface-variant font-label-gold text-label-gold rounded text-xs">PENDIENTE</span>`
+            }
+          </td>
+        </tr>`;
+    }).join("");
+  }
+
+  document.getElementById("gratitude-search").addEventListener("input", renderGratitudeList);
+
+  document.getElementById("gratitude-tbody").addEventListener("change", (e) => {
+    if (e.target.classList.contains("cb-thank-you")) {
+      const id = e.target.dataset.id;
+      const sentSet = getSentSet();
+      if (e.target.checked) {
+        sentSet.add(id);
+      } else {
+        sentSet.delete(id);
+      }
+      saveSentSet(sentSet);
+      renderGratitudeList();
+    }
+  });
+
+  async function loadGuestsForGratitude() {
+    const { data, error } = await window.supabaseClient
+      .from("guests")
+      .select("*")
+      .eq("event_id", currentEventId)
+      .order("full_name", { ascending: true });
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+    allGuests = data || [];
+    renderGratitudeList();
+  }
+
+  (async function init() {
+    const auth = await window.requireAuth();
+    if (!auth) return;
+    const currentEvent = await window.requireEvent();
+    if (!currentEvent) return;
+    currentEventId = currentEvent.id;
+    await loadGuestsForGratitude();
+  })();
+</script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   var btn = document.getElementById('sidebar-toggle');

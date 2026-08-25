@@ -213,60 +213,66 @@ tailwind.config = {
 
         <!-- Budget Header Section -->
         <div class="flex flex-col gap-6">
-          <div class="flex justify-between items-end">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
             <div>
               <h1 class="font-display-lg text-display-lg text-on-surface mb-2">Asignación de Presupuesto</h1>
-              <p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Panorama financiero y seguimiento en tiempo real de <span id="current-event-name-inline">tu evento</span>.</p>
+              <p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Panorama financiero y seguimiento en tiempo real de <span id="current-event-name-inline" class="text-tertiary">tu evento</span>.</p>
             </div>
-            <button class="bg-tertiary text-on-tertiary font-button-text text-button-text px-6 py-3 rounded-DEFAULT uppercase tracking-widest hover:brightness-110 transition-all flex items-center gap-2">
-              <span class="material-symbols-outlined">download</span>
-              Exportar Reporte
-            </button>
+            <div class="flex items-center gap-3">
+              <a href="proveedores.html" class="px-5 py-3 border border-tertiary/30 text-tertiary font-button-text text-button-text rounded-DEFAULT uppercase tracking-widest hover:bg-tertiary/10 transition-all flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">add</span>
+                Añadir Proveedor
+              </a>
+              <button id="btn-export-budget" class="bg-tertiary text-on-tertiary font-button-text text-button-text px-6 py-3 rounded-DEFAULT uppercase tracking-widest hover:brightness-110 transition-all flex items-center gap-2 shadow-lg shadow-tertiary/20">
+                <span class="material-symbols-outlined">download</span>
+                Exportar Reporte
+              </button>
+            </div>
           </div>
 
           <!-- KPI Cards -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-surface-container-high rounded-xl p-8 relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300 shadow-md">
+            <div class="bg-surface-container-high rounded-xl p-8 relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300 shadow-md border border-tertiary/10">
               <div class="absolute -right-12 -top-12 w-40 h-40 bg-primary/5 rounded-full blur-2xl"></div>
-              <p class="font-label-gold text-label-gold text-tertiary uppercase tracking-widest mb-4">Presupuesto Total</p>
+              <p class="font-label-gold text-label-gold text-tertiary uppercase tracking-widest mb-4">Presupuesto Comprometido</p>
               <div class="flex items-baseline gap-2">
                 <span class="font-headline-md text-headline-md text-on-surface-variant">$</span>
-                <span class="font-display-lg text-display-lg text-on-surface">75,000</span>
+                <span id="kpi-budget-total-val" class="font-display-lg text-display-lg text-on-surface">0</span>
                 <span class="font-label-gold text-label-gold text-on-surface-variant self-end pb-2">MXN</span>
               </div>
               <div class="mt-4 flex items-center gap-2 text-on-surface-variant font-body-md text-body-md">
                 <span class="material-symbols-outlined text-sm">account_balance</span>
-                <span>Línea Base Aprobada</span>
+                <span id="kpi-vendors-count-label">0 Contratos de Proveedores</span>
               </div>
             </div>
-            <div class="bg-primary-container rounded-xl p-8 relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300 shadow-md">
+            <div class="bg-primary-container rounded-xl p-8 relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300 shadow-md border border-tertiary/10">
               <div class="absolute -right-12 -top-12 w-40 h-40 bg-tertiary/10 rounded-full blur-2xl"></div>
-              <p class="font-label-gold text-label-gold text-tertiary uppercase tracking-widest mb-4">Monto Gastado</p>
+              <p class="font-label-gold text-label-gold text-tertiary uppercase tracking-widest mb-4">Monto Pagado / Anticipos</p>
               <div class="flex items-baseline gap-2">
                 <span class="font-headline-md text-headline-md text-on-primary-container">$</span>
-                <span class="font-display-lg text-display-lg text-on-primary-container">42,500</span>
+                <span id="kpi-budget-paid-val" class="font-display-lg text-display-lg text-on-primary-container">0</span>
                 <span class="font-label-gold text-label-gold text-on-primary-container self-end pb-2">MXN</span>
               </div>
               <div class="mt-4 flex flex-col gap-2">
                 <div class="w-full bg-surface-container-highest rounded-full h-1.5 overflow-hidden">
-                  <div class="bg-tertiary h-full w-[56.6%] rounded-full"></div>
+                  <div id="kpi-budget-bar" class="bg-tertiary h-full w-[0%] rounded-full transition-all duration-700"></div>
                 </div>
                 <div class="flex justify-between font-label-gold text-label-gold text-on-primary-container">
-                  <span>56.6% Utilizado</span>
+                  <span id="kpi-budget-pct-label">0% Liquidado</span>
                 </div>
               </div>
             </div>
-            <div class="bg-surface-container-high rounded-xl p-8 relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300 shadow-md">
+            <div class="bg-surface-container-high rounded-xl p-8 relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300 shadow-md border border-tertiary/10">
               <div class="absolute -right-12 -top-12 w-40 h-40 bg-secondary/5 rounded-full blur-2xl"></div>
-              <p class="font-label-gold text-label-gold text-tertiary uppercase tracking-widest mb-4">Saldo Restante</p>
+              <p class="font-label-gold text-label-gold text-tertiary uppercase tracking-widest mb-4">Saldo Pendiente por Liquidar</p>
               <div class="flex items-baseline gap-2">
                 <span class="font-headline-md text-headline-md text-secondary">$</span>
-                <span class="font-display-lg text-display-lg text-secondary">32,500</span>
+                <span id="kpi-budget-remaining-val" class="font-display-lg text-display-lg text-secondary">0</span>
                 <span class="font-label-gold text-label-gold text-secondary self-end pb-2">MXN</span>
               </div>
               <div class="mt-4 flex items-center gap-2 text-on-surface-variant font-body-md text-body-md">
                 <span class="material-symbols-outlined text-sm">savings</span>
-                <span>Liquidez Disponible</span>
+                <span>Pendiente de Pago a Proveedores</span>
               </div>
             </div>
           </div>
@@ -276,102 +282,45 @@ tailwind.config = {
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
           <!-- Chart & Details -->
           <div class="lg:col-span-8 flex flex-col gap-6">
-            <div class="bg-surface-container rounded-xl p-8 shadow-md">
+            <div class="bg-surface-container rounded-xl p-8 shadow-md border border-tertiary/10">
               <h2 class="font-headline-lg text-headline-lg text-on-surface mb-8">Distribución de Gastos</h2>
               <div class="flex flex-col md:flex-row items-center gap-12">
                 <!-- Donut Chart SVG -->
-                <div class="relative w-64 h-64 shrink-0">
-                  <svg class="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                    <!-- Sede (40%) -->
-                    <circle cx="50" cy="50" fill="transparent" r="40" stroke="var(--tw-colors-secondary-container)" stroke-dasharray="251.2" stroke-dashoffset="150.72" stroke-width="20"></circle>
-                    <!-- Catering (30%) -->
-                    <circle cx="50" cy="50" fill="transparent" r="40" stroke="var(--tw-colors-tertiary)" stroke-dasharray="251.2" stroke-dashoffset="175.84" stroke-width="20" transform="rotate(144 50 50)"></circle>
-                    <!-- Decoración (15%) -->
-                    <circle cx="50" cy="50" fill="transparent" r="40" stroke="var(--tw-colors-primary-container)" stroke-dasharray="251.2" stroke-dashoffset="213.52" stroke-width="20" transform="rotate(252 50 50)"></circle>
-                    <!-- Entretenimiento (15%) -->
-                    <circle cx="50" cy="50" fill="transparent" r="40" stroke="var(--tw-colors-surface-tint)" stroke-dasharray="251.2" stroke-dashoffset="213.52" stroke-width="20" transform="rotate(306 50 50)"></circle>
+                <div class="relative w-64 h-64 shrink-0 flex items-center justify-center">
+                  <svg id="donut-svg" class="w-full h-full transform -rotate-90 drop-shadow-md" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" fill="transparent" r="40" stroke="#2a2a27" stroke-width="16"></circle>
+                    <g id="donut-segments"></g>
                   </svg>
-                  <div class="absolute inset-0 flex flex-col items-center justify-center">
-                    <span class="font-headline-md text-headline-md text-on-surface">4 Categorías</span>
+                  <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                    <span id="donut-categories-count" class="font-headline-md text-headline-md text-on-surface text-center">0 Categorías</span>
                   </div>
                 </div>
                 <!-- Legend -->
-                <div class="flex-1 grid grid-cols-2 gap-4">
-                  <div class="flex items-center gap-3">
-                    <div class="w-3 h-3 rounded-full bg-secondary-container"></div>
-                    <div>
-                      <p class="font-label-gold text-label-gold text-on-surface-variant uppercase">Sede y Producción</p>
-                      <p class="font-body-lg text-body-lg text-on-surface">$30,000 MXN</p>
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <div class="w-3 h-3 rounded-full bg-tertiary"></div>
-                    <div>
-                      <p class="font-label-gold text-label-gold text-on-surface-variant uppercase">Catering de Lujo</p>
-                      <p class="font-body-lg text-body-lg text-on-surface">$22,500 MXN</p>
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <div class="w-3 h-3 rounded-full bg-primary-container"></div>
-                    <div>
-                      <p class="font-label-gold text-label-gold text-on-surface-variant uppercase">Flores y Decoración</p>
-                      <p class="font-body-lg text-body-lg text-on-surface">$11,250 MXN</p>
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <div class="w-3 h-3 rounded-full bg-surface-tint"></div>
-                    <div>
-                      <p class="font-label-gold text-label-gold text-on-surface-variant uppercase">Entretenimiento</p>
-                      <p class="font-body-lg text-body-lg text-on-surface">$11,250 MXN</p>
-                    </div>
-                  </div>
+                <div id="categories-legend" class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+                  <p class="text-on-surface-variant text-sm col-span-full">Cargando distribución…</p>
                 </div>
               </div>
             </div>
 
-            <div class="bg-surface-container rounded-xl overflow-hidden shadow-md">
+            <!-- Categories Breakdown Table -->
+            <div class="bg-surface-container rounded-xl overflow-hidden shadow-md border border-tertiary/10">
               <div class="p-8 pb-4">
-                <h2 class="font-headline-lg text-headline-lg text-on-surface">Análisis de Variación por Categoría</h2>
+                <h2 class="font-headline-lg text-headline-lg text-on-surface">Análisis Financiero por Categoría</h2>
               </div>
               <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                   <thead>
-                    <tr class="bg-surface-container-high">
+                    <tr class="bg-surface-container-high border-b border-tertiary/10">
                       <th class="py-4 px-8 font-label-gold text-label-gold text-tertiary uppercase tracking-widest">Categoría</th>
-                      <th class="py-4 px-8 font-label-gold text-label-gold text-tertiary uppercase tracking-widest text-right">Asignado</th>
-                      <th class="py-4 px-8 font-label-gold text-label-gold text-tertiary uppercase tracking-widest text-right">Real</th>
-                      <th class="py-4 px-8 font-label-gold text-label-gold text-tertiary uppercase tracking-widest text-right">Variación</th>
-                      <th class="py-4 px-8 font-label-gold text-label-gold text-tertiary uppercase tracking-widest text-center">Estado</th>
+                      <th class="py-4 px-8 font-label-gold text-label-gold text-tertiary uppercase tracking-widest text-right">Comprometido</th>
+                      <th class="py-4 px-8 font-label-gold text-label-gold text-tertiary uppercase tracking-widest text-right">Pagado</th>
+                      <th class="py-4 px-8 font-label-gold text-label-gold text-tertiary uppercase tracking-widest text-right">Pendiente</th>
+                      <th class="py-4 px-8 font-label-gold text-label-gold text-tertiary uppercase tracking-widest text-center">Estatus</th>
                     </tr>
                   </thead>
-                  <tbody class="font-body-md text-body-md text-on-surface">
-                    <tr class="hover:bg-surface-container-highest transition-colors">
-                      <td class="py-5 px-8 font-headline-md text-headline-md">Sede y Producción</td>
-                      <td class="py-5 px-8 text-right">$30,000 MXN</td>
-                      <td class="py-5 px-8 text-right">$28,500 MXN</td>
-                      <td class="py-5 px-8 text-right text-secondary">+$1,500 MXN</td>
-                      <td class="py-5 px-8 text-center"><span class="material-symbols-outlined text-secondary text-sm">trending_down</span></td>
-                    </tr>
-                    <tr class="bg-primary-container/10 hover:bg-surface-container-highest transition-colors">
-                      <td class="py-5 px-8 font-headline-md text-headline-md">Catering de Lujo</td>
-                      <td class="py-5 px-8 text-right">$22,500 MXN</td>
-                      <td class="py-5 px-8 text-right">$22,500 MXN</td>
-                      <td class="py-5 px-8 text-right text-on-surface-variant">$0 MXN</td>
-                      <td class="py-5 px-8 text-center"><span class="material-symbols-outlined text-on-surface-variant text-sm">horizontal_rule</span></td>
-                    </tr>
-                    <tr class="hover:bg-surface-container-highest transition-colors">
-                      <td class="py-5 px-8 font-headline-md text-headline-md">Flores y Decoración</td>
-                      <td class="py-5 px-8 text-right">$11,250 MXN</td>
-                      <td class="py-5 px-8 text-right">$12,000 MXN</td>
-                      <td class="py-5 px-8 text-right text-error">-$750 MXN</td>
-                      <td class="py-5 px-8 text-center"><span class="material-symbols-outlined text-error text-sm">trending_up</span></td>
-                    </tr>
-                    <tr class="bg-primary-container/10 hover:bg-surface-container-highest transition-colors">
-                      <td class="py-5 px-8 font-headline-md text-headline-md">Entretenimiento</td>
-                      <td class="py-5 px-8 text-right">$11,250 MXN</td>
-                      <td class="py-5 px-8 text-right">$9,500 MXN</td>
-                      <td class="py-5 px-8 text-right text-secondary">+$1,750 MXN</td>
-                      <td class="py-5 px-8 text-center"><span class="material-symbols-outlined text-secondary text-sm">trending_down</span></td>
+                  <tbody id="budget-categories-tbody" class="font-body-md text-body-md text-on-surface">
+                    <tr>
+                      <td colspan="5" class="py-8 px-8 text-center text-on-surface-variant">Cargando categorías…</td>
                     </tr>
                   </tbody>
                 </table>
@@ -381,58 +330,23 @@ tailwind.config = {
 
           <!-- Right Sidebar (Calendar/Payments) -->
           <div class="lg:col-span-4 flex flex-col gap-6">
-            <div class="bg-surface-container-high rounded-xl p-8 shadow-md h-full">
-              <div class="flex items-center justify-between mb-8">
-                <h2 class="font-headline-lg text-headline-lg text-on-surface">Calendario de Pagos</h2>
-                <button class="material-symbols-outlined text-tertiary hover:text-tertiary-fixed transition-colors">add_circle</button>
-              </div>
-              <div class="flex flex-col gap-4">
-                <div class="bg-surface rounded-lg p-5 flex items-start gap-4 border-l-2 border-error">
-                  <div class="flex flex-col items-center justify-center bg-surface-container px-3 py-2 rounded">
-                    <span class="font-label-gold text-label-gold text-error uppercase">Oct</span>
-                    <span class="font-headline-md text-headline-md text-on-surface">15</span>
-                  </div>
-                  <div class="flex-1">
-                    <p class="font-body-lg text-body-lg text-on-surface">Depósito Cuarteto de Cuerdas</p>
-                    <p class="font-body-md text-body-md text-on-surface-variant">Entretenimiento</p>
-                  </div>
-                  <div class="text-right">
-                    <p class="font-headline-md text-headline-md text-on-surface">$2,500 MXN</p>
-                    <span class="px-2 py-0.5 bg-error/10 text-error font-label-gold text-label-gold rounded uppercase text-[10px]">Vencido</span>
-                  </div>
+            <div class="bg-surface-container-high rounded-xl p-8 shadow-md h-full border border-tertiary/10 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-8">
+                  <h2 class="font-headline-lg text-headline-lg text-on-surface">Calendario de Pagos</h2>
+                  <a href="proveedores.html" class="material-symbols-outlined text-tertiary hover:text-tertiary-fixed transition-colors" title="Gestionar proveedores">add_circle</a>
                 </div>
-                <div class="bg-surface rounded-lg p-5 flex items-start gap-4 border-l-2 border-tertiary">
-                  <div class="flex flex-col items-center justify-center bg-surface-container px-3 py-2 rounded">
-                    <span class="font-label-gold text-label-gold text-tertiary uppercase">Oct</span>
-                    <span class="font-headline-md text-headline-md text-on-surface">22</span>
-                  </div>
-                  <div class="flex-1">
-                    <p class="font-body-lg text-body-lg text-on-surface">Hito 2 de Catering</p>
-                    <p class="font-body-md text-body-md text-on-surface-variant">Catering de Lujo</p>
-                  </div>
-                  <div class="text-right">
-                    <p class="font-headline-md text-headline-md text-on-surface">$11,250 MXN</p>
-                    <span class="px-2 py-0.5 bg-tertiary/10 text-tertiary font-label-gold text-label-gold rounded uppercase text-[10px]">Próximo</span>
-                  </div>
-                </div>
-                <div class="bg-surface rounded-lg p-5 flex items-start gap-4 border-l-2 border-secondary-container">
-                  <div class="flex flex-col items-center justify-center bg-surface-container px-3 py-2 rounded">
-                    <span class="font-label-gold text-label-gold text-secondary-container uppercase">Nov</span>
-                    <span class="font-headline-md text-headline-md text-on-surface">01</span>
-                  </div>
-                  <div class="flex-1">
-                    <p class="font-body-lg text-body-lg text-on-surface">Pago Final de la Sede</p>
-                    <p class="font-body-md text-body-md text-on-surface-variant">Sede y Producción</p>
-                  </div>
-                  <div class="text-right">
-                    <p class="font-headline-md text-headline-md text-on-surface">$15,000 MXN</p>
-                    <span class="px-2 py-0.5 bg-secondary-container/20 text-secondary-container font-label-gold text-label-gold rounded uppercase text-[10px]">Programado</span>
-                  </div>
+                <div id="payments-calendar-list" class="flex flex-col gap-4">
+                  <p class="text-on-surface-variant text-sm">Cargando calendario de pagos…</p>
                 </div>
               </div>
               <div class="mt-8 pt-6 border-t border-surface-container-highest">
                 <div class="w-full h-48 bg-cover bg-center rounded-xl relative overflow-hidden" style="background-image: url('assets/presupuesto/finanzas.jpg')">
-                  <div class="absolute inset-0 bg-gradient-to-t from-surface-container-high to-transparent"></div>
+                  <div class="absolute inset-0 bg-gradient-to-t from-surface-container-high via-surface-container-high/30 to-transparent"></div>
+                  <div class="absolute bottom-4 left-4 right-4">
+                    <span class="font-label-gold text-label-gold text-tertiary uppercase tracking-widest block text-[10px] mb-1">AUDITORÍA ACTIVA</span>
+                    <p class="font-headline-md text-sm text-on-surface">Todos los contratos y anticipos están sincronizados con la base de datos.</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -443,6 +357,238 @@ tailwind.config = {
     </div>
   </main>
 </div>
+
+<script type="module">
+  let currentEventId = null;
+  let allVendors = [];
+
+  const CATEGORY_COLORS = [
+    { fill: "#e9c349", class: "bg-tertiary", text: "text-tertiary" },
+    { fill: "#2a486b", class: "bg-secondary-container", text: "text-secondary" },
+    { fill: "#bac8dc", class: "bg-surface-tint", text: "text-surface-tint" },
+    { fill: "#0d1b2a", class: "bg-primary-container", text: "text-on-surface" },
+    { fill: "#ffb4ab", class: "bg-error", text: "text-error" },
+    { fill: "#4ade80", class: "bg-[#4ade80]", text: "text-[#4ade80]" },
+    { fill: "#c084fc", class: "bg-[#c084fc]", text: "text-[#c084fc]" }
+  ];
+
+  function escapeHtml(str) {
+    if (str === null || str === undefined) return "";
+    return String(str).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
+  function formatMoney(n) {
+    if (n === null || n === undefined) return "$0 MXN";
+    return `$${Number(n).toLocaleString("es-MX")} MXN`;
+  }
+
+  function formatNumber(n) {
+    if (n === null || n === undefined) return "0";
+    return Number(n).toLocaleString("es-MX");
+  }
+
+  function formatShortDate(dateStr) {
+    if (!dateStr) return { month: "S/F", day: "--" };
+    const d = new Date(dateStr + "T00:00:00");
+    const month = d.toLocaleDateString("es-MX", { month: "short" }).toUpperCase().replace(".", "");
+    const day = d.getDate();
+    return { month, day };
+  }
+
+  function renderBudgetView() {
+    const totalCommitted = allVendors.reduce((sum, v) => sum + (Number(v.contract_total) || 0), 0);
+    const totalPaid = allVendors.filter(v => v.deposit_paid).reduce((sum, v) => sum + (Number(v.deposit_amount) || 0), 0);
+    const totalRemaining = Math.max(0, totalCommitted - totalPaid);
+    const paidPct = totalCommitted > 0 ? Math.min(100, Math.round((totalPaid / totalCommitted) * 100)) : 0;
+
+    // KPI Cards
+    document.getElementById("kpi-budget-total-val").textContent = formatNumber(totalCommitted);
+    document.getElementById("kpi-vendors-count-label").textContent = `${allVendors.length} Contrato${allVendors.length === 1 ? "" : "s"} de Proveedores`;
+    document.getElementById("kpi-budget-paid-val").textContent = formatNumber(totalPaid);
+    document.getElementById("kpi-budget-remaining-val").textContent = formatNumber(totalRemaining);
+    document.getElementById("kpi-budget-bar").style.width = `${paidPct}%`;
+    document.getElementById("kpi-budget-pct-label").textContent = `${paidPct}% Liquidado (${formatMoney(totalRemaining)} Pendiente)`;
+
+    // Grouping by Category
+    const byCategory = {};
+    allVendors.forEach(v => {
+      const cat = v.category || "Otros";
+      if (!byCategory[cat]) {
+        byCategory[cat] = { name: cat, committed: 0, paid: 0, count: 0 };
+      }
+      byCategory[cat].committed += Number(v.contract_total) || 0;
+      if (v.deposit_paid && v.deposit_amount) {
+        byCategory[cat].paid += Number(v.deposit_amount);
+      }
+      byCategory[cat].count += 1;
+    });
+
+    const categoryList = Object.values(byCategory).sort((a, b) => b.committed - a.committed);
+    document.getElementById("donut-categories-count").textContent = `${categoryList.length} Categoría${categoryList.length === 1 ? "" : "s"}`;
+
+    // Render Donut Chart SVG
+    const donutSegmentsGroup = document.getElementById("donut-segments");
+    const circumference = 2 * Math.PI * 40; // 251.32
+    let accumulatedAngle = 0;
+
+    if (totalCommitted === 0 || categoryList.length === 0) {
+      donutSegmentsGroup.innerHTML = `<circle cx="50" cy="50" fill="transparent" r="40" stroke="#353532" stroke-width="16"></circle>`;
+    } else {
+      donutSegmentsGroup.innerHTML = categoryList.map((cat, i) => {
+        const color = CATEGORY_COLORS[i % CATEGORY_COLORS.length];
+        const fraction = cat.committed / totalCommitted;
+        const dashLength = fraction * circumference;
+        const dashOffset = circumference - dashLength;
+        const rotateAngle = accumulatedAngle;
+        accumulatedAngle += fraction * 360;
+
+        return `<circle cx="50" cy="50" fill="transparent" r="40" stroke="${color.fill}" stroke-width="16" stroke-dasharray="${circumference.toFixed(2)}" stroke-dashoffset="${dashOffset.toFixed(2)}" transform="rotate(${rotateAngle.toFixed(2)} 50 50)"></circle>`;
+      }).join("");
+    }
+
+    // Render Legend
+    const legendEl = document.getElementById("categories-legend");
+    if (categoryList.length === 0) {
+      legendEl.innerHTML = `<p class="text-on-surface-variant text-sm col-span-full py-4">Aún no hay proveedores registrados. Añade proveedores para ver el desglose.</p>`;
+    } else {
+      legendEl.innerHTML = categoryList.map((cat, i) => {
+        const color = CATEGORY_COLORS[i % CATEGORY_COLORS.length];
+        const pct = totalCommitted > 0 ? Math.round((cat.committed / totalCommitted) * 100) : 0;
+        return `
+          <div class="flex items-center gap-3 bg-surface/40 p-3 rounded-lg border border-tertiary/5">
+            <div class="w-3.5 h-3.5 rounded-full ${color.class} shrink-0"></div>
+            <div class="min-w-0">
+              <p class="font-label-gold text-label-gold text-on-surface-variant uppercase text-[11px] truncate">${escapeHtml(cat.name)} (${pct}%)</p>
+              <p class="font-body-lg text-body-lg text-on-surface">${formatMoney(cat.committed)}</p>
+            </div>
+          </div>`;
+      }).join("");
+    }
+
+    // Render Table
+    const tbody = document.getElementById("budget-categories-tbody");
+    if (categoryList.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" class="py-8 px-8 text-center text-on-surface-variant">No hay gastos registrados todavía.</td></tr>`;
+    } else {
+      tbody.innerHTML = categoryList.map((cat) => {
+        const pending = Math.max(0, cat.committed - cat.paid);
+        const isFullyPaid = cat.committed > 0 && pending === 0;
+        return `
+          <tr class="hover:bg-surface-container-highest transition-colors border-b border-tertiary/5">
+            <td class="py-5 px-8 font-headline-md text-headline-md">${escapeHtml(cat.name)}</td>
+            <td class="py-5 px-8 text-right font-medium">${formatMoney(cat.committed)}</td>
+            <td class="py-5 px-8 text-right text-secondary">${formatMoney(cat.paid)}</td>
+            <td class="py-5 px-8 text-right ${pending > 0 ? 'text-error' : 'text-on-surface-variant'}">${formatMoney(pending)}</td>
+            <td class="py-5 px-8 text-center">
+              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-label-gold uppercase ${isFullyPaid ? 'bg-secondary/10 text-secondary' : 'bg-tertiary/10 text-tertiary'}">
+                <span class="material-symbols-outlined text-[14px]">${isFullyPaid ? 'check_circle' : 'pending'}</span>
+                ${isFullyPaid ? 'Liquidado' : 'En Curso'}
+              </span>
+            </td>
+          </tr>`;
+      }).join("");
+    }
+
+    // Render Payment Schedule
+    const scheduleEl = document.getElementById("payments-calendar-list");
+    const withDueDate = allVendors
+      .filter(v => v.due_date)
+      .sort((a, b) => a.due_date.localeCompare(b.due_date));
+
+    if (withDueDate.length === 0) {
+      scheduleEl.innerHTML = `<p class="text-on-surface-variant text-sm py-4">No hay pagos con fecha límite programada.</p>`;
+      return;
+    }
+
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+
+    scheduleEl.innerHTML = withDueDate.map(v => {
+      const { month, day } = formatShortDate(v.due_date);
+      const dueDate = new Date(v.due_date + "T00:00:00");
+      const isOverdue = !v.deposit_paid && dueDate < today;
+      const isPaid = v.deposit_paid;
+
+      let borderClass = "border-tertiary";
+      let textClass = "text-tertiary";
+      let badgeHtml = `<span class="px-2 py-0.5 bg-tertiary/10 text-tertiary font-label-gold text-label-gold rounded uppercase text-[10px]">Próximo</span>`;
+
+      if (isPaid) {
+        borderClass = "border-[#4ade80]";
+        textClass = "text-[#4ade80]";
+        badgeHtml = `<span class="px-2 py-0.5 bg-[#4ade80]/10 text-[#4ade80] font-label-gold text-label-gold rounded uppercase text-[10px]">Pagado</span>`;
+      } else if (isOverdue) {
+        borderClass = "border-error";
+        textClass = "text-error";
+        badgeHtml = `<span class="px-2 py-0.5 bg-error/10 text-error font-label-gold text-label-gold rounded uppercase text-[10px]">Vencido</span>`;
+      }
+
+      return `
+        <div class="bg-surface rounded-lg p-4 flex items-start gap-4 border-l-2 ${borderClass} shadow-sm">
+          <div class="flex flex-col items-center justify-center bg-surface-container px-3 py-1.5 rounded shrink-0">
+            <span class="font-label-gold text-label-gold ${textClass} uppercase text-[10px]">${month}</span>
+            <span class="font-headline-md text-headline-md text-on-surface leading-tight">${day}</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="font-body-md text-on-surface font-medium truncate">${escapeHtml(v.name)}</p>
+            <p class="font-label-gold text-on-surface-variant text-xs uppercase tracking-wider">${escapeHtml(v.category || "Proveedor")}</p>
+          </div>
+          <div class="text-right shrink-0">
+            <p class="font-headline-md text-sm text-on-surface">${v.deposit_amount ? formatMoney(v.deposit_amount) : formatMoney(v.contract_total)}</p>
+            ${badgeHtml}
+          </div>
+        </div>`;
+    }).join("");
+  }
+
+  async function loadBudgetData() {
+    const { data, error } = await window.supabaseClient
+      .from("vendors")
+      .select("*")
+      .eq("event_id", currentEventId)
+      .order("created_at", { ascending: true });
+
+    if (error) {
+      console.error("Error al cargar presupuesto:", error);
+      return;
+    }
+    allVendors = data || [];
+    renderBudgetView();
+  }
+
+  // Exportar Reporte Financiero a CSV
+  document.getElementById("btn-export-budget").addEventListener("click", () => {
+    if (allVendors.length === 0) {
+      alert("No hay registros de presupuesto o proveedores para exportar.");
+      return;
+    }
+    const headers = ["Proveedor", "Categoría", "Estatus", "Total Contrato (MXN)", "Anticipo (MXN)", "Anticipo Pagado", "Fecha Límite", "Teléfono"];
+    const rows = allVendors.map(v => [
+      v.name, v.category || "", v.status || "", v.contract_total || 0,
+      v.deposit_amount || 0, v.deposit_paid ? "Sí" : "No", v.due_date || "", v.contact_phone || ""
+    ]);
+    const csv = [headers, ...rows]
+      .map(r => r.map(cell => `"${String(cell ?? "").replace(/"/g, '""')}"`).join(","))
+      .join("\n");
+
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Presupuesto_Gala_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  (async function init() {
+    const auth = await window.requireAuth();
+    if (!auth) return;
+    const currentEvent = await window.requireEvent();
+    if (!currentEvent) return;
+    currentEventId = currentEvent.id;
+    await loadBudgetData();
+  })();
+</script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   var btn = document.getElementById('sidebar-toggle');
