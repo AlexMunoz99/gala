@@ -127,17 +127,32 @@ tailwind.config = {
       log("1. Creando Evento 'Boda Valentina & Sebastián 2026'...", "text-tertiary");
       setProgress(10, "Creando Boda Valentina & Sebastián...");
 
-      const { data: event, error: evErr } = await window.supabaseClient
+      let event = null;
+      const res1 = await window.supabaseClient
         .from("events")
         .insert({
           name: "Boda Valentina & Sebastián 2026",
-          event_date: "2026-11-28",
-          user_id: auth.user.id
+          event_date: "2026-11-28"
         })
         .select()
         .single();
 
-      if (evErr) throw new Error("Error al crear evento: " + evErr.message);
+      if (!res1.error && res1.data) {
+        event = res1.data;
+      } else {
+        const res2 = await window.supabaseClient
+          .from("events")
+          .insert({
+            name: "Boda Valentina & Sebastián 2026",
+            event_date: "2026-11-28",
+            user_id: auth.user.id
+          })
+          .select()
+          .single();
+        if (res2.error) throw new Error("Error al crear evento: " + (res1.error?.message || res2.error.message));
+        event = res2.data;
+      }
+
       const eventId = event.id;
       log(`Evento creado exitosamente (ID: ${eventId})`, "text-[#4ade80]");
 
