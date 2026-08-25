@@ -323,11 +323,14 @@ tailwind.config = {
     const name = document.getElementById("project-name").value.trim();
     const event_date = document.getElementById("project-date").value || null;
 
+    const { data: { user } } = await window.supabaseClient.auth.getUser();
+
     const { data, error } = await window.supabaseClient
       .from("events")
-      .insert({ name, event_date })
+      .insert({ name, event_date, user_id: user?.id })
       .select()
       .single();
+
 
     if (error) {
       formError.textContent = error.message;
