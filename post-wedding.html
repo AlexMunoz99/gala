@@ -464,7 +464,7 @@ tailwind.config = {
     }
 
     const totalConfirmed = allGuests.filter(g => g.rsvp_status === "confirmado").length;
-    const sentCount = allGuests.filter(g => sentSet.has(g.id)).length;
+    const sentCount = allGuests.filter(g => g.thank_you_sent !== undefined ? g.thank_you_sent : sentSet.has(g.id)).length;
     const pendingCount = Math.max(0, (totalConfirmed || allGuests.length) - sentCount);
     document.getElementById("gratitude-pending-badge").textContent = `PENDIENTES: ${pendingCount}`;
 
@@ -474,7 +474,7 @@ tailwind.config = {
     }
 
     tbody.innerHTML = list.map(g => {
-      const isSent = sentSet.has(g.id);
+      const isSent = g.thank_you_sent !== undefined ? g.thank_you_sent : sentSet.has(g.id);
       return `
         <tr class="border-b border-surface-container-highest hover:bg-surface-container/30 transition-colors group ${isSent ? 'bg-surface-container/20 opacity-60' : ''}" data-id="${g.id}">
           <td class="py-4 px-6">
@@ -515,28 +515,45 @@ tailwind.config = {
 
   document.getElementById("gratitude-search").addEventListener("input", renderGratitudeList);
 
-  document.getElementById("gratitude-tbody").addEventListener("click", (e) => {
+  async function updateThankYouStatus(id, newStatus) {
+    // 1. Update in memory
+    const guest = allGuests.find(g => String(g.id) === String(id));
+    if (guest) {
+      if (guest.thank_you_sent !== undefined) {
+        guest.thank_you_sent = newStatus;
+        // Update in Supabase
+        const { error } = await window.supabaseClient
+          .from("guests")
+          .update({ thank_you_sent: newStatus })
+          .eq("id", id);
+        if (error) console.error("Error updating thank_you_sent in Supabase:", error);
+      } else {
+        // Fallback to local storage
+        const sentSet = getSentSet();
+        if (newStatus) {
+          sentSet.add(id);
+        } else {
+          sentSet.delete(id);
+        }
+        saveSentSet(sentSet);
+      }
+    }
+    renderGratitudeList();
+  }
+
+  document.getElementById("gratitude-tbody").addEventListener("click", async (e) => {
     const btn = e.target.closest(".btn-wa-thankyou");
     if (btn) {
       const id = btn.dataset.id;
-      const sentSet = getSentSet();
-      sentSet.add(id);
-      saveSentSet(sentSet);
-      setTimeout(renderGratitudeList, 300);
+      await updateThankYouStatus(id, true);
     }
   });
 
-  document.getElementById("gratitude-tbody").addEventListener("change", (e) => {
+  document.getElementById("gratitude-tbody").addEventListener("change", async (e) => {
     if (e.target.classList.contains("cb-thank-you")) {
       const id = e.target.dataset.id;
-      const sentSet = getSentSet();
-      if (e.target.checked) {
-        sentSet.add(id);
-      } else {
-        sentSet.delete(id);
-      }
-      saveSentSet(sentSet);
-      renderGratitudeList();
+      const newStatus = e.target.checked;
+      await updateThankYouStatus(id, newStatus);
     }
   });
 
