@@ -33,6 +33,210 @@
     main > :last-child { margin-bottom: 0 !important; }
   }
   ::-webkit-scrollbar { display: none; }
+
+  @media print {
+    /* Ocultar elementos de navegación y de control que no van impresos */
+    #app-sidebar, header, #sidebar-toggle, .btn-edit-item, .btn-delete-item, #btn-add-item, #btn-print-pdf, #item-modal, #item-modal-backdrop, .absolute {
+      display: none !important;
+    }
+    
+    /* Reajuste de colores y fuentes para papel físico o PDF limpio */
+    html, body {
+      background: #ffffff !important;
+      color: #000000 !important;
+      font-family: 'Inter', sans-serif !important;
+      font-size: 11pt !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overscroll-behavior: auto !important;
+    }
+
+    #app-content-wrapper {
+      padding-left: 0 !important;
+      width: 100% !important;
+      margin: 0 !important;
+    }
+
+    main {
+      padding: 0 !important;
+      margin-top: 0 !important;
+      background: transparent !important;
+    }
+
+    /* Encabezado principal del reporte */
+    .flex-col.md\:flex-row.justify-between.items-start {
+      margin-bottom: 20px !important;
+      padding: 0 !important;
+      display: block !important;
+    }
+
+    h1.font-display-lg {
+      color: #000000 !important;
+      font-size: 26pt !important;
+      font-family: 'Playfair Display', serif !important;
+      margin-bottom: 5px !important;
+      font-weight: 700 !important;
+    }
+
+    p.font-body-lg {
+      color: #374151 !important;
+      font-size: 10.5pt !important;
+      line-height: 1.5 !important;
+      margin-top: 6px !important;
+    }
+
+    /* Tabla de Metadatos de Duración y Horarios */
+    .w-full.bg-surface-container-high {
+      background: #f9fafb !important;
+      border: 1px solid #e5e7eb !important;
+      color: #000000 !important;
+      border-radius: 12px !important;
+      padding: 20px !important;
+      margin-top: 15px !important;
+      margin-bottom: 30px !important;
+      display: flex !important;
+      flex-direction: row !important;
+      gap: 30px !important;
+      box-shadow: none !important;
+    }
+    
+    .w-full.bg-surface-container-high .flex-1 {
+      display: flex !important;
+      flex-direction: row !important;
+      justify-content: space-around !important;
+      width: 100% !important;
+      gap: 20px !important;
+    }
+
+    .font-label-gold {
+      color: #4b5563 !important;
+      font-size: 8pt !important;
+      letter-spacing: 0.1em !important;
+      font-weight: 700 !important;
+    }
+
+    #stat-total-duration, #stat-start-time, #stat-end-time {
+      color: #111111 !important;
+      font-size: 16pt !important;
+      font-weight: 800 !important;
+    }
+
+    /* Ajuste de Timeline */
+    #program-list {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 20px !important;
+    }
+
+    /* Tarjetas del Programa individual */
+    .group.relative.flex {
+      background: transparent !important;
+      border-bottom: 1px solid #e5e7eb !important;
+      padding-bottom: 20px !important;
+      display: flex !important;
+      flex-direction: row !important;
+      gap: 24px !important;
+      page-break-inside: avoid !important;
+      width: 100% !important;
+      box-shadow: none !important;
+    }
+
+    /* Columna de la Hora */
+    .md\:w-32.flex {
+      width: 90px !important;
+      flex-shrink: 0 !important;
+      display: block !important;
+      text-align: left !important;
+    }
+
+    .font-headline-md.text-headline-md.text-tertiary {
+      color: #111111 !important;
+      font-size: 16pt !important;
+      font-weight: 800 !important;
+    }
+
+    /* Columna de contenido */
+    .flex-grow, .flex-1.md\:pl-12 {
+      padding-left: 0 !important;
+      flex-grow: 1 !important;
+    }
+
+    .bg-surface-container-low {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+    }
+
+    h2.font-headline-lg {
+      color: #000000 !important;
+      font-size: 14pt !important;
+      font-weight: 700 !important;
+      line-height: 1.3 !important;
+    }
+
+    .font-button-text.text-button-text {
+      color: #374151 !important;
+      font-size: 9pt !important;
+      font-weight: 700 !important;
+      border: 1px solid #d1d5db !important;
+      background: #f3f4f6 !important;
+      padding: 3px 10px !important;
+      border-radius: 6px !important;
+    }
+
+    /* Caja de Guion del MC */
+    .p-6.bg-surface-container {
+      background: #fafafa !important;
+      border: 1px solid #e5e7eb !important;
+      border-left: 4px solid #4b5563 !important;
+      padding: 12px 18px !important;
+      border-radius: 6px !important;
+      margin-top: 8px !important;
+    }
+
+    .font-body-lg.italic {
+      color: #1f2937 !important;
+      font-size: 11pt !important;
+    }
+
+    /* Caja de Notas Técnicas */
+    .lg\:col-span-4.flex {
+      display: block !important;
+      margin-top: 12px !important;
+    }
+
+    .lg\:col-span-4.flex ul {
+      display: flex !important;
+      flex-direction: row !important;
+      flex-wrap: wrap !important;
+      gap: 8px !important;
+      list-style-type: none !important;
+      padding: 0 !important;
+    }
+
+    .lg\:col-span-4.flex ul li {
+      background: #f9fafb !important;
+      border: 1px solid #e5e7eb !important;
+      border-radius: 6px !important;
+      padding: 6px 12px !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      font-size: 9.5pt !important;
+      color: #374151 !important;
+    }
+
+    .lg\:col-span-4.flex ul li .material-symbols-outlined {
+      display: none !important;
+    }
+
+    /* Configuración de Márgenes y tamaño de hoja en impresión */
+    @page {
+      size: portrait;
+      margin: 1.8cm 1.5cm;
+    }
+  }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet"/>
