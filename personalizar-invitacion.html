@@ -756,6 +756,69 @@ tailwind.config = {
     }
   });
 
+  function applyRandomDefaultValues() {
+    const randomBrideNames = ["Adriana", "Camila", "Valentina", "Greta", "Mariana", "Lucía", "Victoria", "Gabriela", "Natalia", "Fernanda"];
+    const randomGroomNames = ["Sebastián", "Mateo", "Santiago", "Alex", "Daniel", "Diego", "Nicolás", "Samuel", "Benjamín", "Lucas"];
+    
+    const randomQuotes = [
+      { text: "“El amor no consiste en mirarse el uno al otro, sino en mirar juntos en la misma dirección.”", author: "— Antoine de Saint-Exupéry" },
+      { text: "“Por encima de todo, vístanse de amor, que es el vínculo perfecto.”", author: "— Colosenses 3:14" },
+      { text: "“Donde hay amor hay vida.”", author: "— Mahatma Gandhi" },
+      { text: "“Siempre tuyo, siempre mía, siempre nuestros.”", author: "— Ludwig van Beethoven" }
+    ];
+
+    const randomCities = [
+      { city: "Tlaquepaque, Jalisco", church: "Santuario de Nuestra Señora de la Soledad", reception: "Hacienda del Sol", map1: "https://maps.google.com/?q=Santuario+Soledad+Tlaquepaque", map2: "https://maps.google.com/?q=Hacienda+del+Sol+Tlaquepaque" },
+      { city: "San Miguel de Allende, Gto", church: "Parroquia de San Miguel Arcángel", reception: "Instituto Allende", map1: "https://maps.google.com/?q=Parroquia+San+Miguel+Arcangel", map2: "https://maps.google.com/?q=Instituto+Allende" },
+      { city: "Mérida, Yucatán", church: "Catedral de San Ildefonso", reception: "Quinta Montes Molina", map1: "https://maps.google.com/?q=Catedral+Merida", map2: "https://maps.google.com/?q=Quinta+Montes+Molina" },
+      { city: "Oaxaca de Juárez, Oax", church: "Templo de Santo Domingo de Guzmán", reception: "Jardín Etnobotánico Oaxaca", map1: "https://maps.google.com/?q=Templo+Santo+Domingo+Oaxaca", map2: "https://maps.google.com/?q=Jardin+Etnobotanico+Oaxaca" }
+    ];
+
+    const randomPadrinosList = [
+      ["Lauro Coss Y León Rubio", "Itzel Durand Cortés"],
+      ["Ing. Carlos Mendoza", "Dra. Elena Rostova"],
+      ["Dr. Fernando Gómez", "Lic. Patricia Quiroz"],
+      ["Roberto Sierra", "Ana María Orozco"]
+    ];
+
+    const randomParentsList = [
+      { bf: "Guillermo Martínez Gómez", bm: "María Elena Padilla Gutiérrez", gf: "Armando Jiménez Jiménez", gm: "Blanca Delia González Lozano" },
+      { bf: "Ricardo Fuentes S.", bm: "Rosaura Delgado Tapia", gf: "Ing. Alberto Lozano", gm: "Dra. Sofía Rincón" },
+      { bf: "Héctor Silva", bm: "Lucía Villaseñor", gf: "Enrique Olvera", gm: "Martha Mendoza" }
+    ];
+
+    // Pick random indices
+    const bride = randomBrideNames[Math.floor(Math.random() * randomBrideNames.length)];
+    const groom = randomGroomNames[Math.floor(Math.random() * randomGroomNames.length)];
+    const quote = randomQuotes[Math.floor(Math.random() * randomQuotes.length)];
+    const location = randomCities[Math.floor(Math.random() * randomCities.length)];
+    const padrinos = randomPadrinosList[Math.floor(Math.random() * randomPadrinosList.length)];
+    const parents = randomParentsList[Math.floor(Math.random() * randomParentsList.length)];
+
+    document.getElementById("bride-name-input").value = bride;
+    document.getElementById("groom-name-input").value = groom;
+    document.getElementById("quote-text-input").value = quote.text;
+    document.getElementById("quote-author-input").value = quote.author;
+    
+    document.getElementById("ceremony-name-input").value = location.church;
+    document.getElementById("ceremony-time-input").value = "6:00 PM";
+    document.getElementById("ceremony-city-input").value = location.city;
+    document.getElementById("ceremony-map-input").value = location.map1;
+
+    document.getElementById("reception-name-input").value = location.reception;
+    document.getElementById("reception-time-input").value = "8:00 PM";
+    document.getElementById("reception-city-input").value = location.city;
+    document.getElementById("reception-map-input").value = location.map2;
+
+    document.getElementById("padrino-1-input").value = padrinos[0];
+    document.getElementById("padrino-2-input").value = padrinos[1];
+
+    document.getElementById("bride-father-input").value = parents.bf;
+    document.getElementById("bride-mother-input").value = parents.bm;
+    document.getElementById("groom-father-input").value = parents.gf;
+    document.getElementById("groom-mother-input").value = parents.gm;
+  }
+
   // Inicialización
   (async function init() {
     const auth = await window.requireAuth();
@@ -809,9 +872,8 @@ tailwind.config = {
       if (saved.bank_name) document.getElementById("bank-name-input").value = saved.bank_name;
       if (saved.bank_clabe) document.getElementById("bank-clabe-input").value = saved.bank_clabe;
     } else {
-      // Default dummy values for brand new configurations
-      document.getElementById("bride-name-input").value = "Yariana";
-      document.getElementById("groom-name-input").value = "Daniel";
+      // Default dummy values using random names and places
+      applyRandomDefaultValues();
     }
 
     showStep(1);
