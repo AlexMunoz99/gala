@@ -41,85 +41,96 @@ ALTER TABLE program_items ENABLE ROW LEVEL SECURITY;
 ALTER TABLE layout_elements ENABLE ROW LEVEL SECURITY;
 ALTER TABLE seating_assignments ENABLE ROW LEVEL SECURITY;
 
+-- --- Función auxiliar para verificar si el usuario es Admin ---
+CREATE OR REPLACE FUNCTION is_admin()
+RETURNS boolean SECURITY DEFINER AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM profiles
+    WHERE id = auth.uid() AND role = 'admin'
+  );
+END;
+$$ LANGUAGE plpgsql;
+
 -- --- políticas para PROFILES ---
 DROP POLICY IF EXISTS "Permitir lectura de perfiles propios" ON profiles;
-CREATE POLICY "Permitir lectura de perfiles propios" ON profiles
-  FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "Permitir lectura de todos los perfiles a admins y propios a usuarios" ON profiles
+  FOR SELECT USING (auth.uid() = id OR is_admin());
 
 DROP POLICY IF EXISTS "Permitir actualización de perfiles propios" ON profiles;
-CREATE POLICY "Permitir actualización de perfiles propios" ON profiles
-  FOR UPDATE USING (auth.uid() = id);
+CREATE POLICY "Permitir actualización de perfiles a admins y propios a usuarios" ON profiles
+  FOR UPDATE USING (auth.uid() = id OR is_admin());
 
 -- --- políticas para EVENTS (Eventos/Proyectos) ---
 DROP POLICY IF EXISTS "Usuarios ven sus propios eventos" ON events;
 CREATE POLICY "Usuarios ven sus propios eventos" ON events
-  FOR SELECT USING (auth.uid() = user_id);
+  FOR SELECT USING (auth.uid() = user_id OR is_admin());
 
 DROP POLICY IF EXISTS "Usuarios insertan sus propios eventos" ON events;
 CREATE POLICY "Usuarios insertan sus propios eventos" ON events
-  FOR INSERT WITH CHECK (auth.uid() = user_id OR auth.uid() IS NOT NULL);
+  FOR INSERT WITH CHECK (auth.uid() = user_id OR auth.uid() IS NOT NULL OR is_admin());
 
 DROP POLICY IF EXISTS "Usuarios actualizan sus propios eventos" ON events;
 CREATE POLICY "Usuarios actualizan sus propios eventos" ON events
-  FOR UPDATE USING (auth.uid() = user_id);
+  FOR UPDATE USING (auth.uid() = user_id OR is_admin());
 
 DROP POLICY IF EXISTS "Usuarios eliminan sus propios eventos" ON events;
 CREATE POLICY "Usuarios eliminan sus propios eventos" ON events
-  FOR DELETE USING (auth.uid() = user_id);
+  FOR DELETE USING (auth.uid() = user_id OR is_admin());
 
 -- --- políticas para GUEST_GROUPS (Grupos de invitados) ---
 DROP POLICY IF EXISTS "Manage own guest groups" ON guest_groups;
 CREATE POLICY "Manage own guest groups" ON guest_groups FOR ALL
-  USING (EXISTS (SELECT 1 FROM events WHERE events.id = guest_groups.event_id AND events.user_id = auth.uid()))
-  WITH CHECK (EXISTS (SELECT 1 FROM events WHERE events.id = guest_groups.event_id AND events.user_id = auth.uid()));
+  USING (EXISTS (SELECT 1 FROM events WHERE events.id = guest_groups.event_id AND (events.user_id = auth.uid() OR is_admin())))
+  WITH CHECK (EXISTS (SELECT 1 FROM events WHERE events.id = guest_groups.event_id AND (events.user_id = auth.uid() OR is_admin())));
 
 -- --- políticas para GUESTS (Invitados) ---
 DROP POLICY IF EXISTS "Manage own guests" ON guests;
 CREATE POLICY "Manage own guests" ON guests FOR ALL
-  USING (EXISTS (SELECT 1 FROM events WHERE events.id = guests.event_id AND events.user_id = auth.uid()))
-  WITH CHECK (EXISTS (SELECT 1 FROM events WHERE events.id = guests.event_id AND events.user_id = auth.uid()));
+  USING (EXISTS (SELECT 1 FROM events WHERE events.id = guests.event_id AND (events.user_id = auth.uid() OR is_admin())))
+  WITH CHECK (EXISTS (SELECT 1 FROM events WHERE events.id = guests.event_id AND (events.user_id = auth.uid() OR is_admin())));
 
 -- --- políticas para VENDORS (Proveedores/Presupuesto) ---
 DROP POLICY IF EXISTS "Manage own vendors" ON vendors;
 CREATE POLICY "Manage own vendors" ON vendors FOR ALL
-  USING (EXISTS (SELECT 1 FROM events WHERE events.id = vendors.event_id AND events.user_id = auth.uid()))
-  WITH CHECK (EXISTS (SELECT 1 FROM events WHERE events.id = vendors.event_id AND events.user_id = auth.uid()));
+  USING (EXISTS (SELECT 1 FROM events WHERE events.id = vendors.event_id AND (events.user_id = auth.uid() OR is_admin())))
+  WITH CHECK (EXISTS (SELECT 1 FROM events WHERE events.id = vendors.event_id AND (events.user_id = auth.uid() OR is_admin())));
 
 -- --- políticas para VENUES (Lugares) ---
 DROP POLICY IF EXISTS "Manage own venues" ON venues;
 CREATE POLICY "Manage own venues" ON venues FOR ALL
-  USING (EXISTS (SELECT 1 FROM events WHERE events.id = venues.event_id AND events.user_id = auth.uid()))
-  WITH CHECK (EXISTS (SELECT 1 FROM events WHERE events.id = venues.event_id AND events.user_id = auth.uid()));
+  USING (EXISTS (SELECT 1 FROM events WHERE events.id = venues.event_id AND (events.user_id = auth.uid() OR is_admin())))
+  WITH CHECK (EXISTS (SELECT 1 FROM events WHERE events.id = venues.event_id AND (events.user_id = auth.uid() OR is_admin())));
 
 -- --- políticas para TASKS (Tablero Kanban) ---
 DROP POLICY IF EXISTS "Manage own tasks" ON tasks;
 CREATE POLICY "Manage own tasks" ON tasks FOR ALL
-  USING (EXISTS (SELECT 1 FROM events WHERE events.id = tasks.event_id AND events.user_id = auth.uid()))
-  WITH CHECK (EXISTS (SELECT 1 FROM events WHERE events.id = tasks.event_id AND events.user_id = auth.uid()));
+  USING (EXISTS (SELECT 1 FROM events WHERE events.id = tasks.event_id AND (events.user_id = auth.uid() OR is_admin())))
+  WITH CHECK (EXISTS (SELECT 1 FROM events WHERE events.id = tasks.event_id AND (events.user_id = auth.uid() OR is_admin())));
 
 -- --- políticas para ITINERARY_ITEMS (Itinerario) ---
 DROP POLICY IF EXISTS "Manage own itinerary" ON itinerary_items;
 CREATE POLICY "Manage own itinerary" ON itinerary_items FOR ALL
-  USING (EXISTS (SELECT 1 FROM events WHERE events.id = itinerary_items.event_id AND events.user_id = auth.uid()))
-  WITH CHECK (EXISTS (SELECT 1 FROM events WHERE events.id = itinerary_items.event_id AND events.user_id = auth.uid()));
+  USING (EXISTS (SELECT 1 FROM events WHERE events.id = itinerary_items.event_id AND (events.user_id = auth.uid() OR is_admin())))
+  WITH CHECK (EXISTS (SELECT 1 FROM events WHERE events.id = itinerary_items.event_id AND (events.user_id = auth.uid() OR is_admin())));
 
 -- --- políticas para PROGRAM_ITEMS (Programa oficial) ---
 DROP POLICY IF EXISTS "Manage own program" ON program_items;
 CREATE POLICY "Manage own program" ON program_items FOR ALL
-  USING (EXISTS (SELECT 1 FROM events WHERE events.id = program_items.event_id AND events.user_id = auth.uid()))
-  WITH CHECK (EXISTS (SELECT 1 FROM events WHERE events.id = program_items.event_id AND events.user_id = auth.uid()));
+  USING (EXISTS (SELECT 1 FROM events WHERE events.id = program_items.event_id AND (events.user_id = auth.uid() OR is_admin())))
+  WITH CHECK (EXISTS (SELECT 1 FROM events WHERE events.id = program_items.event_id AND (events.user_id = auth.uid() OR is_admin())));
 
 -- --- políticas para LAYOUT_ELEMENTS (Plano de asientos) ---
 DROP POLICY IF EXISTS "Manage own layout" ON layout_elements;
 CREATE POLICY "Manage own layout" ON layout_elements FOR ALL
-  USING (EXISTS (SELECT 1 FROM events WHERE events.id = layout_elements.event_id AND events.user_id = auth.uid()))
-  WITH CHECK (EXISTS (SELECT 1 FROM events WHERE events.id = layout_elements.event_id AND events.user_id = auth.uid()));
+  USING (EXISTS (SELECT 1 FROM events WHERE events.id = layout_elements.event_id AND (events.user_id = auth.uid() OR is_admin())))
+  WITH CHECK (EXISTS (SELECT 1 FROM events WHERE events.id = layout_elements.event_id AND (events.user_id = auth.uid() OR is_admin())));
 
 -- --- políticas para SEATING_ASSIGNMENTS (Asignación de sillas) ---
 DROP POLICY IF EXISTS "Manage own seating" ON seating_assignments;
 CREATE POLICY "Manage own seating" ON seating_assignments FOR ALL
-  USING (EXISTS (SELECT 1 FROM guests WHERE guests.id = seating_assignments.guest_id AND EXISTS (SELECT 1 FROM events WHERE events.id = guests.event_id AND events.user_id = auth.uid())))
-  WITH CHECK (EXISTS (SELECT 1 FROM guests WHERE guests.id = seating_assignments.guest_id AND EXISTS (SELECT 1 FROM events WHERE events.id = guests.event_id AND events.user_id = auth.uid())));
+  USING (EXISTS (SELECT 1 FROM guests WHERE guests.id = seating_assignments.guest_id AND EXISTS (SELECT 1 FROM events WHERE events.id = guests.event_id AND (events.user_id = auth.uid() OR is_admin()))))
+  WITH CHECK (EXISTS (SELECT 1 FROM guests WHERE guests.id = seating_assignments.guest_id AND EXISTS (SELECT 1 FROM events WHERE events.id = guests.event_id AND (events.user_id = auth.uid() OR is_admin()))));
 
 
 -- ==========================================

@@ -171,6 +171,7 @@ tailwind.config = {
 
   let allEvents = [];
   let userProfile = null;
+  let currentUser = null;
   const PLAN_LIMITS = {
     free: 3,
     standard: 5,
@@ -233,11 +234,14 @@ tailwind.config = {
     const { data: { session } } = await window.supabaseClient.auth.getSession();
     if (!session) return;
 
-    const { data, error } = await window.supabaseClient
-      .from("events")
-      .select("*")
-      .eq("user_id", session.user.id)
-      .order("created_at", { ascending: false });
+    let query = window.supabaseClient.from("events").select("*");
+    
+    // Regular users only see their own events, admins see everything
+    if (userProfile?.role !== "admin") {
+      query = query.eq("user_id", session.user.id);
+    }
+
+    const { data, error } = await query.order("created_at", { ascending: false });
 
     if (error) {
       grid.innerHTML = `<p class="text-error col-span-full py-6 text-center text-xs">Error al cargar eventos: ${escapeHtml(error.message)}</p>`;
@@ -314,7 +318,7 @@ tailwind.config = {
   function openModal() {
     const userPlan = userProfile?.plan || 'free';
     const limit = PLAN_LIMITS[userPlan];
-    if (allEvents.length >= limit) {
+    if (userProfile?.role !== "admin" && allEvents.length >= limit) {
       alert(`Has alcanzado el límite de tu plan (${limit} eventos). Actualiza tu plan en la pantalla de Precios.`);
       window.location.href = "pricing.html";
       return;
@@ -340,11 +344,14 @@ tailwind.config = {
     const name = document.getElementById("project-name").value.trim();
     const event_date = document.getElementById("project-date").value || null;
 
-    const { data: { user } } = await window.supabaseClient.auth.getUser();
+    const payload = { name, event_date };
+    if (currentUser?.id) {
+      payload.user_id = currentUser.id;
+    }
 
     const { data, error } = await window.supabaseClient
       .from("events")
-      .insert({ name, event_date, user_id: user?.id })
+      .insert(payload)
       .select()
       .single();
 
@@ -362,7 +369,7 @@ tailwind.config = {
       e.preventDefault();
       const userPlan = userProfile?.plan || 'free';
       const limit = PLAN_LIMITS[userPlan];
-      if (allEvents.length >= limit) {
+      if (userProfile?.role !== "admin" && allEvents.length >= limit) {
         alert(`Has alcanzado el límite de tu plan (${limit} eventos). Actualiza tu plan en la pantalla de Precios.`);
         window.location.href = "pricing.html";
         return;
@@ -528,6 +535,7 @@ tailwind.config = {
       const auth = await window.requireAuth();
       if (!auth) return;
       userProfile = auth.profile;
+      currentUser = auth.user;
       const nameEl = document.getElementById("current-user-name");
       if (nameEl && auth.profile) nameEl.textContent = auth.profile.full_name || auth.user.email;
       const roleEl = document.getElementById("current-user-role");

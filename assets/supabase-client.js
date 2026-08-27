@@ -56,7 +56,7 @@ async function requireAuth() {
 
     // --- Control de Acceso por Módulos y Redirección de Planes ---
     const path = window.location.pathname;
-    const isFree = profile.plan === "free";
+    const isFree = profile.plan === "free" && profile.role !== "admin";
     const blockedPages = [
       "invitados.html",
       "itinerario.html",
@@ -71,6 +71,7 @@ async function requireAuth() {
       window.location.href = "pricing.html";
       return null;
     }
+
 
     // --- Reestructuración Dinámica del Sidebar ---
     setTimeout(() => {
