@@ -14,7 +14,10 @@ async function requireAuth() {
   try {
     const { data: { session } } = await window.supabaseClient.auth.getSession();
     if (!session) {
-      window.location.href = "login.html";
+      const path = window.location.pathname;
+      if (!path.endsWith("login.html") && !path.endsWith("rsvp.html") && !path.endsWith("invitacion.html")) {
+        window.location.href = "login.html";
+      }
       return null;
     }
     
@@ -37,9 +40,12 @@ async function requireAuth() {
       profile = {
         id: session.user.id,
         role: "admin",
+        plan: "free",
         is_approved: true,
         full_name: session.user.user_metadata?.full_name || session.user.email?.split("@")[0] || "Usuario Gala"
       };
+    } else if (!profile.plan) {
+      profile.plan = "free";
     }
 
     const onPendingPage = window.location.pathname.endsWith("pendiente-aprobacion.html");
@@ -47,6 +53,60 @@ async function requireAuth() {
       window.location.href = "pendiente-aprobacion.html";
       return null;
     }
+
+    // --- Control de Acceso por Módulos y Redirección de Planes ---
+    const path = window.location.pathname;
+    const isFree = profile.plan === "free";
+    const blockedPages = [
+      "invitados.html",
+      "itinerario.html",
+      "programa.html",
+      "lugares.html",
+      "tareas.html",
+      "seating-materials.html",
+      "post-wedding.html"
+    ];
+    const currentPage = path.split("/").pop();
+    if (isFree && blockedPages.includes(currentPage)) {
+      window.location.href = "pricing.html";
+      return null;
+    }
+
+    // --- Reestructuración Dinámica del Sidebar ---
+    setTimeout(() => {
+      const sidebar = document.getElementById("app-sidebar");
+      if (sidebar) {
+        // 1. Reposicionar y renombrar botón "Mis Eventos" (antes "Mis Proyectos") al tope
+        const bottomCta = sidebar.querySelector(".sidebar-cta");
+        if (bottomCta) {
+          const btn = bottomCta.querySelector("a");
+          if (btn) {
+            btn.innerHTML = `<span class="material-symbols-outlined nav-icon">apps</span><span class="sidebar-label">Mis Eventos</span>`;
+            btn.href = "proyectos.html";
+            
+            const logoDiv = sidebar.querySelector(".h-20");
+            if (logoDiv && !sidebar.querySelector(".moved-events-btn")) {
+              const wrapper = document.createElement("div");
+              wrapper.className = "px-4 pt-2 pb-1 border-b border-tertiary/10 moved-events-btn shrink-0";
+              btn.className = "w-full py-2.5 bg-tertiary text-on-tertiary font-button-text text-button-text uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-2 rounded-lg text-[10px] font-bold shadow-md shadow-tertiary/15";
+              wrapper.appendChild(btn);
+              logoDiv.after(wrapper);
+              bottomCta.remove();
+            }
+          }
+        }
+
+        // 2. Ocultar enlaces de módulos no permitidos para Plan Gratis
+        if (isFree) {
+          sidebar.querySelectorAll("nav a").forEach(a => {
+            const page = a.getAttribute("href");
+            if (blockedPages.includes(page)) {
+              a.remove();
+            }
+          });
+        }
+      }
+    }, 10);
 
     return { user: session.user, profile };
   } catch(err) {
@@ -289,6 +349,61 @@ function showConfirmDialog({ title = "¿Estás seguro?", message = "Esta acción
  * Optimización y Adaptabilidad Móvil Global (Mobile Drawer & Responsive Engine)
  */
 function initMobileEngine() {
+  // Estilos de Densidad Compacta para Gala ERP
+  if (!document.getElementById("gala-compact-styles")) {
+    const compactStyle = document.createElement("style");
+    compactStyle.id = "gala-compact-styles";
+    compactStyle.textContent = `
+      html {
+        font-size: 13.5px !important;
+      }
+      .py-16, .py-12 {
+        padding-top: 1.5rem !important;
+        padding-bottom: 1.5rem !important;
+      }
+      .pt-20 {
+        padding-top: 4.5rem !important;
+      }
+      .pb-section-gap {
+        padding-bottom: 2rem !important;
+      }
+      .gap-section-gap {
+        gap: 2.5rem !important;
+      }
+      .mt-12 {
+        margin-top: 1.2rem !important;
+      }
+      header.h-20 {
+        height: 3.5rem !important;
+      }
+      :root {
+        --sidebar-w: 168px !important;
+      }
+      html.sidebar-collapsed {
+        --sidebar-w: 56px !important;
+      }
+      .p-8 {
+        padding: 1.25rem !important;
+      }
+      .p-6 {
+        padding: 1rem !important;
+      }
+      .gap-8 {
+        gap: 1.25rem !important;
+      }
+      .gap-6 {
+        gap: 1rem !important;
+      }
+      .py-4.px-6, .py-3.px-5 {
+        padding-top: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+      }
+    `;
+    document.head.appendChild(compactStyle);
+  }
+
   // Inyectar estilos responsivos globales para smartphones y tablets
   if (!document.getElementById("gala-mobile-styles")) {
     const style = document.createElement("style");
