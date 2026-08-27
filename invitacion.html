@@ -606,6 +606,89 @@ tailwind.config = {
     // 3. Aplicar personalizaciones guardadas
     const saved = getStoredSettings();
     if (saved) {
+      if (saved.bride_name && saved.groom_name) {
+        const namesStr = `${saved.bride_name} & ${saved.groom_name}`;
+        document.getElementById("envelope-couple-names").textContent = namesStr;
+        document.getElementById("invitation-couple-names").innerHTML = `${saved.bride_name.toUpperCase()}<br/><span class='font-script text-5xl sm:text-6xl text-gold-light tracking-normal lowercase -my-2 block'>&</span>${saved.groom_name.toUpperCase()}`;
+        const initials = `${saved.bride_name.charAt(0)}${saved.groom_name.charAt(0)}`;
+        document.getElementById("monogram-seal").textContent = initials;
+        document.getElementById("monogram-text").textContent = initials;
+        const bottomMonogram = document.getElementById("monogram-bottom");
+        if (bottomMonogram) bottomMonogram.textContent = initials;
+      }
+
+      if (saved.theme_color || saved.theme_font) {
+        const color = saved.theme_color || 'gold';
+        const font = saved.theme_font || 'elegant';
+        
+        let primaryColor = "#bfa15f";
+        let darkColor = "#8c6d32";
+        let bgColor = "#f9f7f2";
+        let textColor = "#2b2623";
+
+        if (color === 'pink') {
+          primaryColor = "#f472b6";
+          darkColor = "#be185d";
+          bgColor = "#faf5ff";
+          textColor = "#4a044e";
+        } else if (color === 'blue') {
+          primaryColor = "#3b82f6";
+          darkColor = "#1e3a8a";
+          bgColor = "#f3f4f6";
+          textColor = "#1e293b";
+        } else if (color === 'green') {
+          primaryColor = "#10b981";
+          darkColor = "#064e3b";
+          bgColor = "#fffbeb";
+          textColor = "#065f46";
+        }
+
+        const style = document.createElement("style");
+        style.textContent = `
+          #invitation-container {
+            background-color: ${bgColor} !important;
+            color: ${textColor} !important;
+          }
+          .text-gold, .text-gold-dark, .text-gold-light {
+            color: ${primaryColor} !important;
+          }
+          .bg-gold, .bg-gold-dark, .bg-gold-light {
+            background-color: ${primaryColor} !important;
+          }
+          .border-gold, .border-gold-dark, .border-gold-light {
+            border-color: ${primaryColor} !important;
+          }
+          #monogram-text, #date-weekday-display, .text-gold-dark {
+            color: ${darkColor} !important;
+          }
+        `;
+
+        if (font === 'elegant') {
+          style.textContent += `
+            #invitation-container {
+              font-family: 'Cormorant Garamond', serif !important;
+            }
+          `;
+        } else if (font === 'romantic') {
+          style.textContent += `
+            #invitation-container {
+              font-family: 'Cormorant Garamond', serif !important;
+            }
+            .font-script {
+              font-family: 'Alex Brush', cursive !important;
+            }
+          `;
+        } else if (font === 'minimalist') {
+          style.textContent += `
+            #invitation-container, .font-serif-title, .font-display, .font-script, .font-sans {
+              font-family: 'Montserrat', sans-serif !important;
+            }
+          `;
+        }
+
+        document.head.appendChild(style);
+      }
+
       if (saved.cover_image) {
         document.getElementById("hero-cover-section").style.backgroundImage = `linear-gradient(to bottom, rgba(30,25,22,0.4) 0%, rgba(30,25,22,0.1) 40%, rgba(30,25,22,0.7) 100%), url('${saved.cover_image}')`;
       }

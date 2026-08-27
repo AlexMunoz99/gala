@@ -139,235 +139,328 @@ tailwind.config = {
     </div>
   </header>
 
-  <main class="flex-1 pt-24 px-6 md:px-12 pb-16 bg-on-surface-variant/5 min-h-screen">
-    <div class="max-w-6xl mx-auto flex flex-col gap-8">
+  <main class="flex-1 pt-16 px-4 md:px-8 pb-12 bg-on-surface-variant/5 min-h-screen">
+    <div class="max-w-6xl mx-auto flex flex-col gap-6">
       
       <!-- Top Title & Action Bar -->
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-tertiary/10 pb-6">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-tertiary/10 pb-4">
         <div>
-          <span class="font-label-gold text-xs uppercase tracking-[0.25em] text-tertiary block mb-1">EDITOR DE INVITACIÓN DIGITAL</span>
-          <h1 class="font-headline-lg text-3xl md:text-4xl text-on-surface">Personalizar Invitación Web</h1>
-          <p class="font-body-md text-on-surface-variant text-sm mt-1">Configura cada detalle de la invitación que recibirán tus invitados en sus teléfonos.</p>
+          <span class="font-label-gold text-[10px] uppercase tracking-[0.25em] text-tertiary block mb-1">EDITOR DE INVITACIÓN DIGITAL</span>
+          <h1 class="font-display-lg text-2xl text-on-surface">Personalizar Invitación Web</h1>
+          <p class="font-body-md text-on-surface-variant text-xs mt-1">Configura cada detalle de la invitación que recibirán tus invitados en sus teléfonos.</p>
         </div>
-        <div class="flex items-center gap-3">
-          <a id="btn-view-invitation-live" href="invitacion.html" target="_blank" class="px-6 py-3.5 bg-surface-container border border-tertiary/30 text-tertiary font-button-text text-button-text rounded-xl uppercase tracking-widest hover:bg-tertiary/10 transition-all flex items-center gap-2 shadow-lg">
-            <span class="material-symbols-outlined text-[20px]">visibility</span>
+        <div class="flex items-center gap-2">
+          <a id="btn-view-invitation-live" href="invitacion.html" target="_blank" class="px-4 py-2 bg-surface-container border border-tertiary/30 text-tertiary font-button-text text-xs rounded-lg uppercase tracking-widest hover:bg-tertiary/10 transition-all flex items-center gap-1.5 shadow-md">
+            <span class="material-symbols-outlined text-[16px]">visibility</span>
             Ver en Vivo
           </a>
-          <button id="btn-save-invitation-settings" class="px-8 py-3.5 bg-tertiary text-on-tertiary font-button-text text-button-text rounded-xl uppercase tracking-widest hover:brightness-110 transition-all flex items-center gap-2 font-semibold shadow-xl shadow-tertiary/20">
-            <span class="material-symbols-outlined text-[20px]">save</span>
+          <button id="btn-save-invitation-settings" class="px-6 py-2 bg-tertiary text-on-tertiary font-button-text text-xs rounded-lg uppercase tracking-widest hover:brightness-110 transition-all flex items-center gap-1.5 font-semibold shadow-lg shadow-tertiary/20">
+            <span class="material-symbols-outlined text-[16px]">save</span>
             Guardar Cambios
           </button>
         </div>
       </div>
 
-      <!-- Main Form Grid -->
-      <form id="invitation-form" class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <!-- Layout Grid: 12 Columns -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
-        <!-- Left Column: Portada, Pareja, Cita y Música (7 cols) -->
-        <div class="lg:col-span-7 flex flex-col gap-6">
+        <!-- Left Panel: Wizard (7 cols) -->
+        <div class="lg:col-span-7 flex flex-col gap-4 bg-surface-container rounded-2xl p-5 md:p-6 border border-tertiary/10 shadow-xl">
+          
+          <!-- Step Navigation Tabs -->
+          <div class="flex border-b border-tertiary/10 pb-3 justify-between text-center gap-1">
+            <button type="button" class="wizard-tab flex-1 py-2 text-xs font-semibold border-b-2 border-tertiary text-tertiary" data-step="1">1. Diseño</button>
+            <button type="button" class="wizard-tab flex-1 py-2 text-xs font-semibold border-b-2 border-transparent text-on-surface-variant hover:text-tertiary" data-step="2">2. Novios</button>
+            <button type="button" class="wizard-tab flex-1 py-2 text-xs font-semibold border-b-2 border-transparent text-on-surface-variant hover:text-tertiary" data-step="3">3. Logística</button>
+            <button type="button" class="wizard-tab flex-1 py-2 text-xs font-semibold border-b-2 border-transparent text-on-surface-variant hover:text-tertiary" data-step="4">4. Detalles</button>
+          </div>
 
-          <!-- Card 1: Portada & Foto de la Pareja -->
-          <div class="bg-surface-container rounded-2xl p-6 md:p-8 border border-tertiary/15 shadow-xl flex flex-col gap-5">
-            <div class="flex items-center justify-between">
-              <h2 class="font-headline-md text-xl text-on-surface flex items-center gap-2">
-                <span class="material-symbols-outlined text-tertiary">photo_camera</span>
+          <!-- Form Element -->
+          <form id="invitation-form" class="flex flex-col gap-4 mt-2">
+            
+            <!-- STEP 1: DISEÑO Y ESTILOS -->
+            <div id="step-section-1" class="step-section flex flex-col gap-4">
+              <h3 class="font-display-lg text-base text-on-surface flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-tertiary text-[18px]">palette</span>
+                Catálogo de Colores y Tipografías
+              </h3>
+              
+              <div class="flex flex-col gap-1">
+                <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium">Paleta de Colores</label>
+                <div class="grid grid-cols-2 gap-2 mt-1">
+                  <label class="bg-surface border border-tertiary/20 p-2.5 rounded-lg flex items-center gap-2.5 cursor-pointer hover:border-tertiary transition-colors">
+                    <input type="radio" name="theme_color" value="gold" checked class="accent-tertiary"/>
+                    <div class="flex gap-1 shrink-0">
+                      <div class="w-3.5 h-3.5 rounded-full bg-[#e9c349]"></div>
+                      <div class="w-3.5 h-3.5 rounded-full bg-[#131411]"></div>
+                    </div>
+                    <span class="text-xs text-on-surface">Oro & Negro</span>
+                  </label>
+                  <label class="bg-surface border border-tertiary/20 p-2.5 rounded-lg flex items-center gap-2.5 cursor-pointer hover:border-tertiary transition-colors">
+                    <input type="radio" name="theme_color" value="pink" class="accent-tertiary"/>
+                    <div class="flex gap-1 shrink-0">
+                      <div class="w-3.5 h-3.5 rounded-full bg-[#f472b6]"></div>
+                      <div class="w-3.5 h-3.5 rounded-full bg-[#faf5ff]"></div>
+                    </div>
+                    <span class="text-xs text-on-surface">Rosa & Lavanda</span>
+                  </label>
+                  <label class="bg-surface border border-tertiary/20 p-2.5 rounded-lg flex items-center gap-2.5 cursor-pointer hover:border-tertiary transition-colors">
+                    <input type="radio" name="theme_color" value="blue" class="accent-tertiary"/>
+                    <div class="flex gap-1 shrink-0">
+                      <div class="w-3.5 h-3.5 rounded-full bg-[#1e3a8a]"></div>
+                      <div class="w-3.5 h-3.5 rounded-full bg-[#f3f4f6]"></div>
+                    </div>
+                    <span class="text-xs text-on-surface">Marino & Plata</span>
+                  </label>
+                  <label class="bg-surface border border-tertiary/20 p-2.5 rounded-lg flex items-center gap-2.5 cursor-pointer hover:border-tertiary transition-colors">
+                    <input type="radio" name="theme_color" value="green" class="accent-tertiary"/>
+                    <div class="flex gap-1 shrink-0">
+                      <div class="w-3.5 h-3.5 rounded-full bg-[#10b981]"></div>
+                      <div class="w-3.5 h-3.5 rounded-full bg-[#fffbeb]"></div>
+                    </div>
+                    <span class="text-xs text-on-surface">Verde & Arena</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-1">
+                <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium">Combinación Tipográfica</label>
+                <div class="grid grid-cols-1 gap-2 mt-1">
+                  <label class="bg-surface border border-tertiary/20 p-2.5 rounded-lg flex items-center justify-between cursor-pointer hover:border-tertiary transition-colors">
+                    <div class="flex items-center gap-2.5">
+                      <input type="radio" name="theme_font" value="elegant" checked class="accent-tertiary"/>
+                      <span class="text-xs text-on-surface">Elegante Editorial (Playfair + Serif)</span>
+                    </div>
+                    <span class="text-[10px] text-tertiary tracking-wider uppercase font-serif" style="font-family: 'Playfair Display', serif;">Elegante</span>
+                  </label>
+                  <label class="bg-surface border border-tertiary/20 p-2.5 rounded-lg flex items-center justify-between cursor-pointer hover:border-tertiary transition-colors">
+                    <div class="flex items-center gap-2.5">
+                      <input type="radio" name="theme_font" value="romantic" class="accent-tertiary"/>
+                      <span class="text-xs text-on-surface">Romántica Cursiva (Alex Brush + Inter)</span>
+                    </div>
+                    <span class="text-[14px] text-tertiary font-script" style="font-family: 'Alex Brush', cursive;">Romantic</span>
+                  </label>
+                  <label class="bg-surface border border-tertiary/20 p-2.5 rounded-lg flex items-center justify-between cursor-pointer hover:border-tertiary transition-colors">
+                    <div class="flex items-center gap-2.5">
+                      <input type="radio" name="theme_font" value="minimalist" class="accent-tertiary"/>
+                      <span class="text-xs text-on-surface">Moderno Minimalista (Inter + Sans)</span>
+                    </div>
+                    <span class="text-[9px] text-tertiary font-bold tracking-widest uppercase font-sans">MINIMAL</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 2: NOVIOS Y FRASES -->
+            <div id="step-section-2" class="step-section hidden flex flex-col gap-4">
+              <h3 class="font-display-lg text-base text-on-surface flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-tertiary text-[18px]">favorite</span>
                 Portada & Foto de los Novios
-              </h2>
-              <span class="font-label-gold text-[11px] uppercase tracking-wider text-tertiary">Páginas 1 y 2</span>
+              </h3>
+              <div class="grid grid-cols-2 gap-3">
+                <div class="flex flex-col gap-1">
+                  <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium" for="bride-name-input">Nombre de la Novia *</label>
+                  <input id="bride-name-input" required class="bg-surface border border-tertiary/20 rounded-lg py-2 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary" type="text" placeholder="Ej. Yariana"/>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium" for="groom-name-input">Nombre del Novio *</label>
+                  <input id="groom-name-input" required class="bg-surface border border-tertiary/20 rounded-lg py-2 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary" type="text" placeholder="Ej. Daniel"/>
+                </div>
+              </div>
+              <div class="flex flex-col sm:flex-row gap-4 items-center">
+                <div class="w-24 h-32 rounded-lg overflow-hidden bg-surface-container-high border border-dashed border-tertiary/30 flex items-center justify-center relative group shrink-0">
+                  <img id="cover-photo-preview" src="assets/hero-gala.jpg" alt="Foto de portada" class="w-full h-full object-cover"/>
+                  <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer" onclick="document.getElementById('cover-file-input').click()">
+                    <span class="material-symbols-outlined text-white text-xl">cloud_upload</span>
+                  </div>
+                </div>
+                <div class="flex-1 flex flex-col gap-2 w-full">
+                  <div>
+                    <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium block mb-1">Subir Foto de Pareja</label>
+                    <input id="cover-file-input" type="file" accept="image/*" class="text-xs text-on-surface file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:text-[10px] file:font-semibold file:bg-tertiary file:text-on-tertiary hover:file:brightness-110 cursor-pointer"/>
+                  </div>
+                  <div>
+                    <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium block mb-1">URL de Imagen Externa</label>
+                    <input id="cover-image-url-input" type="url" placeholder="https://ejemplo.com/foto.jpg" class="w-full bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-col gap-1">
+                <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium" for="quote-text-input">Cita de Amor / Frase Bíblica</label>
+                <textarea id="quote-text-input" rows="2" class="w-full bg-surface border border-tertiary/20 rounded-lg p-2.5 text-xs text-on-surface focus:outline-none focus:border-tertiary" placeholder="“A donde tú vayas, iré yo...”">“A donde tú vayas, iré yo; y donde tú vivas, viviré. Tu pueblo será mi pueblo, y tu Dios mi Dios.”</textarea>
+                <input id="quote-author-input" type="text" placeholder="— Rut 1:16" value="— Rut 1:16" class="bg-transparent border-b border-tertiary/20 py-1 text-xs text-tertiary focus:outline-none w-1/2"/>
+              </div>
             </div>
 
-            <div class="flex flex-col sm:flex-row gap-6 items-center">
-              <div class="w-36 h-48 rounded-xl overflow-hidden bg-surface-container-high border-2 border-dashed border-tertiary/30 flex items-center justify-center relative group shrink-0">
-                <img id="cover-photo-preview" src="assets/hero-gala.jpg" alt="Foto de portada" class="w-full h-full object-cover"/>
-                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer" onclick="document.getElementById('cover-file-input').click()">
-                  <span class="material-symbols-outlined text-white text-3xl">cloud_upload</span>
+            <!-- STEP 3: LOGÍSTICA / LUGARES -->
+            <div id="step-section-3" class="step-section hidden flex flex-col gap-4">
+              <div class="flex items-center justify-between">
+                <h3 class="font-display-lg text-base text-on-surface flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-tertiary text-[18px]">church</span>
+                  Ceremonia & Recepción
+                </h3>
+                <button type="button" id="btn-sync-venues" class="text-[10px] text-tertiary hover:underline flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[12px]">sync</span> Auto-cargar Sedes
+                </button>
+              </div>
+              
+              <!-- Ceremonia -->
+              <div class="flex flex-col gap-2 bg-surface p-3.5 rounded-xl border border-tertiary/10">
+                <span class="font-label-gold text-[10px] uppercase tracking-wider text-tertiary font-bold">1. Ceremonia Religiosa (Misa)</span>
+                <input id="ceremony-name-input" type="text" placeholder="Parroquia de San Francisco de Asís" value="Parroquia de San Francisco de Asís" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                <div class="grid grid-cols-2 gap-2">
+                  <input id="ceremony-time-input" type="text" placeholder="6:00 PM" value="6:00 PM" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <input id="ceremony-city-input" type="text" placeholder="Ciudad, Estado" value="Tepatitlán de Morelos, Jalisco" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                </div>
+                <input id="ceremony-map-input" type="url" placeholder="https://maps.google.com/?q=..." value="https://maps.google.com/?q=Parroquia+de+San+Francisco+de+Asis+Tepatitlan" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-[10px] text-on-surface focus:outline-none focus:border-tertiary"/>
+              </div>
+
+              <!-- Recepción -->
+              <div class="flex flex-col gap-2 bg-surface p-3.5 rounded-xl border border-tertiary/10">
+                <span class="font-label-gold text-[10px] uppercase tracking-wider text-tertiary font-bold">2. Recepción (Fiesta)</span>
+                <input id="reception-name-input" type="text" placeholder="Mítico Terraza y Jardín" value="Mítico Terraza y Jardín" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                <div class="grid grid-cols-2 gap-2">
+                  <input id="reception-time-input" type="text" placeholder="8:00 PM" value="8:00 PM" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <input id="reception-city-input" type="text" placeholder="Ciudad, Estado" value="Capilla de Guadalupe, Jalisco" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                </div>
+                <input id="reception-map-input" type="url" placeholder="https://maps.google.com/?q=..." value="https://maps.google.com/?q=Mitico+Terraza+y+Jardin+Capilla+de+Guadalupe" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-[10px] text-on-surface focus:outline-none focus:border-tertiary"/>
+              </div>
+            </div>
+
+            <!-- STEP 4: DETALLES EXTRA -->
+            <div id="step-section-4" class="step-section hidden flex flex-col gap-4">
+              <h3 class="font-display-lg text-base text-on-surface flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-tertiary text-[18px]">styler</span>
+                Detalles Adicionales & Música
+              </h3>
+              
+              <div class="grid grid-cols-2 gap-3">
+                <div class="flex flex-col gap-1">
+                  <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium">Dress Code</label>
+                  <input id="dress-code-input" type="text" value="Riguroso Formal" placeholder="Ej. Playa, Formal" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium">Política de Niños</label>
+                  <select id="kids-policy-select" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary">
+                    <option value="NO NIÑOS · EVENTO DE ADULTOS">NO NIÑOS · Solo Adultos</option>
+                    <option value="NIÑOS BIENVENIDOS">Niños Bienvenidos</option>
+                    <option value="SOLO FAMILIA CERCANA">Solo Familia Cercana</option>
+                  </select>
                 </div>
               </div>
 
-              <div class="flex-1 flex flex-col gap-3 w-full">
-                <div>
-                  <label class="text-xs uppercase tracking-wider text-on-surface-variant font-medium block mb-1">Subir Foto de la Pareja</label>
-                  <input id="cover-file-input" type="file" accept="image/*" class="text-xs text-on-surface file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-tertiary file:text-on-tertiary hover:file:brightness-110 cursor-pointer"/>
+              <div class="flex flex-col gap-1">
+                <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium">Mesa de Regalos (Amazon/Liverpool)</label>
+                <input id="gift-amazon-url" type="url" placeholder="https://www.amazon.com.mx" value="https://www.amazon.com.mx" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div class="flex flex-col gap-1">
+                  <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium">Banco</label>
+                  <input id="bank-name-input" type="text" placeholder="BBVA" value="BBVA" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
                 </div>
-                <div>
-                  <label class="text-xs uppercase tracking-wider text-on-surface-variant font-medium block mb-1">O URL de imagen externa</label>
-                  <input id="cover-image-url-input" type="url" placeholder="https://ejemplo.com/foto-novios.jpg" class="w-full bg-surface-container-low border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
+                <div class="flex flex-col gap-1">
+                  <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium">CLABE Bancaria</label>
+                  <input id="bank-clabe-input" type="text" placeholder="012345678901234567" value="012345678901234567" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary font-mono"/>
                 </div>
               </div>
-            </div>
 
-            <!-- Cita Bíblica / Frase de Amor -->
-            <div class="flex flex-col gap-1.5 mt-2">
-              <label class="text-xs uppercase tracking-wider text-on-surface-variant font-medium" for="quote-text-input">Cita de Amor / Frase Bíblica</label>
-              <textarea id="quote-text-input" rows="2" class="w-full bg-surface-container-low border border-tertiary/20 rounded-lg p-3 text-sm text-on-surface focus:outline-none focus:border-tertiary" placeholder="“A donde tú vayas, iré yo; y donde tú vivas, viviré...”">“A donde tú vayas, iré yo; y donde tú vivas, viviré. Tu pueblo será mi pueblo, y tu Dios mi Dios.”</textarea>
-              <div class="flex justify-between items-center text-xs text-on-surface-variant/70">
-                <input id="quote-author-input" type="text" placeholder="— Rut 1:16" value="— Rut 1:16" class="bg-transparent border-b border-tertiary/20 py-1 text-xs text-tertiary focus:outline-none"/>
-                <span>Aparece en la portada principal</span>
+              <div class="flex flex-col gap-1">
+                <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium">Canción de los Novios</label>
+                <div class="grid grid-cols-2 gap-2">
+                  <input id="song-title-input" type="text" value="Hasta Mi Final — Il Divo" placeholder="Hasta Mi Final" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <select id="song-platform-select" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary">
+                    <option value="spotify">Spotify</option>
+                    <option value="youtube">YouTube Music</option>
+                  </select>
+                </div>
+                <input id="song-url-input" type="url" placeholder="URL de la canción" class="bg-surface border border-tertiary/20 rounded-lg p-2 mt-1 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
               </div>
-            </div>
-          </div>
 
-          <!-- Card 2: Música de Fondo & Canción de los Novios -->
-          <div class="bg-surface-container rounded-2xl p-6 md:p-8 border border-tertiary/15 shadow-xl flex flex-col gap-5">
-            <div class="flex items-center justify-between">
-              <h2 class="font-headline-md text-xl text-on-surface flex items-center gap-2">
-                <span class="material-symbols-outlined text-tertiary">music_note</span>
-                Música & Canción de los Novios
-              </h2>
-              <span class="font-label-gold text-[11px] uppercase tracking-wider text-tertiary">Página 5</span>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div class="flex flex-col gap-1.5">
-                <label class="text-xs uppercase tracking-wider text-on-surface-variant font-medium">Título de la Canción</label>
-                <input id="song-title-input" type="text" value="Hasta Mi Final — Il Divo" placeholder="Ej. Perfect — Ed Sheeran" class="bg-surface-container-low border border-tertiary/20 rounded-lg p-3 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
+              <div class="flex items-center justify-between border-t border-tertiary/10 pt-3">
+                <span class="text-[10px] text-on-surface-variant font-semibold">Corte de Honor</span>
+                <button type="button" id="btn-sync-padrinos" class="text-[10px] text-tertiary hover:underline flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[12px]">sync</span> Sincronizar Padrinos
+                </button>
               </div>
-              <div class="flex flex-col gap-1.5">
-                <label class="text-xs uppercase tracking-wider text-on-surface-variant font-medium">Plataforma Principal</label>
-                <select id="song-platform-select" class="bg-surface-container-low border border-tertiary/20 rounded-lg p-3 text-sm text-on-surface focus:outline-none focus:border-tertiary">
-                  <option value="spotify">Spotify</option>
-                  <option value="youtube">YouTube Music</option>
-                  <option value="amazon">Amazon Music</option>
-                  <option value="apple">Apple Music</option>
-                  <option value="acoustic">Melodía Acústica Gala</option>
-                </select>
+              <div class="grid grid-cols-2 gap-2">
+                <input id="padrino-1-input" type="text" placeholder="Padrino de Velación 1" value="Lauro Coss Y León Rubio" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                <input id="padrino-2-input" type="text" placeholder="Padrino de Velación 2" value="Itzel Durand Cortés" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <input id="bride-father-input" type="text" placeholder="Padre Novia" value="Guillermo Martínez Gómez" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                <input id="bride-mother-input" type="text" placeholder="Madre Novia" value="María Elena Padilla Gutiérrez" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <input id="groom-father-input" type="text" placeholder="Padre Novio" value="Armando Jiménez Jiménez" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                <input id="groom-mother-input" type="text" placeholder="Madre Novio" value="Blanca Delia González Lozano" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
               </div>
             </div>
 
-            <div class="flex flex-col gap-1.5">
-              <label class="text-xs uppercase tracking-wider text-on-surface-variant font-medium">Enlace Directo a la Canción (Spotify / YouTube)</label>
-              <input id="song-url-input" type="url" placeholder="https://open.spotify.com/track/..." class="bg-surface-container-low border border-tertiary/20 rounded-lg p-3 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
-            </div>
-          </div>
-
-          <!-- Card 3: Padres & Padrinos -->
-          <div class="bg-surface-container rounded-2xl p-6 md:p-8 border border-tertiary/15 shadow-xl flex flex-col gap-5">
-            <div class="flex items-center justify-between">
-              <h2 class="font-headline-md text-xl text-on-surface flex items-center gap-2">
-                <span class="material-symbols-outlined text-tertiary">family_restroom</span>
-                Padres & Padrinos
-              </h2>
-              <button type="button" id="btn-sync-padrinos" class="text-xs text-tertiary hover:underline flex items-center gap-1">
-                <span class="material-symbols-outlined text-[16px]">sync</span>
-                Auto-cargar Padrinos de Invitados
-              </button>
+            <!-- Navigation buttons -->
+            <div class="flex justify-between items-center mt-3 pt-3 border-t border-tertiary/10">
+              <button type="button" id="btn-prev-step" class="px-4 py-2 border border-tertiary/20 text-on-surface-variant hover:text-tertiary transition-colors text-xs font-button-text uppercase tracking-wider rounded-lg invisible">Anterior</button>
+              <button type="button" id="btn-next-step" class="px-5 py-2 bg-tertiary text-on-tertiary font-button-text text-xs uppercase tracking-wider rounded-lg hover:brightness-110 transition-all font-semibold">Siguiente</button>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div class="flex flex-col gap-1.5 bg-surface-container-low p-4 rounded-xl border border-tertiary/10">
-                <span class="font-label-gold text-xs uppercase tracking-wider text-tertiary font-bold mb-1">Padres de la Novia</span>
-                <input id="bride-father-input" type="text" placeholder="Papá de la novia" value="Guillermo Martínez Gómez" class="bg-surface border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface mb-2 focus:outline-none focus:border-tertiary"/>
-                <input id="bride-mother-input" type="text" placeholder="Mamá de la novia" value="María Elena Padilla Gutiérrez" class="bg-surface border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
-              </div>
-
-              <div class="flex flex-col gap-1.5 bg-surface-container-low p-4 rounded-xl border border-tertiary/10">
-                <span class="font-label-gold text-xs uppercase tracking-wider text-tertiary font-bold mb-1">Padres del Novio</span>
-                <input id="groom-father-input" type="text" placeholder="Papá del novio" value="Armando Jiménez Jiménez" class="bg-surface border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface mb-2 focus:outline-none focus:border-tertiary"/>
-                <input id="groom-mother-input" type="text" placeholder="Mamá del novio" value="Blanca Delia González Lozano" class="bg-surface border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
-              </div>
-            </div>
-
-            <div class="flex flex-col gap-1.5 bg-surface-container-low p-4 rounded-xl border border-tertiary/10">
-              <span class="font-label-gold text-xs uppercase tracking-wider text-tertiary font-bold mb-1">Padrinos de Velación / Honor</span>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <input id="padrino-1-input" type="text" placeholder="Padrino 1" value="Lauro Coss Y León Rubio" class="bg-surface border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
-                <input id="padrino-2-input" type="text" placeholder="Padrino 2" value="Itzel Durand Cortés" class="bg-surface border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
-              </div>
-            </div>
-          </div>
-
+          </form>
         </div>
 
-        <!-- Right Column: Lugares (Misa/Recepción), Dress Code, Regalos & Hoteles (5 cols) -->
-        <div class="lg:col-span-5 flex flex-col gap-6">
-
-          <!-- Card 4: Lugares de Ceremonia y Recepción -->
-          <div class="bg-surface-container rounded-2xl p-6 md:p-8 border border-tertiary/15 shadow-xl flex flex-col gap-5">
-            <div class="flex items-center justify-between">
-              <h2 class="font-headline-md text-xl text-on-surface flex items-center gap-2">
-                <span class="material-symbols-outlined text-tertiary">church</span>
-                Ceremonia & Recepción
-              </h2>
-              <button type="button" id="btn-sync-venues" class="text-xs text-tertiary hover:underline flex items-center gap-1">
-                <span class="material-symbols-outlined text-[16px]">sync</span>
-                Auto-cargar de Lugares
-              </button>
+        <!-- Right Panel: Live Mobile Preview (5 cols) -->
+        <div class="lg:col-span-5 relative">
+          <div class="sticky top-20 bg-surface-container-high border-4 border-tertiary/20 rounded-[32px] w-full max-w-[280px] mx-auto aspect-[9/18] overflow-hidden shadow-2xl p-2 flex flex-col transition-all duration-300 hover:border-tertiary/40">
+            <!-- Speaker & Notch -->
+            <div class="h-4 w-28 bg-surface-container-lowest rounded-full mx-auto mb-2 shrink-0 flex items-center justify-center">
+              <div class="w-10 h-0.5 bg-tertiary/30 rounded-full"></div>
             </div>
-
-            <!-- Ceremonia -->
-            <div class="flex flex-col gap-2.5 bg-surface-container-low p-4 rounded-xl border border-tertiary/10">
-              <span class="font-label-gold text-xs uppercase tracking-wider text-tertiary font-bold">1. Ceremonia Religiosa (Misa)</span>
-              <input id="ceremony-name-input" type="text" placeholder="Nombre de la Iglesia" value="Parroquia de San Francisco de Asís" class="bg-surface border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
-              <div class="grid grid-cols-2 gap-2">
-                <input id="ceremony-time-input" type="text" placeholder="Horario (ej. 6:00 PM)" value="6:00 PM" class="bg-surface border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
-                <input id="ceremony-city-input" type="text" placeholder="Ciudad / Municipio" value="Tepatitlán de Morelos, Jalisco" class="bg-surface border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
+            <!-- Screen content -->
+            <div id="phone-preview-screen" class="flex-1 rounded-[22px] overflow-y-auto bg-surface p-3 flex flex-col gap-5 text-center border border-tertiary/10 relative scrollbar-none transition-all duration-300" style="font-family: 'Playfair Display', serif;">
+              <!-- Cover Slide (Slide 1) -->
+              <div class="flex flex-col items-center justify-center min-h-[220px] gap-3 py-6 border-b border-tertiary/10">
+                <div id="preview-cover-photo-container" class="w-full h-28 bg-surface-container-low rounded-lg overflow-hidden border border-tertiary/20 relative shadow-inner">
+                  <img id="preview-cover-photo" src="assets/hero-gala.jpg" class="w-full h-full object-cover"/>
+                </div>
+                <div class="mt-1">
+                  <h3 id="preview-couple-names" class="text-lg text-tertiary font-script" style="font-family: 'Alex Brush', cursive;">Yariana & Daniel</h3>
+                  <p id="preview-date-text" class="font-label-gold text-[8px] uppercase tracking-widest text-on-surface mt-0.5">SÁBADO, 14 DE NOVIEMBRE DE 2026</p>
+                </div>
+                <div class="px-1 mt-1">
+                  <p id="preview-quote-text" class="text-[9px] italic text-on-surface-variant leading-relaxed">"A donde tú vayas, iré yo; y donde tú vivas, viviré..."</p>
+                  <span id="preview-quote-author" class="text-[8px] text-tertiary mt-0.5 block">— Rut 1:16</span>
+                </div>
               </div>
-              <input id="ceremony-map-input" type="url" placeholder="Link de Google Maps / Waze" value="https://maps.google.com/?q=Parroquia+de+San+Francisco+de+Asis+Tepatitlan" class="bg-surface border border-tertiary/20 rounded-lg p-2.5 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
-            </div>
 
-            <!-- Recepción -->
-            <div class="flex flex-col gap-2.5 bg-surface-container-low p-4 rounded-xl border border-tertiary/10">
-              <span class="font-label-gold text-xs uppercase tracking-wider text-tertiary font-bold">2. Recepción (Fiesta / Banquete)</span>
-              <input id="reception-name-input" type="text" placeholder="Nombre del Salón o Terraza" value="Mítico Terraza y Jardín" class="bg-surface border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
-              <div class="grid grid-cols-2 gap-2">
-                <input id="reception-time-input" type="text" placeholder="Horario (ej. 8:00 PM)" value="8:00 PM" class="bg-surface border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
-                <input id="reception-city-input" type="text" placeholder="Ciudad / Municipio" value="Capilla de Guadalupe, Jalisco" class="bg-surface border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
+              <!-- Ceremony Section -->
+              <div class="flex flex-col gap-2 py-3 border-b border-tertiary/10">
+                <span class="material-symbols-outlined text-tertiary text-lg">church</span>
+                <h4 class="font-headline-md text-[10px] text-on-surface uppercase tracking-wider">Ceremonia Religiosa</h4>
+                <p id="preview-ceremony-name" class="text-[10px] text-on-surface font-medium px-1">Parroquia de San Francisco de Asís</p>
+                <div class="text-[9px] text-on-surface-variant flex justify-center gap-1.5">
+                  <span id="preview-ceremony-time">6:00 PM</span> | <span id="preview-ceremony-city" class="truncate max-w-[100px]">Tepatitlán, Jal</span>
+                </div>
               </div>
-              <input id="reception-map-input" type="url" placeholder="Link de Google Maps / Waze" value="https://maps.google.com/?q=Mitico+Terraza+y+Jardin+Capilla+de+Guadalupe" class="bg-surface border border-tertiary/20 rounded-lg p-2.5 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
-            </div>
-          </div>
 
-          <!-- Card 5: Dress Code & Política de Niños -->
-          <div class="bg-surface-container rounded-2xl p-6 md:p-8 border border-tertiary/15 shadow-xl flex flex-col gap-5">
-            <h2 class="font-headline-md text-xl text-on-surface flex items-center gap-2">
-              <span class="material-symbols-outlined text-tertiary">styler</span>
-              Código de Vestimenta
-            </h2>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div class="flex flex-col gap-1.5">
-                <label class="text-xs uppercase tracking-wider text-on-surface-variant font-medium">Dress Code</label>
-                <input id="dress-code-input" type="text" value="Riguroso Formal" placeholder="Ej. Riguroso Formal, Playa, etc." class="bg-surface-container-low border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
+              <!-- Reception Section -->
+              <div class="flex flex-col gap-2 py-3 border-b border-tertiary/10">
+                <span class="material-symbols-outlined text-tertiary text-lg">celebration</span>
+                <h4 class="font-headline-md text-[10px] text-on-surface uppercase tracking-wider">Recepción</h4>
+                <p id="preview-reception-name" class="text-[10px] text-on-surface font-medium px-1">Mítico Terraza y Jardín</p>
+                <div class="text-[9px] text-on-surface-variant flex justify-center gap-1.5">
+                  <span id="preview-reception-time">8:00 PM</span> | <span id="preview-reception-city" class="truncate max-w-[100px]">Capilla Gpe</span>
+                </div>
               </div>
-              <div class="flex flex-col gap-1.5">
-                <label class="text-xs uppercase tracking-wider text-on-surface-variant font-medium">Acceso de Niños</label>
-                <select id="kids-policy-select" class="bg-surface-container-low border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary">
-                  <option value="NO NIÑOS · EVENTO DE ADULTOS">NO NIÑOS · Solo Adultos</option>
-                  <option value="NIÑOS BIENVENIDOS">Niños Bienvenidos</option>
-                  <option value="SOLO FAMILIA CERCANA">Solo Niños de Familia Cercana</option>
-                </select>
+
+              <!-- Dress Code Section -->
+              <div class="flex flex-col gap-1.5 py-3">
+                <span class="material-symbols-outlined text-tertiary text-lg">styler</span>
+                <h4 class="font-headline-md text-[10px] text-on-surface uppercase tracking-wider">Código de Vestimenta</h4>
+                <p id="preview-dress-code" class="text-[10px] text-tertiary font-semibold">Riguroso Formal</p>
+                <p id="preview-kids-policy" class="text-[8px] text-on-surface-variant uppercase tracking-wide">NO NIÑOS</p>
               </div>
             </div>
           </div>
-
-          <!-- Card 6: Mesa de Regalos & CLABE Bancaria -->
-          <div class="bg-surface-container rounded-2xl p-6 md:p-8 border border-tertiary/15 shadow-xl flex flex-col gap-5">
-            <h2 class="font-headline-md text-xl text-on-surface flex items-center gap-2">
-              <span class="material-symbols-outlined text-tertiary">redeem</span>
-              Mesa de Regalos & Cuenta Bancaria
-            </h2>
-
-            <div class="flex flex-col gap-1.5">
-              <label class="text-xs uppercase tracking-wider text-on-surface-variant font-medium">Enlace de Amazon / Liverpool</label>
-              <input id="gift-amazon-url" type="url" placeholder="https://www.amazon.com.mx/baby-reg" value="https://www.amazon.com.mx" class="bg-surface-container-low border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
-            </div>
-
-            <div class="grid grid-cols-2 gap-3">
-              <div class="flex flex-col gap-1.5">
-                <label class="text-xs uppercase tracking-wider text-on-surface-variant font-medium">Banco</label>
-                <input id="bank-name-input" type="text" placeholder="BBVA, Banorte, Santander" value="BBVA" class="bg-surface-container-low border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary"/>
-              </div>
-              <div class="flex flex-col gap-1.5">
-                <label class="text-xs uppercase tracking-wider text-on-surface-variant font-medium">CLABE Interbancaria (18 dígitos)</label>
-                <input id="bank-clabe-input" type="text" placeholder="012345678901234567" value="012345678901234567" class="bg-surface-container-low border border-tertiary/20 rounded-lg p-2.5 text-sm text-on-surface focus:outline-none focus:border-tertiary font-mono"/>
-              </div>
-            </div>
-          </div>
-
         </div>
 
-      </form>
     </div>
   </main>
 </div>
@@ -399,14 +492,17 @@ tailwind.config = {
       reader.onload = (ev) => {
         document.getElementById("cover-photo-preview").src = ev.target.result;
         document.getElementById("cover-image-url-input").value = ev.target.result;
+        document.getElementById("preview-cover-photo").src = ev.target.result;
       };
       reader.readAsDataURL(file);
     }
   });
 
   document.getElementById("cover-image-url-input").addEventListener("input", (e) => {
-    if (e.target.value.trim()) {
-      document.getElementById("cover-photo-preview").src = e.target.value.trim();
+    const val = e.target.value.trim();
+    if (val) {
+      document.getElementById("cover-photo-preview").src = val;
+      document.getElementById("preview-cover-photo").src = val;
     }
   });
 
@@ -429,6 +525,7 @@ tailwind.config = {
     if (padrinos[0]) document.getElementById("padrino-1-input").value = padrinos[0].full_name;
     if (padrinos[1]) document.getElementById("padrino-2-input").value = padrinos[1].full_name;
     window.showToast(`Se cargaron ${padrinos.length} padrinos automáticamente desde tu lista de invitados.`, "success");
+    updateLivePreview();
   });
 
   // Auto-cargar lugares desde la tabla venues / itinerario
@@ -447,6 +544,7 @@ tailwind.config = {
         if (reception.address) document.getElementById("reception-city-input").value = reception.address;
       }
       window.showToast("Lugares sincronizados desde tu catálogo de sedes.", "success");
+      updateLivePreview();
     } else {
       window.showToast("Aún no tienes sedes registradas en el módulo de Lugares.", "info");
     }
@@ -455,6 +553,10 @@ tailwind.config = {
   // Guardar configuración
   document.getElementById("btn-save-invitation-settings").addEventListener("click", () => {
     const payload = {
+      theme_color: document.querySelector('input[name="theme_color"]:checked')?.value || 'gold',
+      theme_font: document.querySelector('input[name="theme_font"]:checked')?.value || 'elegant',
+      bride_name: document.getElementById("bride-name-input").value.trim(),
+      groom_name: document.getElementById("groom-name-input").value.trim(),
       cover_image: document.getElementById("cover-image-url-input").value.trim() || document.getElementById("cover-photo-preview").src,
       quote: document.getElementById("quote-text-input").value.trim(),
       quote_author: document.getElementById("quote-author-input").value.trim(),
@@ -486,6 +588,174 @@ tailwind.config = {
     window.showToast("¡Configuración de la invitación guardada con éxito!", "success");
   });
 
+  // Wizard state machine
+  let currentStep = 1;
+  const totalSteps = 4;
+  const tabs = document.querySelectorAll(".wizard-tab");
+  const sections = document.querySelectorAll(".step-section");
+  const btnPrev = document.getElementById("btn-prev-step");
+  const btnNext = document.getElementById("btn-next-step");
+
+  function showStep(step) {
+    currentStep = step;
+    tabs.forEach(tab => {
+      const active = parseInt(tab.dataset.step) === step;
+      tab.classList.toggle("border-tertiary", active);
+      tab.classList.toggle("text-tertiary", active);
+      tab.classList.toggle("border-transparent", !active);
+      tab.classList.toggle("text-on-surface-variant", !active);
+    });
+
+    sections.forEach((sec, idx) => {
+      sec.classList.toggle("hidden", idx + 1 !== step);
+    });
+
+    btnPrev.classList.toggle("invisible", step === 1);
+    if (step === totalSteps) {
+      btnNext.textContent = "Finalizar y Guardar";
+    } else {
+      btnNext.textContent = "Siguiente";
+    }
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      showStep(parseInt(tab.dataset.step));
+    });
+  });
+
+  btnPrev.addEventListener("click", () => {
+    if (currentStep > 1) showStep(currentStep - 1);
+  });
+
+  btnNext.addEventListener("click", () => {
+    if (currentStep < totalSteps) {
+      showStep(currentStep + 1);
+    } else {
+      document.getElementById("btn-save-invitation-settings").click();
+    }
+  });
+
+  // Live preview reactive bindings
+  const inputsToBind = [
+    { inputId: "bride-name-input", outputId: "preview-couple-names", valueFn: () => {
+      const bride = document.getElementById("bride-name-input").value.trim() || "Novia";
+      const groom = document.getElementById("groom-name-input").value.trim() || "Novio";
+      return `${bride} & ${groom}`;
+    }},
+    { inputId: "groom-name-input", outputId: "preview-couple-names", valueFn: () => {
+      const bride = document.getElementById("bride-name-input").value.trim() || "Novia";
+      const groom = document.getElementById("groom-name-input").value.trim() || "Novio";
+      return `${bride} & ${groom}`;
+    }},
+    { inputId: "quote-text-input", outputId: "preview-quote-text" },
+    { inputId: "quote-author-input", outputId: "preview-quote-author" },
+    { inputId: "ceremony-name-input", outputId: "preview-ceremony-name" },
+    { inputId: "ceremony-time-input", outputId: "preview-ceremony-time" },
+    { inputId: "ceremony-city-input", outputId: "preview-ceremony-city" },
+    { inputId: "reception-name-input", outputId: "preview-reception-name" },
+    { inputId: "reception-time-input", outputId: "preview-reception-time" },
+    { inputId: "reception-city-input", outputId: "preview-reception-city" },
+    { inputId: "dress-code-input", outputId: "preview-dress-code" },
+    { inputId: "kids-policy-select", outputId: "preview-kids-policy" }
+  ];
+
+  function updateLivePreview() {
+    inputsToBind.forEach(item => {
+      const el = document.getElementById(item.inputId);
+      const out = document.getElementById(item.outputId);
+      if (!el || !out) return;
+
+      if (item.valueFn) {
+        out.textContent = item.valueFn();
+      } else {
+        out.textContent = el.value || "—";
+      }
+    });
+
+    // Theme Color live style update
+    const activeColor = document.querySelector('input[name="theme_color"]:checked')?.value || 'gold';
+    const root = document.getElementById("phone-preview-screen");
+    const coupleText = document.getElementById("preview-couple-names");
+    const quoteAuth = document.getElementById("preview-quote-author");
+    const codeText = document.getElementById("preview-dress-code");
+    
+    // Reset colors
+    root.style.backgroundColor = "";
+    root.style.color = "";
+    [coupleText, quoteAuth, codeText].forEach(el => {
+      if (el) {
+        el.style.color = "";
+        el.className = el.className.replace(/\btext-\S+/g, '');
+      }
+    });
+
+    if (activeColor === 'gold') {
+      root.style.backgroundColor = "#131411";
+      root.style.color = "#e5e2dd";
+      if (coupleText) coupleText.style.color = "#e9c349";
+      if (quoteAuth) quoteAuth.style.color = "#e9c349";
+      if (codeText) codeText.style.color = "#e9c349";
+    } else if (activeColor === 'pink') {
+      root.style.backgroundColor = "#faf5ff";
+      root.style.color = "#4a044e";
+      if (coupleText) coupleText.style.color = "#f472b6";
+      if (quoteAuth) quoteAuth.style.color = "#f472b6";
+      if (codeText) codeText.style.color = "#f472b6";
+    } else if (activeColor === 'blue') {
+      root.style.backgroundColor = "#f3f4f6";
+      root.style.color = "#1e3a8a";
+      if (coupleText) coupleText.style.color = "#3b82f6";
+      if (quoteAuth) quoteAuth.style.color = "#3b82f6";
+      if (codeText) codeText.style.color = "#3b82f6";
+    } else if (activeColor === 'green') {
+      root.style.backgroundColor = "#fffbeb";
+      root.style.color = "#064e3b";
+      if (coupleText) coupleText.style.color = "#10b981";
+      if (quoteAuth) quoteAuth.style.color = "#10b981";
+      if (codeText) codeText.style.color = "#10b981";
+    }
+
+    // Theme Font live style update
+    const activeFont = document.querySelector('input[name="theme_font"]:checked')?.value || 'elegant';
+    if (activeFont === 'elegant') {
+      root.style.fontFamily = "'Playfair Display', serif";
+      if (coupleText) {
+        coupleText.style.fontFamily = "'Alex Brush', cursive";
+        coupleText.style.fontSize = "1.25rem";
+      }
+    } else if (activeFont === 'romantic') {
+      root.style.fontFamily = "'Cormorant Garamond', serif";
+      if (coupleText) {
+        coupleText.style.fontFamily = "'Alex Brush', cursive";
+        coupleText.style.fontSize = "1.75rem";
+      }
+    } else if (activeFont === 'minimalist') {
+      root.style.fontFamily = "'Montserrat', sans-serif";
+      if (coupleText) {
+        coupleText.style.fontFamily = "'Montserrat', sans-serif";
+        coupleText.style.fontSize = "1rem";
+        coupleText.style.fontWeight = "bold";
+      }
+    }
+  }
+
+  // Register event listeners for preview updates
+  inputsToBind.forEach(item => {
+    const el = document.getElementById(item.inputId);
+    if (el) {
+      el.addEventListener("input", updateLivePreview);
+      el.addEventListener("change", updateLivePreview);
+    }
+  });
+
+  // Watch color and font selection
+  document.addEventListener("change", (e) => {
+    if (e.target.name === "theme_color" || e.target.name === "theme_font") {
+      updateLivePreview();
+    }
+  });
+
   // Inicialización
   (async function init() {
     const auth = await window.requireAuth();
@@ -498,9 +768,21 @@ tailwind.config = {
 
     const saved = getStoredSettings();
     if (saved) {
+      if (saved.theme_color) {
+        const radio = document.querySelector(`input[name="theme_color"][value="${saved.theme_color}"]`);
+        if (radio) radio.checked = true;
+      }
+      if (saved.theme_font) {
+        const radio = document.querySelector(`input[name="theme_font"][value="${saved.theme_font}"]`);
+        if (radio) radio.checked = true;
+      }
+      if (saved.bride_name) document.getElementById("bride-name-input").value = saved.bride_name;
+      if (saved.groom_name) document.getElementById("groom-name-input").value = saved.groom_name;
+      
       if (saved.cover_image) {
         document.getElementById("cover-photo-preview").src = saved.cover_image;
         document.getElementById("cover-image-url-input").value = saved.cover_image.startsWith("data:") ? "" : saved.cover_image;
+        document.getElementById("preview-cover-photo").src = saved.cover_image;
       }
       if (saved.quote) document.getElementById("quote-text-input").value = saved.quote;
       if (saved.quote_author) document.getElementById("quote-author-input").value = saved.quote_author;
@@ -526,7 +808,14 @@ tailwind.config = {
       if (saved.gift_amazon) document.getElementById("gift-amazon-url").value = saved.gift_amazon;
       if (saved.bank_name) document.getElementById("bank-name-input").value = saved.bank_name;
       if (saved.bank_clabe) document.getElementById("bank-clabe-input").value = saved.bank_clabe;
+    } else {
+      // Default dummy values for brand new configurations
+      document.getElementById("bride-name-input").value = "Yariana";
+      document.getElementById("groom-name-input").value = "Daniel";
     }
+
+    showStep(1);
+    updateLivePreview();
   })();
 </script>
 
