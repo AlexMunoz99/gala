@@ -212,6 +212,16 @@ async function requireAuth() {
             }
           });
         }
+
+        // 3. Agregar enlace de "Planes y Membresías" en el sidebar
+        const nav = sidebar.querySelector("nav");
+        if (nav && !sidebar.querySelector(".nav-pricing-link")) {
+          const a = document.createElement("a");
+          a.className = "flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all nav-pricing-link";
+          a.href = "pricing.html";
+          a.innerHTML = `<span class="material-symbols-outlined mr-3 nav-icon">payments</span><span class="sidebar-label">Planes y Membresías</span>`;
+          nav.appendChild(a);
+        }
       }
     }, 10);
 
