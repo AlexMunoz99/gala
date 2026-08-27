@@ -120,3 +120,32 @@ DROP POLICY IF EXISTS "Manage own seating" ON seating_assignments;
 CREATE POLICY "Manage own seating" ON seating_assignments FOR ALL
   USING (EXISTS (SELECT 1 FROM guests WHERE guests.id = seating_assignments.guest_id AND EXISTS (SELECT 1 FROM events WHERE events.id = guests.event_id AND events.user_id = auth.uid())))
   WITH CHECK (EXISTS (SELECT 1 FROM guests WHERE guests.id = seating_assignments.guest_id AND EXISTS (SELECT 1 FROM events WHERE events.id = guests.event_id AND events.user_id = auth.uid())));
+
+
+-- ==========================================
+-- 3. TABLAS DE LA BÓVEDA POST-BODA (FASE 6)
+-- ==========================================
+
+CREATE TABLE IF NOT EXISTS event_photos (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  event_id uuid REFERENCES events(id) ON DELETE CASCADE,
+  url text NOT NULL,
+  caption text,
+  uploaded_by text DEFAULT 'Invitado',
+  created_at timestamp with time zone DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS event_photo_comments (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  photo_id uuid REFERENCES event_photos(id) ON DELETE CASCADE,
+  author_name text NOT NULL,
+  comment_text text NOT NULL,
+  created_at timestamp with time zone DEFAULT now()
+);
+
+ALTER TABLE event_photos ENABLE ROW LEVEL SECURITY;
+ALTER TABLE event_photo_comments ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Permitir todo en fotos" ON event_photos FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Permitir todo en comentarios" ON event_photo_comments FOR ALL USING (true) WITH CHECK (true);
+
