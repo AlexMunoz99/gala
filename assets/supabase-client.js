@@ -6,6 +6,112 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 
 window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// Inyectar de inmediato estilos compactos y responsivos para evitar parpadeos visuales (Layout Shift)
+(function injectStylesImmediately() {
+  if (typeof document === "undefined") return;
+
+  if (!document.getElementById("gala-compact-styles")) {
+    const compactStyle = document.createElement("style");
+    compactStyle.id = "gala-compact-styles";
+    compactStyle.textContent = `
+      html {
+        font-size: 13.5px !important;
+      }
+      .py-16, .py-12 {
+        padding-top: 1.5rem !important;
+        padding-bottom: 1.5rem !important;
+      }
+      .pt-20 {
+        padding-top: 4.5rem !important;
+      }
+      .pb-section-gap {
+        padding-bottom: 2rem !important;
+      }
+      .gap-section-gap {
+        gap: 2.5rem !important;
+      }
+      .mt-12 {
+        margin-top: 1.2rem !important;
+      }
+      header.h-20 {
+        height: 3.5rem !important;
+      }
+      :root {
+        --sidebar-w: 168px !important;
+      }
+      html.sidebar-collapsed {
+        --sidebar-w: 56px !important;
+      }
+      .p-8 {
+        padding: 1.25rem !important;
+      }
+      .p-6 {
+        padding: 1rem !important;
+      }
+      .gap-8 {
+        gap: 1.25rem !important;
+      }
+      .gap-6 {
+        gap: 1rem !important;
+      }
+      .py-4.px-6, .py-3.px-5 {
+        padding-top: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+      }
+    `;
+    const ref = document.head || document.getElementsByTagName("head")[0] || document.documentElement;
+    ref.appendChild(compactStyle);
+  }
+
+  if (!document.getElementById("gala-mobile-styles")) {
+    const style = document.createElement("style");
+    style.id = "gala-mobile-styles";
+    style.textContent = `
+      @media (max-width: 768px) {
+        :root { --sidebar-w: 0px !important; }
+        #app-sidebar {
+          transform: translateX(-100%);
+          transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+          width: 280px !important;
+          z-index: 99999 !important;
+          box-shadow: 15px 0 40px rgba(0,0,0,0.85);
+        }
+        #app-sidebar.mobile-open {
+          transform: translateX(0) !important;
+        }
+        #sidebar-toggle {
+          display: none !important;
+        }
+        #app-content-wrapper {
+          padding-left: 0 !important;
+        }
+        #app-header-logo {
+          display: none !important;
+        }
+        header {
+          padding-left: 12px !important;
+          padding-right: 12px !important;
+        }
+        main {
+          padding-left: 14px !important;
+          padding-right: 14px !important;
+          padding-top: 86px !important;
+        }
+        .table-responsive {
+          display: block;
+          width: 100%;
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+      }
+    `;
+    const ref = document.head || document.getElementsByTagName("head")[0] || document.documentElement;
+    ref.appendChild(style);
+  }
+})();
+
 /**
  * Protege una página: si no hay sesión activa, redirige a login.html.
  * Si hay sesión, devuelve { user, profile } donde profile incluye el rol.
@@ -350,106 +456,7 @@ function showConfirmDialog({ title = "¿Estás seguro?", message = "Esta acción
  * Optimización y Adaptabilidad Móvil Global (Mobile Drawer & Responsive Engine)
  */
 function initMobileEngine() {
-  // Estilos de Densidad Compacta para Gala ERP
-  if (!document.getElementById("gala-compact-styles")) {
-    const compactStyle = document.createElement("style");
-    compactStyle.id = "gala-compact-styles";
-    compactStyle.textContent = `
-      html {
-        font-size: 13.5px !important;
-      }
-      .py-16, .py-12 {
-        padding-top: 1.5rem !important;
-        padding-bottom: 1.5rem !important;
-      }
-      .pt-20 {
-        padding-top: 4.5rem !important;
-      }
-      .pb-section-gap {
-        padding-bottom: 2rem !important;
-      }
-      .gap-section-gap {
-        gap: 2.5rem !important;
-      }
-      .mt-12 {
-        margin-top: 1.2rem !important;
-      }
-      header.h-20 {
-        height: 3.5rem !important;
-      }
-      :root {
-        --sidebar-w: 168px !important;
-      }
-      html.sidebar-collapsed {
-        --sidebar-w: 56px !important;
-      }
-      .p-8 {
-        padding: 1.25rem !important;
-      }
-      .p-6 {
-        padding: 1rem !important;
-      }
-      .gap-8 {
-        gap: 1.25rem !important;
-      }
-      .gap-6 {
-        gap: 1rem !important;
-      }
-      .py-4.px-6, .py-3.px-5 {
-        padding-top: 0.5rem !important;
-        padding-bottom: 0.5rem !important;
-        padding-left: 0.75rem !important;
-        padding-right: 0.75rem !important;
-      }
-    `;
-    document.head.appendChild(compactStyle);
-  }
-
-  // Inyectar estilos responsivos globales para smartphones y tablets
-  if (!document.getElementById("gala-mobile-styles")) {
-    const style = document.createElement("style");
-    style.id = "gala-mobile-styles";
-    style.textContent = `
-      @media (max-width: 768px) {
-        :root { --sidebar-w: 0px !important; }
-        #app-sidebar {
-          transform: translateX(-100%);
-          transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-          width: 280px !important;
-          z-index: 99999 !important;
-          box-shadow: 15px 0 40px rgba(0,0,0,0.85);
-        }
-        #app-sidebar.mobile-open {
-          transform: translateX(0) !important;
-        }
-        #sidebar-toggle {
-          display: none !important;
-        }
-        #app-content-wrapper {
-          padding-left: 0 !important;
-        }
-        #app-header-logo {
-          display: none !important;
-        }
-        header {
-          padding-left: 12px !important;
-          padding-right: 12px !important;
-        }
-        main {
-          padding-left: 14px !important;
-          padding-right: 14px !important;
-          padding-top: 86px !important;
-        }
-        .table-responsive {
-          display: block;
-          width: 100%;
-          overflow-x: auto;
-          -webkit-overflow-scrolling: touch;
-        }
-      }
-    `;
-    document.head.appendChild(style);
-  }
+  // Estilos compactos y responsivos ya inyectados al inicio del script.
 
   // Backdrop oscuro para el menú en celular
   let backdrop = document.getElementById("gala-mobile-backdrop");
