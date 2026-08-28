@@ -53,8 +53,40 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- --- políticas para PROFILES ---
--- Deshabilitamos RLS en la tabla profiles para evitar recursiones en base de datos y permitir edición fluida
-ALTER TABLE profiles DISABLE ROW LEVEL SECURITY;
+-- Habilitamos RLS en profiles para producción y agregamos políticas protegidas
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Permitir lectura de perfil propio o admins leen todo" ON profiles;
+CREATE POLICY "Permitir lectura de perfil propio o admins leen todo" ON profiles
+  FOR SELECT USING (auth.uid() = id OR is_admin());
+
+DROP POLICY IF EXISTS "Permitir actualización de perfil propio o admins editan todo" ON profiles;
+CREATE POLICY "Permitir actualización de perfil propio o admins editan todo" ON profiles
+  FOR UPDATE USING (auth.uid() = id OR is_admin());
+
+-- Disparador (Trigger) para evitar que usuarios comunes escalen privilegios
+CREATE OR REPLACE FUNCTION protect_profile_columns()
+RETURNS trigger SECURITY DEFINER AS $$
+BEGIN
+  -- Si el usuario logueado no es administrador, revertimos cualquier cambio en columnas protegidas
+  IF NOT EXISTS (
+    SELECT 1 FROM profiles
+    WHERE id = auth.uid() AND role = 'admin'
+  ) THEN
+    NEW.role := OLD.role;
+    NEW.plan := OLD.plan;
+    NEW.is_active := OLD.is_active;
+    NEW.disabled_modules := OLD.disabled_modules;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS tr_protect_profile_columns ON profiles;
+CREATE TRIGGER tr_protect_profile_columns
+  BEFORE UPDATE ON profiles
+  FOR EACH ROW
+  EXECUTE FUNCTION protect_profile_columns();
 
 -- --- políticas para EVENTS (Eventos/Proyectos) ---
 DROP POLICY IF EXISTS "Usuarios ven sus propios eventos" ON events;
