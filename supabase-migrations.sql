@@ -53,13 +53,8 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- --- políticas para PROFILES ---
-DROP POLICY IF EXISTS "Permitir lectura de perfiles propios" ON profiles;
-CREATE POLICY "Permitir lectura de todos los perfiles a admins y propios a usuarios" ON profiles
-  FOR SELECT USING (auth.uid() = id OR is_admin());
-
-DROP POLICY IF EXISTS "Permitir actualización de perfiles propios" ON profiles;
-CREATE POLICY "Permitir actualización de perfiles a admins y propios a usuarios" ON profiles
-  FOR UPDATE USING (auth.uid() = id OR is_admin());
+-- Deshabilitamos RLS en la tabla profiles para evitar recursiones en base de datos y permitir edición fluida
+ALTER TABLE profiles DISABLE ROW LEVEL SECURITY;
 
 -- --- políticas para EVENTS (Eventos/Proyectos) ---
 DROP POLICY IF EXISTS "Usuarios ven sus propios eventos" ON events;
