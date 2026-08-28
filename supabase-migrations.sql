@@ -160,3 +160,24 @@ ALTER TABLE event_photo_comments ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Permitir todo en fotos" ON event_photos FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY "Permitir todo en comentarios" ON event_photo_comments FOR ALL USING (true) WITH CHECK (true);
 
+-- ==========================================
+-- FASE 7: CONTROL ADMINISTRATIVO Y MULTICUENTA (AGENCY)
+-- ==========================================
+
+-- Columnas de control en profiles
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS is_active boolean DEFAULT true;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS disabled_modules text[] DEFAULT '{}';
+
+-- Tabla team_members para colaboracion de equipos
+CREATE TABLE IF NOT EXISTS team_members (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  agency_user_id uuid REFERENCES profiles(id) ON DELETE CASCADE,
+  member_email text NOT NULL,
+  role text DEFAULT 'editor',
+  created_at timestamp with time zone DEFAULT now()
+);
+
+-- Politicas RLS para team_members
+ALTER TABLE team_members ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Permitir consulta global en team_members" ON team_members FOR SELECT USING (true);
+CREATE POLICY "Permitir gestion al dueno agency" ON team_members FOR ALL USING (auth.uid() = agency_user_id) WITH CHECK (auth.uid() = agency_user_id);

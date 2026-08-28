@@ -2,9 +2,87 @@
 // Cliente compartido de Supabase para Gala ERP.
 
 const SUPABASE_URL = "https://uohpmpzfotuwnzuwaway.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvaHBtcHpmb3R1d256dXdhd2F5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODczMTc3NDYsImV4cCI6MjEwMjg5Mzc0Nn0.oGXQKmEmveH95fxWzRmeIlnYCtIRFAInGSQs6RAgWNA";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVvaHBtcHpmb3R1d256dXdhd2F5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODczMTc3NDYsImV4cCI6MjEwMjg5Mzc0Nn0.oGXQKmEmveH95fxWzRmeIlnYCtIRFAInGSQs6RAgWNA";window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// --- Soporte de Impersonación y Suplantación de Sesión ---
+let originalSession = null;
+let originalProfile = null;
+
+(function() {
+  const originalGetSession = window.supabaseClient.auth.getSession.bind(window.supabaseClient.auth);
+  window.supabaseClient.auth.getSession = async function() {
+    const res = await originalGetSession();
+    if (!res.data?.session) return res;
+    
+    if (!originalSession || originalSession.user.id !== res.data.session.user.id) {
+      originalSession = JSON.parse(JSON.stringify(res.data.session));
+      try {
+        const { data } = await window.supabaseClient.from("profiles").select("*").eq("id", originalSession.user.id).single();
+        originalProfile = data;
+      } catch(e) {}
+    }
+
+    const impersonateId = localStorage.getItem("galaImpersonateUserId");
+    if (impersonateId && originalProfile && originalProfile.role === "admin") {
+      const { data: impUser } = await window.supabaseClient.from("profiles").select("*").eq("id", impersonateId).single();
+      if (impUser) {
+        const mockedSession = JSON.parse(JSON.stringify(res.data.session));
+        mockedSession.user.id = impersonateId;
+        mockedSession.user.email = impUser.email;
+        return { data: { session: mockedSession }, error: null };
+      }
+    }
+
+    // 2. Check if user is a team member of an Agency
+    try {
+      const { data: tm } = await window.supabaseClient
+        .from("team_members")
+        .select("agency_user_id")
+        .eq("member_email", res.data.session.user.email);
+      if (tm && tm[0]) {
+        const agencyUserId = tm[0].agency_user_id;
+        const mockedSession = JSON.parse(JSON.stringify(res.data.session));
+        mockedSession.user.id = agencyUserId;
+        return { data: { session: mockedSession }, error: null };
+      }
+    } catch(e) {}
+
+    return res;
+  };
+
+  const originalGetUser = window.supabaseClient.auth.getUser.bind(window.supabaseClient.auth);
+  window.supabaseClient.auth.getUser = async function() {
+    const res = await originalGetUser();
+    if (!res.data?.user) return res;
+
+    const impersonateId = localStorage.getItem("galaImpersonateUserId");
+    if (impersonateId && originalProfile && originalProfile.role === "admin") {
+      const { data: impUser } = await window.supabaseClient.from("profiles").select("*").eq("id", impersonateId).single();
+      if (impUser) {
+        const mockedUser = JSON.parse(JSON.stringify(res.data.user));
+        mockedUser.id = impersonateId;
+        mockedUser.email = impUser.email;
+        return { data: { user: mockedUser }, error: null };
+      }
+    }
+
+    // Check if user is a team member of an Agency
+    try {
+      const { data: tm } = await window.supabaseClient
+        .from("team_members")
+        .select("agency_user_id")
+        .eq("member_email", res.data.user.email);
+      if (tm && tm[0]) {
+        const agencyUserId = tm[0].agency_user_id;
+        const mockedUser = JSON.parse(JSON.stringify(res.data.user));
+        mockedUser.id = agencyUserId;
+        return { data: { user: mockedUser }, error: null };
+      }
+    } catch(e) {}
+
+    return res;
+  };
+})();
 
 // Inyectar de inmediato estilos compactos y responsivos para evitar parpadeos visuales (Layout Shift)
 (function injectStylesImmediately() {
@@ -160,8 +238,27 @@ async function requireAuth() {
       return null;
     }
 
-    // --- Control de Acceso por Módulos y Redirección de Planes (DESACTIVADO) ---
-    // Todos los usuarios tienen acceso a todos los módulos libres de restricciones de plan.
+    // --- Control de Acceso por Módulos (disabled_modules) ---
+    const path = window.location.pathname;
+    const disabledModules = profile.disabled_modules || [];
+    const moduleMappings = {
+      "invitados.html": "invitados",
+      "presupuesto.html": "presupuesto",
+      "itinerario.html": "itinerario",
+      "programa.html": "programa",
+      "seating-materials.html": "asientos",
+      "tareas.html": "tareas",
+      "post-wedding.html": "galeria"
+    };
+
+    const currentPageFile = path.substring(path.lastIndexOf("/") + 1);
+    const moduleName = moduleMappings[currentPageFile];
+
+    if (moduleName && disabledModules.includes(moduleName)) {
+      alert(`El módulo "${moduleName.toUpperCase()}" está desactivado para tu cuenta.`);
+      window.location.href = "proyectos.html";
+      return null;
+    }
 
     // --- Reestructuración Dinámica del Sidebar ---
     setTimeout(() => {
@@ -187,18 +284,72 @@ async function requireAuth() {
           }
         }
 
-        // 2. Renombrar "Post-Boda" a "Galería" de forma dinámica y genérica
+        // 2. Renombrar "Post-Boda" a "Galería" de forma dinámica y desactivar módulos deshabilitados
         sidebar.querySelectorAll("nav a").forEach(a => {
-          const href = a.getAttribute("href");
-          if (href === "post-wedding.html") {
+          const href = a.getAttribute("href") || "";
+          const page = href.substring(href.lastIndexOf("/") + 1);
+          
+          if (page === "post-wedding.html") {
             const label = a.querySelector(".sidebar-label");
             if (label) label.textContent = "Galería";
             const icon = a.querySelector(".nav-icon");
             if (icon) icon.textContent = "photo_library";
           }
+
+          const mappedModule = moduleMappings[page];
+          if (mappedModule && disabledModules.includes(mappedModule)) {
+            a.style.opacity = "0.35";
+            a.style.pointerEvents = "none";
+            a.title = "Módulo desactivado por el administrador";
+          }
         });
+
+        // 3. Inyectar enlaces dinámicos según el rol o plan en el sidebar
+        const nav = sidebar.querySelector("nav");
+        if (nav) {
+          // Si el plan es Agency, inyectar "Mi Equipo"
+          if (profile.plan === "agency" && !sidebar.querySelector(".agency-team-btn")) {
+            const teamLink = document.createElement("a");
+            teamLink.className = "flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all agency-team-btn border-l-4 border-transparent hover:border-tertiary/40";
+            teamLink.href = "equipo.html";
+            teamLink.innerHTML = `<span class="material-symbols-outlined nav-icon mr-4">groups</span><span class="sidebar-label">Mi Equipo</span>`;
+            nav.appendChild(teamLink);
+          }
+          // Si es Administrador, inyectar "Panel de Admin"
+          const isAdmin = profile.role === "admin" || (originalProfile && originalProfile.role === "admin");
+          if (isAdmin && !sidebar.querySelector(".admin-panel-btn")) {
+            const adminLink = document.createElement("a");
+            adminLink.className = "flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all admin-panel-btn border-l-4 border-transparent hover:border-tertiary/40";
+            adminLink.href = "usuarios.html";
+            adminLink.innerHTML = `<span class="material-symbols-outlined nav-icon mr-4">admin_panel_settings</span><span class="sidebar-label">Panel de Admin</span>`;
+            nav.appendChild(adminLink);
+          }
+        }
       }
     }, 10);
+
+    // --- Inyectar banner flotante de Impersonación ---
+    const impersonateId = localStorage.getItem("galaImpersonateUserId");
+    if (impersonateId && originalProfile && originalProfile.role === "admin") {
+      setTimeout(() => {
+        if (!document.getElementById("gala-impersonation-banner")) {
+          const banner = document.createElement("div");
+          banner.id = "gala-impersonation-banner";
+          banner.className = "fixed top-0 left-0 right-0 h-10 bg-[#e9c349] text-[#3c2f00] z-[99999] flex items-center justify-center gap-3 text-xs font-bold shadow-md px-4";
+          banner.innerHTML = `
+            <span>Modo Impersonación: Estás viendo la cuenta de <strong>${profile.full_name || profile.email || impersonateId}</strong></span>
+            <button id="btn-stop-impersonate" class="px-2.5 py-1 bg-[#3c2f00] text-[#e9c349] rounded hover:brightness-110 transition-all font-semibold uppercase text-[9px]">Volver a mi Panel de Admin</button>
+          `;
+          document.body.prepend(banner);
+          document.body.style.paddingTop = "40px";
+          
+          document.getElementById("btn-stop-impersonate").addEventListener("click", () => {
+            localStorage.removeItem("galaImpersonateUserId");
+            window.location.href = "usuarios.html";
+          });
+        }
+      }, 50);
+    }
 
     return { user: session.user, profile };
   } catch(err) {
