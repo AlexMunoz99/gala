@@ -351,19 +351,14 @@
         const userEvents = allEvents.filter(ev => ev.user_id === p.id);
         const isActive = p.is_active !== false; // por defecto activo
 
-        let planBadge = `<span class="inline-flex items-center gap-1.5 px-3 py-1 bg-surface-variant border border-outline-variant/30 rounded-md font-label-gold text-[10px] text-on-surface-variant uppercase tracking-wider">Free (Essential)</span>`;
-        if (p.plan === "agency") {
-          planBadge = `
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-tertiary/10 border border-tertiary/20 rounded-md font-label-gold text-[10px] text-tertiary uppercase tracking-wider">
-              <span class="material-symbols-outlined text-[12px] style='font-variation-settings: &quot;FILL&quot; 1'">workspace_premium</span>
-              Agency (Sovereign)
-            </span>`;
-        } else if (p.plan === "standard") {
-          planBadge = `
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-secondary/10 border border-secondary/20 rounded-md font-label-gold text-[10px] text-secondary uppercase tracking-wider">
-              Boutique (Standard)
-            </span>`;
-        }
+        const currentPlan = p.plan || "free";
+        const planSelector = `
+          <select class="plan-select-db bg-surface border border-outline-variant/30 rounded px-2 py-1 text-on-surface text-[11px] focus:outline-none focus:border-tertiary cursor-pointer font-medium" data-id="${p.id}">
+            <option value="free" ${currentPlan === "free" ? "selected" : ""}>Gratis (Essential)</option>
+            <option value="standard" ${currentPlan === "standard" ? "selected" : ""}>Estándar (Boutique)</option>
+            <option value="agency" ${currentPlan === "agency" ? "selected" : ""}>Agency (Sovereign)</option>
+          </select>
+        `;
 
         const avatarImg = p.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(p.email || p.id)}`;
 
@@ -384,7 +379,7 @@
           
           <!-- Tier -->
           <div class="col-span-2 flex items-center">
-            ${planBadge}
+            ${planSelector}
           </div>
           
           <!-- Status Toggle -->
@@ -392,7 +387,7 @@
             <label class="relative inline-flex items-center cursor-pointer group/toggle">
               <input ${isActive ? 'checked' : ''} class="sr-only peer toggle-status-db" type="checkbox" data-id="${p.id}">
               <div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-on-surface after:border-outline-variant after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-tertiary/40 peer-checked:after:bg-tertiary border border-outline-variant/30 shadow-inner group-hover/toggle:shadow-md transition-all"></div>
-              <span class="ml-3 font-button-text text-button-text ${isActive ? 'text-tertiary' : 'text-error'} transition-colors w-12 status-label">${isActive ? 'Active' : 'Suspended'}</span>
+              <span class="ml-3 font-button-text text-button-text ${isActive ? 'text-tertiary' : 'text-error'} transition-colors w-12 status-label">${isActive ? 'Activo' : 'Suspendido'}</span>
             </label>
           </div>
           
@@ -410,11 +405,11 @@
             </button>
             <button class="btn-audit px-4 py-2 rounded-lg bg-surface-container border border-outline-variant/20 hover:border-tertiary/40 text-on-surface font-button-text text-[13px] hover:text-tertiary transition-all flex items-center gap-2 shadow-sm" data-id="${p.id}">
               <span class="material-symbols-outlined text-sm">assignment</span>
-              Audit Events
+              Auditar Eventos
             </button>
             <button class="btn-modules px-4 py-2 rounded-lg bg-surface-container hover:bg-surface-container-highest border border-outline-variant/20 text-on-surface font-button-text text-[13px] transition-all flex items-center gap-2 shadow-sm" data-id="${p.id}" data-name="${escapeHtml(p.full_name || p.email)}">
               <span class="material-symbols-outlined text-sm">view_module</span>
-              Modules
+              Módulos
             </button>
           </div>
         </div>`;
@@ -498,6 +493,20 @@
           toggle.checked = !isActive; // revertir
         } else {
           window.showToast(isActive ? "Cuenta activada" : "Cuenta suspendida", "info");
+          await loadData();
+        }
+        return;
+      }
+
+      const planSelect = e.target.closest(".plan-select-db");
+      if (planSelect) {
+        const id = planSelect.getAttribute("data-id");
+        const newPlan = planSelect.value;
+        const { error } = await window.supabaseClient.from("profiles").update({ plan: newPlan }).eq("id", id);
+        if (error) {
+          window.showToast("Error al actualizar plan: " + error.message, "error");
+        } else {
+          window.showToast("Plan de servicio actualizado con éxito", "success");
           await loadData();
         }
       }
