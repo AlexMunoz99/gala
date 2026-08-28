@@ -7,6 +7,7 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // --- Soporte de Impersonación y Suplantación de Sesión ---
 let originalSession = null;
 let originalProfile = null;
+let isBypassingSession = false;
 
 (function() {
   const originalGetSession = window.supabaseClient.auth.getSession.bind(window.supabaseClient.auth);
@@ -14,27 +15,30 @@ let originalProfile = null;
     const res = await originalGetSession();
     if (!res.data?.session) return res;
     
-    if (!originalSession || originalSession.user.id !== res.data.session.user.id) {
-      originalSession = JSON.parse(JSON.stringify(res.data.session));
-      try {
+    if (isBypassingSession) {
+      return res;
+    }
+
+    isBypassingSession = true;
+    try {
+      if (!originalSession || originalSession.user.id !== res.data.session.user.id) {
+        originalSession = JSON.parse(JSON.stringify(res.data.session));
         const { data } = await window.supabaseClient.from("profiles").select("*").eq("id", originalSession.user.id).single();
         originalProfile = data;
-      } catch(e) {}
-    }
-
-    const impersonateId = localStorage.getItem("galaImpersonateUserId");
-    if (impersonateId && originalProfile && originalProfile.role === "admin") {
-      const { data: impUser } = await window.supabaseClient.from("profiles").select("*").eq("id", impersonateId).single();
-      if (impUser) {
-        const mockedSession = JSON.parse(JSON.stringify(res.data.session));
-        mockedSession.user.id = impersonateId;
-        mockedSession.user.email = impUser.email;
-        return { data: { session: mockedSession }, error: null };
       }
-    }
 
-    // 2. Check if user is a team member of an Agency
-    try {
+      const impersonateId = localStorage.getItem("galaImpersonateUserId");
+      if (impersonateId && originalProfile && originalProfile.role === "admin") {
+        const { data: impUser } = await window.supabaseClient.from("profiles").select("*").eq("id", impersonateId).single();
+        if (impUser) {
+          const mockedSession = JSON.parse(JSON.stringify(res.data.session));
+          mockedSession.user.id = impersonateId;
+          mockedSession.user.email = impUser.email;
+          return { data: { session: mockedSession }, error: null };
+        }
+      }
+
+      // 2. Check if user is a team member of an Agency
       const { data: tm } = await window.supabaseClient
         .from("team_members")
         .select("agency_user_id")
@@ -45,7 +49,11 @@ let originalProfile = null;
         mockedSession.user.id = agencyUserId;
         return { data: { session: mockedSession }, error: null };
       }
-    } catch(e) {}
+    } catch(e) {
+      console.warn("Error en getSession mocked wrapper:", e);
+    } finally {
+      isBypassingSession = false;
+    }
 
     return res;
   };
@@ -55,19 +63,24 @@ let originalProfile = null;
     const res = await originalGetUser();
     if (!res.data?.user) return res;
 
-    const impersonateId = localStorage.getItem("galaImpersonateUserId");
-    if (impersonateId && originalProfile && originalProfile.role === "admin") {
-      const { data: impUser } = await window.supabaseClient.from("profiles").select("*").eq("id", impersonateId).single();
-      if (impUser) {
-        const mockedUser = JSON.parse(JSON.stringify(res.data.user));
-        mockedUser.id = impersonateId;
-        mockedUser.email = impUser.email;
-        return { data: { user: mockedUser }, error: null };
-      }
+    if (isBypassingSession) {
+      return res;
     }
 
-    // Check if user is a team member of an Agency
+    isBypassingSession = true;
     try {
+      const impersonateId = localStorage.getItem("galaImpersonateUserId");
+      if (impersonateId && originalProfile && originalProfile.role === "admin") {
+        const { data: impUser } = await window.supabaseClient.from("profiles").select("*").eq("id", impersonateId).single();
+        if (impUser) {
+          const mockedUser = JSON.parse(JSON.stringify(res.data.user));
+          mockedUser.id = impersonateId;
+          mockedUser.email = impUser.email;
+          return { data: { user: mockedUser }, error: null };
+        }
+      }
+
+      // Check if user is a team member of an Agency
       const { data: tm } = await window.supabaseClient
         .from("team_members")
         .select("agency_user_id")
@@ -78,7 +91,11 @@ let originalProfile = null;
         mockedUser.id = agencyUserId;
         return { data: { user: mockedUser }, error: null };
       }
-    } catch(e) {}
+    } catch(e) {
+      console.warn("Error en getUser mocked wrapper:", e);
+    } finally {
+      isBypassingSession = false;
+    }
 
     return res;
   };
