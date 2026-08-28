@@ -327,6 +327,7 @@
     let allProfiles = [];
     let allEvents = [];
     let selectedUserIdForModules = null;
+    let myUserId = null;
 
     const listContainer = document.getElementById("client-list");
     const statActive = document.getElementById("stat-active");
@@ -373,7 +374,12 @@
             </div>
             <div class="flex flex-col min-w-0">
               <span class="font-body-md text-body-md text-on-surface font-medium truncate ${!isActive ? 'text-on-surface/60 line-through decoration-error/50' : ''}">${escapeHtml(p.full_name || "(sin nombre)")}</span>
-              <span class="font-body-md text-[13px] text-on-surface-variant truncate">${escapeHtml(p.email || "")}</span>
+              <span class="font-body-md text-[13px] text-on-surface-variant truncate mb-1.5">${escapeHtml(p.email || "")}</span>
+              <select class="role-select-db bg-surface border border-outline-variant/30 rounded px-1.5 py-0.5 text-on-surface text-[10px] focus:outline-none focus:border-tertiary w-[100px] cursor-pointer" data-id="${p.id}" ${p.id === myUserId ? 'disabled' : ''}>
+                <option value="colaborador" ${p.role === "colaborador" ? "selected" : ""}>Colaborador</option>
+                <option value="organizador" ${p.role === "organizador" ? "selected" : ""}>Organizador</option>
+                <option value="admin" ${p.role === "admin" ? "selected" : ""}>Admin</option>
+              </select>
             </div>
           </div>
           
@@ -509,6 +515,20 @@
           window.showToast("Plan de servicio actualizado con éxito", "success");
           await loadData();
         }
+        return;
+      }
+
+      const roleSelect = e.target.closest(".role-select-db");
+      if (roleSelect) {
+        const id = roleSelect.getAttribute("data-id");
+        const newRole = roleSelect.value;
+        const { error } = await window.supabaseClient.from("profiles").update({ role: newRole }).eq("id", id);
+        if (error) {
+          window.showToast("Error al actualizar rol: " + error.message, "error");
+        } else {
+          window.showToast("Rol de usuario actualizado", "success");
+          await loadData();
+        }
       }
     });
 
@@ -591,6 +611,7 @@
         return;
       }
 
+      myUserId = auth.user.id;
       document.getElementById("logout-btn").addEventListener("click", window.signOut);
       await loadData();
     })();
