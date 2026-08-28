@@ -104,7 +104,7 @@ tailwind.config = {
     </div>
 
     <div class="flex flex-col gap-2">
-      <span class="font-sans text-[11px] uppercase tracking-[0.3em] text-[#f2e6cb]">NUESTRA BODA</span>
+      <span id="envelope-event-type-label" class="font-sans text-[11px] uppercase tracking-[0.3em] text-[#f2e6cb]">NUESTRA BODA</span>
       <h2 id="envelope-couple-names" class="font-serif-title text-3xl text-white tracking-wider">Yariana & Daniel</h2>
       <p class="font-sans text-xs text-[#d9cbb7] mt-3 tracking-widest uppercase border border-[#d9cbb7]/30 px-4 py-2 rounded-full cursor-pointer hover:bg-white/10 transition-colors" id="btn-open-envelope-text">
         Toca el sello para abrir
@@ -146,11 +146,11 @@ tailwind.config = {
       <span id="monogram-text" class="font-serif-title italic text-2xl text-gold-dark">YD</span>
     </div>
 
-    <span class="font-sans text-[10px] uppercase tracking-[0.25em] text-ink-light mb-3">CON LA BENDICIÓN DE DIOS</span>
-    <span class="font-sans text-[11px] uppercase tracking-[0.2em] text-ink font-semibold mb-6">Y EN COMPAÑÍA DE NUESTROS PADRES</span>
+    <span id="invitation-blessing-label" class="font-sans text-[10px] uppercase tracking-[0.25em] text-ink-light mb-3">CON LA BENDICIÓN DE DIOS</span>
+    <span id="invitation-parents-label" class="font-sans text-[11px] uppercase tracking-[0.2em] text-ink font-semibold mb-6">Y EN COMPAÑÍA DE NUESTROS PADRES</span>
 
     <!-- Parents list -->
-    <div class="grid grid-cols-1 gap-6 w-full max-w-xs mb-8">
+    <div id="invitation-parents-container" class="grid grid-cols-1 gap-6 w-full max-w-xs mb-8">
       <div class="flex flex-col gap-0.5">
         <p id="bride-father-display" class="font-serif-title text-lg text-ink font-medium">Guillermo Martínez Gómez</p>
         <p id="bride-mother-display" class="font-serif-title text-lg text-ink font-medium">María Elena Padilla Gutiérrez</p>
@@ -162,7 +162,7 @@ tailwind.config = {
       </div>
     </div>
 
-    <p class="font-sans text-[11px] uppercase tracking-[0.2em] text-ink-light max-w-xs leading-relaxed my-4">
+    <p id="invitation-solemn-text" class="font-sans text-[11px] uppercase tracking-[0.2em] text-ink-light max-w-xs leading-relaxed my-4">
       TENEMOS EL HONOR DE INVITARLOS A CELEBRAR NUESTRO ENLACE MATRIMONIAL
     </p>
 
@@ -191,7 +191,7 @@ tailwind.config = {
     </div>
 
     <!-- Godparents -->
-    <div class="mt-8 pt-6 border-t border-gold-dark/20 w-full max-w-xs">
+    <div id="invitation-godparents-container" class="mt-8 pt-6 border-t border-gold-dark/20 w-full max-w-xs">
       <span class="font-sans text-[10px] uppercase tracking-[0.25em] text-gold-dark font-bold block mb-4">NUESTROS PADRINOS DE VELACIÓN</span>
       <p id="padrino-1-display" class="font-serif-title text-lg text-ink font-medium">Lauro Coss Y León Rubio</p>
       <p id="padrino-2-display" class="font-serif-title text-lg text-ink font-medium">Itzel Durand Cortés</p>
@@ -208,9 +208,9 @@ tailwind.config = {
     <!-- Ceremonia Card -->
     <div class="bg-white border border-border-card rounded-2xl p-6 shadow-md flex flex-col items-center text-center relative overflow-hidden">
       <div class="w-14 h-14 rounded-full bg-[#fdfbf7] border border-gold/30 flex items-center justify-center text-gold-dark mb-4 shadow-sm">
-        <span class="material-symbols-outlined text-2xl">church</span>
+        <span id="ceremony-icon-display" class="material-symbols-outlined text-2xl">church</span>
       </div>
-      <span class="font-script text-4xl text-gold-dark mb-1">Ceremonia</span>
+      <span id="ceremony-title-display" class="font-script text-4xl text-gold-dark mb-1">Ceremonia</span>
       <h3 id="ceremony-name-display" class="font-serif-title text-xl font-bold text-ink uppercase tracking-wider">Parroquia de San Francisco de Asís</h3>
       <div class="inline-flex items-center gap-1 my-3 px-3 py-1 bg-parchment rounded-full text-ink font-sans text-xs font-semibold">
         <span class="material-symbols-outlined text-[16px] text-gold-dark">schedule</span>
@@ -226,9 +226,9 @@ tailwind.config = {
     <!-- Recepción Card -->
     <div class="bg-white border border-border-card rounded-2xl p-6 shadow-md flex flex-col items-center text-center relative overflow-hidden">
       <div class="w-14 h-14 rounded-full bg-[#fdfbf7] border border-gold/30 flex items-center justify-center text-gold-dark mb-4 shadow-sm">
-        <span class="material-symbols-outlined text-2xl">celebration</span>
+        <span id="reception-icon-display" class="material-symbols-outlined text-2xl">celebration</span>
       </div>
-      <span class="font-script text-4xl text-gold-dark mb-1">Recepción</span>
+      <span id="reception-title-display" class="font-script text-4xl text-gold-dark mb-1">Recepción</span>
       <h3 id="reception-name-display" class="font-serif-title text-xl font-bold text-ink uppercase tracking-wider">Mítico Terraza y Jardín</h3>
       <div class="inline-flex items-center gap-1 my-3 px-3 py-1 bg-parchment rounded-full text-ink font-sans text-xs font-semibold">
         <span class="material-symbols-outlined text-[16px] text-gold-dark">schedule</span>
@@ -404,6 +404,7 @@ tailwind.config = {
 
 <script type="module">
   let currentEventId = null;
+  let currentEventType = "boda";
   let guestData = null;
   let isPlaying = false;
   let audioContext = null;
@@ -574,16 +575,102 @@ tailwind.config = {
     if (currentEventId) {
       const { data: ev } = await window.supabaseClient.from("events").select("*").eq("id", currentEventId).single();
       if (ev) {
+        currentEventType = (ev.event_type || "boda").toLowerCase();
+        const type = currentEventType;
+
+        // 1. Adaptar etiquetas de tipo de evento en sobres y cabecera
+        const envLabel = document.getElementById("envelope-event-type-label");
+        if (envLabel) {
+          if (type === "corporativo") envLabel.textContent = "INVITACIÓN OFICIAL";
+          else if (type === "social") envLabel.textContent = "INVITACIÓN AL EVENTO";
+          else envLabel.textContent = "NUESTRA BODA";
+        }
+
+        // Adaptar nombres principales
         if (ev.name) {
           document.getElementById("envelope-couple-names").textContent = ev.name;
-          document.getElementById("invitation-couple-names").innerHTML = ev.name.replace("&", "<br/><span class='font-script text-5xl sm:text-6xl text-gold-light tracking-normal lowercase -my-2 block'>&</span>");
-          const initials = ev.name.split("&").map(s => s.trim().charAt(0)).join("");
+          const namesEl = document.getElementById("invitation-couple-names");
+          if (namesEl) {
+            if (type === "corporativo") {
+              namesEl.innerHTML = ev.name;
+              namesEl.style.fontFamily = "'Inter', sans-serif";
+              namesEl.style.fontSize = "26px";
+              namesEl.style.fontWeight = "bold";
+              namesEl.style.letterSpacing = "0.05em";
+              namesEl.style.textTransform = "uppercase";
+            } else {
+              namesEl.innerHTML = ev.name.replace("&", "<br/><span class='font-script text-5xl sm:text-6xl text-gold-light tracking-normal lowercase -my-2 block'>&</span>");
+            }
+          }
+
+          // Generación de iniciales / monograma
+          let initials = "";
+          if (ev.name.includes("&")) {
+            initials = ev.name.split("&").map(s => s.trim().charAt(0)).join("");
+          } else {
+            initials = ev.name.split(" ").slice(0, 2).map(s => s.trim().charAt(0)).join("");
+          }
+
           if (initials) {
             document.getElementById("monogram-seal").textContent = initials;
             document.getElementById("monogram-text").textContent = initials;
             const bottomMonogram = document.getElementById("monogram-bottom");
             if (bottomMonogram) bottomMonogram.textContent = initials;
           }
+        }
+
+        // 2. Adaptar secciones religiosas y familiares de la Página 3
+        const blessingLabel = document.getElementById("invitation-blessing-label");
+        const parentsLabel = document.getElementById("invitation-parents-label");
+        const parentsContainer = document.getElementById("invitation-parents-container");
+        const solemnText = document.getElementById("invitation-solemn-text");
+        const godparentsContainer = document.getElementById("invitation-godparents-container");
+
+        if (type === "corporativo") {
+          if (blessingLabel) blessingLabel.classList.add("hidden");
+          if (parentsLabel) parentsLabel.classList.add("hidden");
+          if (parentsContainer) parentsContainer.classList.add("hidden");
+          if (godparentsContainer) godparentsContainer.classList.add("hidden");
+          if (solemnText) {
+            solemnText.textContent = "TIENE EL HONOR DE INVITARLE A SU PRÓXIMO EVENTO OFICIAL";
+          }
+
+          // Cambiar títulos e iconos del itinerario en Página 4
+          const cIcon = document.getElementById("ceremony-icon-display");
+          const cTitle = document.getElementById("ceremony-title-display");
+          const rIcon = document.getElementById("reception-icon-display");
+          const rTitle = document.getElementById("reception-title-display");
+
+          if (cIcon) cIcon.textContent = "business_center";
+          if (cTitle) {
+            cTitle.textContent = "Conferencia / Sesión";
+            cTitle.classList.remove("font-script", "text-4xl");
+            cTitle.classList.add("font-serif-title", "text-lg", "font-bold");
+          }
+          if (rIcon) rIcon.textContent = "local_bar";
+          if (rTitle) {
+            rTitle.textContent = "Networking / Cierre";
+            rTitle.classList.remove("font-script", "text-4xl");
+            rTitle.classList.add("font-serif-title", "text-lg", "font-bold");
+          }
+        } else if (type === "social") {
+          if (blessingLabel) blessingLabel.classList.add("hidden");
+          if (parentsLabel) parentsLabel.textContent = "ORGANIZADO POR NUESTROS ANFITRIONES";
+          if (godparentsContainer) godparentsContainer.classList.add("hidden");
+          if (solemnText) {
+            solemnText.textContent = "TIENE EL HONOR DE INVITARLES A CELEBRAR ESTE DÍA ESPECIAL";
+          }
+
+          // Cambiar títulos de itinerario en Página 4
+          const cIcon = document.getElementById("ceremony-icon-display");
+          const cTitle = document.getElementById("ceremony-title-display");
+          const rIcon = document.getElementById("reception-icon-display");
+          const rTitle = document.getElementById("reception-title-display");
+
+          if (cIcon) cIcon.textContent = "celebration";
+          if (cTitle) cTitle.textContent = "Recepción de Invitados";
+          if (rIcon) rIcon.textContent = "cake";
+          if (rTitle) rTitle.textContent = "Fiesta / Brindis";
         }
         if (ev.event_date) {
           eventDateStr = ev.event_date;
@@ -606,11 +693,45 @@ tailwind.config = {
     // 3. Aplicar personalizaciones guardadas
     const saved = getStoredSettings();
     if (saved) {
-      if (saved.bride_name && saved.groom_name) {
-        const namesStr = `${saved.bride_name} & ${saved.groom_name}`;
-        document.getElementById("envelope-couple-names").textContent = namesStr;
-        document.getElementById("invitation-couple-names").innerHTML = `${saved.bride_name.toUpperCase()}<br/><span class='font-script text-5xl sm:text-6xl text-gold-light tracking-normal lowercase -my-2 block'>&</span>${saved.groom_name.toUpperCase()}`;
-        const initials = `${saved.bride_name.charAt(0)}${saved.groom_name.charAt(0)}`;
+      if (saved.bride_name || saved.groom_name) {
+        const bride = saved.bride_name || "";
+        const groom = saved.groom_name || "";
+        
+        let namesStr = "";
+        let initials = "";
+        
+        if (currentEventType === "corporativo") {
+          namesStr = groom || bride || "Evento";
+          initials = namesStr.split(" ").slice(0, 2).map(s => s.trim().charAt(0)).join("");
+          
+          document.getElementById("envelope-couple-names").textContent = namesStr;
+          const namesEl = document.getElementById("invitation-couple-names");
+          if (namesEl) {
+            namesEl.innerHTML = namesStr;
+            namesEl.style.fontFamily = "'Inter', sans-serif";
+            namesEl.style.fontSize = "26px";
+            namesEl.style.fontWeight = "bold";
+            namesEl.style.letterSpacing = "0.05em";
+            namesEl.style.textTransform = "uppercase";
+          }
+        } else {
+          const defaultBride = currentEventType === "social" ? "Festejado" : "Novia";
+          const defaultGroom = currentEventType === "social" ? "Co-Anfitrión" : "Novio";
+          
+          namesStr = (bride && groom) ? `${bride} & ${groom}` : (groom || bride || `${defaultBride} & ${defaultGroom}`);
+          initials = (bride && groom) ? `${bride.charAt(0)}${groom.charAt(0)}` : namesStr.split(" ").slice(0, 2).map(s => s.trim().charAt(0)).join("");
+          
+          document.getElementById("envelope-couple-names").textContent = namesStr;
+          const namesEl = document.getElementById("invitation-couple-names");
+          if (namesEl) {
+            if (bride && groom) {
+              namesEl.innerHTML = `${bride.toUpperCase()}<br/><span class='font-script text-5xl sm:text-6xl text-gold-light tracking-normal lowercase -my-2 block'>&</span>${groom.toUpperCase()}`;
+            } else {
+              namesEl.innerHTML = namesStr.toUpperCase();
+            }
+          }
+        }
+
         document.getElementById("monogram-seal").textContent = initials;
         document.getElementById("monogram-text").textContent = initials;
         const bottomMonogram = document.getElementById("monogram-bottom");

@@ -24,7 +24,7 @@
 </style>
 
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Gala ERP — Post-Boda</title>
+<title>Gala ERP — Galería del Evento</title>
 <style>
   @layer base {
     html, body { margin: 0; padding: 0; }
@@ -233,9 +233,9 @@ tailwind.config = {
               <span class="w-8 h-px bg-tertiary opacity-30"></span>
               <span class="font-label-gold text-[10px] uppercase tracking-[0.2em] text-tertiary">El Álbum Compartido</span>
             </div>
-            <h1 class="font-display-lg text-2xl text-on-surface">La Bóveda Post-Boda</h1>
+            <h1 class="font-display-lg text-2xl text-on-surface">La Bóveda (Galería del Evento)</h1>
             <p class="font-body-md text-xs text-on-surface-variant max-w-xl">
-              Preserva los recuerdos de <span id="current-event-name-inline" class="text-tertiary">tu boda</span>. Sube fotos del evento y deja mensajes memorables en las imágenes compartidas por tus invitados.
+              Preserva los recuerdos de <span id="current-event-name-inline" class="text-tertiary">tu evento</span>. Sube fotos del evento y deja comentarios o felicitaciones en las imágenes compartidas por tus invitados.
             </p>
           </div>
           <div class="w-full md:w-1/3 flex justify-start md:justify-end">
@@ -566,18 +566,11 @@ tailwind.config = {
     if (!currentEvent) return;
     currentEventId = currentEvent.id;
 
-    // Check if event type is boda (wedding)
-    const isWedding = (currentEvent.event_type || "").toLowerCase() === "boda";
-    
-    if (isWedding) {
-      document.getElementById("wedding-vault-view").classList.remove("hidden");
-      document.getElementById("non-wedding-blocker").classList.add("hidden");
-      document.getElementById("current-event-name-inline").textContent = currentEvent.name || "tu boda";
-      renderGallery();
-    } else {
-      document.getElementById("non-wedding-blocker").classList.remove("hidden");
-      document.getElementById("wedding-vault-view").classList.add("hidden");
-    }
+    // No more wedding blocker! All events get access to the gallery
+    document.getElementById("wedding-vault-view").classList.remove("hidden");
+    document.getElementById("non-wedding-blocker").classList.add("hidden");
+    document.getElementById("current-event-name-inline").textContent = currentEvent.name || "tu evento";
+    renderGallery();
   })();
 </script>
 

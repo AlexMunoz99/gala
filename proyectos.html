@@ -108,6 +108,14 @@ tailwind.config = {
         <label class="text-[10px] uppercase tracking-wider text-on-surface-variant" for="edit-project-date">Fecha estimada</label>
         <input id="edit-project-date" class="bg-surface-container border border-tertiary/20 rounded-lg py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary" type="date"/>
       </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-[10px] uppercase tracking-wider text-on-surface-variant" for="edit-project-type">Tipo de Evento</label>
+        <select id="edit-project-type" class="bg-surface-container border border-tertiary/20 rounded-lg py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary">
+          <option value="boda">Boda 💍</option>
+          <option value="social">Social 🎉 (Cumpleaños, XV Años, Graduación)</option>
+          <option value="corporativo">Corporativo 💼 (Conferencia, Congreso, Lanzamiento)</option>
+        </select>
+      </div>
 
       <p id="edit-project-error" class="hidden text-error text-xs"></p>
 
@@ -140,6 +148,14 @@ tailwind.config = {
       <div class="flex flex-col gap-1">
         <label class="text-[10px] uppercase tracking-wider text-on-surface-variant" for="project-date">Fecha estimada</label>
         <input id="project-date" class="bg-surface-container border border-tertiary/20 rounded-lg py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary" type="date"/>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-[10px] uppercase tracking-wider text-on-surface-variant" for="project-type">Tipo de Evento</label>
+        <select id="project-type" class="bg-surface-container border border-tertiary/20 rounded-lg py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary">
+          <option value="boda" selected>Boda 💍</option>
+          <option value="social">Social 🎉 (Cumpleaños, XV Años, Graduación)</option>
+          <option value="corporativo">Corporativo 💼 (Conferencia, Congreso, Lanzamiento)</option>
+        </select>
       </div>
 
       <p id="project-form-error" class="hidden text-error text-xs"></p>
@@ -185,23 +201,39 @@ tailwind.config = {
     grid.innerHTML = events.map(ev => {
       const now = new Date();
       const evDate = ev.event_date ? new Date(ev.event_date + "T00:00:00") : null;
-      let badgeHtml = `<span class="px-2.5 py-0.5 rounded-full bg-tertiary/10 border border-tertiary/20 text-tertiary text-[9px] font-label-gold uppercase">En Planificación</span>`;
+      let badgeHtml = `<span class="px-2.5 py-0.5 rounded-full bg-tertiary/10 border border-tertiary/20 text-tertiary text-[9px] font-label-gold uppercase text-[8px] font-bold">En Planificación</span>`;
       if (evDate) {
         const diffDays = Math.ceil((evDate - now) / (1000 * 60 * 60 * 24));
         if (diffDays < 0) {
-          badgeHtml = `<span class="px-2.5 py-0.5 rounded-full bg-surface-container-high border border-surface-variant text-on-surface-variant text-[9px] font-label-gold uppercase">Finalizado</span>`;
+          badgeHtml = `<span class="px-2.5 py-0.5 rounded-full bg-surface-container-high border border-surface-variant text-on-surface-variant text-[9px] font-label-gold uppercase text-[8px] font-bold">Finalizado</span>`;
         } else if (diffDays <= 30) {
-          badgeHtml = `<span class="px-2.5 py-0.5 rounded-full bg-[#4ade80]/15 border border-[#4ade80]/30 text-[#4ade80] text-[9px] font-label-gold uppercase">¡Próxima (${diffDays}d)!</span>`;
+          badgeHtml = `<span class="px-2.5 py-0.5 rounded-full bg-[#4ade80]/15 border border-[#4ade80]/30 text-[#4ade80] text-[9px] font-label-gold uppercase text-[8px] font-bold">¡Próxima (${diffDays}d)!</span>`;
         }
+      }
+
+      // Badge e icono por tipo de evento
+      let typeBadge = "";
+      let typeIcon = "celebration";
+      const type = (ev.event_type || "boda").toLowerCase();
+      if (type === "corporativo") {
+        typeBadge = `<span class="px-2.5 py-0.5 rounded-full bg-secondary/15 border border-secondary/35 text-secondary text-[8px] font-bold uppercase tracking-wider">Corporativo</span>`;
+        typeIcon = "business_center";
+      } else if (type === "social") {
+        typeBadge = `<span class="px-2.5 py-0.5 rounded-full bg-tertiary/15 border border-tertiary/35 text-tertiary text-[8px] font-bold uppercase tracking-wider">Social</span>`;
+        typeIcon = "party_mode";
+      } else {
+        typeBadge = `<span class="px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-on-surface-variant text-[8px] font-bold uppercase tracking-wider">Boda</span>`;
+        typeIcon = "favorite";
       }
 
       return `
       <div class="project-card relative text-left bg-surface-container rounded-xl p-4 shadow-md hover:-translate-y-0.5 hover:shadow-xl transition-all border border-tertiary/10 hover:border-tertiary/30 flex flex-col gap-3 cursor-pointer group" data-id="${ev.id}">
         <div class="flex items-center justify-between">
           <div class="w-10 h-10 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary border border-tertiary/20">
-            <span class="material-symbols-outlined text-[20px]">celebration</span>
+            <span class="material-symbols-outlined text-[20px]">${typeIcon}</span>
           </div>
           <div class="flex items-center gap-1.5">
+            ${typeBadge}
             ${badgeHtml}
             <button class="btn-edit-project w-7 h-7 rounded-full bg-surface/60 backdrop-blur flex items-center justify-center text-on-surface-variant hover:text-tertiary transition-colors" title="Editar evento">
               <span class="material-symbols-outlined text-[16px]">edit</span>
@@ -265,6 +297,7 @@ tailwind.config = {
     document.getElementById("edit-project-id").value = ev.id;
     document.getElementById("edit-project-name").value = ev.name || "";
     document.getElementById("edit-project-date").value = ev.event_date || "";
+    document.getElementById("edit-project-type").value = ev.event_type || "boda";
     const modal = document.getElementById("edit-project-modal");
     modal.classList.remove("hidden");
     modal.classList.add("flex");
@@ -283,7 +316,8 @@ tailwind.config = {
     const id = document.getElementById("edit-project-id").value;
     const payload = {
       name: document.getElementById("edit-project-name").value.trim(),
-      event_date: document.getElementById("edit-project-date").value || null
+      event_date: document.getElementById("edit-project-date").value || null,
+      event_type: document.getElementById("edit-project-type").value
     };
     const { error } = await window.supabaseClient.from("events").update(payload).eq("id", id);
     const errEl = document.getElementById("edit-project-error");
@@ -332,8 +366,9 @@ tailwind.config = {
     formError.classList.add("hidden");
     const name = document.getElementById("project-name").value.trim();
     const event_date = document.getElementById("project-date").value || null;
+    const event_type = document.getElementById("project-type").value;
 
-    const payload = { name, event_date };
+    const payload = { name, event_date, event_type };
     if (currentUser?.id) {
       payload.user_id = currentUser.id;
     }

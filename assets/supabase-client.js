@@ -186,6 +186,17 @@ async function requireAuth() {
             }
           }
         }
+
+        // 2. Renombrar "Post-Boda" a "Galería" de forma dinámica y genérica
+        sidebar.querySelectorAll("nav a").forEach(a => {
+          const href = a.getAttribute("href");
+          if (href === "post-wedding.html") {
+            const label = a.querySelector(".sidebar-label");
+            if (label) label.textContent = "Galería";
+            const icon = a.querySelector(".nav-icon");
+            if (icon) icon.textContent = "photo_library";
+          }
+        });
       }
     }, 10);
 

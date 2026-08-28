@@ -377,23 +377,25 @@ tailwind.config = {
                 <input id="song-url-input" type="url" placeholder="URL de la canción" class="bg-surface border border-tertiary/20 rounded-lg p-2 mt-1 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
               </div>
 
-              <div class="flex items-center justify-between border-t border-tertiary/10 pt-3">
-                <span class="text-[10px] text-on-surface-variant font-semibold">Corte de Honor</span>
-                <button type="button" id="btn-sync-padrinos" class="text-[10px] text-tertiary hover:underline flex items-center gap-1">
-                  <span class="material-symbols-outlined text-[12px]">sync</span> Sincronizar Padrinos
-                </button>
-              </div>
-              <div class="grid grid-cols-2 gap-2">
-                <input id="padrino-1-input" type="text" placeholder="Padrino de Velación 1" value="Lauro Coss Y León Rubio" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
-                <input id="padrino-2-input" type="text" placeholder="Padrino de Velación 2" value="Itzel Durand Cortés" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
-              </div>
-              <div class="grid grid-cols-2 gap-2">
-                <input id="bride-father-input" type="text" placeholder="Padre Novia" value="Guillermo Martínez Gómez" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
-                <input id="bride-mother-input" type="text" placeholder="Madre Novia" value="María Elena Padilla Gutiérrez" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
-              </div>
-              <div class="grid grid-cols-2 gap-2">
-                <input id="groom-father-input" type="text" placeholder="Padre Novio" value="Armando Jiménez Jiménez" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
-                <input id="groom-mother-input" type="text" placeholder="Madre Novio" value="Blanca Delia González Lozano" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+              <div id="parents-padrinos-wrapper" class="flex flex-col gap-3">
+                <div class="flex items-center justify-between border-t border-tertiary/10 pt-3">
+                  <span class="text-[10px] text-on-surface-variant font-semibold">Corte de Honor</span>
+                  <button type="button" id="btn-sync-padrinos" class="text-[10px] text-tertiary hover:underline flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[12px]">sync</span> Sincronizar Padrinos
+                  </button>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <input id="padrino-1-input" type="text" placeholder="Padrino de Velación 1" value="Lauro Coss Y León Rubio" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <input id="padrino-2-input" type="text" placeholder="Padrino de Velación 2" value="Itzel Durand Cortés" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <input id="bride-father-input" type="text" placeholder="Padre Novia" value="Guillermo Martínez Gómez" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <input id="bride-mother-input" type="text" placeholder="Madre Novia" value="María Elena Padilla Gutiérrez" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <input id="groom-father-input" type="text" placeholder="Padre Novio" value="Armando Jiménez Jiménez" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <input id="groom-mother-input" type="text" placeholder="Madre Novio" value="Blanca Delia González Lozano" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                </div>
               </div>
             </div>
 
@@ -432,8 +434,8 @@ tailwind.config = {
 
               <!-- Ceremony Section -->
               <div class="flex flex-col gap-2 py-3 border-b border-tertiary/10">
-                <span class="material-symbols-outlined text-tertiary text-lg">church</span>
-                <h4 class="font-headline-md text-[10px] text-on-surface uppercase tracking-wider">Ceremonia Religiosa</h4>
+                <span id="preview-ceremony-icon" class="material-symbols-outlined text-tertiary text-lg">church</span>
+                <h4 id="preview-ceremony-title" class="font-headline-md text-[10px] text-on-surface uppercase tracking-wider">Ceremonia Religiosa</h4>
                 <p id="preview-ceremony-name" class="text-[10px] text-on-surface font-medium px-1">Parroquia de San Francisco de Asís</p>
                 <div class="text-[9px] text-on-surface-variant flex justify-center gap-1.5">
                   <span id="preview-ceremony-time">6:00 PM</span> | <span id="preview-ceremony-city" class="truncate max-w-[100px]">Tepatitlán, Jal</span>
@@ -442,8 +444,8 @@ tailwind.config = {
 
               <!-- Reception Section -->
               <div class="flex flex-col gap-2 py-3 border-b border-tertiary/10">
-                <span class="material-symbols-outlined text-tertiary text-lg">celebration</span>
-                <h4 class="font-headline-md text-[10px] text-on-surface uppercase tracking-wider">Recepción</h4>
+                <span id="preview-reception-icon" class="material-symbols-outlined text-tertiary text-lg">celebration</span>
+                <h4 id="preview-reception-title" class="font-headline-md text-[10px] text-on-surface uppercase tracking-wider">Recepción</h4>
                 <p id="preview-reception-name" class="text-[10px] text-on-surface font-medium px-1">Mítico Terraza y Jardín</p>
                 <div class="text-[9px] text-on-surface-variant flex justify-center gap-1.5">
                   <span id="preview-reception-time">8:00 PM</span> | <span id="preview-reception-city" class="truncate max-w-[100px]">Capilla Gpe</span>
@@ -467,6 +469,7 @@ tailwind.config = {
 
 <script type="module">
   let currentEventId = null;
+  let currentEventType = "boda";
   const SETTINGS_KEY = "galaInvitationSettings_";
 
   function getStoredSettings() {
@@ -639,13 +642,31 @@ tailwind.config = {
   // Live preview reactive bindings
   const inputsToBind = [
     { inputId: "bride-name-input", outputId: "preview-couple-names", valueFn: () => {
-      const bride = document.getElementById("bride-name-input").value.trim() || "Novia";
-      const groom = document.getElementById("groom-name-input").value.trim() || "Novio";
+      const bride = document.getElementById("bride-name-input").value.trim();
+      const groom = document.getElementById("groom-name-input").value.trim();
+      if (currentEventType === "corporativo") {
+        return groom || "Nombre del Evento";
+      }
+      const defaultBride = currentEventType === "social" ? "Festejado" : "Novia";
+      const defaultGroom = currentEventType === "social" ? "Co-Anfitrión" : "Novio";
+      
+      if (!bride && !groom) return `${defaultBride} & ${defaultGroom}`;
+      if (!bride) return groom;
+      if (!groom) return bride;
       return `${bride} & ${groom}`;
     }},
     { inputId: "groom-name-input", outputId: "preview-couple-names", valueFn: () => {
-      const bride = document.getElementById("bride-name-input").value.trim() || "Novia";
-      const groom = document.getElementById("groom-name-input").value.trim() || "Novio";
+      const bride = document.getElementById("bride-name-input").value.trim();
+      const groom = document.getElementById("groom-name-input").value.trim();
+      if (currentEventType === "corporativo") {
+        return groom || "Nombre del Evento";
+      }
+      const defaultBride = currentEventType === "social" ? "Festejado" : "Novia";
+      const defaultGroom = currentEventType === "social" ? "Co-Anfitrión" : "Novio";
+      
+      if (!bride && !groom) return `${defaultBride} & ${defaultGroom}`;
+      if (!bride) return groom;
+      if (!groom) return bride;
       return `${bride} & ${groom}`;
     }},
     { inputId: "quote-text-input", outputId: "preview-quote-text" },
@@ -673,10 +694,55 @@ tailwind.config = {
       }
     });
 
+    // Adaptar dinámicamente el layout de la previsualización según tipo de evento
+    const coupleText = document.getElementById("preview-couple-names");
+    const ceremonyIcon = document.getElementById("preview-ceremony-icon");
+    const ceremonyTitle = document.getElementById("preview-ceremony-title");
+    const receptionIcon = document.getElementById("preview-reception-icon");
+    const receptionTitle = document.getElementById("preview-reception-title");
+
+    if (currentEventType === "corporativo") {
+      if (coupleText) {
+        coupleText.style.fontFamily = "'Inter', sans-serif";
+        coupleText.style.fontSize = "13px";
+        coupleText.style.textTransform = "uppercase";
+        coupleText.style.fontWeight = "bold";
+        coupleText.style.letterSpacing = "0.08em";
+      }
+      if (ceremonyIcon) ceremonyIcon.textContent = "business_center";
+      if (ceremonyTitle) ceremonyTitle.textContent = "Conferencia / Sesión";
+      if (receptionIcon) receptionIcon.textContent = "local_bar";
+      if (receptionTitle) receptionTitle.textContent = "Cierre / Networking";
+    } else if (currentEventType === "social") {
+      if (coupleText) {
+        coupleText.style.fontFamily = "";
+        coupleText.style.fontSize = "";
+        coupleText.style.textTransform = "";
+        coupleText.style.fontWeight = "";
+        coupleText.style.letterSpacing = "";
+      }
+      if (ceremonyIcon) ceremonyIcon.textContent = "celebration";
+      if (ceremonyTitle) ceremonyTitle.textContent = "Recepción de Invitados";
+      if (receptionIcon) receptionIcon.textContent = "cake";
+      if (receptionTitle) receptionTitle.textContent = "Fiesta / Brindis";
+    } else {
+      // Boda
+      if (coupleText) {
+        coupleText.style.fontFamily = "";
+        coupleText.style.fontSize = "";
+        coupleText.style.textTransform = "";
+        coupleText.style.fontWeight = "";
+        coupleText.style.letterSpacing = "";
+      }
+      if (ceremonyIcon) ceremonyIcon.textContent = "church";
+      if (ceremonyTitle) ceremonyTitle.textContent = "Ceremonia Religiosa";
+      if (receptionIcon) receptionIcon.textContent = "celebration";
+      if (receptionTitle) receptionTitle.textContent = "Recepción";
+    }
+
     // Theme Color live style update
     const activeColor = document.querySelector('input[name="theme_color"]:checked')?.value || 'gold';
     const root = document.getElementById("phone-preview-screen");
-    const coupleText = document.getElementById("preview-couple-names");
     const quoteAuth = document.getElementById("preview-quote-author");
     const codeText = document.getElementById("preview-dress-code");
     
@@ -819,6 +885,73 @@ tailwind.config = {
     document.getElementById("groom-mother-input").value = parents.gm;
   }
 
+  function adaptFormLabelsAndWizard(eventType) {
+    const type = (eventType || "boda").toLowerCase();
+    const brideLabel = document.querySelector('label[for="bride-name-input"]');
+    const groomLabel = document.querySelector('label[for="groom-name-input"]');
+    const step2Title = document.querySelector('#step-section-2 > h3');
+    const step4Title = document.querySelector('#step-section-4 > h3');
+    const tab2 = document.querySelector('.wizard-tab[data-step="2"]');
+    
+    const brideInput = document.getElementById("bride-name-input");
+    const groomInput = document.getElementById("groom-name-input");
+    const quoteLabel = document.querySelector('label[for="quote-text-input"]');
+    const quoteTextarea = document.getElementById("quote-text-input");
+    const quoteAuthor = document.getElementById("quote-author-input");
+
+    const parentsPadrinosWrapper = document.getElementById("parents-padrinos-wrapper");
+
+    if (type === "corporativo") {
+      if (brideLabel) brideLabel.textContent = "Organizador / Empresa *";
+      if (groomLabel) groomLabel.textContent = "Nombre del Evento (Corto) *";
+      if (brideInput) brideInput.placeholder = "Ej. Google México";
+      if (groomInput) groomInput.placeholder = "Ej. Google I/O 2026";
+      
+      if (step2Title) {
+        step2Title.innerHTML = `<span class="material-symbols-outlined text-tertiary text-[18px]">business_center</span>Portada & Título del Evento`;
+      }
+      if (step4Title) {
+        step4Title.innerHTML = `<span class="material-symbols-outlined text-tertiary text-[18px]">styler</span>Detalles y Enlaces`;
+      }
+      if (tab2) tab2.textContent = "2. Evento";
+      
+      if (quoteLabel) quoteLabel.textContent = "Eslogan / Lema del Evento";
+      if (quoteTextarea) quoteTextarea.placeholder = "Ej. Conectando mentes, creando el futuro...";
+      if (quoteAuthor) quoteAuthor.placeholder = "— Lema Oficial";
+
+      if (parentsPadrinosWrapper) parentsPadrinosWrapper.classList.add("hidden");
+    } else if (type === "social") {
+      if (brideLabel) brideLabel.textContent = "Nombre del Festejado *";
+      if (groomLabel) groomLabel.textContent = "Nombre del Co-Anfitrión (Opcional) *";
+      if (brideInput) brideInput.placeholder = "Ej. Sofía Ortega";
+      if (groomInput) groomInput.placeholder = "Ej. Padres de Sofía";
+      
+      if (step2Title) {
+        step2Title.innerHTML = `<span class="material-symbols-outlined text-tertiary text-[18px]">celebration</span>Portada & Festejado`;
+      }
+      if (tab2) tab2.textContent = "2. Festejado";
+      
+      if (quoteLabel) quoteLabel.textContent = "Frase / Mensaje de Bienvenida";
+      if (quoteTextarea) quoteTextarea.placeholder = "Ej. Bienvenidos a mi gran fiesta de cumpleaños...";
+      
+      if (parentsPadrinosWrapper) parentsPadrinosWrapper.classList.remove("hidden");
+    } else {
+      if (brideLabel) brideLabel.textContent = "Nombre de la Novia *";
+      if (groomLabel) groomLabel.textContent = "Nombre del Novio *";
+      if (brideInput) brideInput.placeholder = "Ej. Yariana";
+      if (groomInput) groomInput.placeholder = "Ej. Daniel";
+      
+      if (step2Title) {
+        step2Title.innerHTML = `<span class="material-symbols-outlined text-tertiary text-[18px]">favorite</span>Portada & Foto de los Novios`;
+      }
+      if (tab2) tab2.textContent = "2. Novios";
+      
+      if (quoteLabel) quoteLabel.textContent = "Cita de Amor / Frase Bíblica";
+      
+      if (parentsPadrinosWrapper) parentsPadrinosWrapper.classList.remove("hidden");
+    }
+  }
+
   // Inicialización
   (async function init() {
     const auth = await window.requireAuth();
@@ -826,6 +959,9 @@ tailwind.config = {
     const currentEvent = await window.requireEvent();
     if (!currentEvent) return;
     currentEventId = currentEvent.id;
+    currentEventType = currentEvent.event_type || "boda";
+
+    adaptFormLabelsAndWizard(currentEventType);
 
     document.getElementById("btn-view-invitation-live").href = `invitacion.html?event=${currentEventId}`;
 
