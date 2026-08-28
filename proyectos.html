@@ -50,7 +50,6 @@ tailwind.config = {
   </div>
   <div class="flex items-center gap-4">
     <a href="usuarios.html" class="admin-only material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors" title="Administrar usuarios">group</a>
-    <a href="pricing.html" class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors" title="Ver planes y precios">payments</a>
     <div id="role-badge" class="w-8 h-8 rounded-full flex items-center justify-center transition-colors" title="">
       <span class="material-symbols-outlined role-badge-icon text-[18px]"></span>
     </div>
@@ -173,11 +172,7 @@ tailwind.config = {
   let allEvents = [];
   let userProfile = null;
   let currentUser = null;
-  const PLAN_LIMITS = {
-    free: 3,
-    standard: 5,
-    agency: 12
-  };
+
 
   function renderProjects(events) {
     if (events.length === 0) {
@@ -317,13 +312,6 @@ tailwind.config = {
   });
 
   function openModal() {
-    const userPlan = userProfile?.plan || 'free';
-    const limit = PLAN_LIMITS[userPlan];
-    if (userProfile?.role !== "admin" && allEvents.length >= limit) {
-      alert(`Has alcanzado el límite de tu plan (${limit} eventos). Actualiza tu plan en la pantalla de Precios.`);
-      window.location.href = "pricing.html";
-      return;
-    }
     formError.classList.add("hidden");
     form.reset();
     modal.classList.remove("hidden");
@@ -368,13 +356,7 @@ tailwind.config = {
   if (btnSeedDemo) {
     btnSeedDemo.addEventListener("click", async (e) => {
       e.preventDefault();
-      const userPlan = userProfile?.plan || 'free';
-      const limit = PLAN_LIMITS[userPlan];
-      if (userProfile?.role !== "admin" && allEvents.length >= limit) {
-        alert(`Has alcanzado el límite de tu plan (${limit} eventos). Actualiza tu plan en la pantalla de Precios.`);
-        window.location.href = "pricing.html";
-        return;
-      }
+
       btnSeedDemo.disabled = true;
       btnSeedDemo.innerHTML = `<span class="material-symbols-outlined animate-spin text-[20px]">sync</span> Generando...`;
       window.showToast("Generando Boda Demo con invitados, proveedores e itinerario...", "info", 4000);

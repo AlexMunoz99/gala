@@ -76,13 +76,12 @@ tailwind.config = {
             <th class="py-4 px-6 font-label-gold text-xs uppercase tracking-widest text-on-surface-variant">Nombre</th>
             <th class="py-4 px-6 font-label-gold text-xs uppercase tracking-widest text-on-surface-variant">Correo</th>
             <th class="py-4 px-6 font-label-gold text-xs uppercase tracking-widest text-on-surface-variant">Rol</th>
-            <th class="py-4 px-6 font-label-gold text-xs uppercase tracking-widest text-on-surface-variant">Plan</th>
             <th class="py-4 px-6 font-label-gold text-xs uppercase tracking-widest text-on-surface-variant">Eventos</th>
             <th class="py-4 px-6 font-label-gold text-xs uppercase tracking-widest text-on-surface-variant">Estatus</th>
           </tr>
         </thead>
         <tbody id="users-tbody">
-          <tr><td colspan="6" class="py-8 px-6 text-center text-on-surface-variant">Cargando…</td></tr>
+          <tr><td colspan="5" class="py-8 px-6 text-center text-on-surface-variant">Cargando…</td></tr>
         </tbody>
       </table>
     </div>
@@ -154,13 +153,6 @@ tailwind.config = {
             </select>
           </td>
           <td class="py-4 px-6">
-            <select class="plan-select bg-surface-container border border-tertiary/20 rounded px-2.5 py-1 text-on-surface text-xs focus:outline-none focus:border-tertiary">
-              <option value="free" ${p.plan === "free" ? "selected" : ""}>Gratis (Free)</option>
-              <option value="standard" ${p.plan === "standard" ? "selected" : ""}>Standard</option>
-              <option value="agency" ${p.plan === "agency" ? "selected" : ""}>Agency</option>
-            </select>
-          </td>
-          <td class="py-4 px-6">
             <div class="flex flex-col max-h-[80px] overflow-y-auto">${eventsListHtml}</div>
           </td>
           <td class="py-4 px-6">
@@ -180,7 +172,7 @@ tailwind.config = {
 
     const { data, error } = await window.supabaseClient.from("profiles").select("*").order("created_at", { ascending: false });
     if (error) {
-      usersTbody.innerHTML = `<tr><td colspan="6" class="py-8 px-6 text-center text-error">Error: ${escapeHtml(error.message)}</td></tr>`;
+      usersTbody.innerHTML = `<tr><td colspan="5" class="py-8 px-6 text-center text-error">Error: ${escapeHtml(error.message)}</td></tr>`;
       return;
     }
     allProfiles = data || [];
@@ -214,19 +206,6 @@ tailwind.config = {
         alert("No se pudo cambiar el rol: " + error.message);
       } else {
         window.showToast("Rol de usuario actualizado", "success");
-      }
-      return;
-    }
-
-    const planSelect = e.target.closest(".plan-select");
-    if (planSelect) {
-      const row = planSelect.closest("[data-id]");
-      const id = row.getAttribute("data-id");
-      const { error } = await window.supabaseClient.from("profiles").update({ plan: planSelect.value }).eq("id", id);
-      if (error) {
-        alert("No se pudo cambiar el plan: " + error.message);
-      } else {
-        window.showToast("Plan de usuario actualizado correctamente", "success");
       }
       return;
     }

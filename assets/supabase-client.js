@@ -160,24 +160,8 @@ async function requireAuth() {
       return null;
     }
 
-    // --- Control de Acceso por Módulos y Redirección de Planes ---
-    const path = window.location.pathname;
-    const isFree = profile.plan === "free" && profile.role !== "admin";
-    const blockedPages = [
-      "invitados.html",
-      "itinerario.html",
-      "programa.html",
-      "lugares.html",
-      "tareas.html",
-      "seating-materials.html",
-      "post-wedding.html"
-    ];
-    const currentPage = path.split("/").pop();
-    if (isFree && blockedPages.includes(currentPage)) {
-      window.location.href = "pricing.html";
-      return null;
-    }
-
+    // --- Control de Acceso por Módulos y Redirección de Planes (DESACTIVADO) ---
+    // Todos los usuarios tienen acceso a todos los módulos libres de restricciones de plan.
 
     // --- Reestructuración Dinámica del Sidebar ---
     setTimeout(() => {
@@ -201,26 +185,6 @@ async function requireAuth() {
               bottomCta.remove();
             }
           }
-        }
-
-        // 2. Ocultar enlaces de módulos no permitidos para Plan Gratis
-        if (isFree) {
-          sidebar.querySelectorAll("nav a").forEach(a => {
-            const page = a.getAttribute("href");
-            if (blockedPages.includes(page)) {
-              a.remove();
-            }
-          });
-        }
-
-        // 3. Agregar enlace de "Planes y Membresías" en el sidebar
-        const nav = sidebar.querySelector("nav");
-        if (nav && !sidebar.querySelector(".nav-pricing-link")) {
-          const a = document.createElement("a");
-          a.className = "flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all nav-pricing-link";
-          a.href = "pricing.html";
-          a.innerHTML = `<span class="material-symbols-outlined mr-3 nav-icon">payments</span><span class="sidebar-label">Planes y Membresías</span>`;
-          nav.appendChild(a);
         }
       }
     }, 10);
