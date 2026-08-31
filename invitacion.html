@@ -413,7 +413,10 @@ tailwind.config = {
 
   const SETTINGS_KEY = "galaInvitationSettings_";
 
-  function getStoredSettings() {
+  function getStoredSettings(supabaseSettings) {
+    if (supabaseSettings && typeof supabaseSettings === 'object' && Object.keys(supabaseSettings).length > 0) {
+      return supabaseSettings;
+    }
     try {
       const raw = localStorage.getItem(SETTINGS_KEY + currentEventId);
       return raw ? JSON.parse(raw) : null;
@@ -571,10 +574,13 @@ tailwind.config = {
       document.getElementById("passes-count-display").textContent = passesParam;
     }
 
+    let loadedEvent = null;
+
     // 2. Cargar evento de Supabase
     if (currentEventId) {
       const { data: ev } = await window.supabaseClient.from("events").select("*").eq("id", currentEventId).single();
       if (ev) {
+        loadedEvent = ev;
         currentEventType = (ev.event_type || "boda").toLowerCase();
         const type = currentEventType;
 
@@ -691,7 +697,7 @@ tailwind.config = {
     }
 
     // 3. Aplicar personalizaciones guardadas
-    const saved = getStoredSettings();
+    const saved = getStoredSettings(loadedEvent ? loadedEvent.invitation_settings : null);
     if (saved) {
       if (saved.bride_name || saved.groom_name) {
         const bride = saved.bride_name || "";

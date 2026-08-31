@@ -606,8 +606,8 @@
       if (!auth) return;
 
       if (!auth.profile || auth.profile.role !== "admin") {
-        alert("Esta página es exclusiva para administradores.");
-        window.location.href = "proyectos.html";
+        window.showToast("Esta página es exclusiva para administradores.", "error");
+        setTimeout(() => { window.location.href = "proyectos.html"; }, 1500);
         return;
       }
 

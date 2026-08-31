@@ -742,6 +742,14 @@ tailwind.config = {
     updateKPIs();
   }
 
+  // ---- HELPER: invitados asignados a un elemento del plano ----
+  function occupantsForElement(elementId) {
+    const assignedGuestIds = assignments
+      .filter(a => a.seating_table_id === elementId)
+      .map(a => a.guest_id);
+    return allGuests.filter(g => assignedGuestIds.includes(g.id));
+  }
+
   // ---- ASIGNACIÓN DE INVITADO A MESA ----
   async function assignGuestToTable(guestId, tableId, tableLabel) {
     await window.supabaseClient.from("seating_assignments").delete().eq("guest_id", guestId);
@@ -934,9 +942,21 @@ tailwind.config = {
 
     if (e.target.closest(".btn-table-del")) {
       e.stopPropagation();
-      if (!confirm(`¿Eliminar ${el.label}?`)) return;
+      const confirmed = await window.showConfirmDialog({
+        title: "Eliminar Mesa",
+        message: `¿Eliminar "${el.label}" del plano? Los comensales asignados volverán a la lista de sin asignar.`,
+        confirmText: "Eliminar",
+        cancelText: "Cancelar"
+      });
+      if (!confirmed) return;
+
+      const occupants = occupantsForElement(el.id);
+      for (const g of occupants) {
+        await window.supabaseClient.from("guests").update({ table_number: null }).eq("id", g.id);
+      }
       await window.supabaseClient.from("seating_assignments").delete().eq("seating_table_id", el.id);
       await window.supabaseClient.from("layout_elements").delete().eq("id", el.id);
+      window.showToast("Mesa eliminada del plano.", "info");
       await loadAll();
       return;
     }
@@ -1126,7 +1146,18 @@ tailwind.config = {
   // Eliminar elemento
   document.getElementById("element-delete-btn").addEventListener("click", async () => {
     const id = document.getElementById("element-id").value;
-    if (!confirm("¿Eliminar este elemento del plano?")) return;
+    const confirmed = await window.showConfirmDialog({
+      title: "Eliminar Elemento",
+      message: "¿Eliminar este elemento del plano? Los comensales asignados volverán a la lista de sin asignar.",
+      confirmText: "Eliminar",
+      cancelText: "Cancelar"
+    });
+    if (!confirmed) return;
+
+    const occupants = occupantsForElement(id);
+    for (const g of occupants) {
+      await window.supabaseClient.from("guests").update({ table_number: null }).eq("id", g.id);
+    }
     await window.supabaseClient.from("seating_assignments").delete().eq("seating_table_id", id);
     await window.supabaseClient.from("layout_elements").delete().eq("id", id);
     closeModal();
@@ -1148,11 +1179,11 @@ tailwind.config = {
   document.getElementById("btn-auto-assign").addEventListener("click", async () => {
     const seatingTables = allElements.filter(e => TYPE_META[e.element_type]?.isSeat);
     if (seatingTables.length === 0) {
-      alert("Primero agrega mesas al plano.");
+      window.showToast("Primero agrega mesas al plano.", "info");
       return;
     }
     if (allGuests.length === 0) {
-      alert("No hay invitados registrados.");
+      window.showToast("No hay invitados registrados.", "info");
       return;
     }
 
@@ -1201,7 +1232,14 @@ tailwind.config = {
 
   // Despejar asignaciones
   document.getElementById("btn-clear-assignments").addEventListener("click", async () => {
-    if (!confirm("¿Liberar todos los asientos del salón? Los invitados volverán a la lista de 'Sin Asignar'.")) return;
+    const confirmed = await window.showConfirmDialog({
+      title: "Despejar Plano",
+      message: "¿Liberar todos los asientos del salón? Los invitados volverán a la lista de 'Sin Asignar'.",
+      confirmText: "Despejar Plano",
+      cancelText: "Cancelar"
+    });
+    if (!confirmed) return;
+
     const elementIds = allElements.map(e => e.id);
     if (elementIds.length > 0) {
       await window.supabaseClient.from("seating_assignments").delete().in("seating_table_id", elementIds);

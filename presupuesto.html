@@ -432,6 +432,27 @@ tailwind.config = {
   </div>
 </div>
 
+<!-- Modal Presupuesto Planeado -->
+<div id="budget-edit-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+  <div id="budget-edit-modal-backdrop" class="absolute inset-0 bg-surface-dim/80 backdrop-blur-sm"></div>
+  <div class="relative w-full max-w-sm bg-surface-container-high rounded-2xl p-6 shadow-2xl border border-tertiary/20 flex flex-col gap-4">
+    <div class="flex items-center justify-between border-b border-tertiary/10 pb-3">
+      <h3 class="font-headline-md text-lg text-on-surface">Presupuesto Planeado</h3>
+      <button type="button" id="budget-edit-modal-close" class="text-on-surface-variant hover:text-tertiary transition-colors"><span class="material-symbols-outlined text-[20px]">close</span></button>
+    </div>
+    <form id="budget-edit-form" class="flex flex-col gap-4">
+      <div class="flex flex-col gap-1">
+        <label class="text-[10px] uppercase tracking-wider text-on-surface-variant" for="budget-edit-input">Nuevo Monto Planeado (MXN) *</label>
+        <input id="budget-edit-input" required min="0" step="any" placeholder="0.00" class="bg-surface-container border border-tertiary/20 rounded-lg py-2.5 px-3 text-sm text-on-surface focus:outline-none focus:border-tertiary" type="number"/>
+      </div>
+      <div class="flex justify-end gap-2 mt-2">
+        <button type="button" id="budget-edit-cancel" class="px-4 py-2 rounded-lg border border-tertiary/20 text-on-surface-variant hover:bg-surface-container transition-colors font-button-text uppercase tracking-wider text-xs">Cancelar</button>
+        <button type="submit" class="px-6 py-2 rounded-lg bg-tertiary text-on-tertiary font-button-text uppercase tracking-wider text-xs hover:brightness-110 transition-all font-semibold">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script type="module">
   let currentEventId = null;
   let allVendors = [];
@@ -662,7 +683,7 @@ tailwind.config = {
   // Exportar Reporte Financiero a CSV
   document.getElementById("btn-export-budget").addEventListener("click", () => {
     if (allVendors.length === 0) {
-      alert("No hay registros de presupuesto o proveedores para exportar.");
+      window.showToast("No hay registros de presupuesto o proveedores para exportar.", "info");
       return;
     }
     const headers = ["Proveedor/Gasto", "Categoría", "Tipo", "Estatus de Pago", "Monto Total (MXN)", "Monto Pagado (MXN)", "Fecha Límite"];
@@ -682,6 +703,7 @@ tailwind.config = {
     a.download = `Presupuesto_Gala_${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(url);
+    window.showToast("Reporte financiero exportado en CSV.", "success");
   });
 
   // Modal Gasto Externo
@@ -737,30 +759,57 @@ tailwind.config = {
     if (error) {
       gastoError.textContent = error.message;
       gastoError.classList.remove("hidden");
+      window.showToast(error.message, "error");
     } else {
       closeGastoModal();
+      window.showToast("Gasto externo registrado con éxito.", "success");
       await loadBudgetData();
     }
   });
 
-  // Editar Presupuesto Planeado
-  document.getElementById("btn-edit-planned-budget").addEventListener("click", async () => {
-    const newVal = prompt("Ingresa el nuevo presupuesto planeado (MXN):", plannedBudget);
-    if (newVal === null) return;
-    const num = Number(newVal);
+  // Modal Presupuesto Planeado
+  const budgetModal = document.getElementById("budget-edit-modal");
+  const budgetClose = document.getElementById("budget-edit-modal-close");
+  const budgetCancel = document.getElementById("budget-edit-cancel");
+  const budgetForm = document.getElementById("budget-edit-form");
+  const budgetInput = document.getElementById("budget-edit-input");
+
+  function openBudgetModal() {
+    budgetInput.value = plannedBudget || "";
+    budgetModal.classList.remove("hidden");
+    budgetModal.classList.add("flex");
+    setTimeout(() => budgetInput.focus(), 100);
+  }
+
+  function closeBudgetModal() {
+    budgetModal.classList.add("hidden");
+    budgetModal.classList.remove("flex");
+  }
+
+  document.getElementById("btn-edit-planned-budget").addEventListener("click", openBudgetModal);
+  if (budgetClose) budgetClose.addEventListener("click", closeBudgetModal);
+  if (budgetCancel) budgetCancel.addEventListener("click", closeBudgetModal);
+  document.getElementById("budget-edit-modal-backdrop").addEventListener("click", closeBudgetModal);
+
+  budgetForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const num = Number(budgetInput.value);
     if (isNaN(num) || num < 0) {
-      alert("Por favor ingresa un número de presupuesto válido.");
+      window.showToast("Por favor ingresa un monto válido.", "error");
       return;
     }
+
     const { error } = await window.supabaseClient
       .from("events")
       .update({ budget_total: num })
       .eq("id", currentEventId);
 
     if (error) {
-      alert("Error al actualizar presupuesto: " + error.message);
+      window.showToast("Error al actualizar presupuesto: " + error.message, "error");
     } else {
       plannedBudget = num;
+      closeBudgetModal();
+      window.showToast("Presupuesto planeado actualizado.", "success");
       await loadBudgetData();
     }
   });

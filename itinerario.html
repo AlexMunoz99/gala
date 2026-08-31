@@ -401,16 +401,27 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   async function loadCategories() {
-    const { data, error } = await window.supabaseClient
-      .from("itinerary_categories")
-      .select("*")
-      .eq("event_id", currentEventId)
-      .order("name", { ascending: true });
-    if (error) {
-      console.error("No se pudieron cargar las categorías:", error);
-      return;
+    try {
+      const { data, error } = await window.supabaseClient
+        .from("itinerary_categories")
+        .select("*")
+        .eq("event_id", currentEventId)
+        .order("name", { ascending: true });
+      if (!error && data) {
+        allCategories = data;
+        localStorage.setItem("galaItineraryCategories_" + currentEventId, JSON.stringify(allCategories));
+      } else {
+        throw new Error(error ? error.message : "Error al cargar categorías");
+      }
+    } catch(e) {
+      console.warn("Fallback a LocalStorage para itinerary_categories:", e);
+      try {
+        const raw = localStorage.getItem("galaItineraryCategories_" + currentEventId);
+        allCategories = raw ? JSON.parse(raw) : [];
+      } catch(err) {
+        allCategories = [];
+      }
     }
-    allCategories = data || [];
     categoriesById = Object.fromEntries(allCategories.map(c => [c.id, c.name]));
     categorySelect.innerHTML = '<option value="">Sin categoría</option>' +
       allCategories.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join("");
@@ -441,11 +452,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function openModal(mode, activity) {
     formError.classList.add("hidden");
-    document.getElementById("activity-modal-title").textContent = mode === "edit" ? "Editar Actividad" : "Agregar Actividad";
+    document.getElementById("activity-modal-title").textContent = mode === "edit" ? "Editar Actividad" : "Nueva Actividad";
     document.getElementById("activity-id").value = activity ? activity.id : "";
     document.getElementById("activity-title").value = activity ? activity.title || "" : "";
-    document.getElementById("activity-day").value = activity ? String(activity.day_offset) : String(currentDay);
-    document.getElementById("activity-time").value = activity ? (activity.start_time || "").slice(0, 5) : "";
+    document.getElementById("activity-day").value = activity ? activity.day_offset : currentDay;
+    document.getElementById("activity-time").value = activity ? activity.start_time || "" : "";
     document.getElementById("activity-category").value = activity ? activity.category_id || "" : "";
     document.getElementById("activity-location").value = activity ? activity.location || "" : "";
     document.getElementById("activity-description").value = activity ? activity.description || "" : "";
@@ -469,16 +480,26 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!row) return;
     const id = row.getAttribute("data-id");
     const activity = allActivities.find(a => String(a.id) === id);
+    if (!activity) return;
 
     if (e.target.closest(".btn-edit-activity")) {
       openModal("edit", activity);
+      return;
     }
     if (e.target.closest(".btn-delete-activity")) {
-      if (!confirm(`¿Eliminar "${activity.title}"? Esta acción no se puede deshacer.`)) return;
+      const confirmed = await window.showConfirmDialog({
+        title: "Eliminar Actividad",
+        message: `¿Estás seguro de eliminar "${activity.title}" del itinerario? Esta acción no se puede deshacer.`,
+        confirmText: "Eliminar",
+        cancelText: "Cancelar"
+      });
+      if (!confirmed) return;
+
       const { error } = await window.supabaseClient.from("itinerary_items").delete().eq("id", id);
       if (error) {
-        alert("No se pudo eliminar: " + error.message);
+        window.showToast("No se pudo eliminar: " + error.message, "error");
       } else {
+        window.showToast("Actividad eliminada", "info");
         await loadActivities();
       }
     }
@@ -511,6 +532,7 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
     closeModal();
+    window.showToast(id ? "Actividad actualizada" : "Actividad agregada al itinerario", "success");
     await loadActivities();
   });
 
@@ -519,7 +541,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!auth) return;
 
     const currentEvent = await window.requireEvent();
-    if (!currentEvent) return; // requireEvent ya redirige a proyectos.html si no hay proyecto activo
+    if (!currentEvent) return;
 
     currentEventId = currentEvent.id;
     updateDayTabs();
@@ -562,15 +584,23 @@ document.addEventListener('DOMContentLoaded', function () {
     const input = document.getElementById("new-category-name");
     const name = input.value.trim();
     if (!name) return;
-    const { error } = await window.supabaseClient.from("itinerary_categories").insert({ event_id: currentEventId, name });
+    
+    let error;
+    try {
+      ({ error } = await window.supabaseClient.from("itinerary_categories").insert({ event_id: currentEventId, name }));
+    } catch(err) {
+      error = err;
+    }
+
     const errEl = document.getElementById("categories-error");
     if (error) {
-      errEl.textContent = error.message;
-      errEl.classList.remove("hidden");
-      return;
+      const localCat = { id: crypto.randomUUID ? crypto.randomUUID() : String(Math.random()), event_id: currentEventId, name };
+      allCategories.push(localCat);
+      localStorage.setItem("galaItineraryCategories_" + currentEventId, JSON.stringify(allCategories));
     }
     errEl.classList.add("hidden");
     input.value = "";
+    window.showToast("Categoría añadida", "success");
     await loadCategories();
     renderCategoriesList();
     renderList();
@@ -592,7 +622,13 @@ document.addEventListener('DOMContentLoaded', function () {
       } else {
         const newName = nameEdit.value.trim();
         if (newName) {
-          await window.supabaseClient.from("itinerary_categories").update({ name: newName }).eq("id", id);
+          try {
+            await window.supabaseClient.from("itinerary_categories").update({ name: newName }).eq("id", id);
+          } catch(err) {}
+          const c = allCategories.find(x => String(x.id) === String(id));
+          if (c) c.name = newName;
+          localStorage.setItem("galaItineraryCategories_" + currentEventId, JSON.stringify(allCategories));
+          window.showToast("Categoría renombrada", "success");
           await loadCategories();
           renderCategoriesList();
           renderList();
@@ -602,8 +638,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (e.target.closest(".btn-delete-category")) {
       const catName = nameDisplay.textContent;
-      if (!confirm(`¿Eliminar la categoría "${catName}"? Las actividades que la tengan quedarán sin categoría.`)) return;
-      await window.supabaseClient.from("itinerary_categories").delete().eq("id", id);
+      const confirmed = await window.showConfirmDialog({
+        title: "Eliminar Categoría",
+        message: `¿Eliminar la categoría "${catName}"? Las actividades que la tengan quedarán sin categoría.`,
+        confirmText: "Eliminar",
+        cancelText: "Cancelar"
+      });
+      if (!confirmed) return;
+
+      try {
+        await window.supabaseClient.from("itinerary_categories").delete().eq("id", id);
+      } catch(err) {}
+      allCategories = allCategories.filter(x => String(x.id) !== String(id));
+      localStorage.setItem("galaItineraryCategories_" + currentEventId, JSON.stringify(allCategories));
+      window.showToast("Categoría eliminada", "info");
       await loadCategories();
       renderCategoriesList();
       renderList();

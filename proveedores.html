@@ -613,26 +613,38 @@ tailwind.config = {
     const ext = file.name.split(".").pop();
     const path = `${currentEventId}/${crypto.randomUUID()}.${ext}`;
 
-    const { error: uploadError } = await window.supabaseClient
-      .storage.from("vendor-photos")
-      .upload(path, file, { upsert: false });
+    try {
+      const { error: uploadError } = await window.supabaseClient
+        .storage.from("vendor-photos")
+        .upload(path, file, { upsert: false });
 
-    photoUploading.classList.add("hidden");
-
-    if (uploadError) {
-      formError.textContent = "No se pudo subir la foto: " + uploadError.message;
-      formError.classList.remove("hidden");
-      return;
+      if (!uploadError) {
+        const { data: publicUrlData } = window.supabaseClient
+          .storage.from("vendor-photos")
+          .getPublicUrl(path);
+        uploadedImageUrl = publicUrlData.publicUrl;
+      } else {
+        throw uploadError;
+      }
+    } catch(err) {
+      console.warn("Storage upload fallback a DataURL:", err);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        uploadedImageUrl = e.target.result;
+        photoPreview.src = uploadedImageUrl;
+        photoPreview.classList.remove("hidden");
+        photoPlaceholder.classList.add("hidden");
+      };
+      reader.readAsDataURL(file);
+      window.showToast("Foto cargada localmente.", "info");
     }
 
-    const { data: publicUrlData } = window.supabaseClient
-      .storage.from("vendor-photos")
-      .getPublicUrl(path);
-
-    uploadedImageUrl = publicUrlData.publicUrl;
-    photoPreview.src = uploadedImageUrl;
-    photoPreview.classList.remove("hidden");
-    photoPlaceholder.classList.add("hidden");
+    photoUploading.classList.add("hidden");
+    if (uploadedImageUrl) {
+      photoPreview.src = uploadedImageUrl;
+      photoPreview.classList.remove("hidden");
+      photoPlaceholder.classList.add("hidden");
+    }
   });
 
   grid.addEventListener("click", async (e) => {

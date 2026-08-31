@@ -373,6 +373,11 @@ tailwind.config = {
       };
 
       localStorage.setItem("galaInvitationSettings_" + eventId, JSON.stringify(invitationSettings));
+      try {
+        await window.supabaseClient.from("events").update({ invitation_settings: invitationSettings }).eq("id", eventId);
+      } catch(e) {
+        console.warn("No se pudo guardar invitation_settings en Supabase:", e);
+      }
       localStorage.setItem("galaCurrentEventId", eventId);
 
       setProgress(100, "¡Boda ficticia generada con éxito!");

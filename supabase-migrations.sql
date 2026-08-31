@@ -17,8 +17,17 @@ ALTER TABLE guests ADD COLUMN IF NOT EXISTS thank_you_sent boolean DEFAULT false
 -- Presupuesto planeado total del evento
 ALTER TABLE events ADD COLUMN IF NOT EXISTS budget_total numeric DEFAULT 0;
 
--- Tipo de gasto (proveedor vs gasto externo)
-ALTER TABLE vendors ADD COLUMN IF NOT EXISTS expense_type text DEFAULT 'vendor';
+-- Añadir columna de configuración de invitación digital en events (JSON)
+ALTER TABLE events ADD COLUMN IF NOT EXISTS invitation_settings jsonb DEFAULT '{}'::jsonb;
+
+-- Tabla de categorías personalizadas de itinerario
+CREATE TABLE IF NOT EXISTS itinerary_categories (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  event_id uuid REFERENCES events(id) ON DELETE CASCADE,
+  name text NOT NULL,
+  color text DEFAULT '#e9c349',
+  created_at timestamp with time zone DEFAULT now()
+);
 
 -- Asegurar que la columna user_id en events tiene el valor por defecto correcto
 ALTER TABLE events ALTER COLUMN user_id SET DEFAULT auth.uid();
@@ -135,7 +144,13 @@ CREATE POLICY "Manage own tasks" ON tasks FOR ALL
   USING (EXISTS (SELECT 1 FROM events WHERE events.id = tasks.event_id AND (events.user_id = auth.uid() OR is_admin())))
   WITH CHECK (EXISTS (SELECT 1 FROM events WHERE events.id = tasks.event_id AND (events.user_id = auth.uid() OR is_admin())));
 
--- --- políticas para ITINERARY_ITEMS (Itinerario) ---
+-- --- políticas para ITINERARY_ITEMS e ITINERARY_CATEGORIES (Itinerario) ---
+ALTER TABLE itinerary_categories ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Manage own itinerary categories" ON itinerary_categories;
+CREATE POLICY "Manage own itinerary categories" ON itinerary_categories FOR ALL
+  USING (EXISTS (SELECT 1 FROM events WHERE events.id = itinerary_categories.event_id AND (events.user_id = auth.uid() OR is_admin())))
+  WITH CHECK (EXISTS (SELECT 1 FROM events WHERE events.id = itinerary_categories.event_id AND (events.user_id = auth.uid() OR is_admin())));
+
 DROP POLICY IF EXISTS "Manage own itinerary" ON itinerary_items;
 CREATE POLICY "Manage own itinerary" ON itinerary_items FOR ALL
   USING (EXISTS (SELECT 1 FROM events WHERE events.id = itinerary_items.event_id AND (events.user_id = auth.uid() OR is_admin())))

@@ -272,8 +272,8 @@ async function requireAuth() {
     const moduleName = moduleMappings[currentPageFile];
 
     if (moduleName && disabledModules.includes(moduleName)) {
-      alert(`El módulo "${moduleName.toUpperCase()}" está desactivado para tu cuenta.`);
-      window.location.href = "proyectos.html";
+      window.showToast(`El módulo "${moduleName.toUpperCase()}" está desactivado para tu cuenta.`, "error");
+      setTimeout(() => { window.location.href = "proyectos.html"; }, 1000);
       return null;
     }
 

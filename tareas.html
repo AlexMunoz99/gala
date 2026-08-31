@@ -507,13 +507,21 @@ document.addEventListener('DOMContentLoaded', function () {
   deleteBtn.addEventListener("click", async () => {
     const id = document.getElementById("task-id").value;
     if (!id) return;
-    if (!confirm("¿Eliminar esta tarea? Esta acción no se puede deshacer.")) return;
+    const confirmed = await window.showConfirmDialog({
+      title: "Eliminar Tarea",
+      message: "¿Eliminar esta tarea del tablero? Esta acción no se puede deshacer.",
+      confirmText: "Eliminar",
+      cancelText: "Cancelar"
+    });
+    if (!confirmed) return;
+
     const { error } = await window.supabaseClient.from("tasks").delete().eq("id", id);
     if (error) {
-      alert("No se pudo eliminar: " + error.message);
+      window.showToast("No se pudo eliminar: " + error.message, "error");
       return;
     }
     closeModal();
+    window.showToast("Tarea eliminada", "info");
     await loadTasks();
   });
 
@@ -543,6 +551,7 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
     closeModal();
+    window.showToast(id ? "Tarea actualizada" : "Tarea creada con éxito", "success");
     await loadTasks();
   });
 
@@ -584,7 +593,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       const { error } = await window.supabaseClient.from("tasks").update({ status: newStatus }).eq("id", draggedTaskId);
       if (error) {
-        alert("No se pudo mover la tarea: " + error.message);
+        window.showToast("No se pudo mover la tarea: " + error.message, "error");
         await loadTasks();
       }
       draggedTaskId = null;

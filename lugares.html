@@ -512,26 +512,38 @@ document.addEventListener('DOMContentLoaded', function () {
     const ext = file.name.split(".").pop();
     const path = `${currentEventId}/${crypto.randomUUID()}.${ext}`;
 
-    const { error: uploadError } = await window.supabaseClient
-      .storage.from("venue-photos")
-      .upload(path, file, { upsert: false });
+    try {
+      const { error: uploadError } = await window.supabaseClient
+        .storage.from("venue-photos")
+        .upload(path, file, { upsert: false });
 
-    photoUploading.classList.add("hidden");
-
-    if (uploadError) {
-      formError.textContent = "No se pudo subir la foto: " + uploadError.message;
-      formError.classList.remove("hidden");
-      return;
+      if (!uploadError) {
+        const { data: publicUrlData } = window.supabaseClient
+          .storage.from("venue-photos")
+          .getPublicUrl(path);
+        uploadedImageUrl = publicUrlData.publicUrl;
+      } else {
+        throw uploadError;
+      }
+    } catch(err) {
+      console.warn("Storage upload fallback a DataURL:", err);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        uploadedImageUrl = e.target.result;
+        photoPreview.src = uploadedImageUrl;
+        photoPreview.classList.remove("hidden");
+        photoPlaceholder.classList.add("hidden");
+      };
+      reader.readAsDataURL(file);
+      window.showToast("Foto cargada localmente.", "info");
     }
 
-    const { data: publicUrlData } = window.supabaseClient
-      .storage.from("venue-photos")
-      .getPublicUrl(path);
-
-    uploadedImageUrl = publicUrlData.publicUrl;
-    photoPreview.src = uploadedImageUrl;
-    photoPreview.classList.remove("hidden");
-    photoPlaceholder.classList.add("hidden");
+    photoUploading.classList.add("hidden");
+    if (uploadedImageUrl) {
+      photoPreview.src = uploadedImageUrl;
+      photoPreview.classList.remove("hidden");
+      photoPlaceholder.classList.add("hidden");
+    }
   });
 
   grid.addEventListener("click", async (e) => {
@@ -539,16 +551,26 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!card) return;
     const id = card.getAttribute("data-id");
     const venue = allVenues.find(v => String(v.id) === id);
+    if (!venue) return;
 
     if (e.target.closest(".btn-edit-venue")) {
       openModal("edit", venue);
+      return;
     }
     if (e.target.closest(".btn-delete-venue")) {
-      if (!confirm(`¿Eliminar "${venue.name}"? Esta acción no se puede deshacer.`)) return;
+      const confirmed = await window.showConfirmDialog({
+        title: "Eliminar Lugar",
+        message: `¿Estás seguro de eliminar "${venue.name}"? Esta acción no se puede deshacer.`,
+        confirmText: "Eliminar",
+        cancelText: "Cancelar"
+      });
+      if (!confirmed) return;
+
       const { error } = await window.supabaseClient.from("venues").delete().eq("id", id);
       if (error) {
-        alert("No se pudo eliminar: " + error.message);
+        window.showToast("No se pudo eliminar: " + error.message, "error");
       } else {
+        window.showToast("Lugar eliminado", "info");
         await loadVenues();
       }
     }
@@ -582,6 +604,7 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
     closeModal();
+    window.showToast(id ? "Lugar actualizado" : "Lugar agregado con éxito", "success");
     await loadVenues();
   });
 

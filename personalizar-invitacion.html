@@ -472,7 +472,21 @@ tailwind.config = {
   let currentEventType = "boda";
   const SETTINGS_KEY = "galaInvitationSettings_";
 
-  function getStoredSettings() {
+  async function getStoredSettings() {
+    // 1. Intentar cargar desde Supabase
+    try {
+      if (currentEventId) {
+        const { data: ev } = await window.supabaseClient.from("events").select("invitation_settings").eq("id", currentEventId).single();
+        if (ev && ev.invitation_settings && Object.keys(ev.invitation_settings).length > 0) {
+          saveStoredSettingsLocally(ev.invitation_settings);
+          return ev.invitation_settings;
+        }
+      }
+    } catch(e) {
+      console.warn("No se pudo cargar invitation_settings de Supabase:", e);
+    }
+
+    // 2. Fallback a localStorage
     try {
       const raw = localStorage.getItem(SETTINGS_KEY + currentEventId);
       return raw ? JSON.parse(raw) : null;
@@ -481,10 +495,21 @@ tailwind.config = {
     }
   }
 
-  function saveStoredSettings(obj) {
+  function saveStoredSettingsLocally(obj) {
     try {
       localStorage.setItem(SETTINGS_KEY + currentEventId, JSON.stringify(obj));
     } catch(e) {}
+  }
+
+  async function saveStoredSettings(obj) {
+    saveStoredSettingsLocally(obj);
+    if (currentEventId) {
+      try {
+        await window.supabaseClient.from("events").update({ invitation_settings: obj }).eq("id", currentEventId);
+      } catch(e) {
+        console.warn("No se pudo sincronizar invitation_settings a Supabase:", e);
+      }
+    }
   }
 
   // Previsualizar foto subida
@@ -554,7 +579,7 @@ tailwind.config = {
   });
 
   // Guardar configuración
-  document.getElementById("btn-save-invitation-settings").addEventListener("click", () => {
+  document.getElementById("btn-save-invitation-settings").addEventListener("click", async () => {
     const payload = {
       theme_color: document.querySelector('input[name="theme_color"]:checked')?.value || 'gold',
       theme_font: document.querySelector('input[name="theme_font"]:checked')?.value || 'elegant',
@@ -587,7 +612,7 @@ tailwind.config = {
       bank_clabe: document.getElementById("bank-clabe-input").value.trim()
     };
 
-    saveStoredSettings(payload);
+    await saveStoredSettings(payload);
     window.showToast("¡Configuración de la invitación guardada con éxito!", "success");
   });
 
@@ -962,10 +987,9 @@ tailwind.config = {
     currentEventType = currentEvent.event_type || "boda";
 
     adaptFormLabelsAndWizard(currentEventType);
-
     document.getElementById("btn-view-invitation-live").href = `invitacion.html?event=${currentEventId}`;
 
-    const saved = getStoredSettings();
+    const saved = await getStoredSettings();
     if (saved) {
       if (saved.theme_color) {
         const radio = document.querySelector(`input[name="theme_color"][value="${saved.theme_color}"]`);

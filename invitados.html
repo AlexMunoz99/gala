@@ -33,6 +33,29 @@
     main > :last-child { margin-bottom: 0 !important; }
   }
   ::-webkit-scrollbar { display: none; }
+  .table-scroll-container::-webkit-scrollbar {
+    display: block !important;
+    width: 6px;
+    height: 6px;
+  }
+  .table-scroll-container::-webkit-scrollbar-track {
+    background: rgba(20, 20, 18, 0.6);
+  }
+  .table-scroll-container::-webkit-scrollbar-thumb {
+    background: rgba(233, 195, 73, 0.25);
+    border-radius: 4px;
+  }
+  .table-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(233, 195, 73, 0.5);
+  }
+  .table-dense tr td {
+    padding-top: 0.55rem !important;
+    padding-bottom: 0.55rem !important;
+  }
+  .table-comfortable tr td {
+    padding-top: 0.95rem !important;
+    padding-bottom: 0.95rem !important;
+  }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet"/>
@@ -216,49 +239,65 @@ tailwind.config = {
       <div class="px-container-padding flex flex-col gap-section-gap w-full max-w-[1440px] mx-auto mt-12">
 
         <!-- Header & Actions -->
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 relative z-20">
-          <div class="flex flex-col gap-2">
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 relative z-20">
+          <div class="flex flex-col gap-1.5">
             <span class="font-label-gold text-label-gold text-tertiary uppercase tracking-[0.2em] relative pl-8 before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-6 before:h-px before:bg-tertiary/50">Gestión de Invitados</span>
-            <h1 class="font-display-lg text-display-lg text-on-surface">Invitados</h1>
-            <p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl mt-2">Gestiona tu lista de invitados, da seguimiento a los RSVP y coordina los acomodos para el próximo evento.</p>
+            <h1 class="font-display-lg text-3xl sm:text-4xl text-on-surface">Invitados</h1>
+            <p class="font-body-md text-sm text-on-surface-variant max-w-xl">Gestiona tu lista, confirma asistencias y coordina los acomodos del evento.</p>
           </div>
+          
           <div class="flex items-center gap-3 flex-wrap">
-            <a href="personalizar-invitacion.html" class="px-5 py-3 bg-surface-container border border-tertiary/30 text-tertiary font-button-text text-button-text uppercase tracking-widest hover:bg-tertiary/10 transition-all flex items-center justify-center gap-2 rounded-lg backdrop-blur-sm shadow-md" title="Personalizar diseño, textos, música y fotos de la invitación">
-              <span class="material-symbols-outlined text-[18px]">tune</span>
-              Personalizar
-            </a>
-            <a id="btn-open-invitation" href="invitacion.html" target="_blank" class="px-5 py-3 bg-gradient-to-r from-tertiary/20 to-tertiary/40 border border-tertiary text-tertiary font-button-text text-button-text uppercase tracking-widest hover:brightness-125 transition-all flex items-center justify-center gap-2 rounded-lg backdrop-blur-sm shadow-lg shadow-tertiary/10" title="Ver invitación digital interactiva personalizada">
-              <span class="material-symbols-outlined text-[18px]">auto_awesome</span>
-              Ver Invitación
-            </a>
-            <a id="btn-open-rsvp" href="rsvp.html" target="_blank" class="px-5 py-3 bg-secondary-container/60 border border-secondary/30 text-secondary font-button-text text-button-text uppercase tracking-widest hover:bg-secondary-container transition-all flex items-center justify-center gap-2 rounded-lg backdrop-blur-sm shadow-md" title="Abrir portal público para que los invitados confirmen">
-              <span class="material-symbols-outlined text-[18px]">public</span>
-              Portal RSVP
-            </a>
-            <button id="btn-checkin-scanner" class="px-5 py-3 bg-surface-container border border-tertiary/30 text-tertiary font-button-text text-button-text uppercase tracking-widest hover:bg-tertiary/10 transition-all flex items-center justify-center gap-2 rounded-lg backdrop-blur-sm shadow-md" title="Recepción y validación de pases QR en puerta">
-              <span class="material-symbols-outlined text-[18px]">qr_code_scanner</span>
-              Check-In QR
-            </button>
-            <button id="btn-remind-pending" class="px-5 py-3 bg-[#25D366]/20 border border-[#25D366]/40 text-[#4ade80] font-button-text text-button-text uppercase tracking-widest hover:bg-[#25D366]/30 transition-all flex items-center justify-center gap-2 rounded-lg backdrop-blur-sm shadow-md" title="Recordatorios automáticos por WhatsApp a invitados pendientes">
-              <span class="material-symbols-outlined text-[18px]">campaign</span>
-              Recordar Pendientes
-            </button>
-            <button id="btn-download-template" class="px-5 py-3 bg-surface-container border border-tertiary/20 text-tertiary font-button-text text-button-text uppercase tracking-widest hover:bg-tertiary/5 transition-all flex items-center justify-center gap-2 rounded-lg backdrop-blur-sm shadow-md">
-              <span class="material-symbols-outlined text-[18px]">description</span>
-              Plantilla
-            </button>
-            <button id="btn-import-csv" class="px-5 py-3 bg-surface-container border border-tertiary/20 text-tertiary font-button-text text-button-text uppercase tracking-widest hover:bg-tertiary/5 transition-all flex items-center justify-center gap-2 rounded-lg backdrop-blur-sm shadow-md">
-              <span class="material-symbols-outlined text-[18px]">upload</span>
-              Importar CSV
-            </button>
-            <input id="csv-file-input" type="file" accept=".csv" class="hidden"/>
-            <button id="btn-export-csv" class="px-5 py-3 bg-surface-container border border-tertiary/20 text-tertiary font-button-text text-button-text uppercase tracking-widest hover:bg-tertiary/5 transition-all flex items-center justify-center gap-2 rounded-lg backdrop-blur-sm shadow-md">
-              <span class="material-symbols-outlined text-[18px]">download</span>
-              Exportar CSV
-            </button>
-            <button id="btn-add-guest" class="px-6 py-3 bg-tertiary text-on-tertiary font-button-text text-button-text uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-2 rounded-lg shadow-xl shadow-tertiary/20">
+            <!-- Dropdown: Invitación Digital Web -->
+            <div class="relative inline-block text-left" id="dropdown-invitation-wrap">
+              <button id="btn-dropdown-invitation" type="button" class="px-4 py-2.5 bg-surface-container-high/80 border border-tertiary/20 text-tertiary font-button-text text-xs uppercase tracking-wider hover:bg-tertiary/10 transition-all flex items-center gap-2 rounded-xl shadow-md cursor-pointer backdrop-blur-sm" title="Opciones de Invitación Web y RSVP">
+                <span class="material-symbols-outlined text-[18px]">auto_awesome</span>
+                <span>Invitación Web</span>
+                <span class="material-symbols-outlined text-[16px] transition-transform duration-200" id="invitation-arrow">expand_more</span>
+              </button>
+              <div id="dropdown-invitation-menu" class="hidden absolute right-0 mt-2 w-64 rounded-2xl bg-surface-container-high/95 backdrop-blur-xl border border-tertiary/20 shadow-2xl z-50 py-2 divide-y divide-tertiary/10">
+                <div class="py-1">
+                  <a id="btn-open-invitation" href="invitacion.html" target="_blank" class="flex items-center gap-3 px-4 py-2.5 text-xs text-on-surface hover:bg-tertiary/10 hover:text-tertiary transition-colors">
+                    <span class="material-symbols-outlined text-[20px] text-tertiary">open_in_new</span>
+                    <div class="flex flex-col">
+                      <span class="font-semibold">Ver Invitación Digital</span>
+                      <span class="text-[10px] text-on-surface-variant">Vista personalizada del invitado</span>
+                    </div>
+                  </a>
+                  <a href="personalizar-invitacion.html" class="flex items-center gap-3 px-4 py-2.5 text-xs text-on-surface hover:bg-tertiary/10 hover:text-tertiary transition-colors">
+                    <span class="material-symbols-outlined text-[20px] text-tertiary">tune</span>
+                    <div class="flex flex-col">
+                      <span class="font-semibold">Personalizar Diseño</span>
+                      <span class="text-[10px] text-on-surface-variant">Editar fotos, música y textos</span>
+                    </div>
+                  </a>
+                  <a id="btn-open-rsvp" href="rsvp.html" target="_blank" class="flex items-center gap-3 px-4 py-2.5 text-xs text-on-surface hover:bg-secondary-container/40 hover:text-secondary transition-colors">
+                    <span class="material-symbols-outlined text-[20px] text-secondary">public</span>
+                    <div class="flex flex-col">
+                      <span class="font-semibold">Portal RSVP Público</span>
+                      <span class="text-[10px] text-on-surface-variant">Enlace para confirmar asistencia</span>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <!-- Segmented Action Group: Operaciones (WhatsApp + QR) -->
+            <div class="flex items-center bg-surface-container-high/80 border border-tertiary/20 rounded-xl p-1 shadow-md backdrop-blur-sm">
+              <button id="btn-remind-pending" class="px-3 py-1.5 text-xs font-button-text text-on-surface-variant hover:text-[#4ade80] rounded-lg hover:bg-[#25D366]/10 flex items-center gap-1.5 transition-all cursor-pointer" title="Recordatorios automáticos por WhatsApp a invitados pendientes">
+                <span class="material-symbols-outlined text-[17px] text-[#4ade80]">campaign</span>
+                <span class="hidden sm:inline">Recordar WhatsApp</span>
+              </button>
+              <div class="w-px h-4 bg-tertiary/20"></div>
+              <button id="btn-checkin-scanner" class="px-3 py-1.5 text-xs font-button-text text-on-surface-variant hover:text-tertiary rounded-lg hover:bg-tertiary/10 flex items-center gap-1.5 transition-all cursor-pointer" title="Recepción y validación de pases QR en puerta">
+                <span class="material-symbols-outlined text-[17px] text-tertiary">qr_code_scanner</span>
+                <span class="hidden sm:inline">Check-In QR</span>
+              </button>
+            </div>
+
+            <!-- Botón Agregar Invitado (Protagonista) -->
+            <button id="btn-add-guest" class="px-5 py-2.5 bg-tertiary text-on-tertiary font-button-text text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all flex items-center gap-2 rounded-xl shadow-lg shadow-tertiary/20 cursor-pointer">
               <span class="material-symbols-outlined text-[18px]">person_add</span>
-              Agregar Invitado
+              <span>Agregar Invitado</span>
             </button>
           </div>
         </div>
@@ -266,97 +305,155 @@ tailwind.config = {
         <p id="import-summary" class="hidden text-sm rounded-lg px-4 py-3"></p>
 
         <!-- Summary Metrics -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative z-20">
-          <div class="bg-surface-container-high/60 backdrop-blur-md p-6 rounded-xl border border-tertiary/10 shadow-lg relative overflow-hidden group">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 relative z-20">
+          <div class="bg-surface-container-high/60 backdrop-blur-md p-4 sm:p-5 rounded-xl border border-tertiary/10 shadow-lg relative overflow-hidden group">
             <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div class="flex justify-between items-start mb-4 relative z-10">
-              <span class="font-label-gold text-label-gold text-on-surface-variant uppercase">Total Invitados</span>
-              <span class="material-symbols-outlined text-primary/50 text-[32px]">groups</span>
+            <div class="flex justify-between items-start mb-2 relative z-10">
+              <span class="font-label-gold text-[11px] text-on-surface-variant uppercase">Total Invitados</span>
+              <span class="material-symbols-outlined text-primary/50 text-[24px]">groups</span>
             </div>
             <div class="flex items-end gap-3 relative z-10">
-              <span id="stat-total" class="font-display-lg text-display-lg text-on-surface">0</span>
+              <span id="stat-total" class="font-headline-lg text-2xl sm:text-3xl text-on-surface font-bold">0</span>
             </div>
           </div>
-          <div class="bg-surface-container-high/60 backdrop-blur-md p-6 rounded-xl border border-tertiary/10 shadow-lg relative overflow-hidden group">
+          <div class="bg-surface-container-high/60 backdrop-blur-md p-4 sm:p-5 rounded-xl border border-tertiary/10 shadow-lg relative overflow-hidden group">
             <div class="absolute inset-0 bg-gradient-to-br from-[#4ade80]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div class="flex justify-between items-start mb-4 relative z-10">
-              <span class="font-label-gold text-label-gold text-[#4ade80] uppercase">Confirmados</span>
-              <span class="material-symbols-outlined text-[#4ade80]/50 text-[32px]">check_circle</span>
+            <div class="flex justify-between items-start mb-2 relative z-10">
+              <span class="font-label-gold text-[11px] text-[#4ade80] uppercase">Confirmados</span>
+              <span class="material-symbols-outlined text-[#4ade80]/50 text-[24px]">check_circle</span>
             </div>
             <div class="flex items-end gap-3 relative z-10">
-              <span id="stat-confirmed" class="font-display-lg text-display-lg text-on-surface">0</span>
-              <div class="mb-2 w-full max-w-[100px] h-1 bg-surface-container rounded-full overflow-hidden">
+              <span id="stat-confirmed" class="font-headline-lg text-2xl sm:text-3xl text-on-surface font-bold">0</span>
+              <div class="mb-2 w-full max-w-[80px] h-1 bg-surface-container rounded-full overflow-hidden">
                 <div id="stat-confirmed-bar" class="h-full bg-[#4ade80]" style="width: 0%"></div>
               </div>
             </div>
           </div>
-          <div class="bg-surface-container-high/60 backdrop-blur-md p-6 rounded-xl border border-tertiary/10 shadow-lg relative overflow-hidden group">
+          <div class="bg-surface-container-high/60 backdrop-blur-md p-4 sm:p-5 rounded-xl border border-tertiary/10 shadow-lg relative overflow-hidden group">
             <div class="absolute inset-0 bg-gradient-to-br from-tertiary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div class="flex justify-between items-start mb-4 relative z-10">
-              <span class="font-label-gold text-label-gold text-tertiary uppercase">Pendientes</span>
-              <span class="material-symbols-outlined text-tertiary/50 text-[32px]">hourglass_empty</span>
+            <div class="flex justify-between items-start mb-2 relative z-10">
+              <span class="font-label-gold text-[11px] text-tertiary uppercase">Pendientes</span>
+              <span class="material-symbols-outlined text-tertiary/50 text-[24px]">hourglass_empty</span>
             </div>
             <div class="flex items-end gap-3 relative z-10">
-              <span id="stat-pending" class="font-display-lg text-display-lg text-on-surface">0</span>
-              <span class="font-body-md text-body-md text-tertiary/80 mb-1">Esperando RSVP</span>
+              <span id="stat-pending" class="font-headline-lg text-2xl sm:text-3xl text-on-surface font-bold">0</span>
             </div>
           </div>
-          <div class="bg-surface-container-high/60 backdrop-blur-md p-6 rounded-xl border border-tertiary/10 shadow-lg relative overflow-hidden group">
+          <div class="bg-surface-container-high/60 backdrop-blur-md p-4 sm:p-5 rounded-xl border border-tertiary/10 shadow-lg relative overflow-hidden group">
             <div class="absolute inset-0 bg-gradient-to-br from-error/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div class="flex justify-between items-start mb-4 relative z-10">
-              <span class="font-label-gold text-label-gold text-error uppercase">Declinados</span>
-              <span class="material-symbols-outlined text-error/50 text-[32px]">cancel</span>
+            <div class="flex justify-between items-start mb-2 relative z-10">
+              <span class="font-label-gold text-[11px] text-error uppercase">Declinados</span>
+              <span class="material-symbols-outlined text-error/50 text-[24px]">cancel</span>
             </div>
             <div class="flex items-end gap-3 relative z-10">
-              <span id="stat-declined" class="font-display-lg text-display-lg text-on-surface">0</span>
-              <span class="font-body-md text-body-md text-on-surface-variant mb-1">Con aviso</span>
+              <span id="stat-declined" class="font-headline-lg text-2xl sm:text-3xl text-on-surface font-bold">0</span>
             </div>
           </div>
         </div>
 
         <!-- Main Content Area: Search, Filters & Table -->
-        <div class="flex flex-col gap-6 relative z-20">
-          <!-- Toolbar -->
-          <div class="flex flex-col lg:flex-row gap-4 justify-between items-center bg-surface-container-low/80 backdrop-blur-md p-4 rounded-xl border border-tertiary/5 shadow-md">
-            <div class="relative w-full lg:w-96">
-              <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-tertiary/50">search</span>
-              <input id="guest-search" class="w-full bg-surface-container border border-secondary-container text-on-surface font-body-md text-body-md py-3 pl-12 pr-4 rounded-lg focus:outline-none focus:border-tertiary/50 focus:shadow-[0_0_15px_rgba(204,167,48,0.1)] transition-all placeholder:text-on-surface-variant/50" placeholder="Buscar invitado por nombre o teléfono..." type="text"/>
+        <div class="flex flex-col gap-4 relative z-20">
+          <!-- Toolbar with Search, RSVP Filter, Group Filter, CSV & Density -->
+          <div class="flex flex-col md:flex-row gap-3 justify-between items-stretch md:items-center bg-surface-container-low/80 backdrop-blur-md p-3.5 rounded-xl border border-tertiary/10 shadow-md">
+            <div class="relative flex-1 max-w-md">
+              <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-tertiary/50 text-[20px]">search</span>
+              <input id="guest-search" class="w-full bg-surface-container border border-tertiary/20 text-on-surface font-body-md text-xs sm:text-sm py-2 pl-10 pr-4 rounded-lg focus:outline-none focus:border-tertiary transition-all placeholder:text-on-surface-variant/40" placeholder="Buscar por nombre, teléfono o notas..." type="text"/>
             </div>
-            <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-tertiary/70 text-[20px]">filter_list</span>
-              <select id="rsvp-filter" class="bg-surface-container border border-tertiary/20 text-on-surface font-body-md text-sm py-2.5 px-3 rounded-lg focus:outline-none focus:border-tertiary/50">
-                <option value="">Todos los RSVP</option>
-                <option value="confirmado">Confirmado</option>
-                <option value="pendiente">Pendiente</option>
-                <option value="declinado">Declinado</option>
-              </select>
+            
+            <div class="flex items-center gap-2 flex-wrap">
+              <!-- Filtro RSVP -->
+              <div class="flex items-center gap-1.5 bg-surface-container px-2.5 py-1.5 rounded-lg border border-tertiary/20">
+                <span class="material-symbols-outlined text-tertiary/70 text-[18px]">verified</span>
+                <select id="rsvp-filter" class="bg-transparent text-on-surface font-body-md text-xs focus:outline-none cursor-pointer">
+                  <option value="" class="bg-surface-container">Todos los RSVP</option>
+                  <option value="confirmado" class="bg-surface-container">Confirmados</option>
+                  <option value="pendiente" class="bg-surface-container">Pendientes</option>
+                  <option value="declinado" class="bg-surface-container">Declinados</option>
+                </select>
+              </div>
+
+              <!-- Filtro Grupo -->
+              <div class="flex items-center gap-1.5 bg-surface-container px-2.5 py-1.5 rounded-lg border border-tertiary/20">
+                <span class="material-symbols-outlined text-tertiary/70 text-[18px]">group_work</span>
+                <select id="group-filter" class="bg-transparent text-on-surface font-body-md text-xs focus:outline-none cursor-pointer">
+                  <option value="" class="bg-surface-container">Todos los grupos</option>
+                </select>
+              </div>
+
+              <!-- Botón Gestionar Grupos -->
+              <button id="btn-open-groups-modal" type="button" class="px-2.5 py-1.5 bg-surface-container border border-tertiary/20 text-tertiary hover:bg-tertiary/10 font-button-text text-xs rounded-lg transition-colors flex items-center gap-1 cursor-pointer" title="Crear o editar grupos de invitados">
+                <span class="material-symbols-outlined text-[16px]">edit_note</span>
+                <span class="hidden sm:inline">Grupos</span>
+              </button>
+
+              <!-- Dropdown: Datos CSV -->
+              <div class="relative inline-block text-left" id="dropdown-csv-wrap">
+                <button id="btn-dropdown-csv" type="button" class="px-2.5 py-1.5 bg-surface-container border border-tertiary/20 text-on-surface-variant hover:text-tertiary font-button-text text-xs rounded-lg transition-colors flex items-center gap-1 cursor-pointer" title="Importar o exportar datos CSV">
+                  <span class="material-symbols-outlined text-[16px]">cloud_sync</span>
+                  <span class="hidden sm:inline">Datos CSV</span>
+                  <span class="material-symbols-outlined text-[14px] transition-transform duration-200" id="csv-arrow">expand_more</span>
+                </button>
+                <div id="dropdown-csv-menu" class="hidden absolute right-0 mt-2 w-56 rounded-2xl bg-surface-container-high/95 backdrop-blur-xl border border-tertiary/20 shadow-2xl z-50 py-2 divide-y divide-tertiary/10">
+                  <div class="py-1">
+                    <button id="btn-import-csv" type="button" class="w-full text-left flex items-center gap-3 px-4 py-2.5 text-xs text-on-surface hover:bg-tertiary/10 hover:text-tertiary transition-colors cursor-pointer">
+                      <span class="material-symbols-outlined text-[18px] text-tertiary">upload</span>
+                      <div class="flex flex-col">
+                        <span class="font-semibold">Importar CSV</span>
+                        <span class="text-[10px] text-on-surface-variant">Cargar invitados masivamente</span>
+                      </div>
+                    </button>
+                    <button id="btn-export-csv" type="button" class="w-full text-left flex items-center gap-3 px-4 py-2.5 text-xs text-on-surface hover:bg-tertiary/10 hover:text-tertiary transition-colors cursor-pointer">
+                      <span class="material-symbols-outlined text-[18px] text-tertiary">download</span>
+                      <div class="flex flex-col">
+                        <span class="font-semibold">Exportar CSV</span>
+                        <span class="text-[10px] text-on-surface-variant">Descargar base de datos</span>
+                      </div>
+                    </button>
+                    <button id="btn-download-template" type="button" class="w-full text-left flex items-center gap-3 px-4 py-2.5 text-xs text-on-surface-variant hover:bg-tertiary/10 hover:text-tertiary transition-colors cursor-pointer">
+                      <span class="material-symbols-outlined text-[18px]">description</span>
+                      <div class="flex flex-col">
+                        <span class="font-semibold">Descargar Plantilla</span>
+                        <span class="text-[10px] text-on-surface-variant">Formato CSV sugerido</span>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <input id="csv-file-input" type="file" accept=".csv" class="hidden"/>
+
+              <!-- Botón Densidad de Tabla -->
+              <button id="btn-toggle-density" type="button" class="px-2.5 py-1.5 bg-surface-container border border-tertiary/20 text-on-surface-variant hover:text-tertiary font-button-text text-xs rounded-lg transition-colors flex items-center gap-1 cursor-pointer" title="Alternar entre vista compacta y normal">
+                <span class="material-symbols-outlined text-[16px]" id="density-icon">density_small</span>
+                <span id="density-label" class="hidden sm:inline">Compacta</span>
+              </button>
             </div>
           </div>
 
-          <!-- Table Container -->
-          <div class="bg-surface-container-low/90 backdrop-blur-xl rounded-xl border border-tertiary/10 shadow-2xl overflow-hidden">
-            <div class="overflow-x-auto">
-              <table class="w-full text-left border-collapse">
-                <thead>
-                  <tr class="bg-primary-container/50 border-b border-tertiary/20">
-                    <th class="py-5 px-6 font-label-gold text-label-gold text-tertiary uppercase tracking-widest w-1/4">Invitado</th>
-                    <th class="py-5 px-6 font-label-gold text-label-gold text-tertiary uppercase tracking-widest w-[15%]">Grupo/Rel.</th>
-                    <th class="py-5 px-6 font-label-gold text-label-gold text-tertiary uppercase tracking-widest w-1/5">Teléfono</th>
-                    <th class="py-5 px-6 font-label-gold text-label-gold text-tertiary uppercase tracking-widest w-[15%]">RSVP</th>
-                    <th class="py-5 px-6 font-label-gold text-label-gold text-tertiary uppercase tracking-widest w-[10%]">Mesa #</th>
-                    <th class="py-5 px-6 font-label-gold text-label-gold text-tertiary uppercase tracking-widest text-right">Acciones</th>
+          <!-- Table Container (Compact, Clear & Sticky Header) -->
+          <div class="bg-surface-container-low/95 backdrop-blur-xl rounded-xl border border-tertiary/15 shadow-2xl overflow-hidden flex flex-col">
+            <div class="overflow-x-auto overflow-y-auto max-h-[620px] table-scroll-container">
+              <table id="guests-table" class="w-full text-left border-collapse table-dense">
+                <thead class="sticky top-0 bg-[#171815] z-10 border-b border-tertiary/25 shadow-sm">
+                  <tr>
+                    <th class="py-3 px-4 font-label-gold text-[11px] text-tertiary uppercase tracking-wider w-[32%]">Invitado</th>
+                    <th class="py-3 px-3 font-label-gold text-[11px] text-tertiary uppercase tracking-wider w-[16%]">Grupo</th>
+                    <th class="py-3 px-3 font-label-gold text-[11px] text-tertiary uppercase tracking-wider w-[15%]">Teléfono</th>
+                    <th class="py-3 px-3 font-label-gold text-[11px] text-tertiary uppercase tracking-wider w-[14%]">RSVP</th>
+                    <th class="py-3 px-3 font-label-gold text-[11px] text-tertiary uppercase tracking-wider w-[11%]">Mesa</th>
+                    <th class="py-3 px-4 font-label-gold text-[11px] text-tertiary uppercase tracking-wider text-right w-[12%]">Acciones</th>
                   </tr>
                 </thead>
-                <tbody id="guests-tbody" class="font-body-md text-body-md text-on-surface">
+                <tbody id="guests-tbody" class="font-body-md text-xs text-on-surface divide-y divide-tertiary/5">
                   <tr id="guests-loading-row">
-                    <td class="py-8 px-6 text-center text-on-surface-variant" colspan="6">Cargando invitados…</td>
+                    <td class="py-8 px-4 text-center text-on-surface-variant" colspan="6">Cargando lista de invitados…</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-            <!-- Pagination Footer -->
-            <div class="py-4 px-6 border-t border-tertiary/10 bg-surface-container-low flex items-center justify-between">
-              <span id="guests-count-label" class="font-body-md text-body-md text-on-surface-variant">Mostrando 0 registros</span>
+            <!-- Pagination / Counter Footer -->
+            <div class="py-2.5 px-4 border-t border-tertiary/10 bg-[#161714] flex items-center justify-between text-xs text-on-surface-variant">
+              <span id="guests-count-label">Mostrando 0 registros</span>
+              <span class="text-[11px] text-on-surface-variant/60">Haz clic en cualquier invitado para editar o gestionar su pase</span>
             </div>
           </div>
         </div>
@@ -517,13 +614,14 @@ document.addEventListener('DOMContentLoaded', function () {
   const countLabel = document.getElementById("guests-count-label");
   const searchInput = document.getElementById("guest-search");
   const rsvpFilter = document.getElementById("rsvp-filter");
+  const groupFilter = document.getElementById("group-filter");
   const modal = document.getElementById("guest-modal");
   const form = document.getElementById("guest-form");
   const formError = document.getElementById("guest-form-error");
   const groupSelect = document.getElementById("guest-group");
   const groupsModal = document.getElementById("groups-modal");
   const groupsList = document.getElementById("groups-list");
-
+  const guestsTable = document.getElementById("guests-table");
 
   let currentEventId = null;
   let allGuests = [];
@@ -531,9 +629,24 @@ document.addEventListener('DOMContentLoaded', function () {
   let groupsById = {};
 
   const rsvpStyles = {
-    confirmado: { dot: "bg-[#4ade80] shadow-[0_0_8px_#4ade80]", text: "text-[#4ade80]", label: "Confirmado" },
-    pendiente:  { dot: "bg-tertiary shadow-[0_0_8px_rgba(233,195,73,0.8)]", text: "text-tertiary", label: "Pendiente" },
-    declinado:  { dot: "bg-error shadow-[0_0_8px_rgba(255,180,171,0.8)]", text: "text-error", label: "Declinado" }
+    confirmado: { 
+      dot: "bg-[#4ade80] shadow-[0_0_6px_#4ade80]", 
+      text: "text-[#4ade80]", 
+      badge: "bg-[#4ade80]/10 border border-[#4ade80]/20 text-[#4ade80]",
+      label: "Confirmado" 
+    },
+    pendiente:  { 
+      dot: "bg-tertiary shadow-[0_0_6px_rgba(233,195,73,0.8)]", 
+      text: "text-tertiary", 
+      badge: "bg-tertiary/10 border border-tertiary/20 text-tertiary",
+      label: "Pendiente" 
+    },
+    declinado:  { 
+      dot: "bg-error shadow-[0_0_6px_rgba(255,180,171,0.8)]", 
+      text: "text-error", 
+      badge: "bg-error/10 border border-error/20 text-error",
+      label: "Declinado" 
+    }
   };
 
   function escapeHtml(str) {
@@ -541,53 +654,84 @@ document.addEventListener('DOMContentLoaded', function () {
     return String(str).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   }
 
+  // ---- RENDERIZADO COMPACTO Y CLARO DE INVITADOS ----
   function renderRows(guests) {
     if (guests.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" class="py-10 px-6 text-center text-on-surface-variant">
-        Aún no hay invitados. Da clic en "Agregar Invitado" para crear el primero.
+      tbody.innerHTML = `<tr><td colspan="6" class="py-12 px-4 text-center text-on-surface-variant">
+        <div class="flex flex-col items-center gap-2">
+          <span class="material-symbols-outlined text-tertiary/40 text-4xl">group_off</span>
+          <p class="text-sm">No se encontraron invitados con los filtros seleccionados.</p>
+        </div>
       </td></tr>`;
       return;
     }
+
     tbody.innerHTML = guests.map((g) => {
       const initial = (g.full_name || "?").trim().charAt(0).toUpperCase();
       const style = rsvpStyles[g.rsvp_status] || rsvpStyles.pendiente;
-      const subtitle = g.plus_one ? "Acompañante: Sí" : (g.dietary_notes ? `Dieta: ${escapeHtml(g.dietary_notes)}` : "");
+      
       return `
-        <tr class="border-b border-tertiary/5 hover:bg-secondary-container/20 transition-colors group" data-id="${g.id}">
-          <td class="py-4 px-6">
-            <div class="flex items-center gap-4">
-              <div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center text-tertiary font-headline-md shadow-inner border border-tertiary/20 shrink-0">${escapeHtml(initial)}</div>
-              <div class="min-w-0">
-                <div class="font-headline-md text-headline-md text-on-surface mb-0.5 truncate">${escapeHtml(g.full_name)}</div>
-                ${subtitle ? `<div class="font-label-gold text-label-gold text-on-surface-variant uppercase truncate">${subtitle}</div>` : ""}
+        <tr class="hover:bg-secondary-container/20 transition-colors group cursor-pointer" data-id="${g.id}">
+          <!-- 1. Invitado & Detalles -->
+          <td class="py-2.5 px-4">
+            <div class="flex items-center gap-3">
+              <div class="w-7 h-7 rounded-full bg-secondary-container/80 flex items-center justify-center text-tertiary font-bold text-xs shadow-inner border border-tertiary/20 shrink-0">
+                ${escapeHtml(initial)}
+              </div>
+              <div class="min-w-0 flex flex-col">
+                <span class="text-sm font-semibold text-on-surface truncate leading-tight group-hover:text-tertiary transition-colors">${escapeHtml(g.full_name)}</span>
+                <div class="flex items-center gap-1.5 mt-0.5 flex-wrap">
+                  ${g.plus_one ? `<span class="inline-flex items-center gap-0.5 text-[10px] text-secondary bg-secondary/10 px-1.5 py-0.5 rounded font-medium"><span class="material-symbols-outlined text-[11px]">person_add</span>+1 Pase</span>` : ""}
+                  ${g.dietary_notes ? `<span class="inline-flex items-center gap-0.5 text-[10px] text-amber-300/90 bg-amber-400/10 px-1.5 py-0.5 rounded truncate max-w-[130px]" title="${escapeHtml(g.dietary_notes)}"><span class="material-symbols-outlined text-[11px]">restaurant</span>${escapeHtml(g.dietary_notes)}</span>` : ""}
+                </div>
               </div>
             </div>
           </td>
-          <td class="py-4 px-6">
-            ${g.group_id && groupsById[g.group_id] ? `<span class="inline-flex items-center px-2.5 py-1 rounded-full bg-tertiary/10 border border-tertiary/20 text-tertiary font-label-gold text-label-gold uppercase">${escapeHtml(groupsById[g.group_id])}</span>` : `<span class="text-on-surface-variant/40">—</span>`}
+
+          <!-- 2. Grupo -->
+          <td class="py-2.5 px-3">
+            ${g.group_id && groupsById[g.group_id] 
+              ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-surface-container border border-tertiary/15 text-tertiary truncate max-w-[140px]">${escapeHtml(groupsById[g.group_id])}</span>` 
+              : `<span class="text-on-surface-variant/30 text-xs">—</span>`}
           </td>
-          <td class="py-4 px-6">
-            <div class="text-on-surface">${escapeHtml(g.phone) || "—"}</div>
+
+          <!-- 3. Teléfono -->
+          <td class="py-2.5 px-3">
+            ${g.phone 
+              ? `<span class="text-xs text-on-surface-variant font-mono tracking-tight">${escapeHtml(g.phone)}</span>` 
+              : `<span class="text-on-surface-variant/30 text-xs">—</span>`}
           </td>
-          <td class="py-4 px-6">
-            <div class="flex items-center gap-2">
-              <div class="w-2 h-2 rounded-full ${style.dot}"></div>
-              <span class="${style.text} font-button-text text-button-text uppercase tracking-wider">${style.label}</span>
-            </div>
+
+          <!-- 4. RSVP -->
+          <td class="py-2.5 px-3">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wider ${style.badge}">
+              <span class="w-1.5 h-1.5 rounded-full ${style.dot}"></span>
+              ${style.label}
+            </span>
           </td>
-          <td class="py-4 px-6">
-            ${g.table_number ? `<span class="font-headline-md text-headline-md text-tertiary">${escapeHtml(g.table_number)}</span>` : `<span class="text-on-surface-variant/50 italic font-body-md text-body-md">Sin asignar</span>`}
+
+          <!-- 5. Mesa -->
+          <td class="py-2.5 px-3">
+            ${g.table_number 
+              ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold text-tertiary bg-tertiary/10 border border-tertiary/20">${escapeHtml(g.table_number)}</span>` 
+              : `<span class="text-on-surface-variant/40 text-xs italic">Sin asignar</span>`}
           </td>
-          <td class="py-4 px-6 text-right whitespace-nowrap">
+
+          <!-- 6. Acciones -->
+          <td class="py-2.5 px-4 text-right whitespace-nowrap" onclick="event.stopPropagation()">
             <div class="inline-flex items-center gap-1">
-              <a href="invitacion.html?g=${g.id}" target="_blank" class="p-2 text-tertiary hover:bg-tertiary/10 rounded-lg transition-colors" title="Ver invitación personalizada de ${escapeHtml(g.full_name)}">
-                <span class="material-symbols-outlined text-[20px]">drafts</span>
+              <a href="invitacion.html?g=${g.id}" target="_blank" class="p-1.5 text-tertiary hover:bg-tertiary/15 rounded-lg transition-colors" title="Ver pase digital personalizado">
+                <span class="material-symbols-outlined text-[18px]">drafts</span>
               </a>
-              <a href="https://wa.me/${(g.phone || '').replace(/\D/g, '')}?text=${encodeURIComponent(`¡Hola ${g.full_name}! Te compartimos nuestra invitación digital de boda con todos los detalles y pases reservados:\n\n${window.location.origin + window.location.pathname.replace('invitados.html', '')}invitacion.html?g=${g.id}`)}" target="_blank" class="p-2 text-[#4ade80] hover:bg-[#4ade80]/10 rounded-lg transition-colors" title="Enviar invitación personalizada por WhatsApp">
-                <span class="material-symbols-outlined text-[20px]">chat</span>
-              </a>
-              <button class="btn-edit-guest p-2 text-on-surface-variant hover:text-tertiary rounded-lg transition-colors" title="Editar datos"><span class="material-symbols-outlined text-[20px]">edit</span></button>
-              <button class="btn-delete-guest p-2 text-on-surface-variant hover:text-error rounded-lg transition-colors" title="Eliminar"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+              <button class="btn-wa-send p-1.5 text-[#4ade80] hover:bg-[#4ade80]/15 rounded-lg transition-colors" data-id="${g.id}" data-name="${escapeHtml(g.full_name)}" data-phone="${(g.phone || '').replace(/\D/g, '')}" title="Enviar pase por WhatsApp">
+                <span class="material-symbols-outlined text-[18px]">chat</span>
+              </button>
+              <button class="btn-edit-guest p-1.5 text-on-surface-variant hover:text-tertiary hover:bg-surface-container rounded-lg transition-colors" title="Editar datos">
+                <span class="material-symbols-outlined text-[18px]">edit</span>
+              </button>
+              <button class="btn-delete-guest p-1.5 text-on-surface-variant hover:text-error hover:bg-error/10 rounded-lg transition-colors" title="Eliminar">
+                <span class="material-symbols-outlined text-[18px]">delete</span>
+              </button>
             </div>
           </td>
         </tr>`;
@@ -604,32 +748,124 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById("stat-pending").textContent = pending;
     document.getElementById("stat-declined").textContent = declined;
     document.getElementById("stat-confirmed-bar").style.width = total ? `${Math.round((confirmed / total) * 100)}%` : "0%";
-    countLabel.textContent = `Mostrando ${total} de ${total} registro${total === 1 ? "" : "s"}`;
+    countLabel.textContent = `Mostrando ${total} de ${total} registros`;
   }
 
   function applyFilterAndRender() {
     const term = (searchInput.value || "").trim().toLowerCase();
     const rsvpValue = rsvpFilter.value;
+    const groupValue = groupFilter.value;
+    
     let filtered = allGuests;
     if (term) {
       filtered = filtered.filter(g =>
         (g.full_name || "").toLowerCase().includes(term) ||
-        (g.phone || "").toLowerCase().includes(term));
+        (g.phone || "").toLowerCase().includes(term) ||
+        (g.dietary_notes || "").toLowerCase().includes(term));
     }
     if (rsvpValue) {
       filtered = filtered.filter(g => g.rsvp_status === rsvpValue);
     }
+    if (groupValue) {
+      filtered = filtered.filter(g => String(g.group_id) === String(groupValue));
+    }
+    
     renderRows(filtered);
     updateStats(allGuests); // los contadores reflejan el total, no el filtro
-    if (term || rsvpValue) {
+    if (term || rsvpValue || groupValue) {
       countLabel.textContent = `Mostrando ${filtered.length} de ${allGuests.length} registros`;
     }
   }
 
   function populateGroupSelect() {
-    groupSelect.innerHTML = '<option value="">Sin grupo</option>' +
+    const options = '<option value="">Sin grupo</option>' +
       allGroups.map(gr => `<option value="${gr.id}">${escapeHtml(gr.name)}</option>`).join("");
+    groupSelect.innerHTML = options;
+
+    const filterOptions = '<option value="">Todos los grupos</option>' +
+      allGroups.map(gr => `<option value="${gr.id}">${escapeHtml(gr.name)}</option>`).join("");
+    groupFilter.innerHTML = filterOptions;
   }
+
+  // ---- GESTIÓN DE MENÚS DROPDOWN SUPERIORES ----
+  const dropdownInvitationWrap = document.getElementById("dropdown-invitation-wrap");
+  const btnDropdownInvitation = document.getElementById("btn-dropdown-invitation");
+  const dropdownInvitationMenu = document.getElementById("dropdown-invitation-menu");
+  const invitationArrow = document.getElementById("invitation-arrow");
+
+  const dropdownCsvWrap = document.getElementById("dropdown-csv-wrap");
+  const btnDropdownCsv = document.getElementById("btn-dropdown-csv");
+  const dropdownCsvMenu = document.getElementById("dropdown-csv-menu");
+  const csvArrow = document.getElementById("csv-arrow");
+
+  function closeAllDropdowns() {
+    dropdownInvitationMenu.classList.add("hidden");
+    if (invitationArrow) invitationArrow.style.transform = "rotate(0deg)";
+    dropdownCsvMenu.classList.add("hidden");
+    if (csvArrow) csvArrow.style.transform = "rotate(0deg)";
+  }
+
+  btnDropdownInvitation.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const isHidden = dropdownInvitationMenu.classList.contains("hidden");
+    closeAllDropdowns();
+    if (isHidden) {
+      dropdownInvitationMenu.classList.remove("hidden");
+      if (invitationArrow) invitationArrow.style.transform = "rotate(180deg)";
+    }
+  });
+
+  btnDropdownCsv.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const isHidden = dropdownCsvMenu.classList.contains("hidden");
+    closeAllDropdowns();
+    if (isHidden) {
+      dropdownCsvMenu.classList.remove("hidden");
+      if (csvArrow) csvArrow.style.transform = "rotate(180deg)";
+    }
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!dropdownInvitationWrap.contains(e.target) && !dropdownCsvWrap.contains(e.target)) {
+      closeAllDropdowns();
+    }
+  });
+
+  // ---- DENSIDAD DE LA TABLA (COMPACTA VS NORMAL) ----
+  const btnToggleDensity = document.getElementById("btn-toggle-density");
+  const densityIcon = document.getElementById("density-icon");
+  const densityLabel = document.getElementById("density-label");
+  let currentDensity = localStorage.getItem("galaGuestsDensity") || "dense";
+
+  function applyDensity(density) {
+    currentDensity = density;
+    localStorage.setItem("galaGuestsDensity", density);
+    if (density === "dense") {
+      guestsTable.classList.add("table-dense");
+      guestsTable.classList.remove("table-comfortable");
+      densityIcon.textContent = "density_small";
+      densityLabel.textContent = "Compacta";
+    } else {
+      guestsTable.classList.remove("table-dense");
+      guestsTable.classList.add("table-comfortable");
+      densityIcon.textContent = "density_medium";
+      densityLabel.textContent = "Confort";
+    }
+  }
+  applyDensity(currentDensity);
+
+  btnToggleDensity.addEventListener("click", () => {
+    applyDensity(currentDensity === "dense" ? "comfortable" : "dense");
+  });
+
+  // Botón abrir modal de grupos desde toolbar
+  document.getElementById("btn-open-groups-modal").addEventListener("click", () => {
+    renderGroupsList();
+    groupsModal.classList.remove("hidden");
+    groupsModal.classList.add("flex");
+  });
+
+  groupFilter.addEventListener("change", applyFilterAndRender);
 
   async function loadGroups() {
     const { data, error } = await window.supabaseClient
@@ -779,7 +1015,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   document.getElementById("btn-export-csv").addEventListener("click", () => {
     if (allGuests.length === 0) {
-      alert("No hay invitados para exportar.");
+      window.showToast("No hay invitados para exportar.", "info");
       return;
     }
     const headers = ["Nombre", "Grupo", "Teléfono", "RSVP", "Mesa", "Acompañante", "Notas dietéticas"];
@@ -807,9 +1043,25 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!row) return;
     const id = row.getAttribute("data-id");
     const guest = allGuests.find(g => String(g.id) === id);
+    if (!guest) return;
+
+    const waBtn = e.target.closest(".btn-wa-send");
+    if (waBtn) {
+      const phone = (guest.phone || "").replace(/\D/g, "");
+      if (!phone || phone.length < 8) {
+        window.showToast(`Por favor ingresa un teléfono válido para ${guest.full_name}.`, "info");
+        openModal("edit", guest);
+        return;
+      }
+      const invUrl = `${window.location.origin + window.location.pathname.replace('invitados.html', '')}invitacion.html?g=${guest.id}`;
+      const msg = `¡Hola ${guest.full_name}! Te compartimos nuestra invitación digital con todos los detalles y pases reservados:\n\n${invUrl}`;
+      window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank");
+      return;
+    }
 
     if (e.target.closest(".btn-edit-guest")) {
       openModal("edit", guest);
+      return;
     }
     if (e.target.closest(".btn-delete-guest")) {
       const ok = await window.showConfirmDialog({
@@ -827,6 +1079,12 @@ document.addEventListener('DOMContentLoaded', function () {
         window.showToast(`Invitado ${guest.full_name} eliminado.`, "info");
         await loadGuests();
       }
+      return;
+    }
+
+    // Clic en la fila abre edición
+    if (!e.target.closest("a") && !e.target.closest("button")) {
+      openModal("edit", guest);
     }
   });
 
@@ -969,6 +1227,7 @@ document.addEventListener('DOMContentLoaded', function () {
         isDestructive: true
       });
       if (!ok) return;
+      await window.supabaseClient.from("guests").update({ group_id: null }).eq("group_id", id);
       await window.supabaseClient.from("guest_groups").delete().eq("id", id);
       window.showToast(`Grupo "${groupName}" eliminado.`, "info");
       await loadGroups();
@@ -1083,18 +1342,26 @@ document.addEventListener('DOMContentLoaded', function () {
       const invUrl = `${window.location.origin + window.location.pathname.replace('invitados.html', '')}invitacion.html?g=${g.id}`;
       const msg = `¡Hola ${g.full_name}! 👋 Te escribimos con mucho cariño para recordarte confirmar tu asistencia a nuestra boda.\n\nPuedes ver todos los detalles y confirmar tus pases directamente aquí:\n${invUrl}\n\n¡Esperamos contar contigo! ✨`;
       const cleanPhone = (g.phone || "").replace(/\D/g, "");
-      const waLink = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}`;
+      const hasPhone = cleanPhone && cleanPhone.length >= 8;
+      const waLink = hasPhone ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}` : '#';
 
       return `
         <div class="flex items-center justify-between p-4 bg-surface rounded-2xl border border-tertiary/10 hover:border-tertiary/30 transition-all">
           <div class="flex flex-col">
             <span class="font-headline-md text-base text-on-surface font-medium">${escapeHtml(g.full_name)}</span>
-            <span class="text-xs text-on-surface-variant">${escapeHtml(g.phone || "Sin teléfono registrado")} · ${g.plus_one ? "2 Pases" : "1 Pase"}</span>
+            <span class="text-xs ${hasPhone ? 'text-on-surface-variant' : 'text-amber-400 font-medium'}">${hasPhone ? escapeHtml(g.phone) : 'Sin teléfono válido'} · ${g.plus_one ? "2 Pases" : "1 Pase"}</span>
           </div>
-          <a href="${waLink}" target="_blank" class="px-4 py-2.5 bg-[#25D366] text-white rounded-xl font-button-text text-xs uppercase tracking-wider flex items-center gap-1.5 hover:brightness-110 transition-all shadow-md">
-            <span class="material-symbols-outlined text-[16px]">chat</span>
-            Enviar WhatsApp
-          </a>
+          ${hasPhone ? `
+            <a href="${waLink}" target="_blank" class="px-4 py-2.5 bg-[#25D366] text-white rounded-xl font-button-text text-xs uppercase tracking-wider flex items-center gap-1.5 hover:brightness-110 transition-all shadow-md">
+              <span class="material-symbols-outlined text-[16px]">chat</span>
+              Enviar WhatsApp
+            </a>
+          ` : `
+            <button onclick="window.showToast('Por favor edita a este invitado para agregar su teléfono.', 'info')" class="px-4 py-2.5 bg-surface-container text-on-surface-variant rounded-xl font-button-text text-xs uppercase tracking-wider flex items-center gap-1.5 hover:bg-surface-variant transition-all">
+              <span class="material-symbols-outlined text-[16px]">phone_disabled</span>
+              Sin Teléfono
+            </button>
+          `}
         </div>`;
     }).join("");
   }

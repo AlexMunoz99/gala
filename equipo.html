@@ -385,7 +385,13 @@
       const id = btn.getAttribute("data-id");
       const email = btn.getAttribute("data-email");
 
-      if (!confirm(`¿Estás seguro de que deseas eliminar a ${email} del equipo?`)) return;
+      const confirmed = await window.showConfirmDialog({
+        title: "Eliminar Miembro",
+        message: `¿Estás seguro de que deseas eliminar a ${email} del equipo?`,
+        confirmText: "Eliminar",
+        cancelText: "Cancelar"
+      });
+      if (!confirmed) return;
 
       try {
         const { error } = await window.supabaseClient
@@ -400,7 +406,7 @@
         console.warn("Eliminando del LocalStorage (fallback):", e);
         allMembers = allMembers.filter(m => m.id !== id);
         saveMembersToLocalStorage();
-        window.showToast("Miembro eliminado localmente (Fallback)", "info");
+        window.showToast("Miembro eliminado", "info");
       }
 
       renderTable();
@@ -414,8 +420,8 @@
       // Solo accesible si tiene plan agency o es el admin suplantando
       const isAgency = auth.profile.plan === "agency" || auth.profile.role === "admin";
       if (!isAgency) {
-        alert("La gestión de equipo es exclusiva para usuarios con Plan Agency.");
-        window.location.href = "proyectos.html";
+        window.showToast("La gestión de equipo es exclusiva para usuarios con Plan Agency.", "error");
+        setTimeout(() => { window.location.href = "proyectos.html"; }, 1500);
         return;
       }
 

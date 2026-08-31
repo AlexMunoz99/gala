@@ -428,14 +428,18 @@ tailwind.config = {
             El cronograma oficial y el guion del maestro de ceremonias para <span id="current-event-name-inline">tu evento</span>. Los horarios son estrictos; asegúrese de que todos los oradores estén preparados 5 minutos antes de su segmento.
           </p>
         </div>
-        <div class="flex items-center gap-3 shrink-0">
-          <button id="btn-add-item" class="bg-tertiary text-on-tertiary px-8 py-4 rounded-full font-button-text text-button-text uppercase tracking-widest shadow-lg shadow-tertiary/20 hover:shadow-tertiary/40 transition-all duration-300 hover:-translate-y-1 flex items-center gap-3">
+        <div class="flex items-center gap-3 shrink-0 flex-wrap">
+          <button id="btn-import-itinerary" class="relative group bg-surface-container border border-tertiary/20 text-tertiary px-6 py-4 rounded-full font-button-text text-button-text uppercase tracking-widest hover:bg-tertiary/10 transition-all duration-300 flex items-center gap-2 shadow-sm" title="Importar actividades del día principal desde el Itinerario">
+            <span class="material-symbols-outlined group-hover:rotate-180 transition-transform duration-500 text-lg">sync</span>
+            Sincronizar Itinerario
+          </button>
+          <button id="btn-add-item" class="bg-tertiary text-on-tertiary px-8 py-4 rounded-full font-button-text text-button-text uppercase tracking-widest shadow-lg shadow-tertiary/20 hover:shadow-tertiary/40 transition-all duration-300 hover:-translate-y-1 flex items-center gap-3 font-semibold">
             <span class="material-symbols-outlined">add</span>
             Agregar Suceso
           </button>
           <button id="btn-print-pdf" class="relative group bg-surface-container border border-tertiary/20 text-tertiary px-8 py-4 rounded-full font-button-text text-button-text uppercase tracking-widest hover:bg-tertiary/5 transition-all duration-300 flex items-center gap-3">
             <span class="material-symbols-outlined group-hover:scale-110 transition-transform">picture_as_pdf</span>
-            Imprimir como PDF
+            Imprimir PDF
           </button>
         </div>
       </div>
@@ -687,36 +691,100 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById("item-modal-cancel").addEventListener("click", closeModal);
   document.getElementById("item-modal-backdrop").addEventListener("click", closeModal);
 
-  listEl.addEventListener("click", (e) => {
+  // Sincronizar sucesos desde el Itinerario
+  document.getElementById("btn-import-itinerary").addEventListener("click", async () => {
+    const { data: itineraryItems, error } = await window.supabaseClient
+      .from("itinerary_items")
+      .select("*")
+      .eq("event_id", currentEventId)
+      .eq("day_offset", 0)
+      .order("start_time", { ascending: true });
+
+    if (error || !itineraryItems || itineraryItems.length === 0) {
+      window.showToast("No hay actividades registradas en el día principal (Día 0) del Itinerario.", "info");
+      return;
+    }
+
+    const confirmed = await window.showConfirmDialog({
+      title: "Sincronizar Itinerario",
+      message: `Se encontraron ${itineraryItems.length} actividades en el Itinerario. ¿Deseas importarlas al guion del Programa oficial?`,
+      confirmText: "Importar",
+      cancelText: "Cancelar"
+    });
+    if (!confirmed) return;
+
+    let importedCount = 0;
+    for (const it of itineraryItems) {
+      const exists = allItems.some(i => i.title.toLowerCase() === it.title.toLowerCase() && i.start_time === it.start_time);
+      if (!exists) {
+        await window.supabaseClient.from("program_items").insert({
+          event_id: currentEventId,
+          title: it.title,
+          start_time: it.start_time,
+          duration_minutes: 45,
+          part_label: it.location || "Evento Principal",
+          mc_script: it.description || null,
+          sort_order: allItems.length + importedCount + 1
+        });
+        importedCount++;
+      }
+    }
+
+    if (importedCount > 0) {
+      window.showToast(`¡Se importaron ${importedCount} sucesos desde el Itinerario!`, "success");
+      await loadItems();
+    } else {
+      window.showToast("Todos los sucesos del Itinerario ya están presentes en el Programa.", "info");
+    }
+  });
+
+  listEl.addEventListener("click", async (e) => {
     const card = e.target.closest("[data-id]");
     if (!card) return;
     const item = allItems.find(i => String(i.id) === card.dataset.id);
+    if (!item) return;
 
     if (e.target.closest(".btn-edit-item")) {
       openModal("edit", item);
+      return;
     }
     if (e.target.closest(".btn-delete-item")) {
-      if (!confirm(`¿Eliminar "${item.title}"? Esta acción no se puede deshacer.`)) return;
-      window.supabaseClient.from("program_items").delete().eq("id", item.id).then(({ error }) => {
-        if (error) {
-          alert("No se pudo eliminar: " + error.message);
-        } else {
-          loadItems();
-        }
+      const confirmed = await window.showConfirmDialog({
+        title: "Eliminar Suceso",
+        message: `¿Eliminar "${item.title}" del programa? Esta acción no se puede deshacer.`,
+        confirmText: "Eliminar",
+        cancelText: "Cancelar"
       });
+      if (!confirmed) return;
+
+      const { error } = await window.supabaseClient.from("program_items").delete().eq("id", item.id);
+      if (error) {
+        window.showToast("No se pudo eliminar: " + error.message, "error");
+      } else {
+        window.showToast("Suceso eliminado", "info");
+        await loadItems();
+      }
     }
   });
 
   deleteBtn.addEventListener("click", async () => {
     const id = document.getElementById("item-id").value;
     if (!id) return;
-    if (!confirm("¿Eliminar este suceso? Esta acción no se puede deshacer.")) return;
+    const confirmed = await window.showConfirmDialog({
+      title: "Eliminar Suceso",
+      message: "¿Eliminar este suceso del programa? Esta acción no se puede deshacer.",
+      confirmText: "Eliminar",
+      cancelText: "Cancelar"
+    });
+    if (!confirmed) return;
+
     const { error } = await window.supabaseClient.from("program_items").delete().eq("id", id);
     if (error) {
-      alert("No se pudo eliminar: " + error.message);
+      window.showToast("No se pudo eliminar: " + error.message, "error");
       return;
     }
     closeModal();
+    window.showToast("Suceso eliminado", "info");
     await loadItems();
   });
 
@@ -748,6 +816,7 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
     closeModal();
+    window.showToast(id ? "Suceso actualizado" : "Suceso agregado al programa", "success");
     await loadItems();
   });
 

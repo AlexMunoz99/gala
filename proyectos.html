@@ -348,16 +348,24 @@ tailwind.config = {
 
   document.getElementById("edit-project-delete-btn").addEventListener("click", async () => {
     const id = document.getElementById("edit-project-id").value;
-    if (!confirm("¿Eliminar este evento? Se borrarán TODOS sus datos (invitados, presupuesto, tareas, etc.) de forma permanente. Esta acción no se puede deshacer.")) return;
+    const confirmed = await window.showConfirmDialog({
+      title: "Eliminar Evento",
+      message: "¿Eliminar este evento? Se borrarán TODOS sus datos (invitados, presupuesto, tareas, etc.) de forma permanente. Esta acción no se puede deshacer.",
+      confirmText: "Eliminar Evento",
+      cancelText: "Cancelar"
+    });
+    if (!confirmed) return;
+
     const { error } = await window.supabaseClient.from("events").delete().eq("id", id);
     if (error) {
-      alert("No se pudo eliminar: " + error.message);
+      window.showToast("No se pudo eliminar: " + error.message, "error");
       return;
     }
     if (localStorage.getItem("galaCurrentEventId") === id) {
       localStorage.removeItem("galaCurrentEventId");
     }
     closeEditModal();
+    window.showToast("Evento eliminado", "info");
     await loadProjects();
   });
 
@@ -549,6 +557,11 @@ tailwind.config = {
         };
 
         localStorage.setItem("galaInvitationSettings_" + eventId, JSON.stringify(invitationSettings));
+        try {
+          await window.supabaseClient.from("events").update({ invitation_settings: invitationSettings }).eq("id", eventId);
+        } catch (e) {
+          console.warn("No se pudo guardar invitation_settings en Supabase:", e);
+        }
         window.showToast("¡Boda Demo generada con éxito! Entrando al proyecto...", "success", 2000);
 
         setTimeout(() => {
