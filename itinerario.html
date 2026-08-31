@@ -33,6 +33,128 @@
     main > :last-child { margin-bottom: 0 !important; }
   }
   ::-webkit-scrollbar { display: none; }
+
+  @media print {
+    /* Ocultar elementos de navegación y de control que no van impresos */
+    #app-sidebar, header, #sidebar-toggle, .btn-edit-activity, .btn-delete-activity, #btn-add-activity, #btn-toggle-view-mode, #btn-print-itinerary, #view-mode-banner, #activity-modal, #categories-modal, .no-print, .blur-bg-decor {
+      display: none !important;
+    }
+
+    html, body {
+      background: #ffffff !important;
+      color: #0f172a !important;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+      font-size: 10pt !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      overscroll-behavior: auto !important;
+    }
+
+    #app-content-wrapper {
+      padding-left: 0 !important;
+      width: 100% !important;
+      margin: 0 !important;
+    }
+
+    main {
+      padding: 0 !important;
+      margin-top: 0 !important;
+      background: transparent !important;
+    }
+
+    /* Encabezado formal de impresión */
+    #print-itinerary-header {
+      display: block !important;
+      margin-bottom: 20px !important;
+      border-bottom: 2px solid #cca730 !important;
+      padding-bottom: 14px !important;
+    }
+
+    .print-day-header {
+      background: #f8fafc !important;
+      border-left: 4px solid #cca730 !important;
+      border-bottom: 1px solid #e2e8f0 !important;
+      padding: 6px 12px !important;
+      margin-top: 18px !important;
+      margin-bottom: 10px !important;
+      font-weight: 700 !important;
+      font-size: 11.5pt !important;
+      color: #0f172a !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.05em !important;
+      page-break-after: avoid !important;
+    }
+
+    .itinerary-card-item {
+      background: #ffffff !important;
+      border-bottom: 1px solid #e2e8f0 !important;
+      box-shadow: none !important;
+      padding: 10px 0 !important;
+      margin-bottom: 0 !important;
+      page-break-inside: avoid !important;
+      display: flex !important;
+      flex-direction: row !important;
+      gap: 16px !important;
+    }
+
+    .itinerary-time-column {
+      width: 85px !important;
+      flex-shrink: 0 !important;
+      font-weight: 800 !important;
+      font-size: 12pt !important;
+      color: #0f172a !important;
+      padding-top: 2px !important;
+    }
+
+    .itinerary-time-column .ampm {
+      font-size: 8pt !important;
+      font-weight: 600 !important;
+      color: #64748b !important;
+      display: block !important;
+    }
+
+    .itinerary-content-column {
+      flex: 1 !important;
+      padding-left: 0 !important;
+    }
+
+    .itinerary-title {
+      color: #0f172a !important;
+      font-size: 11.5pt !important;
+      font-weight: 700 !important;
+      margin-bottom: 2px !important;
+    }
+
+    .itinerary-badge {
+      display: inline-block !important;
+      background: #fef3c7 !important;
+      border: 1px solid #fde68a !important;
+      color: #78350f !important;
+      font-size: 7.5pt !important;
+      font-weight: 700 !important;
+      text-transform: uppercase !important;
+      padding: 1px 6px !important;
+      border-radius: 4px !important;
+      margin-bottom: 3px !important;
+    }
+
+    .itinerary-location {
+      color: #475569 !important;
+      font-size: 8.5pt !important;
+      margin-bottom: 2px !important;
+    }
+
+    .itinerary-description {
+      color: #334155 !important;
+      font-size: 9pt !important;
+      line-height: 1.4 !important;
+    }
+
+    @page {
+      size: portrait;
+      margin: 1.5cm 1.2cm;
+    }
+  }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet"/>
@@ -210,22 +332,81 @@ tailwind.config = {
   <main class="flex-1 pt-20 bg-on-surface-variant/5 min-h-screen relative">
     <div class="flex flex-col w-full relative">
 
+      <!-- Print Header (Visible ONLY when printing to PDF) -->
+      <div id="print-itinerary-header" class="hidden print:block px-2 pt-2 pb-4">
+        <div class="flex justify-between items-start border-b-2 border-[#cca730] pb-3 mb-3">
+          <div>
+            <span class="text-[9pt] uppercase tracking-[0.2em] text-[#854d0e] font-bold block">GALA ERP • PLANIFICADOR MAESTRO DE EVENTOS</span>
+            <h1 id="print-event-title" class="text-[20pt] font-serif font-bold text-[#0f172a] leading-tight">Itinerario del Evento</h1>
+            <p id="print-event-subtitle" class="text-[10pt] text-[#475569] mt-0.5">Cronograma Oficial • Minuto a Minuto</p>
+          </div>
+          <div class="text-right">
+            <span id="print-event-date" class="text-[11pt] font-bold text-[#0f172a] block">--</span>
+            <span id="print-event-venue" class="text-[9.5pt] text-[#475569] block">Sede por definir</span>
+            <span id="print-timestamp" class="text-[8pt] text-[#94a3b8] block mt-1"></span>
+          </div>
+        </div>
+      </div>
+
       <!-- Header Section -->
-      <div class="px-container-padding mt-12 flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 relative z-10">
+      <div class="px-container-padding mt-12 flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 relative z-10 no-print">
         <div class="flex flex-col gap-1.5">
           <span class="font-label-gold text-label-gold text-tertiary uppercase tracking-[0.2em] relative pl-8 before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-6 before:h-px before:bg-tertiary/50">Minuto a Minuto</span>
-          <h1 class="font-display-lg text-3xl sm:text-4xl text-on-surface">Itinerario del Evento</h1>
-          <p class="font-body-md text-sm text-on-surface-variant max-w-xl">Coordina cada momento clave del evento y asigna responsables en tiempo real.</p>
+          <h1 class="font-display-lg text-3xl sm:text-4xl text-on-surface" id="page-itinerary-title">Itinerario del Evento</h1>
+          <p class="font-body-md text-sm text-on-surface-variant max-w-xl" id="page-itinerary-subtitle">Coordina cada momento clave del evento y asigna responsables en tiempo real.</p>
         </div>
-        <button id="btn-add-activity" class="px-5 py-2.5 bg-tertiary text-on-tertiary font-button-text text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all flex items-center gap-2 rounded-xl shadow-lg shadow-tertiary/20 cursor-pointer">
-          <span class="material-symbols-outlined text-[18px]">add</span>
-          <span>Añadir Actividad</span>
-        </button>
+        <div class="flex items-center gap-3 flex-wrap">
+          <button id="btn-toggle-view-mode" class="px-4 py-2.5 bg-surface-container-high/80 border border-tertiary/20 text-tertiary font-button-text text-xs uppercase tracking-wider hover:bg-tertiary/10 transition-all flex items-center gap-2 rounded-xl shadow-md cursor-pointer backdrop-blur-sm" title="Alternar entre modo edición y modo de solo ver itinerario">
+            <span class="material-symbols-outlined text-[18px]" id="view-mode-icon">visibility</span>
+            <span id="view-mode-text">Solo Ver Itinerario</span>
+          </button>
+          <button id="btn-print-itinerary" class="px-4 py-2.5 bg-surface-container-high/80 border border-tertiary/20 text-tertiary font-button-text text-xs uppercase tracking-wider hover:bg-tertiary/10 transition-all flex items-center gap-2 rounded-xl shadow-md cursor-pointer backdrop-blur-sm" title="Imprimir o guardar como PDF">
+            <span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+            <span>Imprimir PDF</span>
+          </button>
+          <button id="btn-add-activity" class="px-5 py-2.5 bg-tertiary text-on-tertiary font-button-text text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all flex items-center gap-2 rounded-xl shadow-lg shadow-tertiary/20 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">add</span>
+            <span>Añadir Actividad</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Banner Modo Solo Ver (Vista Ejecutiva) -->
+      <div id="view-mode-banner" class="hidden px-container-padding mt-6 no-print">
+        <div class="bg-surface-container-high/90 border border-tertiary/20 rounded-2xl p-4 sm:p-5 flex items-center justify-between flex-wrap gap-4 shadow-xl backdrop-blur-md">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-tertiary/10 border border-tertiary/20 flex items-center justify-center text-tertiary shrink-0">
+              <span class="material-symbols-outlined text-[22px]">chrome_reader_mode</span>
+            </div>
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="text-[10px] uppercase font-bold tracking-widest text-tertiary">MODO DE SOLO LECTURA • VISTA EJECUTIVA</span>
+                <span class="px-2 py-0.5 rounded-full bg-tertiary/20 text-tertiary text-[9px] font-bold uppercase tracking-wider">Activo</span>
+              </div>
+              <p class="text-xs text-on-surface-variant mt-0.5">Vista simplificada sin controles de edición. Ideal para coordinadores, proveedores y consulta rápida.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <button id="btn-copy-view-link" class="px-3.5 py-2 bg-surface border border-tertiary/20 text-tertiary font-button-text text-xs uppercase tracking-wider rounded-xl hover:bg-tertiary/10 transition-all flex items-center gap-1.5 cursor-pointer" title="Copiar enlace directo a esta vista">
+              <span class="material-symbols-outlined text-[16px]">link</span>
+              <span>Copiar Enlace</span>
+            </button>
+            <button id="btn-print-from-view" class="px-3.5 py-2 bg-surface border border-tertiary/20 text-tertiary font-button-text text-xs uppercase tracking-wider rounded-xl hover:bg-tertiary/10 transition-all flex items-center gap-1.5 cursor-pointer">
+              <span class="material-symbols-outlined text-[16px]">picture_as_pdf</span>
+              <span>Imprimir PDF</span>
+            </button>
+            <button id="btn-exit-view-mode" class="px-4 py-2 bg-tertiary text-on-tertiary font-button-text text-xs font-bold uppercase tracking-wider rounded-xl hover:brightness-110 transition-all flex items-center gap-1.5 cursor-pointer shadow-md">
+              <span class="material-symbols-outlined text-[16px]">edit</span>
+              <span>Modo Editor</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- Selector de día -->
-      <section class="w-full flex items-center justify-between py-6 px-gutter mb-section-gap relative z-10 flex-wrap gap-4">
+      <section class="w-full flex items-center justify-between py-6 px-gutter mb-6 relative z-10 flex-wrap gap-4 no-print">
         <div id="day-tabs" class="flex gap-2 items-center flex-wrap bg-surface-container-high/80 p-1.5 rounded-2xl border border-tertiary/10 shadow-sm backdrop-blur-sm">
+          <button class="day-tab px-4 py-2 rounded-xl font-button-text text-xs uppercase tracking-wider text-on-surface-variant hover:text-tertiary hover:bg-surface-container transition-all cursor-pointer" data-day="all">Todos los Días</button>
           <button class="day-tab px-4 py-2 rounded-xl font-button-text text-xs uppercase tracking-wider text-on-surface-variant hover:text-tertiary hover:bg-surface-container transition-all cursor-pointer" data-day="-1">Día -1</button>
           <button class="day-tab px-4 py-2 rounded-xl font-button-text text-xs uppercase tracking-wider text-on-surface-variant hover:text-tertiary hover:bg-surface-container transition-all cursor-pointer" data-day="0">Día 0 (Gala)</button>
           <button class="day-tab px-4 py-2 rounded-xl font-button-text text-xs uppercase tracking-wider text-on-surface-variant hover:text-tertiary hover:bg-surface-container transition-all cursor-pointer" data-day="1">Día +1</button>
@@ -340,10 +521,12 @@ document.addEventListener('DOMContentLoaded', function () {
   const categoriesList = document.getElementById("categories-list");
 
   let currentEventId = null;
+  let currentEventObj = null;
   let allActivities = [];
   let allCategories = [];
   let categoriesById = {};
   let currentDay = 0;
+  let isViewMode = false;
 
   function escapeHtml(str) {
     if (str === null || str === undefined) return "";
@@ -358,9 +541,18 @@ document.addEventListener('DOMContentLoaded', function () {
     return { hm: `${String(h12).padStart(2, "0")}:${String(m).padStart(2, "0")}`, ampm };
   }
 
+  function getDayLabel(day) {
+    const d = Number(day);
+    if (d === -1) return "Día -1 • Víspera / Preparativos";
+    if (d === 0) return "Día 0 • Gala Principal & Ceremonia";
+    if (d === 1) return "Día +1 • Tornaboda / Despedida";
+    return `Día ${d > 0 ? '+' + d : d}`;
+  }
+
   function updateDayTabs() {
     dayTabs.querySelectorAll(".day-tab").forEach(btn => {
-      const isActive = Number(btn.dataset.day) === currentDay;
+      const btnDay = btn.dataset.day;
+      const isActive = (currentDay === "all" && btnDay === "all") || (btnDay !== "all" && Number(btnDay) === currentDay);
       btn.classList.toggle("bg-tertiary", isActive);
       btn.classList.toggle("text-on-tertiary", isActive);
       btn.classList.toggle("shadow-md", isActive);
@@ -368,45 +560,212 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  function renderList() {
-    const items = allActivities
-      .filter(a => a.day_offset === currentDay)
-      .sort((a, b) => (a.start_time || "").localeCompare(b.start_time || "") || (a.sort_order || 0) - (b.sort_order || 0));
+  function toggleViewMode(forceState) {
+    isViewMode = forceState !== undefined ? forceState : !isViewMode;
+    
+    const banner = document.getElementById("view-mode-banner");
+    const addBtn = document.getElementById("btn-add-activity");
+    const modeIcon = document.getElementById("view-mode-icon");
+    const modeText = document.getElementById("view-mode-text");
+    const pageTitle = document.getElementById("page-itinerary-title");
+    const pageSubtitle = document.getElementById("page-itinerary-subtitle");
 
-    if (items.length === 0) {
-      listEl.innerHTML = `<p class="text-on-surface-variant py-10">No hay actividades para este día. Da clic en "Añadir Actividad" para crear la primera.</p>`;
-      return;
+    if (isViewMode) {
+      if (banner) banner.classList.remove("hidden");
+      if (addBtn) addBtn.classList.add("hidden");
+      if (modeIcon) modeIcon.textContent = "edit";
+      if (modeText) modeText.textContent = "Modo Editor";
+      if (pageTitle) pageTitle.textContent = "Itinerario Ejecutivo";
+      if (pageSubtitle) pageSubtitle.textContent = "Formato limpio y estructurado para coordinadores, equipo y consulta de invitados.";
+    } else {
+      if (banner) banner.classList.add("hidden");
+      if (addBtn) addBtn.classList.remove("hidden");
+      if (modeIcon) modeIcon.textContent = "visibility";
+      if (modeText) modeText.textContent = "Solo Ver Itinerario";
+      if (pageTitle) pageTitle.textContent = "Itinerario del Evento";
+      if (pageSubtitle) pageSubtitle.textContent = "Coordina cada momento clave del evento y asigna responsables en tiempo real.";
     }
+    renderList();
+  }
 
-    listEl.innerHTML = items.map(a => {
-      const t = formatTime(a.start_time);
+  function renderSingleActivity(a) {
+    const t = formatTime(a.start_time);
+    const catName = a.category_id && categoriesById[a.category_id] ? escapeHtml(categoriesById[a.category_id]) : null;
+
+    if (isViewMode) {
       return `
-        <div class="flex flex-col md:flex-row w-full group" data-id="${a.id}">
-          <div class="w-[120px] pt-4 flex-shrink-0 relative">
-            <span class="font-headline-md text-headline-md text-tertiary block">${t.hm}</span>
-            <span class="font-label-gold text-label-gold text-on-surface-variant uppercase tracking-widest">${t.ampm}</span>
+        <div class="flex flex-col md:flex-row w-full group itinerary-card-item" data-id="${a.id}">
+          <div class="w-[110px] sm:w-[130px] pt-3 sm:pt-4 flex-shrink-0 relative itinerary-time-column">
+            <span class="font-headline-md text-2xl sm:text-3xl text-tertiary font-bold tracking-tight block">${t.hm}</span>
+            <span class="font-label-gold text-xs text-on-surface-variant uppercase tracking-widest ampm">${t.ampm}</span>
           </div>
-          <div class="flex-1 md:pl-12">
-            <div class="bg-surface-container-low p-8 rounded-xl shadow-md group-hover:-translate-y-1 transition-transform duration-300 relative overflow-hidden">
-              <div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-tertiary to-transparent opacity-50"></div>
-              <div class="flex flex-col gap-3">
-                <div class="flex items-center justify-between flex-wrap gap-2">
-                  <div class="flex items-center gap-3">
-                    ${a.category_id && categoriesById[a.category_id] ? `<span class="px-3 py-1 bg-tertiary/10 text-tertiary font-label-gold text-label-gold rounded uppercase">${escapeHtml(categoriesById[a.category_id])}</span>` : ""}
-                  </div>
-                  <div class="flex items-center gap-1">
-                    <button class="btn-edit-activity p-2 text-on-surface-variant hover:text-tertiary transition-colors opacity-0 group-hover:opacity-100"><span class="material-symbols-outlined text-[20px]">edit</span></button>
-                    <button class="btn-delete-activity p-2 text-on-surface-variant hover:text-error transition-colors opacity-0 group-hover:opacity-100"><span class="material-symbols-outlined text-[20px]">delete</span></button>
-                  </div>
+          <div class="flex-1 md:pl-8 itinerary-content-column">
+            <div class="bg-surface-container-low/90 border border-tertiary/15 p-6 sm:p-7 rounded-2xl shadow-md relative overflow-hidden">
+              <div class="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-tertiary via-tertiary/60 to-transparent"></div>
+              <div class="flex flex-col gap-2.5">
+                <div class="flex items-center gap-2 flex-wrap">
+                  ${catName ? `<span class="px-3 py-1 bg-tertiary/10 border border-tertiary/20 text-tertiary font-label-gold text-[10px] rounded-full uppercase tracking-wider font-semibold itinerary-badge">${catName}</span>` : ""}
+                  ${a.location ? `
+                    <div class="flex items-center gap-1.5 px-3 py-0.5 bg-surface-container text-on-surface-variant rounded-full text-xs itinerary-location">
+                      <span class="material-symbols-outlined text-[15px] text-tertiary">location_on</span>
+                      <span class="font-medium">${escapeHtml(a.location)}</span>
+                    </div>` : ""}
                 </div>
-                <h3 class="font-headline-lg text-headline-lg text-on-surface">${escapeHtml(a.title)}</h3>
-                ${a.location ? `<div class="flex items-center gap-2 text-on-surface-variant"><span class="material-symbols-outlined text-[18px]">location_on</span><span class="font-body-md text-body-md">${escapeHtml(a.location)}</span></div>` : ""}
-                ${a.description ? `<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">${escapeHtml(a.description)}</p>` : ""}
+                <h3 class="font-display-lg text-xl sm:text-2xl text-on-surface font-semibold itinerary-title leading-snug">${escapeHtml(a.title)}</h3>
+                ${a.description ? `<p class="font-body-md text-sm text-on-surface-variant leading-relaxed itinerary-description max-w-2xl">${escapeHtml(a.description)}</p>` : ""}
               </div>
             </div>
           </div>
         </div>`;
-    }).join("");
+    }
+
+    // Standard Editor Mode
+    return `
+      <div class="flex flex-col md:flex-row w-full group itinerary-card-item" data-id="${a.id}">
+        <div class="w-[110px] sm:w-[130px] pt-4 flex-shrink-0 relative itinerary-time-column">
+          <span class="font-headline-md text-2xl sm:text-3xl text-tertiary font-bold tracking-tight block">${t.hm}</span>
+          <span class="font-label-gold text-xs text-on-surface-variant uppercase tracking-widest ampm">${t.ampm}</span>
+        </div>
+        <div class="flex-1 md:pl-8 itinerary-content-column">
+          <div class="bg-surface-container-low p-6 sm:p-7 rounded-2xl shadow-md border border-tertiary/10 group-hover:border-tertiary/30 group-hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-tertiary to-transparent opacity-50"></div>
+            <div class="flex flex-col gap-3">
+              <div class="flex items-center justify-between flex-wrap gap-2">
+                <div class="flex items-center gap-2 flex-wrap">
+                  ${catName ? `<span class="px-3 py-1 bg-tertiary/10 text-tertiary font-label-gold text-[11px] rounded-lg uppercase tracking-wider font-semibold itinerary-badge">${catName}</span>` : ""}
+                  ${a.location ? `
+                    <div class="flex items-center gap-1.5 text-on-surface-variant text-xs itinerary-location">
+                      <span class="material-symbols-outlined text-[16px] text-tertiary">location_on</span>
+                      <span>${escapeHtml(a.location)}</span>
+                    </div>` : ""}
+                </div>
+                <div class="flex items-center gap-1 no-print">
+                  <button class="btn-edit-activity p-2 rounded-lg text-on-surface-variant hover:text-tertiary hover:bg-surface-container transition-colors opacity-0 group-hover:opacity-100 cursor-pointer" title="Editar"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+                  <button class="btn-delete-activity p-2 rounded-lg text-on-surface-variant hover:text-error hover:bg-surface-container transition-colors opacity-0 group-hover:opacity-100 cursor-pointer" title="Eliminar"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+                </div>
+              </div>
+              <h3 class="font-headline-lg text-xl text-on-surface font-semibold itinerary-title">${escapeHtml(a.title)}</h3>
+              ${a.description ? `<p class="font-body-md text-sm text-on-surface-variant max-w-2xl itinerary-description leading-relaxed">${escapeHtml(a.description)}</p>` : ""}
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function renderList() {
+    if (allActivities.length === 0) {
+      listEl.innerHTML = `
+        <div class="p-12 text-center flex flex-col items-center gap-4 bg-surface-container/30 rounded-2xl border border-tertiary/10">
+          <div class="w-14 h-14 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary">
+            <span class="material-symbols-outlined text-[28px]">calendar_today</span>
+          </div>
+          <h3 class="font-headline-md text-lg text-on-surface">No hay actividades programadas</h3>
+          <p class="text-on-surface-variant text-xs max-w-md">Comienza añadiendo los momentos clave del evento como la ceremonia, recepción, primer baile o cena.</p>
+          ${!isViewMode ? `
+            <button onclick="document.getElementById('btn-add-activity').click()" class="px-5 py-2.5 bg-tertiary text-on-tertiary font-button-text text-xs font-bold uppercase tracking-wider rounded-xl hover:brightness-110 transition-all shadow-lg cursor-pointer">
+              + Añadir Primera Actividad
+            </button>` : ""}
+        </div>`;
+      return;
+    }
+
+    if (currentDay === "all") {
+      // Group by days
+      const daysFound = [-1, 0, 1];
+      const otherDays = [...new Set(allActivities.map(a => a.day_offset))].filter(d => !daysFound.includes(d)).sort((a,b) => a - b);
+      const allDaysToRender = [...daysFound, ...otherDays];
+
+      let html = "";
+      let totalRendered = 0;
+
+      allDaysToRender.forEach(d => {
+        const dayActivities = allActivities
+          .filter(a => a.day_offset === d)
+          .sort((a, b) => (a.start_time || "").localeCompare(b.start_time || "") || (a.sort_order || 0) - (b.sort_order || 0));
+
+        if (dayActivities.length > 0) {
+          totalRendered += dayActivities.length;
+          html += `
+            <div class="print-day-section mb-10">
+              <div class="flex items-center gap-3 mb-6 pb-2 border-b border-tertiary/20 print-day-header">
+                <span class="w-3 h-3 rounded-full bg-tertiary shadow-[0_0_8px_rgba(233,195,73,0.6)]"></span>
+                <h2 class="font-headline-md text-xl sm:text-2xl text-tertiary font-bold tracking-wide">${getDayLabel(d)}</h2>
+                <span class="text-xs text-on-surface-variant ml-auto font-semibold font-button-text">(${dayActivities.length} ${dayActivities.length === 1 ? 'actividad' : 'actividades'})</span>
+              </div>
+              <div class="flex flex-col gap-6">
+                ${dayActivities.map(a => renderSingleActivity(a)).join("")}
+              </div>
+            </div>`;
+        }
+      });
+
+      if (totalRendered === 0) {
+        listEl.innerHTML = `<p class="text-on-surface-variant py-10 text-center text-xs">No hay actividades en ningún día del evento.</p>`;
+      } else {
+        listEl.innerHTML = html;
+      }
+      return;
+    }
+
+    // Specific Day Render
+    const items = allActivities
+      .filter(a => a.day_offset === Number(currentDay))
+      .sort((a, b) => (a.start_time || "").localeCompare(b.start_time || "") || (a.sort_order || 0) - (b.sort_order || 0));
+
+    if (items.length === 0) {
+      listEl.innerHTML = `
+        <div class="p-10 text-center flex flex-col items-center gap-3 bg-surface-container/30 rounded-2xl border border-tertiary/10">
+          <p class="text-on-surface-variant text-sm">No hay actividades registradas para <strong>${getDayLabel(currentDay)}</strong>.</p>
+          ${!isViewMode ? `
+            <button onclick="document.getElementById('btn-add-activity').click()" class="mt-2 px-4 py-2 bg-surface-container-high border border-tertiary/30 text-tertiary font-button-text text-xs uppercase tracking-wider rounded-xl hover:bg-tertiary/10 transition-all cursor-pointer">
+              + Añadir Actividad para este día
+            </button>` : ""}
+        </div>`;
+      return;
+    }
+
+    listEl.innerHTML = `
+      <div class="flex flex-col gap-6">
+        ${items.map(a => renderSingleActivity(a)).join("")}
+      </div>`;
+  }
+
+  function printItinerary() {
+    const titleEl = document.getElementById("print-event-title");
+    const dateEl = document.getElementById("print-event-date");
+    const venueEl = document.getElementById("print-event-venue");
+    const timestampEl = document.getElementById("print-timestamp");
+
+    if (currentEventObj) {
+      if (titleEl) titleEl.textContent = currentEventObj.name || "Itinerario del Evento";
+      if (dateEl) {
+        dateEl.textContent = currentEventObj.date 
+          ? new Date(currentEventObj.date + "T00:00:00").toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
+          : "Fecha por definir";
+      }
+      if (venueEl) venueEl.textContent = currentEventObj.venue || "Sede del Evento";
+    }
+    if (timestampEl) {
+      timestampEl.textContent = "Generado el " + new Date().toLocaleString('es-ES');
+    }
+
+    // If currently viewing a single day, print works for that day; if "all", prints all days
+    window.print();
+  }
+
+  function copyViewLink() {
+    const url = new URL(window.location.href);
+    url.searchParams.set("view", "solo-ver");
+    if (currentDay !== "all") {
+      url.searchParams.set("day", currentDay);
+    } else {
+      url.searchParams.delete("day");
+    }
+    navigator.clipboard.writeText(url.href).then(() => {
+      window.showToast("Enlace de vista de itinerario copiado al portapapeles", "success");
+    }).catch(() => {
+      window.showToast("Enlace: " + url.href, "info");
+    });
   }
 
   async function loadCategories() {
@@ -454,7 +813,8 @@ document.addEventListener('DOMContentLoaded', function () {
   dayTabs.addEventListener("click", (e) => {
     const btn = e.target.closest(".day-tab");
     if (!btn) return;
-    currentDay = Number(btn.dataset.day);
+    const val = btn.dataset.day;
+    currentDay = val === "all" ? "all" : Number(val);
     updateDayTabs();
     renderList();
   });
@@ -464,7 +824,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById("activity-modal-title").textContent = mode === "edit" ? "Editar Actividad" : "Nueva Actividad";
     document.getElementById("activity-id").value = activity ? activity.id : "";
     document.getElementById("activity-title").value = activity ? activity.title || "" : "";
-    document.getElementById("activity-day").value = activity ? activity.day_offset : currentDay;
+    document.getElementById("activity-day").value = activity ? activity.day_offset : (currentDay === "all" ? 0 : currentDay);
     document.getElementById("activity-time").value = activity ? activity.start_time || "" : "";
     document.getElementById("activity-category").value = activity ? activity.category_id || "" : "";
     document.getElementById("activity-location").value = activity ? activity.location || "" : "";
@@ -483,6 +843,12 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById("activity-modal-cancel").addEventListener("click", closeModal);
   document.getElementById("activity-modal-backdrop").addEventListener("click", closeModal);
   document.getElementById("btn-add-activity").addEventListener("click", () => openModal("add", null));
+
+  document.getElementById("btn-toggle-view-mode").addEventListener("click", () => toggleViewMode());
+  document.getElementById("btn-exit-view-mode").addEventListener("click", () => toggleViewMode(false));
+  document.getElementById("btn-print-itinerary").addEventListener("click", printItinerary);
+  document.getElementById("btn-print-from-view").addEventListener("click", printItinerary);
+  document.getElementById("btn-copy-view-link").addEventListener("click", copyViewLink);
 
   listEl.addEventListener("click", async (e) => {
     const row = e.target.closest("[data-id]");
@@ -553,7 +919,24 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!currentEvent) return;
 
     currentEventId = currentEvent.id;
-    updateDayTabs();
+    currentEventObj = currentEvent;
+
+    // Check URL parameters for view mode or day filter
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("view") === "solo-ver" || urlParams.get("view") === "reader" || urlParams.get("mode") === "view") {
+      isViewMode = true;
+    }
+    if (urlParams.has("day")) {
+      const dParam = urlParams.get("day");
+      currentDay = dParam === "all" ? "all" : Number(dParam);
+    }
+
+    if (isViewMode) {
+      toggleViewMode(true);
+    } else {
+      updateDayTabs();
+    }
+
     await loadCategories();
     await loadActivities();
   })();
