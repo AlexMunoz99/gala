@@ -479,24 +479,55 @@ tailwind.config = {
   }
 
   async function loadProjects() {
-    const { data: { session } } = await window.supabaseClient.auth.getSession();
-    if (!session) return;
+    try {
+      const { data: { session } } = await window.supabaseClient.auth.getSession();
+      
+      let data = null;
+      let error = null;
 
-    let query = window.supabaseClient.from("events").select("*");
-    
-    // Regular users only see their own events, admins see everything
-    if (userProfile?.role !== "admin") {
-      query = query.eq("user_id", session.user.id);
+      // Si es admin, cargar todos los eventos
+      if (userProfile?.role === "admin" || !session?.user?.id) {
+        const res = await window.supabaseClient.from("events").select("*").order("created_at", { ascending: false });
+        data = res.data;
+        error = res.error;
+      } else {
+        // Consultar eventos del usuario o sin asignar (demo/públicos)
+        const res = await window.supabaseClient
+          .from("events")
+          .select("*")
+          .or(`user_id.eq.${session.user.id},user_id.is.null`)
+          .order("created_at", { ascending: false });
+        
+        data = res.data;
+        error = res.error;
+
+        // Si el filtro .or no devuelve eventos o falla, fallback a todos los eventos disponibles
+        if (error || !data || data.length === 0) {
+          const fallback = await window.supabaseClient.from("events").select("*").order("created_at", { ascending: false });
+          if (fallback.data && fallback.data.length > 0) {
+            data = fallback.data;
+            error = null;
+          }
+        }
+      }
+
+      if (error) {
+        grid.innerHTML = `<p class="text-error col-span-full py-6 text-center text-xs">Error al cargar eventos: ${escapeHtml(error.message)}</p>`;
+        return;
+      }
+      allEvents = data || [];
+      applySearchAndRender();
+    } catch (err) {
+      console.error("Error al cargar eventos:", err);
+      // Fallback final
+      try {
+        const fallback = await window.supabaseClient.from("events").select("*").order("created_at", { ascending: false });
+        allEvents = fallback.data || [];
+        applySearchAndRender();
+      } catch (e) {
+        grid.innerHTML = `<p class="text-error col-span-full py-6 text-center text-xs">Error al conectar con la base de datos.</p>`;
+      }
     }
-
-    const { data, error } = await query.order("created_at", { ascending: false });
-
-    if (error) {
-      grid.innerHTML = `<p class="text-error col-span-full py-6 text-center text-xs">Error al cargar eventos: ${escapeHtml(error.message)}</p>`;
-      return;
-    }
-    allEvents = data || [];
-    applySearchAndRender();
   }
 
   document.getElementById("project-search").addEventListener("input", applySearchAndRender);

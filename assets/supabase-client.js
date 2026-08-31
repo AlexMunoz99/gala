@@ -207,66 +207,20 @@ let isBypassingSession = false;
   }
 })();
 
-/**
- * Protege una página: si no hay sesión activa, redirige a login.html.
- * Si hay sesión, devuelve { user, profile } donde profile incluye el rol.
- */
-async function requireAuth() {
-  try {
-    const { data: { session } } = await window.supabaseClient.auth.getSession();
-    if (!session) {
-      const path = window.location.pathname;
-      if (!path.endsWith("login.html") && !path.endsWith("rsvp.html") && !path.endsWith("invitacion.html")) {
-        window.location.href = "login.html";
-      }
-      return null;
-    }
-    
-    let profile = null;
-    try {
-      const { data, error } = await window.supabaseClient
-        .from("profiles")
-        .select("*")
-        .eq("id", session.user.id)
-        .single();
-      if (!error && data) {
-        profile = data;
-      }
-    } catch(e) {
-      console.warn("No se pudo cargar perfil de Supabase:", e);
-    }
-
-    if (!profile) {
-      // Fallback seguro para evitar pantallas congeladas
-      profile = {
-        id: session.user.id,
-        role: "admin",
-        plan: "free",
-        is_approved: true,
-        full_name: session.user.user_metadata?.full_name || session.user.email?.split("@")[0] || "Usuario Gala"
-      };
-    } else if (!profile.plan) {
-      profile.plan = "free";
-    }
-
-    const onPendingPage = window.location.pathname.endsWith("pendiente-aprobacion.html");
-    if (profile && !profile.is_approved && profile.role !== "admin" && !onPendingPage) {
-      window.location.href = "pendiente-aprobacion.html";
-      return null;
-    }
-
-// Catálogo Maestro de Módulos de Gala ERP
+// =============================================================================
+// CATÁLOGO MAESTRO DE MÓDULOS DE GALA ERP
+// =============================================================================
 const GALA_AVAILABLE_MODULES = [
-  { key: "invitados",   label: "Invitados & RSVP",   icon: "group",             path: "invitados.html",              desc: "Lista de invitados, pases y confirmaciones" },
+  { key: "invitados",   label: "Invitados & RSVP",   icon: "group",             path: "invitados.html",               desc: "Lista de invitados, pases y confirmaciones" },
   { key: "invitacion",  label: "Invitación Web",     icon: "auto_awesome",      path: "personalizar-invitacion.html", desc: "Diseñador interactivo, sobre 3D y portal" },
-  { key: "presupuesto", label: "Presupuesto",        icon: "payments",          path: "presupuesto.html",            desc: "Control de pagos, cotizaciones y balance" },
-  { key: "itinerario",  label: "Itinerario",         icon: "calendar_today",    path: "itinerario.html",             desc: "Cronograma del día, horarios y PDF" },
-  { key: "lugares",     label: "Lugares",            icon: "location_on",       path: "lugares.html",                desc: "Catálogo de sedes y disponibilidad" },
-  { key: "proveedores", label: "Proveedores",        icon: "business_center",   path: "proveedores.html",            desc: "Cartera de proveedores y contratos" },
-  { key: "tareas",      label: "Tareas",             icon: "check_circle",      path: "tareas.html",                 desc: "Checklist de pendientes y seguimiento" },
-  { key: "programa",    label: "Programa",           icon: "list_alt",          path: "programa.html",               desc: "Minuto a minuto de la recepción" },
-  { key: "asientos",    label: "Asientos",           icon: "chair",             path: "seating-materials.html",      desc: "Plano arquitectónico de salón y mesas" },
-  { key: "galeria",     label: "Galería",            icon: "photo_library",     path: "post-wedding.html",           desc: "Galería de fotos y entrega de recuerdos" }
+  { key: "presupuesto", label: "Presupuesto",        icon: "payments",          path: "presupuesto.html",             desc: "Control de pagos, cotizaciones y balance" },
+  { key: "itinerario",  label: "Itinerario",         icon: "calendar_today",    path: "itinerario.html",              desc: "Cronograma del día, horarios y PDF" },
+  { key: "lugares",     label: "Lugares",            icon: "location_on",       path: "lugares.html",                 desc: "Catálogo de sedes y disponibilidad" },
+  { key: "proveedores", label: "Proveedores",        icon: "business_center",   path: "proveedores.html",             desc: "Cartera de proveedores y contratos" },
+  { key: "tareas",      label: "Tareas",             icon: "check_circle",      path: "tareas.html",                  desc: "Checklist de pendientes y seguimiento" },
+  { key: "programa",    label: "Programa",           icon: "list_alt",          path: "programa.html",                desc: "Minuto a minuto de la recepción" },
+  { key: "asientos",    label: "Asientos",           icon: "chair",             path: "seating-materials.html",       desc: "Plano arquitectónico de salón y mesas" },
+  { key: "galeria",     label: "Galería",            icon: "photo_library",     path: "post-wedding.html",            desc: "Galería de fotos y entrega de recuerdos" }
 ];
 
 const GALA_MODULE_PRESETS = {
@@ -401,7 +355,7 @@ function refreshSidebarNavigation(profile, currentEvent) {
       teamLink.innerHTML = `<span class="material-symbols-outlined nav-icon mr-4">groups</span><span class="sidebar-label">Mi Equipo</span>`;
       nav.appendChild(teamLink);
     }
-    const isAdmin = profile.role === "admin" || (originalProfile && originalProfile.role === "admin");
+    const isAdmin = profile.role === "admin" || (window.__originalUserProfile && window.__originalUserProfile.role === "admin");
     if (isAdmin && !sidebar.querySelector(".admin-panel-btn")) {
       const adminLink = document.createElement("a");
       adminLink.className = "flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all admin-panel-btn border-l-4 border-transparent hover:border-tertiary/40";
@@ -412,8 +366,106 @@ function refreshSidebarNavigation(profile, currentEvent) {
   }
 }
 
-    // --- Inyectar banner flotante de Impersonación ---
+/**
+ * Protege una página: si no hay sesión activa, redirige a login.html.
+ * Si hay sesión, devuelve { user, profile } donde profile incluye el rol.
+ */
+async function requireAuth() {
+  try {
+    const { data: { session } } = await window.supabaseClient.auth.getSession();
+    if (!session) {
+      const path = window.location.pathname;
+      if (!path.endsWith("login.html") && !path.endsWith("rsvp.html") && !path.endsWith("invitacion.html")) {
+        window.location.href = "login.html";
+      }
+      return null;
+    }
+    
+    let profile = null;
+    try {
+      const { data, error } = await window.supabaseClient
+        .from("profiles")
+        .select("*")
+        .eq("id", session.user.id)
+        .single();
+      if (!error && data) {
+        profile = data;
+      }
+    } catch(e) {
+      console.warn("No se pudo cargar perfil de Supabase:", e);
+    }
+
+    if (!profile) {
+      // Fallback seguro para evitar pantallas congeladas
+      profile = {
+        id: session.user.id,
+        role: "admin",
+        plan: "free",
+        is_approved: true,
+        full_name: session.user.user_metadata?.full_name || session.user.email?.split("@")[0] || "Usuario Gala"
+      };
+    } else if (!profile.plan) {
+      profile.plan = "free";
+    }
+
+    let originalProfile = profile;
+    window.__originalUserProfile = originalProfile;
+    window.__currentUserProfile = profile;
+
+    // --- Soporte para Modo Impersonación de Admin ---
     const impersonateId = localStorage.getItem("galaImpersonateUserId");
+    if (impersonateId && originalProfile.role === "admin") {
+      try {
+        const { data: impProfile } = await window.supabaseClient
+          .from("profiles")
+          .select("*")
+          .eq("id", impersonateId)
+          .single();
+        if (impProfile) {
+          profile = impProfile;
+          window.__currentUserProfile = profile;
+        }
+      } catch(e) {
+        console.warn("Error al cargar perfil impersonado:", e);
+      }
+    }
+
+    const onPendingPage = window.location.pathname.endsWith("pendiente-aprobacion.html");
+    if (profile && !profile.is_approved && profile.role !== "admin" && !onPendingPage) {
+      window.location.href = "pendiente-aprobacion.html";
+      return null;
+    }
+
+    // --- Control de Acceso por Módulos (disabled_modules) ---
+    const path = window.location.pathname;
+    const disabledModules = profile.disabled_modules || [];
+    const moduleMappings = {
+      "invitados.html": "invitados",
+      "presupuesto.html": "presupuesto",
+      "itinerario.html": "itinerario",
+      "programa.html": "programa",
+      "seating-materials.html": "asientos",
+      "tareas.html": "tareas",
+      "lugares.html": "lugares",
+      "proveedores.html": "proveedores",
+      "post-wedding.html": "galeria"
+    };
+
+    const currentPageFile = path.substring(path.lastIndexOf("/") + 1);
+    const moduleName = moduleMappings[currentPageFile];
+
+    if (moduleName && disabledModules.includes(moduleName)) {
+      window.showToast(`El módulo "${moduleName.toUpperCase()}" está desactivado para tu cuenta.`, "error");
+      setTimeout(() => { window.location.href = "proyectos.html"; }, 1000);
+      return null;
+    }
+
+    // Reestructuración y filtrado del sidebar
+    setTimeout(() => {
+      refreshSidebarNavigation(profile, null);
+    }, 10);
+
+    // --- Inyectar banner flotante de Impersonación ---
     if (impersonateId && originalProfile && originalProfile.role === "admin") {
       setTimeout(() => {
         if (!document.getElementById("gala-impersonation-banner")) {
@@ -422,12 +474,12 @@ function refreshSidebarNavigation(profile, currentEvent) {
           banner.className = "fixed top-0 left-0 right-0 h-10 bg-[#e9c349] text-[#3c2f00] z-[99999] flex items-center justify-center gap-3 text-xs font-bold shadow-md px-4";
           banner.innerHTML = `
             <span>Modo Impersonación: Estás viendo la cuenta de <strong>${profile.full_name || profile.email || impersonateId}</strong></span>
-            <button id="btn-stop-impersonate" class="px-2.5 py-1 bg-[#3c2f00] text-[#e9c349] rounded hover:brightness-110 transition-all font-semibold uppercase text-[9px]">Volver a mi Panel de Admin</button>
+            <button id="btn-stop-impersonate" class="px-2.5 py-1 bg-[#3c2f00] text-[#e9c349] rounded hover:brightness-110 transition-all font-semibold uppercase text-[9px] cursor-pointer">Volver a mi Panel de Admin</button>
           `;
           document.body.prepend(banner);
           document.body.style.paddingTop = "40px";
           
-          document.getElementById("btn-stop-impersonate").addEventListener("click", () => {
+          document.getElementById("btn-stop-impersonate")?.addEventListener("click", () => {
             localStorage.removeItem("galaImpersonateUserId");
             window.location.href = "usuarios.html";
           });
