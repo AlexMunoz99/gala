@@ -165,29 +165,6 @@ tailwind.config = {
 <script src="assets/supabase-client.js"></script>
 </head>
 <body class="bg-surface font-body-md text-on-surface overflow-x-hidden select-none">
-<script type="module">
-  (async function () {
-    const auth = await window.requireAuth();
-    if (!auth) return;
-    const nameEl = document.getElementById("current-user-name");
-    if (nameEl && auth.profile) nameEl.textContent = auth.profile.full_name || auth.user.email;
-    const roleBadge = document.getElementById("current-user-role");
-    if (roleBadge && auth.profile) {
-      roleBadge.textContent = auth.profile.role;
-      if (auth.profile.role !== "admin") {
-        document.querySelectorAll(".admin-only").forEach(el => el.remove());
-      }
-    }
-    const logoutBtn = document.getElementById("logout-btn");
-    if (logoutBtn) logoutBtn.addEventListener("click", window.signOut);
-    if (auth.profile) window.applyRoleBadge(auth.profile.role);
-
-    const currentEvent = await window.requireEvent();
-    if (!currentEvent) return;
-    window.applyEventToHeader(currentEvent);
-    window.currentEventId = currentEvent.id;
-  })();
-</script>
 
 <aside id="app-sidebar" class="fixed left-0 top-0 h-full bg-secondary-container z-50 flex flex-col border-r border-tertiary/10 no-print" style="width: var(--sidebar-w);">
   <button id="sidebar-toggle" class="absolute -right-3.5 top-9 w-7 h-7 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center shadow-lg border-2 border-surface hover:brightness-110 hover:scale-110 transition-all z-[60]" aria-label="Colapsar/expandir menú" title="Colapsar/expandir menú">
@@ -539,9 +516,23 @@ tailwind.config = {
     banos:            { label: "Sanitarios",        icon: "wc",                isSeat: false, shape: "facility",  defaultCap: 0,  defaultW: 3,   defaultH: 2,   color: "bg-[#1a1a1a]" }
   };
 
+  // ---- HELPER: invitados asignados a un elemento del plano ----
   function occupantsForElement(elementId) {
-    const guestIds = assignments.filter(a => a.seating_table_id === elementId).map(a => a.guest_id);
-    return allGuests.filter(g => guestIds.includes(g.id));
+    const el = allElements.find(e => e.id === elementId);
+    const assignedGuestIds = assignments
+      .filter(a => a.seating_table_id === elementId)
+      .map(a => a.guest_id);
+    
+    // Also include any guest whose table_number matches el.label if not in assignments
+    const directGuests = allGuests.filter(g => {
+      if (assignedGuestIds.includes(g.id)) return true;
+      if (g.table_number && el && el.label && g.table_number.trim().toLowerCase() === el.label.trim().toLowerCase()) {
+        return true;
+      }
+      return false;
+    });
+
+    return directGuests;
   }
 
   function updateKPIs() {
@@ -551,14 +542,15 @@ tailwind.config = {
       if (meta?.isSeat) totalCap += (el.capacity || 0);
     });
 
-    const totalAssigned = assignments.length;
+    const assignedIds = new Set(assignments.map(a => a.guest_id));
+    const totalAssigned = allGuests.filter(g => assignedIds.has(g.id) || (g.table_number && allElements.some(el => el.label && el.label.toLowerCase() === g.table_number.toLowerCase()))).length;
     const freeSeats = Math.max(0, totalCap - totalAssigned);
-    const unassignedCount = allGuests.length - totalAssigned;
+    const unassignedCount = Math.max(0, allGuests.length - totalAssigned);
 
     document.getElementById("stat-total-capacity").textContent = `${totalCap} Sillas`;
     document.getElementById("stat-assigned-count").textContent = `${totalAssigned} (${totalCap ? Math.round((totalAssigned / totalCap) * 100) : 0}%)`;
     document.getElementById("stat-free-seats").textContent = freeSeats;
-    unassignedCountBadge.textContent = `${Math.max(0, unassignedCount)} Sin Asignar`;
+    unassignedCountBadge.textContent = `${unassignedCount} Sin Asignar`;
   }
 
   // ---- RENDERIZADO VISUAL DE SILLAS CON FORMA GEOMÉTRICA EXACTA ----
@@ -611,7 +603,7 @@ tailwind.config = {
           <div class="chair-node absolute w-7 h-7 flex items-center justify-center text-[10px] font-bold cursor-pointer border ${
             occ ? 'bg-[#e9c349] text-[#131411] border-white shadow-md' : 'bg-[#1c1c19] text-on-surface-variant/40 border-dashed border-tertiary/40'
           }" style="border-radius: 50% !important; left: ${cx}px; top: -14px;" title="${occ ? escapeHtml(occ.full_name) : `Silla ${i+1} Libre`}">
-            ${occ ? escapeHtml(occ.full_name[0]) : (i+1)}
+            ${occ ? escapeHtml(occ.full_name.split(' ').map(n=>n[0]).slice(0,2).join('')) : (i+1)}
           </div>
         `;
       }
@@ -622,7 +614,7 @@ tailwind.config = {
           <div class="chair-node absolute w-7 h-7 flex items-center justify-center text-[10px] font-bold cursor-pointer border ${
             occ ? 'bg-[#e9c349] text-[#131411] border-white shadow-md' : 'bg-[#1c1c19] text-on-surface-variant/40 border-dashed border-tertiary/40'
           }" style="border-radius: 50% !important; left: ${cx}px; top: ${heightPx - 14}px;" title="${occ ? escapeHtml(occ.full_name) : `Silla ${half+i+1} Libre`}">
-            ${occ ? escapeHtml(occ.full_name[0]) : (half + i + 1)}
+            ${occ ? escapeHtml(occ.full_name.split(' ').map(n=>n[0]).slice(0,2).join('')) : (half + i + 1)}
           </div>
         `;
       }
@@ -698,11 +690,11 @@ tailwind.config = {
       // Floating Action Toolbar (HIGH Z-INDEX: 60 - NEVER COVERED BY CHAIRS)
       const toolbarHtml = `
         <div class="table-action-bar absolute -top-10 left-1/2 -translate-x-1/2 bg-surface-container-highest/95 backdrop-blur border border-tertiary/40 rounded-full px-2 py-1 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all shadow-2xl z-[60]">
-          <button class="btn-table-grow p-1 text-on-surface-variant hover:text-tertiary rounded transition-colors" title="Agrandar mesa"><span class="material-symbols-outlined text-[16px]">add</span></button>
-          <button class="btn-table-shrink p-1 text-on-surface-variant hover:text-tertiary rounded transition-colors" title="Achicar mesa"><span class="material-symbols-outlined text-[16px]">remove</span></button>
-          <button class="btn-table-rotate p-1 text-on-surface-variant hover:text-tertiary rounded transition-colors" title="Rotar 45°"><span class="material-symbols-outlined text-[16px]">rotate_right</span></button>
-          <button class="btn-table-edit p-1 text-on-surface-variant hover:text-tertiary rounded transition-colors" title="Editar mesa & asientos"><span class="material-symbols-outlined text-[16px]">edit</span></button>
-          <button class="btn-table-del p-1 text-on-surface-variant hover:text-error rounded transition-colors" title="Eliminar"><span class="material-symbols-outlined text-[16px]">delete</span></button>
+          <button class="btn-table-grow p-1 text-on-surface-variant hover:text-tertiary rounded transition-colors cursor-pointer" title="Agrandar mesa"><span class="material-symbols-outlined text-[16px]">add</span></button>
+          <button class="btn-table-shrink p-1 text-on-surface-variant hover:text-tertiary rounded transition-colors cursor-pointer" title="Achicar mesa"><span class="material-symbols-outlined text-[16px]">remove</span></button>
+          <button class="btn-table-rotate p-1 text-on-surface-variant hover:text-tertiary rounded transition-colors cursor-pointer" title="Rotar 45°"><span class="material-symbols-outlined text-[16px]">rotate_right</span></button>
+          <button class="btn-table-edit p-1 text-on-surface-variant hover:text-tertiary rounded transition-colors cursor-pointer" title="Editar mesa & asientos"><span class="material-symbols-outlined text-[16px]">edit</span></button>
+          <button class="btn-table-del p-1 text-on-surface-variant hover:text-error rounded transition-colors cursor-pointer" title="Eliminar"><span class="material-symbols-outlined text-[16px]">delete</span></button>
         </div>
       `;
 
@@ -742,40 +734,56 @@ tailwind.config = {
     updateKPIs();
   }
 
-  // ---- HELPER: invitados asignados a un elemento del plano ----
-  function occupantsForElement(elementId) {
-    const assignedGuestIds = assignments
-      .filter(a => a.seating_table_id === elementId)
-      .map(a => a.guest_id);
-    return allGuests.filter(g => assignedGuestIds.includes(g.id));
-  }
-
   // ---- ASIGNACIÓN DE INVITADO A MESA ----
   async function assignGuestToTable(guestId, tableId, tableLabel) {
-    await window.supabaseClient.from("seating_assignments").delete().eq("guest_id", guestId);
-    const { error } = await window.supabaseClient.from("seating_assignments").insert({
-      seating_table_id: tableId,
-      guest_id: guestId
-    });
+    // 1. In-memory update
+    assignments = assignments.filter(a => a.guest_id !== guestId);
+    assignments.push({ seating_table_id: tableId, guest_id: guestId });
 
-    if (error) {
-      window.showToast("Error al asignar: " + error.message, "error");
-      return;
-    }
-
-    await window.supabaseClient.from("guests").update({ table_number: tableLabel }).eq("id", guestId);
     const g = allGuests.find(x => x.id === guestId);
     if (g) g.table_number = tableLabel;
 
-    window.showToast(`¡${g ? g.full_name : 'Invitado'} asignado a ${tableLabel}!`, "success");
-    await loadAll();
+    // 2. Cache local
+    try {
+      localStorage.setItem("galaSeatingAssignments_" + currentEventId, JSON.stringify(assignments));
+    } catch(e) {}
+
+    // 3. Supabase async sync
+    try {
+      await window.supabaseClient.from("seating_assignments").delete().eq("guest_id", guestId);
+      await window.supabaseClient.from("seating_assignments").insert({
+        seating_table_id: tableId,
+        guest_id: guestId
+      });
+    } catch(e) {
+      console.warn("Notice seating_assignments sync:", e);
+    }
+
+    try {
+      await window.supabaseClient.from("guests").update({ table_number: tableLabel }).eq("id", guestId);
+    } catch(e) {
+      console.warn("Notice guests.table_number sync:", e);
+    }
+
+    window.showToast(`¡${g ? g.full_name : 'Invitado'} sentado en ${tableLabel}!`, "success");
+    renderCanvas();
+    renderUnassignedSidebar();
+    updateKPIs();
   }
 
   // ---- RENDERIZADO DE BARRA LATERAL (INVITADOS SIN ASIGNAR) ----
   function renderUnassignedSidebar() {
     const term = (guestSearchSidebar.value || "").trim().toLowerCase();
     const assignedIds = new Set(assignments.map(a => a.guest_id));
-    let unassigned = allGuests.filter(g => !assignedIds.has(g.id));
+    
+    // An unassigned guest is one who is NOT in assignments AND has no recognized table_number matching an existing layout element
+    let unassigned = allGuests.filter(g => {
+      if (assignedIds.has(g.id)) return false;
+      if (g.table_number && allElements.some(el => el.label && el.label.trim().toLowerCase() === g.table_number.trim().toLowerCase())) {
+        return false;
+      }
+      return true;
+    });
 
     if (currentGroupFilter) {
       unassigned = unassigned.filter(g => g.group_id === currentGroupFilter);
@@ -784,28 +792,45 @@ tailwind.config = {
       unassigned = unassigned.filter(g => (g.full_name || "").toLowerCase().includes(term));
     }
 
+    unassignedCountBadge.textContent = `${unassigned.length} Sin Asignar`;
+
+    if (allGuests.length === 0) {
+      unassignedList.innerHTML = `
+        <div class="text-center py-12 text-on-surface-variant/60 flex flex-col items-center gap-3">
+          <span class="material-symbols-outlined text-4xl text-tertiary/40">group_off</span>
+          <p class="text-sm font-medium text-on-surface">No hay invitados registrados para este evento.</p>
+          <a href="invitados.html" class="px-4 py-2 bg-tertiary/10 border border-tertiary/30 text-tertiary hover:bg-tertiary/20 rounded-xl text-xs font-semibold uppercase tracking-wider transition-colors flex items-center gap-1.5 cursor-pointer">
+            <span class="material-symbols-outlined text-[16px]">person_add</span>
+            Ir a Registrar Invitados
+          </a>
+        </div>`;
+      return;
+    }
+
     if (unassigned.length === 0) {
       unassignedList.innerHTML = `
         <div class="text-center py-12 text-on-surface-variant/60 flex flex-col items-center gap-2">
           <span class="material-symbols-outlined text-4xl text-[#4ade80]">check_circle</span>
-          <p class="text-sm font-medium text-on-surface">${allGuests.length === 0 ? "No hay invitados registrados." : "¡Todos los invitados ya tienen asiento asignado!"}</p>
+          <p class="text-sm font-medium text-on-surface">¡Todos los invitados ya tienen asiento asignado!</p>
+          <span class="text-xs text-on-surface-variant">Puedes arrastrarlos entre mesas o desasignarlos desde el detalle de mesa.</span>
         </div>`;
       return;
     }
 
     unassignedList.innerHTML = unassigned.map(g => {
       const groupObj = allGroups.find(gr => gr.id === g.group_id);
+      const initials = (g.full_name || "?").trim().split(" ").map(n => n[0]).slice(0, 2).join("").toUpperCase();
       return `
         <div class="guest-drag-card p-3.5 bg-surface rounded-xl border border-tertiary/15 hover:border-tertiary/50 hover:bg-surface-container-high transition-all shadow-sm flex items-center justify-between cursor-grab active:cursor-grabbing group" draggable="true" data-guest-id="${g.id}">
           <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full bg-tertiary/15 border border-tertiary/30 text-tertiary flex items-center justify-center text-xs font-bold" style="border-radius: 50%;">
-              ${escapeHtml(g.full_name.split(' ').map(n=>n[0]).slice(0,2).join(''))}
+            <div class="w-8 h-8 rounded-full bg-tertiary/15 border border-tertiary/30 text-tertiary flex items-center justify-center text-xs font-bold shrink-0" style="border-radius: 50%;">
+              ${escapeHtml(initials)}
             </div>
             <div class="flex flex-col">
               <span class="text-on-surface text-sm font-medium leading-tight group-hover:text-tertiary transition-colors">${escapeHtml(g.full_name)}</span>
               <div class="flex items-center gap-2 text-[10px] text-on-surface-variant mt-0.5">
-                ${groupObj ? `<span class="text-tertiary">${escapeHtml(groupObj.name)}</span>` : "Sin grupo"}
-                ${g.dietary_notes ? `<span class="text-[#ffb4ab]">· ${escapeHtml(g.dietary_notes)}</span>` : ""}
+                ${groupObj ? `<span class="text-tertiary font-semibold">${escapeHtml(groupObj.name)}</span>` : `<span class="opacity-60">Sin grupo</span>`}
+                ${g.dietary_notes ? `<span class="text-error">· ${escapeHtml(g.dietary_notes)}</span>` : ""}
               </div>
             </div>
           </div>
@@ -813,7 +838,7 @@ tailwind.config = {
         </div>`;
     }).join("");
 
-    document.querySelectorAll(".guest-drag-card").forEach(card => {
+    unassignedList.querySelectorAll(".guest-drag-card").forEach(card => {
       card.addEventListener("dragstart", (e) => {
         e.dataTransfer.setData("text/plain", card.dataset.guestId);
         card.classList.add("opacity-50");
@@ -826,37 +851,110 @@ tailwind.config = {
 
   // ---- CARGA DE DATOS DESDE SUPABASE ----
   async function loadAll() {
-    const [{ data: elements }, { data: guests }, { data: groups }] = await Promise.all([
-      window.supabaseClient.from("layout_elements").select("*").eq("event_id", currentEventId),
-      window.supabaseClient.from("guests").select("*").eq("event_id", currentEventId).order("full_name"),
-      window.supabaseClient.from("guest_groups").select("*").eq("event_id", currentEventId).order("name")
-    ]);
-
-    allElements = elements || [];
-    allGuests = guests || [];
-    allGroups = groups || [];
-
-    const elementIds = allElements.map(e => e.id);
-    if (elementIds.length > 0) {
-      const { data: assigns } = await window.supabaseClient
-        .from("seating_assignments")
+    try {
+      // 1. Cargar Invitados del Evento
+      const { data: guests, error: gstErr } = await window.supabaseClient
+        .from("guests")
         .select("*")
-        .in("seating_table_id", elementIds);
-      assignments = assigns || [];
-    } else {
-      assignments = [];
+        .eq("event_id", currentEventId)
+        .order("created_at", { ascending: true });
+      if (gstErr) {
+        console.error("Error al cargar invitados en Asientos:", gstErr);
+      }
+      allGuests = guests || [];
+
+      // 2. Cargar Grupos de Invitados
+      const { data: groups, error: grpErr } = await window.supabaseClient
+        .from("guest_groups")
+        .select("*")
+        .eq("event_id", currentEventId)
+        .order("name", { ascending: true });
+      if (grpErr) console.warn("Aviso en grupos:", grpErr);
+      allGroups = groups || [];
+
+      // 3. Cargar Elementos del Plano (Mesas, Pista, Escenario, etc.)
+      const { data: elements, error: elErr } = await window.supabaseClient
+        .from("layout_elements")
+        .select("*")
+        .eq("event_id", currentEventId);
+      if (elErr) console.warn("Aviso en layout_elements:", elErr);
+      allElements = elements || [];
+
+      // 4. Cargar Asignaciones de Asientos (Supabase + LocalStorage + Heurística de Mesa)
+      let fetchedAssigns = [];
+      const elementIds = allElements.map(e => e.id);
+      if (elementIds.length > 0) {
+        try {
+          const { data: assigns, error: assErr } = await window.supabaseClient
+            .from("seating_assignments")
+            .select("*")
+            .in("seating_table_id", elementIds);
+          if (!assErr && assigns) {
+            fetchedAssigns = assigns;
+          }
+        } catch(e) {
+          console.warn("Tabla seating_assignments aviso:", e);
+        }
+      }
+
+      // Local storage cache de asignaciones
+      let localAssigns = [];
+      try {
+        const cached = localStorage.getItem("galaSeatingAssignments_" + currentEventId);
+        if (cached) localAssigns = JSON.parse(cached);
+      } catch(e) {}
+
+      // Mapeo unificado bidireccional
+      const assignmentsMap = new Map();
+
+      // Prioridad 1: Asignaciones registradas por ID
+      [...fetchedAssigns, ...localAssigns].forEach(a => {
+        if (a && a.guest_id && a.seating_table_id) {
+          if (allGuests.some(g => g.id === a.guest_id) && allElements.some(el => el.id === a.seating_table_id)) {
+            assignmentsMap.set(a.guest_id, a.seating_table_id);
+          }
+        }
+      });
+
+      // Prioridad 2: Asignaciones desde el campo table_number de guests (ej. asignados en Invitados o CSV)
+      allGuests.forEach(g => {
+        if (g.table_number && !assignmentsMap.has(g.id)) {
+          const cleanTable = g.table_number.trim().toLowerCase();
+          const matchedEl = allElements.find(el => {
+            const elLabel = (el.label || "").trim().toLowerCase();
+            return elLabel === cleanTable || elLabel.includes(cleanTable) || cleanTable.includes(elLabel);
+          });
+          if (matchedEl) {
+            assignmentsMap.set(g.id, matchedEl.id);
+          }
+        }
+      });
+
+      assignments = Array.from(assignmentsMap.entries()).map(([guest_id, seating_table_id]) => ({
+        guest_id,
+        seating_table_id
+      }));
+
+      // Guardar en cache local para persistencia inmediata
+      try {
+        localStorage.setItem("galaSeatingAssignments_" + currentEventId, JSON.stringify(assignments));
+      } catch(e) {}
+
+    } catch(err) {
+      console.error("Error general en loadAll de Asientos:", err);
     }
 
     renderGroupTabs();
     renderCanvas();
     renderUnassignedSidebar();
+    updateKPIs();
   }
 
   function renderGroupTabs() {
     groupFilterPills.innerHTML = `
-      <button class="group-tab-btn px-3 py-1 rounded-full text-xs font-medium transition-all ${!currentGroupFilter ? 'bg-tertiary text-on-tertiary font-bold' : 'bg-surface text-on-surface-variant hover:text-on-surface'}" data-group="">Todos</button>` +
+      <button class="group-tab-btn px-3 py-1 rounded-full text-xs font-medium transition-all ${!currentGroupFilter ? 'bg-tertiary text-on-tertiary font-bold' : 'bg-surface text-on-surface-variant hover:text-on-surface'} cursor-pointer" data-group="">Todos</button>` +
       allGroups.map(g => `
-        <button class="group-tab-btn px-3 py-1 rounded-full text-xs font-medium transition-all whitespace-nowrap ${currentGroupFilter === g.id ? 'bg-tertiary text-on-tertiary font-bold' : 'bg-surface text-on-surface-variant hover:text-on-surface'}" data-group="${g.id}">
+        <button class="group-tab-btn px-3 py-1 rounded-full text-xs font-medium transition-all whitespace-nowrap ${currentGroupFilter === g.id ? 'bg-tertiary text-on-tertiary font-bold' : 'bg-surface text-on-surface-variant hover:text-on-surface'} cursor-pointer" data-group="${g.id}">
           ${escapeHtml(g.name)}
         </button>
       `).join("");
@@ -961,17 +1059,18 @@ tailwind.config = {
       return;
     }
 
-    // 2. Drag & Move Table
-    dragState = {
-      id: el.id,
-      startX: e.clientX,
-      startY: e.clientY,
-      origX: el.pos_x,
-      origY: el.pos_y,
-      node
-    };
-    node.setPointerCapture(e.pointerId);
-    e.stopPropagation();
+    // 2. Dragging Table on Grid
+    if (e.target.closest(".round-circle") || e.target.closest(".rounded-xl") || e.target.closest(".rounded-2xl")) {
+      dragState = {
+        node,
+        id: el.id,
+        startX: e.clientX,
+        startY: e.clientY,
+        origX: el.pos_x,
+        origY: el.pos_y
+      };
+      node.setPointerCapture(e.pointerId);
+    }
   });
 
   canvas.addEventListener("pointermove", (e) => {
@@ -1029,7 +1128,7 @@ tailwind.config = {
               ${g.dietary_notes ? `<span class="text-[10px] text-error">${escapeHtml(g.dietary_notes)}</span>` : ""}
             </div>
           </div>
-          <button type="button" class="btn-unassign-guest p-1 text-on-surface-variant hover:text-error transition-colors" data-guest-id="${g.id}" title="Quitar de la mesa">
+          <button type="button" class="btn-unassign-guest p-1 text-on-surface-variant hover:text-error transition-colors cursor-pointer" data-guest-id="${g.id}" title="Quitar de la mesa">
             <span class="material-symbols-outlined text-[18px]">close</span>
           </button>
         </div>`).join("")
@@ -1037,7 +1136,7 @@ tailwind.config = {
 
     const assignedIds = new Set(assignments.map(a => a.guest_id));
     const available = allGuests.filter(g => !assignedIds.has(g.id));
-    addGuestSelect.innerHTML = `<option value="">+ Sentar a un invitado…</option>` +
+    addGuestSelect.innerHTML = `<option value="">+ Sentar a un invitado sin mesa…</option>` +
       available.map(g => `<option value="${g.id}">${escapeHtml(g.full_name)}</option>`).join("");
   }
 
@@ -1101,16 +1200,30 @@ tailwind.config = {
     if (!btn) return;
     const guestId = btn.dataset.guestId;
     const elementId = document.getElementById("element-id").value;
-    await window.supabaseClient.from("seating_assignments").delete().eq("seating_table_id", elementId).eq("guest_id", guestId);
-    await window.supabaseClient.from("guests").update({ table_number: null }).eq("id", guestId);
+    
+    assignments = assignments.filter(a => a.guest_id !== guestId);
     const g = allGuests.find(x => x.id === guestId);
     if (g) g.table_number = null;
+
+    try {
+      localStorage.setItem("galaSeatingAssignments_" + currentEventId, JSON.stringify(assignments));
+    } catch(e) {}
+
+    try {
+      await window.supabaseClient.from("seating_assignments").delete().eq("seating_table_id", elementId).eq("guest_id", guestId);
+    } catch(e) {}
+    try {
+      await window.supabaseClient.from("guests").update({ table_number: null }).eq("id", guestId);
+    } catch(e) {}
+
     window.showToast("Asiento liberado.", "info");
-    await loadAll();
+    renderCanvas();
+    renderUnassignedSidebar();
+    updateKPIs();
     refreshModalGuestsUI(elementId);
   });
 
-  // GUARDAR CAMBIOS DE MESA (CIERRA AUTOMÁTICAMENTE Y RENOMBRA INVITADOS)
+  // GUARDAR CAMBIOS DE MESA
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const id = document.getElementById("element-id").value;
@@ -1135,6 +1248,7 @@ tailwind.config = {
     // Actualizar nombre de mesa para los comensales sentados
     const occupants = occupantsForElement(id);
     for (const g of occupants) {
+      g.table_number = newLabel;
       await window.supabaseClient.from("guests").update({ table_number: newLabel }).eq("id", g.id);
     }
 
@@ -1156,8 +1270,14 @@ tailwind.config = {
 
     const occupants = occupantsForElement(id);
     for (const g of occupants) {
+      g.table_number = null;
       await window.supabaseClient.from("guests").update({ table_number: null }).eq("id", g.id);
     }
+    assignments = assignments.filter(a => a.seating_table_id !== id);
+    try {
+      localStorage.setItem("galaSeatingAssignments_" + currentEventId, JSON.stringify(assignments));
+    } catch(e) {}
+
     await window.supabaseClient.from("seating_assignments").delete().eq("seating_table_id", id);
     await window.supabaseClient.from("layout_elements").delete().eq("id", id);
     closeModal();
@@ -1183,7 +1303,7 @@ tailwind.config = {
       return;
     }
     if (allGuests.length === 0) {
-      window.showToast("No hay invitados registrados.", "info");
+      window.showToast("No hay invitados registrados en este evento.", "info");
       return;
     }
 
@@ -1203,26 +1323,37 @@ tailwind.config = {
       if (g.table_number) {
         targetTable = seatingTables.find(t => {
           const used = assignments.filter(a => a.seating_table_id === t.id).length;
-          return (t.label.toLowerCase().includes(g.table_number.toLowerCase()) || g.table_number.toLowerCase().includes(t.label.toLowerCase())) && (used < (t.capacity || 10));
+          const cap = t.capacity || TYPE_META[t.element_type]?.defaultCap || 10;
+          return (t.label.toLowerCase().includes(g.table_number.toLowerCase()) || g.table_number.toLowerCase().includes(t.label.toLowerCase())) && (used < cap);
         });
       }
       if (!targetTable) {
         targetTable = seatingTables.find(t => {
           const used = assignments.filter(a => a.seating_table_id === t.id).length;
-          return used < (t.capacity || 10);
+          const cap = t.capacity || TYPE_META[t.element_type]?.defaultCap || 10;
+          return used < cap;
         });
       }
 
       if (targetTable) {
         newAssignments.push({ seating_table_id: targetTable.id, guest_id: g.id });
         assignments.push({ seating_table_id: targetTable.id, guest_id: g.id });
-        await window.supabaseClient.from("guests").update({ table_number: targetTable.label }).eq("id", g.id);
+        g.table_number = targetTable.label;
         assignedCount++;
+        try {
+          await window.supabaseClient.from("guests").update({ table_number: targetTable.label }).eq("id", g.id);
+        } catch(e) {}
       }
     }
 
+    try {
+      localStorage.setItem("galaSeatingAssignments_" + currentEventId, JSON.stringify(assignments));
+    } catch(e) {}
+
     if (newAssignments.length > 0) {
-      await window.supabaseClient.from("seating_assignments").insert(newAssignments);
+      try {
+        await window.supabaseClient.from("seating_assignments").insert(newAssignments);
+      } catch(e) {}
       window.showToast(`¡${assignedCount} comensales asignados a sus sillas!`, "success");
       await loadAll();
     } else {
@@ -1240,11 +1371,21 @@ tailwind.config = {
     });
     if (!confirmed) return;
 
+    assignments = [];
+    allGuests.forEach(g => { g.table_number = null; });
+    try {
+      localStorage.setItem("galaSeatingAssignments_" + currentEventId, JSON.stringify(assignments));
+    } catch(e) {}
+
     const elementIds = allElements.map(e => e.id);
     if (elementIds.length > 0) {
-      await window.supabaseClient.from("seating_assignments").delete().in("seating_table_id", elementIds);
+      try {
+        await window.supabaseClient.from("seating_assignments").delete().in("seating_table_id", elementIds);
+      } catch(e) {}
       for (const g of allGuests) {
-        await window.supabaseClient.from("guests").update({ table_number: null }).eq("id", g.id);
+        try {
+          await window.supabaseClient.from("guests").update({ table_number: null }).eq("id", g.id);
+        } catch(e) {}
       }
     }
     window.showToast("Plano de asientos despejado.", "info");
@@ -1324,12 +1465,6 @@ tailwind.config = {
           const cy = centerY + radius * Math.sin(angle) - 10;
           const occ = occupants[i] || null;
 
-          const nameRadius = radius + 22;
-          const nameX = centerX + nameRadius * Math.cos(angle);
-          const nameY = centerY + nameRadius * Math.sin(angle);
-          const alignRight = Math.cos(angle) < -0.2;
-          const alignLeft = Math.cos(angle) > 0.2;
-
           const chairEl = document.createElement("div");
           chairEl.className = "chair-node absolute w-5 h-5 border border-gray-500 bg-gray-300 flex items-center justify-center text-[8px] font-bold text-gray-800";
           chairEl.style.cssText = `border-radius: 50% !important; left: ${cx}px; top: ${cy}px;`;
@@ -1338,9 +1473,9 @@ tailwind.config = {
 
           if (occ) {
             const nameEl = document.createElement("div");
-            nameEl.className = `absolute text-[10px] font-medium text-gray-800 whitespace-nowrap leading-none ${alignRight ? 'text-right -translate-x-full' : alignLeft ? 'text-left' : 'text-center -translate-x-1/2'}`;
-            nameEl.style.left = `${nameX}px`;
-            nameEl.style.top = `${nameY - 5}px`;
+            nameEl.className = "absolute text-[9px] font-medium text-gray-800 whitespace-nowrap -translate-x-1/2";
+            nameEl.style.left = `${cx + 10}px`;
+            nameEl.style.top = `${cy - 12}px`;
             nameEl.style.transform = `rotate(${-(el.rotation || 0)}deg)`;
             nameEl.textContent = occ.full_name;
             tableNode.appendChild(nameEl);
@@ -1440,13 +1575,30 @@ tailwind.config = {
   });
   document.getElementById("btn-print-poster-now").addEventListener("click", () => window.print());
 
-  // Inicialización
+  // Inicialización Unificada
   (async function init() {
     const auth = await window.requireAuth();
     if (!auth) return;
+
+    const nameEl = document.getElementById("current-user-name");
+    if (nameEl && auth.profile) nameEl.textContent = auth.profile.full_name || auth.user.email;
+    const roleBadge = document.getElementById("current-user-role");
+    if (roleBadge && auth.profile) {
+      roleBadge.textContent = auth.profile.role;
+      if (auth.profile.role !== "admin") {
+        document.querySelectorAll(".admin-only").forEach(el => el.remove());
+      }
+    }
+    const logoutBtn = document.getElementById("logout-btn");
+    if (logoutBtn) logoutBtn.addEventListener("click", window.signOut);
+    if (auth.profile) window.applyRoleBadge(auth.profile.role);
+
     const currentEvent = await window.requireEvent();
     if (!currentEvent) return;
+    window.applyEventToHeader(currentEvent);
+    window.currentEventId = currentEvent.id;
     currentEventId = currentEvent.id;
+
     await loadAll();
   })();
 </script>
