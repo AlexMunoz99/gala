@@ -210,20 +210,26 @@ tailwind.config = {
   <main class="flex-1 pt-20 bg-on-surface-variant/5 min-h-screen relative">
     <div class="flex flex-col w-full relative">
 
-        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 relative z-10">
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 relative z-10 px-container-padding mt-12">
           <div class="flex flex-col gap-1.5">
             <span class="font-label-gold text-label-gold text-tertiary uppercase tracking-[0.2em] relative pl-8 before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-6 before:h-px before:bg-tertiary/50">Espacios & Locaciones</span>
             <h1 class="font-display-lg text-3xl sm:text-4xl text-on-surface">Sedes del Evento</h1>
-            <p class="font-body-md text-sm text-on-surface-variant max-w-xl">Compara capacidades, costos y gestiona las locaciones prospectadas para tu evento.</p>
+            <p class="font-body-md text-sm text-on-surface-variant max-w-xl">Compara capacidades, costos, semáforo de disponibilidad y consulta tu catálogo maestro de locaciones.</p>
           </div>
-          <button id="btn-add-venue" class="px-5 py-2.5 bg-tertiary text-on-tertiary font-button-text text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all flex items-center gap-2 rounded-xl shadow-lg shadow-tertiary/20 cursor-pointer">
-            <span class="material-symbols-outlined text-[18px]">add</span>
-            <span>Agregar Lugar</span>
-          </button>
+          <div class="flex items-center gap-3 flex-wrap">
+            <button id="btn-open-master-venues" class="px-4 py-2.5 bg-surface-container-high/80 border border-tertiary/20 text-tertiary font-button-text text-xs uppercase tracking-wider hover:bg-tertiary/10 transition-all flex items-center gap-2 rounded-xl shadow-md cursor-pointer backdrop-blur-sm" title="Abrir catálogo maestro de locaciones de la agencia">
+              <span class="material-symbols-outlined text-[18px]">location_city</span>
+              <span>Catálogo Maestro de Sedes</span>
+            </button>
+            <button id="btn-add-venue" class="px-5 py-2.5 bg-tertiary text-on-tertiary font-button-text text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all flex items-center gap-2 rounded-xl shadow-lg shadow-tertiary/20 cursor-pointer">
+              <span class="material-symbols-outlined text-[18px]">add</span>
+              <span>Agregar Lugar</span>
+            </button>
+          </div>
         </div>
 
         <!-- Venue Grid -->
-        <div id="venues-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+        <div id="venues-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter px-container-padding mt-8">
           <p class="text-on-surface-variant col-span-full py-10">Cargando lugares…</p>
         </div>
       </div>
@@ -333,7 +339,7 @@ document.addEventListener('DOMContentLoaded', function () {
       <input id="venue-id" type="hidden"/>
 
       <div class="flex flex-col gap-1">
-        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="venue-photo">Foto</label>
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="venue-photo">Foto Principal</label>
         <div class="w-full h-40 rounded-lg bg-surface-container overflow-hidden flex items-center justify-center relative border border-tertiary/20">
           <img id="venue-photo-preview" class="hidden w-full h-full object-cover" src=""/>
           <span id="venue-photo-placeholder" class="material-symbols-outlined text-on-surface-variant text-4xl">image</span>
@@ -348,34 +354,74 @@ document.addEventListener('DOMContentLoaded', function () {
       </div>
       <div class="grid grid-cols-2 gap-4">
         <div class="flex flex-col gap-1">
-          <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="venue-capacity">Capacidad</label>
+          <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="venue-capacity">Capacidad (invitados)</label>
           <input id="venue-capacity" min="0" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="number"/>
         </div>
         <div class="flex flex-col gap-1">
           <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="venue-price-tier">Nivel de precio</label>
           <select id="venue-price-tier" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary">
-            <option value="$">$</option>
-            <option value="$$">$$</option>
-            <option value="$$$" selected="">$$$</option>
-            <option value="$$$$">$$$$</option>
+            <option value="$">$ Económico</option>
+            <option value="$$">$$ Moderado</option>
+            <option value="$$$" selected="">$$$ Alto</option>
+            <option value="$$$$">$$$$ Exclusivo / Lujo</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex flex-col gap-1">
+          <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="venue-status">Estatus en el Evento</label>
+          <select id="venue-status" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary">
+            <option value="en_consideracion">En consideración</option>
+            <option value="reservado">Reservado / Confirmado</option>
+            <option value="descartado">Descartado</option>
+          </select>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="venue-availability">Disponibilidad</label>
+          <select id="venue-availability" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary">
+            <option value="alta">🟢 Alta (Todo el año)</option>
+            <option value="media" selected>🟡 Media (Temporadas)</option>
+            <option value="baja">🔴 Baja (Alta Demanda)</option>
           </select>
         </div>
       </div>
       <div class="flex flex-col gap-1">
-        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="venue-status">Estatus</label>
-        <select id="venue-status" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary">
-          <option value="en_consideracion">En consideración</option>
-          <option value="reservado">Reservado</option>
-          <option value="descartado">Descartado</option>
-        </select>
-      </div>
-      <div class="flex flex-col gap-1">
-        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="venue-address">Dirección</label>
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="venue-address">Dirección / Ubicación</label>
         <input id="venue-address" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
       </div>
       <div class="flex flex-col gap-1">
-        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="venue-notes">Notas</label>
-        <textarea id="venue-notes" rows="3" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary resize-none"></textarea>
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="venue-notes">Notas & Servicios</label>
+        <textarea id="venue-notes" rows="2" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary resize-none" placeholder="Estacionamiento, planta de luz, toque de queda..."></textarea>
+      </div>
+
+      <!-- Venue Spaces Gallery -->
+      <div class="flex flex-col gap-1.5 border-t border-tertiary/10 pt-3">
+        <div class="flex items-center justify-between">
+          <label class="text-xs uppercase tracking-wider text-on-surface-variant font-semibold">Galería de Espacios (Jardín, Salón, Pista)</label>
+          <span class="text-[10px] text-tertiary">Muestrario para clientes</span>
+        </div>
+        <div class="flex gap-2">
+          <input id="venue-gallery-input" placeholder="Pega URL de imagen (https://...)" class="flex-1 bg-surface-container border border-tertiary/20 rounded-xl py-2 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary" type="url"/>
+          <button type="button" id="btn-add-venue-gallery-photo" class="px-3.5 py-2 rounded-xl bg-surface-container-high border border-tertiary/20 text-tertiary font-button-text text-xs uppercase hover:bg-tertiary/10 transition-all cursor-pointer flex items-center gap-1 shrink-0">
+            <span class="material-symbols-outlined text-[16px]">add_photo_alternate</span>
+            <span>Añadir</span>
+          </button>
+        </div>
+        <div id="venue-gallery-previews" class="flex items-center gap-2 overflow-x-auto py-1 min-h-[48px]">
+          <!-- Thumbnails injected by JS -->
+        </div>
+      </div>
+
+      <!-- Save to Master Catalog Checkbox -->
+      <div class="p-3 bg-tertiary/5 border border-tertiary/20 rounded-xl flex items-center justify-between mt-1">
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input id="venue-save-to-master" class="w-4 h-4 accent-tertiary cursor-pointer" type="checkbox" checked/>
+          <div class="flex flex-col">
+            <span class="text-xs font-semibold text-on-surface">Guardar en mi Catálogo Maestro de Sedes</span>
+            <span class="text-[10px] text-on-surface-variant">Estará disponible para asignar a futuros eventos con 1 clic</span>
+          </div>
+        </label>
+        <span class="material-symbols-outlined text-tertiary text-[20px]">location_city</span>
       </div>
 
       <p id="venue-form-error" class="hidden text-error text-sm"></p>
@@ -383,6 +429,234 @@ document.addEventListener('DOMContentLoaded', function () {
       <div class="flex justify-end gap-2 mt-2">
         <button type="button" id="venue-modal-cancel" class="px-4 py-2.5 rounded-xl border border-tertiary/20 text-on-surface-variant hover:bg-surface-container transition-colors font-button-text uppercase tracking-wider text-xs cursor-pointer">Cancelar</button>
         <button type="submit" id="venue-form-submit" class="px-6 py-2.5 rounded-xl bg-tertiary text-on-tertiary font-button-text text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all shadow-md cursor-pointer">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal 1: Catálogo Maestro de Locaciones -->
+<div id="master-venues-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
+  <div id="master-venues-backdrop" class="absolute inset-0 bg-black/75 backdrop-blur-md"></div>
+  <div class="relative w-full max-w-5xl bg-surface-container-low rounded-2xl shadow-2xl border border-tertiary/20 p-6 sm:p-8 max-h-[90vh] flex flex-col overflow-hidden">
+    
+    <!-- Modal Header -->
+    <div class="flex items-start justify-between pb-4 border-b border-tertiary/10 shrink-0">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="font-label-gold text-label-gold text-tertiary uppercase tracking-[0.2em]">DIRECTORIO DE LOCACIONES</span>
+          <span class="px-2 py-0.5 rounded-full bg-tertiary/20 text-tertiary text-[9px] font-bold uppercase">Cartera de Sedes</span>
+        </div>
+        <h2 class="font-display-lg text-2xl sm:text-3xl text-on-surface mt-1">Catálogo Maestro de Sedes</h2>
+        <p class="font-body-md text-xs sm:text-sm text-on-surface-variant max-w-2xl mt-0.5">
+          Haciendas, jardines, salones y playas registradas por la agencia con semáforo de disponibilidad y fotos. Asigna a este evento con 1 clic.
+        </p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="btn-create-master-venue" class="px-3.5 py-2 bg-tertiary text-on-tertiary font-button-text text-xs font-bold uppercase tracking-wider rounded-xl hover:brightness-110 transition-all flex items-center gap-1.5 shadow-md cursor-pointer">
+          <span class="material-symbols-outlined text-[16px]">add_location_alt</span>
+          <span>Nueva Sede</span>
+        </button>
+        <button id="master-venues-close" class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors cursor-pointer p-1">close</button>
+      </div>
+    </div>
+
+    <!-- Search & Filters -->
+    <div class="py-4 flex flex-col md:flex-row gap-3 items-center justify-between border-b border-tertiary/10 shrink-0">
+      <div class="relative w-full md:w-72">
+        <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+        <input id="master-venues-search" placeholder="Buscar por nombre o ciudad..." class="w-full bg-surface-container border border-tertiary/20 rounded-xl py-2 pl-10 pr-3 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+      </div>
+      
+      <div class="flex items-center gap-2 w-full md:w-auto overflow-x-auto pb-1 flex-wrap">
+        <!-- Category Tabs -->
+        <div class="flex items-center gap-1 bg-surface-container p-1 rounded-xl" id="master-venue-cat-tabs">
+          <button class="master-vcat-tab px-2.5 py-1 rounded-lg text-xs font-semibold bg-tertiary text-on-tertiary cursor-pointer" data-cat="">Todos</button>
+          <button class="master-vcat-tab px-2.5 py-1 rounded-lg text-xs font-semibold text-on-surface-variant hover:text-tertiary cursor-pointer" data-cat="Hacienda">Haciendas</button>
+          <button class="master-vcat-tab px-2.5 py-1 rounded-lg text-xs font-semibold text-on-surface-variant hover:text-tertiary cursor-pointer" data-cat="Jardín">Jardines</button>
+          <button class="master-vcat-tab px-2.5 py-1 rounded-lg text-xs font-semibold text-on-surface-variant hover:text-tertiary cursor-pointer" data-cat="Salón">Salones</button>
+          <button class="master-vcat-tab px-2.5 py-1 rounded-lg text-xs font-semibold text-on-surface-variant hover:text-tertiary cursor-pointer" data-cat="Playa">Playa</button>
+          <button class="master-vcat-tab px-2.5 py-1 rounded-lg text-xs font-semibold text-on-surface-variant hover:text-tertiary cursor-pointer" data-cat="Viñedo">Viñedos</button>
+        </div>
+
+        <!-- Availability Filter -->
+        <select id="master-venue-avail-filter" class="bg-surface-container border border-tertiary/20 rounded-xl py-1.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary cursor-pointer">
+          <option value="">Cualquier Disponibilidad</option>
+          <option value="alta">🟢 Disponibilidad Alta</option>
+          <option value="media">🟡 Disponibilidad Media</option>
+          <option value="baja">🔴 Disponibilidad Baja</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Master Venues Grid (Scrollable) -->
+    <div id="master-venues-grid" class="flex-1 overflow-y-auto py-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pr-1">
+      <!-- Injected by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- Modal 2: Ficha de Portafolio / Showcase de la Sede -->
+<div id="venue-showcase-modal" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-4">
+  <div id="venue-showcase-backdrop" class="absolute inset-0 bg-black/80 backdrop-blur-md"></div>
+  <div class="relative w-full max-w-3xl bg-surface-container-low rounded-2xl shadow-2xl border border-tertiary/20 overflow-hidden flex flex-col max-h-[90vh]">
+    <!-- Close button -->
+    <button id="venue-showcase-close" class="absolute right-4 top-4 z-30 material-symbols-outlined text-white hover:text-tertiary transition-colors bg-black/50 rounded-full p-1.5 cursor-pointer">close</button>
+    
+    <!-- Hero / Main Venue Photo -->
+    <div class="relative h-64 sm:h-72 bg-black overflow-hidden shrink-0 flex items-center justify-center">
+      <img id="vshowcase-hero-img" class="w-full h-full object-cover" src=""/>
+      <div class="absolute inset-0 bg-gradient-to-t from-surface-container-low via-surface-container-low/40 to-transparent"></div>
+      <div class="absolute bottom-4 left-6 right-6 flex justify-between items-end">
+        <div>
+          <span id="vshowcase-type-badge" class="px-3 py-1 rounded-full bg-tertiary text-on-tertiary font-button-text text-[10px] uppercase font-bold tracking-widest shadow-md">Hacienda Colonial</span>
+          <h2 id="vshowcase-name" class="font-display-lg text-2xl sm:text-3xl text-on-surface font-bold mt-1 drop-shadow-md">Nombre de la Sede</h2>
+        </div>
+        <div id="vshowcase-avail-pill" class="flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-bold shadow-md bg-black/60 backdrop-blur">
+          <span class="w-2.5 h-2.5 rounded-full" id="vshowcase-avail-dot"></span>
+          <span id="vshowcase-avail-text">Disponibilidad Alta</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Showcase Content (Scrollable) -->
+    <div class="flex-1 overflow-y-auto p-6 flex flex-col gap-6">
+      
+      <!-- Availability Guidance Banner -->
+      <div id="vshowcase-avail-banner" class="p-3.5 rounded-xl border flex items-start gap-3 text-xs bg-surface-container">
+        <span class="material-symbols-outlined text-[20px] shrink-0 mt-0.5 text-tertiary">info</span>
+        <div>
+          <strong id="vshowcase-avail-title" class="text-on-surface">Semáforo de Disponibilidad:</strong>
+          <p id="vshowcase-avail-desc" class="text-on-surface-variant opacity-90 mt-0.5">Se sugiere reservar con 3 a 6 meses de anticipación.</p>
+        </div>
+      </div>
+
+      <!-- Spaces Gallery Strip -->
+      <div class="flex flex-col gap-2">
+        <span class="font-label-gold text-label-gold text-tertiary uppercase tracking-widest text-[11px]">Recorrido Visual por Áreas & Espacios</span>
+        <div id="vshowcase-gallery-strip" class="grid grid-cols-3 sm:grid-cols-4 gap-2.5">
+          <!-- Gallery photos injected dynamically -->
+        </div>
+      </div>
+
+      <!-- Specs & Details -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-surface-container/60 p-4 rounded-xl border border-tertiary/10">
+        <div class="flex flex-col gap-2.5">
+          <span class="font-label-gold text-label-gold text-on-surface-variant uppercase text-[10px]">Capacidad & Presupuesto</span>
+          <div class="flex items-center gap-2 text-xs text-on-surface">
+            <span class="material-symbols-outlined text-tertiary text-[18px]">groups</span>
+            <span>Capacidad: <strong id="vshowcase-capacity">350 invitados</strong></span>
+          </div>
+          <div class="flex items-center gap-2 text-xs text-on-surface">
+            <span class="material-symbols-outlined text-tertiary text-[18px]">payments</span>
+            <span>Renta Base / Nivel: <strong id="vshowcase-pricing" class="text-tertiary">$45,000 - $85,000 MXN</strong></span>
+          </div>
+          <div class="flex items-center gap-2 text-xs text-on-surface">
+            <span class="material-symbols-outlined text-tertiary text-[18px]">schedule</span>
+            <span>Toque de queda: <strong id="vshowcase-curfew">Hasta las 3:00 AM</strong></span>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2.5">
+          <span class="font-label-gold text-label-gold text-on-surface-variant uppercase text-[10px]">Ubicación & Servicios</span>
+          <div class="flex items-start gap-2 text-xs text-on-surface">
+            <span class="material-symbols-outlined text-tertiary text-[18px] shrink-0">location_on</span>
+            <span id="vshowcase-address">Carretera Nacional Km 24, Santiago N.L.</span>
+          </div>
+          <div class="flex flex-wrap gap-1.5 mt-1" id="vshowcase-amenities">
+            <!-- Amenities pills -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div class="flex flex-col gap-1.5">
+        <span class="font-label-gold text-label-gold text-on-surface-variant uppercase text-[10px]">Notas de Asesoría para el Cliente</span>
+        <p id="vshowcase-notes" class="text-xs text-on-surface-variant leading-relaxed">Sede con áreas climatizadas, capilla consagrada para ceremonia religiosa y cocina equipada para banqueteros.</p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex justify-end gap-3 pt-2">
+        <a id="btn-vshowcase-maps" href="#" target="_blank" class="px-4 py-2.5 rounded-xl bg-surface-container-high border border-tertiary/20 text-tertiary font-button-text uppercase tracking-wider text-xs flex items-center gap-2 hover:bg-tertiary/10 transition-all cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">map</span>
+          <span>Ver Mapa</span>
+        </a>
+        <button id="btn-vshowcase-assign" class="px-5 py-2.5 rounded-xl bg-tertiary text-on-tertiary font-button-text text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all shadow-md cursor-pointer flex items-center gap-2">
+          <span class="material-symbols-outlined text-[18px]">add_task</span>
+          <span id="vshowcase-assign-btn-text">Asignar al Evento</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal 3: Formulario de Sede en Catálogo Maestro -->
+<div id="master-venue-form-modal" class="hidden fixed inset-0 z-[120] flex items-center justify-center p-4">
+  <div id="master-venue-form-backdrop" class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+  <div class="relative w-full max-w-lg bg-surface-container-low rounded-2xl shadow-2xl border border-tertiary/20 p-6 sm:p-8 max-h-[90vh] overflow-y-auto">
+    <div class="flex items-center justify-between mb-4 pb-2 border-b border-tertiary/10">
+      <h2 id="master-venue-form-title" class="font-headline-lg text-xl text-on-surface">Nueva Sede en Catálogo</h2>
+      <button id="master-venue-form-close" class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors cursor-pointer">close</button>
+    </div>
+    <form id="master-venue-form" class="flex flex-col gap-4">
+      <input id="mv-venue-id" type="hidden"/>
+      <div class="flex flex-col gap-1">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant font-semibold" for="mv-venue-name">Nombre de la Sede / Salón *</label>
+        <input id="mv-venue-name" required class="bg-surface-container border border-tertiary/20 rounded-xl py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary" placeholder="Ej. Hacienda San José de las Palmas"/>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div class="flex flex-col gap-1">
+          <label class="text-xs uppercase tracking-wider text-on-surface-variant font-semibold" for="mv-venue-type">Tipo de Espacio</label>
+          <select id="mv-venue-type" class="bg-surface-container border border-tertiary/20 rounded-xl py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary">
+            <option value="Hacienda">Hacienda Colonial</option>
+            <option value="Jardín">Jardín & Terraza</option>
+            <option value="Salón">Salón / Hotel de Lujo</option>
+            <option value="Playa">Playa / Club de Mar</option>
+            <option value="Viñedo">Viñedo & Bosque</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-xs uppercase tracking-wider text-on-surface-variant font-semibold" for="mv-venue-availability">Semáforo de Disponibilidad</label>
+          <select id="mv-venue-availability" class="bg-surface-container border border-tertiary/20 rounded-xl py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary">
+            <option value="alta">🟢 Alta (Todo el año / Múltiples salones)</option>
+            <option value="media" selected>🟡 Media (3 - 6 meses de anticipación)</option>
+            <option value="baja">🔴 Baja (Exclusiva / +1 año de anticipación)</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div class="flex flex-col gap-1">
+          <label class="text-xs uppercase tracking-wider text-on-surface-variant font-semibold" for="mv-venue-capacity">Capacidad (Personas)</label>
+          <input id="mv-venue-capacity" min="0" placeholder="Ej. 400" class="bg-surface-container border border-tertiary/20 rounded-xl py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary" type="number"/>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-xs uppercase tracking-wider text-on-surface-variant font-semibold" for="mv-venue-pricing">Rango de Costo / Renta</label>
+          <input id="mv-venue-pricing" placeholder="Ej. $45,000 - $85,000" class="bg-surface-container border border-tertiary/20 rounded-xl py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+        </div>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant font-semibold" for="mv-venue-address">Dirección / Ubicación</label>
+        <input id="mv-venue-address" placeholder="Ej. Carretera Nacional Km 24, Santiago N.L." class="bg-surface-container border border-tertiary/20 rounded-xl py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant font-semibold" for="mv-venue-amenities">Amenidades & Servicios (Separados por coma)</label>
+        <input id="mv-venue-amenities" placeholder="Planta de Luz, Estacionamiento, Capilla, Suite Nupcial, Sin Exclusividad" class="bg-surface-container border border-tertiary/20 rounded-xl py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant font-semibold" for="mv-venue-image-url">Foto Principal (URL)</label>
+        <input id="mv-venue-image-url" placeholder="https://images.unsplash.com/..." class="bg-surface-container border border-tertiary/20 rounded-xl py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant font-semibold" for="mv-venue-gallery-urls">Galería de Espacios (URLs separadas por coma)</label>
+        <textarea id="mv-venue-gallery-urls" rows="2" placeholder="https://foto-jardin.jpg, https://foto-salon.jpg, https://foto-pista.jpg" class="bg-surface-container border border-tertiary/20 rounded-xl py-2 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary resize-none"></textarea>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label class="text-xs uppercase tracking-wider text-on-surface-variant font-semibold" for="mv-venue-notes">Notas & Toque de Queda</label>
+        <textarea id="mv-venue-notes" rows="2" placeholder="Toque de queda hasta las 3:00 AM. Se permite pirotecnia fría..." class="bg-surface-container border border-tertiary/20 rounded-xl py-2 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary resize-none"></textarea>
+      </div>
+      <div class="flex justify-end gap-2 mt-2">
+        <button type="button" id="master-venue-form-cancel" class="px-4 py-2.5 rounded-xl border border-tertiary/20 text-on-surface-variant hover:bg-surface-container font-button-text uppercase tracking-wider text-xs cursor-pointer">Cancelar</button>
+        <button type="submit" class="px-6 py-2.5 rounded-xl bg-tertiary text-on-tertiary font-button-text text-xs font-bold uppercase tracking-wider hover:brightness-110 shadow-md cursor-pointer">Guardar en Catálogo</button>
       </div>
     </form>
   </div>
@@ -398,9 +672,122 @@ document.addEventListener('DOMContentLoaded', function () {
   const photoPlaceholder = document.getElementById("venue-photo-placeholder");
   const photoUploading = document.getElementById("venue-photo-uploading");
 
+  // Master Venues DOM elements
+  const masterModal = document.getElementById("master-venues-modal");
+  const masterGrid = document.getElementById("master-venues-grid");
+  const masterSearchInput = document.getElementById("master-venues-search");
+  const masterCatTabs = document.getElementById("master-venue-cat-tabs");
+  const masterAvailFilter = document.getElementById("master-venue-avail-filter");
+  const masterFormModal = document.getElementById("master-venue-form-modal");
+  const masterForm = document.getElementById("master-venue-form");
+  const showcaseModal = document.getElementById("venue-showcase-modal");
+
   let currentEventId = null;
+  let currentUserId = null;
   let allVenues = [];
+  let masterVenues = [];
+  let venueGalleryUrls = [];
   let uploadedImageUrl = null;
+  let activeMasterCatFilter = "";
+  let activeMasterAvailFilter = "";
+  let masterVenuesSearchQuery = "";
+  let selectedShowcaseVenue = null;
+
+  const DEFAULT_MASTER_VENUES = [
+    {
+      id: "mven-1",
+      name: "Hacienda San José de las Palmas",
+      type: "Hacienda",
+      availability: "alta",
+      capacity: 450,
+      price_tier: "$$$$",
+      pricing_range: "$65,000 - $120,000 MXN",
+      address: "Carretera Nacional Km 24, Santiago, N.L.",
+      amenities: ["Planta de Luz", "Capilla Consagrada", "Estacionamiento 200 autos", "Suite Nupcial", "Sin Exclusividad de Banquetes"],
+      curfew: "Hasta las 3:00 AM",
+      image_url: "https://images.unsplash.com/photo-1545232979-fbf68fe9b10d?w=800&auto=format&fit=crop&q=80",
+      gallery_urls: [
+        "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1544077960-604201fe74bc?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=800&auto=format&fit=crop&q=80"
+      ],
+      notes: "Arquitectura colonial del siglo XIX restaurada, arcadas iluminadas, amplios jardines y cocina industrial equipada para banquetes gourmet."
+    },
+    {
+      id: "mven-2",
+      name: "Jardín Botánico & Glasshouse Los Rosales",
+      type: "Jardín",
+      availability: "media",
+      capacity: 350,
+      price_tier: "$$$",
+      pricing_range: "$48,000 - $85,000 MXN",
+      address: "Valle de San Ángel, San Pedro Garza García, N.L.",
+      amenities: ["Estructura Acristalada Climatizada", "Cascada Iluminada", "Área Lounge", "Estacionamiento Valet", "Seguridad Privada"],
+      curfew: "Hasta las 2:00 AM",
+      image_url: "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&auto=format&fit=crop&q=80",
+      gallery_urls: [
+        "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1520854221256-17451cc331bf?w=800&auto=format&fit=crop&q=80"
+      ],
+      notes: "Invernadero botánico con diseño europeo moderno, rodeado de pinos y jardines franceses. Ideal para bodas de día y noche."
+    },
+    {
+      id: "mven-3",
+      name: "The Grand Ballroom & Terraza Sky Pavilion",
+      type: "Salón",
+      availability: "baja",
+      capacity: 600,
+      price_tier: "$$$$",
+      pricing_range: "$80,000 - $160,000 MXN",
+      address: "Av. Lázaro Cárdenas 1000, Torre Financiera, Monterrey",
+      amenities: ["Candelabros de Cristal Baccarat", "Pista Panorámica", "Acústica Aislada", "Helipuerto", "Hotel 5 Estrellas Conectado"],
+      curfew: "Hasta las 4:00 AM",
+      image_url: "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&auto=format&fit=crop&q=80",
+      gallery_urls: [
+        "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=800&auto=format&fit=crop&q=80"
+      ],
+      notes: "Alta demanda con reservas con más de 14 meses de anticipación. Salón principal de doble altura con vistas panorámicas a las montañas."
+    },
+    {
+      id: "mven-4",
+      name: "Villa Del Sol Oceanfront & Beach Club",
+      type: "Playa",
+      availability: "media",
+      capacity: 250,
+      price_tier: "$$$$",
+      pricing_range: "$55,000 - $110,000 MXN",
+      address: "Zona Hotelera Km 14.5, Cancún / Riviera Maya",
+      amenities: ["Muelle Privado para Ceremonia", "Playa Concesionada", "Piscina Infinity", "Villas para Hospedaje", "Planta de Luz"],
+      curfew: "Hasta las 2:30 AM",
+      image_url: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&auto=format&fit=crop&q=80",
+      gallery_urls: [
+        "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1510414842594-a61c69b5ae57?w=800&auto=format&fit=crop&q=80"
+      ],
+      notes: "Locación de lujo para bodas destino frente al mar Caribe con área techada de palapa y ceremonia al atardecer sobre la arena blanca."
+    },
+    {
+      id: "mven-5",
+      name: "Cavas & Viñedo Santa Clara",
+      type: "Viñedo",
+      availability: "baja",
+      capacity: 300,
+      price_tier: "$$$$",
+      pricing_range: "$70,000 - $135,000 MXN",
+      address: "Ruta del Vino Km 18, Valle de Guadalupe / Parras",
+      amenities: ["Cava Subterránea de Barricas", "Explanada entre Viñedos", "Cata Privada Nupcial", "Hotel Boutique 12 Habitaciones"],
+      curfew: "Hasta las 3:00 AM",
+      image_url: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=800&auto=format&fit=crop&q=80",
+      gallery_urls: [
+        "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&auto=format&fit=crop&q=80",
+        "https://images.unsplash.com/photo-1528823872057-9c018a7a7553?w=800&auto=format&fit=crop&q=80"
+      ],
+      notes: "Paisaje rústico sofisticado entre parras de uva y cielo estrellado. Producción vinícola artesanal y menú de maridaje exclusivo."
+    }
+  ];
 
   function escapeHtml(str) {
     if (str === null || str === undefined) return "";
@@ -408,44 +795,524 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   const statusStyles = {
-    reservado: { badge: "bg-tertiary/20 text-tertiary", label: "Reservado" },
-    en_consideracion: { badge: "bg-surface/60 text-on-surface", label: "En consideración" },
-    descartado: { badge: "bg-error/20 text-error", label: "Descartado" }
+    reservado: { badge: "bg-tertiary/20 text-tertiary border border-tertiary/40", label: "Reservado" },
+    en_consideracion: { badge: "bg-surface/70 text-on-surface border border-outline-variant/30", label: "En consideración" },
+    descartado: { badge: "bg-error/20 text-error border border-error/30", label: "Descartado" }
   };
 
+  const availStyles = {
+    alta: { badge: "bg-emerald-500/15 border-emerald-500/30 text-emerald-400", dot: "bg-emerald-400", label: "Disponibilidad Alta", desc: "Amplia disponibilidad de fechas. Se sugiere reservar con 3 a 6 meses de anticipación." },
+    media: { badge: "bg-amber-500/15 border-amber-500/30 text-amber-300", dot: "bg-amber-400", label: "Disponibilidad Media", desc: "Fechas selectas por temporada. Se sugiere reservar con 6 a 9 meses de anticipación." },
+    baja: { badge: "bg-rose-500/15 border-rose-500/30 text-rose-400", dot: "bg-rose-400", label: "Disponibilidad Baja / Exclusiva", desc: "Alta demanda / Pocas fechas al año. Se sugiere reservar con +12 meses de anticipación." }
+  };
+
+  // ---- CARTERA MAESTRA DE SEDES (MASTER VENUES) ----
+  function loadMasterVenues() {
+    try {
+      const raw = localStorage.getItem("galaMasterVenues_" + (currentUserId || "default"));
+      if (raw) {
+        masterVenues = JSON.parse(raw);
+      } else {
+        masterVenues = [...DEFAULT_MASTER_VENUES];
+        saveMasterVenues();
+      }
+    } catch(e) {
+      masterVenues = [...DEFAULT_MASTER_VENUES];
+    }
+  }
+
+  function saveMasterVenues() {
+    try {
+      localStorage.setItem("galaMasterVenues_" + (currentUserId || "default"), JSON.stringify(masterVenues));
+    } catch(e) {
+      console.warn("Error saving master venues:", e);
+    }
+  }
+
+  function getVenueGallery(venue) {
+    if (venue.gallery_urls && venue.gallery_urls.length > 0) {
+      return venue.gallery_urls;
+    }
+    // Check localStorage cache
+    try {
+      const cached = localStorage.getItem("galaVenueGallery_" + venue.id);
+      if (cached) return JSON.parse(cached);
+    } catch(e) {}
+    // Check matching master venue
+    const mv = masterVenues.find(m => m.name.toLowerCase() === (venue.name || "").toLowerCase());
+    if (mv && mv.gallery_urls) return mv.gallery_urls;
+    return venue.image_url ? [venue.image_url] : [];
+  }
+
+  function getVenueAvailability(venue) {
+    if (venue.availability) return venue.availability;
+    try {
+      const cached = localStorage.getItem("galaVenueAvail_" + venue.id);
+      if (cached) return cached;
+    } catch(e) {}
+    const mv = masterVenues.find(m => m.name.toLowerCase() === (venue.name || "").toLowerCase());
+    if (mv && mv.availability) return mv.availability;
+    return "media";
+  }
+
+  function renderMasterVenues() {
+    let filtered = masterVenues;
+    if (activeMasterCatFilter) {
+      filtered = filtered.filter(v => (v.type || "").toLowerCase().includes(activeMasterCatFilter.toLowerCase()));
+    }
+    if (activeMasterAvailFilter) {
+      filtered = filtered.filter(v => (v.availability || "media") === activeMasterAvailFilter);
+    }
+    if (masterVenuesSearchQuery) {
+      const q = masterVenuesSearchQuery.toLowerCase();
+      filtered = filtered.filter(v => (v.name || "").toLowerCase().includes(q) || (v.address || "").toLowerCase().includes(q) || (v.notes || "").toLowerCase().includes(q));
+    }
+
+    if (filtered.length === 0) {
+      masterGrid.innerHTML = `<p class="text-on-surface-variant col-span-full py-12 text-center text-xs">No se encontraron sedes en el catálogo para esta búsqueda.</p>`;
+      return;
+    }
+
+    masterGrid.innerHTML = filtered.map(v => {
+      const isAlreadyAssigned = allVenues.some(ev => ev.name.toLowerCase() === v.name.toLowerCase());
+      const avail = availStyles[v.availability || "media"] || availStyles.media;
+      const gallery = v.gallery_urls || [];
+      const bg = v.image_url ? `background-image: url('${v.image_url}')` : "background-color: #2a2a27";
+
+      return `
+        <div class="bg-surface-container rounded-2xl overflow-hidden border border-tertiary/15 hover:border-tertiary/40 transition-all flex flex-col shadow-md group relative" data-master-venue-id="${v.id}">
+          
+          <!-- Image Banner with Availability Badge -->
+          <div class="relative h-48 bg-cover bg-center overflow-hidden" style="${bg}">
+            <div class="absolute inset-0 bg-gradient-to-t from-surface-container via-transparent to-transparent"></div>
+            
+            <!-- Availability Pill -->
+            <div class="absolute top-3 left-3 z-10">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold border backdrop-blur-md flex items-center gap-1.5 ${avail.badge} shadow-sm">
+                <span class="w-2 h-2 rounded-full ${avail.dot}"></span>
+                ${avail.label}
+              </span>
+            </div>
+
+            <!-- Top Actions -->
+            <div class="absolute top-3 right-3 z-10 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              <button class="btn-edit-master-venue w-7 h-7 rounded-full bg-black/60 backdrop-blur text-on-surface hover:text-tertiary flex items-center justify-center transition-colors cursor-pointer" title="Editar en Catálogo"><span class="material-symbols-outlined text-[16px]">edit</span></button>
+              <button class="btn-delete-master-venue w-7 h-7 rounded-full bg-black/60 backdrop-blur text-on-surface hover:text-error flex items-center justify-center transition-colors cursor-pointer" title="Eliminar de Catálogo"><span class="material-symbols-outlined text-[16px]">delete</span></button>
+            </div>
+
+            <!-- Type badge -->
+            <div class="absolute bottom-3 left-4 z-10">
+              <span class="px-2.5 py-0.5 rounded-md bg-tertiary text-on-tertiary font-label-gold text-[9px] uppercase font-bold tracking-wider">${escapeHtml(v.type || "Sede")}</span>
+            </div>
+          </div>
+
+          <!-- Card Content -->
+          <div class="p-5 flex-1 flex flex-col justify-between gap-3">
+            <div>
+              <h3 class="font-headline-md text-base text-on-surface font-semibold truncate">${escapeHtml(v.name)}</h3>
+              
+              <div class="flex items-center gap-4 mt-2 text-xs text-on-surface-variant">
+                ${v.capacity ? `<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[15px] text-tertiary">groups</span><span>Cap. ${escapeHtml(v.capacity)}</span></div>` : ""}
+                ${v.pricing_range ? `<div class="flex items-center gap-1"><span class="material-symbols-outlined text-[15px] text-tertiary">payments</span><span class="text-tertiary font-semibold">${escapeHtml(v.pricing_range)}</span></div>` : ""}
+              </div>
+
+              ${v.address ? `<div class="flex items-start gap-1 text-[11px] text-on-surface-variant/80 mt-2 truncate"><span class="material-symbols-outlined text-[14px] shrink-0 text-tertiary">location_on</span><span class="truncate">${escapeHtml(v.address)}</span></div>` : ""}
+
+              <!-- Mini spaces strip -->
+              ${gallery.length > 0 ? `
+                <div class="flex items-center gap-1.5 mt-3 overflow-x-auto py-1">
+                  ${gallery.slice(0, 3).map(img => `
+                    <div class="w-14 h-10 rounded-lg overflow-hidden border border-tertiary/10 shrink-0">
+                      <img src="${img}" class="w-full h-full object-cover" alt="Espacio"/>
+                    </div>
+                  `).join("")}
+                </div>` : ""}
+            </div>
+
+            <!-- Bottom Actions -->
+            <div class="mt-2 pt-3 border-t border-surface-container-high flex items-center justify-between gap-2">
+              <button class="btn-showcase-master-venue text-xs text-tertiary hover:underline flex items-center gap-1 font-semibold cursor-pointer">
+                <span class="material-symbols-outlined text-[16px]">visibility</span>
+                <span>Ver Ficha</span>
+              </button>
+              <button class="btn-assign-master-venue px-3 py-1.5 rounded-xl ${isAlreadyAssigned ? 'bg-surface-variant text-on-surface-variant cursor-not-allowed' : 'bg-tertiary text-on-tertiary hover:brightness-110 shadow-md cursor-pointer'} font-button-text text-xs font-bold uppercase tracking-wider flex items-center gap-1 transition-all" ${isAlreadyAssigned ? 'disabled' : ''}>
+                <span class="material-symbols-outlined text-[16px]">${isAlreadyAssigned ? 'check' : 'add_task'}</span>
+                <span>${isAlreadyAssigned ? 'Asignado' : 'Asignar Sede'}</span>
+              </button>
+            </div>
+          </div>
+        </div>`;
+    }).join("");
+  }
+
+  // ---- SHOWCASE / PRESENTATION MODAL ----
+  function openShowcase(v) {
+    selectedShowcaseVenue = v;
+    const gallery = v.gallery_urls && v.gallery_urls.length > 0 ? v.gallery_urls : (v.image_url ? [v.image_url] : []);
+    const avail = availStyles[v.availability || "media"] || availStyles.media;
+
+    document.getElementById("vshowcase-name").textContent = v.name || "Sede del Evento";
+    document.getElementById("vshowcase-type-badge").textContent = v.type || "Locación";
+    
+    // Availability pill & banner
+    const availText = document.getElementById("vshowcase-avail-text");
+    const availDot = document.getElementById("vshowcase-avail-dot");
+    availText.textContent = avail.label;
+    availDot.className = `w-2.5 h-2.5 rounded-full ${avail.dot}`;
+    document.getElementById("vshowcase-avail-pill").className = `flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-bold shadow-md bg-black/60 backdrop-blur ${avail.badge}`;
+    
+    document.getElementById("vshowcase-avail-title").textContent = `Semáforo de Disponibilidad: ${avail.label}`;
+    document.getElementById("vshowcase-avail-desc").textContent = avail.desc;
+
+    const heroImg = document.getElementById("vshowcase-hero-img");
+    heroImg.src = gallery[0] || v.image_url || "assets/hero-gala.jpg";
+
+    // Gallery strip
+    const galleryStrip = document.getElementById("vshowcase-gallery-strip");
+    if (gallery.length > 0) {
+      galleryStrip.innerHTML = gallery.map((img, idx) => `
+        <div class="h-20 rounded-xl overflow-hidden border-2 ${idx === 0 ? 'border-tertiary' : 'border-tertiary/20'} cursor-pointer hover:border-tertiary transition-all vshowcase-thumb-item" data-src="${img}">
+          <img src="${img}" class="w-full h-full object-cover" alt="Área ${idx + 1}"/>
+        </div>
+      `).join("");
+    } else {
+      galleryStrip.innerHTML = `<p class="text-xs text-on-surface-variant col-span-full py-2">No hay fotos adicionales registradas.</p>`;
+    }
+
+    // Specs
+    document.getElementById("vshowcase-capacity").textContent = v.capacity ? `${v.capacity} personas` : "Consultar";
+    document.getElementById("vshowcase-pricing").textContent = v.pricing_range || (v.price_tier ? `Nivel ${v.price_tier}` : "$$$");
+    document.getElementById("vshowcase-curfew").textContent = v.curfew || "Hasta las 2:00 AM";
+    document.getElementById("vshowcase-address").textContent = v.address || "Ubicación por definir";
+    document.getElementById("vshowcase-notes").textContent = v.notes || "Espacio exclusivo para eventos y recepciones coordinadas por la agencia.";
+
+    // Amenities
+    const amenitiesContainer = document.getElementById("vshowcase-amenities");
+    const amenitiesList = Array.isArray(v.amenities) ? v.amenities : (v.amenities ? String(v.amenities).split(",").map(s => s.trim()) : ["Planta de Luz", "Estacionamiento", "Área Climatizada"]);
+    amenitiesContainer.innerHTML = amenitiesList.map(a => `
+      <span class="px-2 py-0.5 rounded-md bg-surface-container-high text-[10px] text-tertiary font-semibold border border-tertiary/20">${escapeHtml(a)}</span>
+    `).join("");
+
+    // Maps link
+    const mapsBtn = document.getElementById("btn-vshowcase-maps");
+    if (v.address) {
+      mapsBtn.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.name + " " + v.address)}`;
+      mapsBtn.classList.remove("hidden");
+    } else {
+      mapsBtn.classList.add("hidden");
+    }
+
+    // Assign action
+    const isAlreadyAssigned = allVenues.some(ev => ev.name.toLowerCase() === v.name.toLowerCase());
+    const assignBtn = document.getElementById("btn-vshowcase-assign");
+    const assignBtnText = document.getElementById("vshowcase-assign-btn-text");
+    if (isAlreadyAssigned) {
+      assignBtnText.textContent = "Ya Asignada al Evento";
+      assignBtn.classList.add("opacity-60", "cursor-not-allowed");
+      assignBtn.disabled = true;
+    } else {
+      assignBtnText.textContent = "Asignar al Evento";
+      assignBtn.classList.remove("opacity-60", "cursor-not-allowed");
+      assignBtn.disabled = false;
+      assignBtn.onclick = async () => {
+        await assignVenueToEvent(v);
+        showcaseModal.classList.add("hidden");
+        showcaseModal.classList.remove("flex");
+      };
+    }
+
+    showcaseModal.classList.remove("hidden");
+    showcaseModal.classList.add("flex");
+  }
+
+  // Thumbnails click in showcase modal
+  document.getElementById("vshowcase-gallery-strip").addEventListener("click", (e) => {
+    const item = e.target.closest(".vshowcase-thumb-item");
+    if (!item) return;
+    const src = item.dataset.src;
+    document.getElementById("vshowcase-hero-img").src = src;
+    document.querySelectorAll(".vshowcase-thumb-item").forEach(t => t.classList.remove("border-tertiary"));
+    item.classList.add("border-tertiary");
+  });
+
+  document.getElementById("venue-showcase-close").addEventListener("click", () => {
+    showcaseModal.classList.add("hidden");
+    showcaseModal.classList.remove("flex");
+  });
+  document.getElementById("venue-showcase-backdrop").addEventListener("click", () => {
+    showcaseModal.classList.add("hidden");
+    showcaseModal.classList.remove("flex");
+  });
+
+  // ---- ASIGNACIÓN DE SEDE AL EVENTO ----
+  async function assignVenueToEvent(masterVenue) {
+    const payload = {
+      event_id: currentEventId,
+      name: masterVenue.name,
+      capacity: masterVenue.capacity || null,
+      price_tier: masterVenue.price_tier || "$$$",
+      status: "reservado",
+      address: masterVenue.address || null,
+      notes: masterVenue.notes || null,
+      image_url: masterVenue.image_url || null
+    };
+
+    const { data, error } = await window.supabaseClient.from("venues").insert(payload).select().single();
+    if (error) {
+      window.showToast("Error al asignar lugar: " + error.message, "error");
+      return;
+    }
+
+    if (data) {
+      if (masterVenue.gallery_urls) localStorage.setItem("galaVenueGallery_" + data.id, JSON.stringify(masterVenue.gallery_urls));
+      if (masterVenue.availability) localStorage.setItem("galaVenueAvail_" + data.id, masterVenue.availability);
+    }
+
+    window.showToast(`"${masterVenue.name}" asignada como sede del evento.`, "success");
+    await loadVenues();
+    renderMasterVenues();
+  }
+
+  // ---- FORMULARIO DE SEDE EN CATÁLOGO MAESTRO ----
+  function openMasterVenueForm(mv) {
+    document.getElementById("master-venue-form-title").textContent = mv ? "Editar Sede en Catálogo" : "Nueva Sede en Catálogo";
+    document.getElementById("mv-venue-id").value = mv ? mv.id : "";
+    document.getElementById("mv-venue-name").value = mv ? mv.name || "" : "";
+    document.getElementById("mv-venue-type").value = mv ? mv.type || "Hacienda" : "Hacienda";
+    document.getElementById("mv-venue-availability").value = mv ? mv.availability || "media" : "media";
+    document.getElementById("mv-venue-capacity").value = mv ? mv.capacity || "" : "";
+    document.getElementById("mv-venue-pricing").value = mv ? mv.pricing_range || "" : "";
+    document.getElementById("mv-venue-address").value = mv ? mv.address || "" : "";
+    document.getElementById("mv-venue-amenities").value = mv && mv.amenities ? (Array.isArray(mv.amenities) ? mv.amenities.join(", ") : mv.amenities) : "";
+    document.getElementById("mv-venue-image-url").value = mv ? mv.image_url || "" : "";
+    document.getElementById("mv-venue-gallery-urls").value = mv && mv.gallery_urls ? mv.gallery_urls.join(", ") : "";
+    document.getElementById("mv-venue-notes").value = mv ? mv.notes || "" : "";
+
+    masterFormModal.classList.remove("hidden");
+    masterFormModal.classList.add("flex");
+  }
+
+  document.getElementById("btn-create-master-venue").addEventListener("click", () => openMasterVenueForm(null));
+  document.getElementById("master-venue-form-close").addEventListener("click", () => {
+    masterFormModal.classList.add("hidden");
+    masterFormModal.classList.remove("flex");
+  });
+  document.getElementById("master-venue-form-cancel").addEventListener("click", () => {
+    masterFormModal.classList.add("hidden");
+    masterFormModal.classList.remove("flex");
+  });
+  document.getElementById("master-venue-form-backdrop").addEventListener("click", () => {
+    masterFormModal.classList.add("hidden");
+    masterFormModal.classList.remove("flex");
+  });
+
+  masterForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const id = document.getElementById("mv-venue-id").value;
+    const rawGallery = document.getElementById("mv-venue-gallery-urls").value;
+    const gallery_urls = rawGallery ? rawGallery.split(",").map(s => s.trim()).filter(Boolean) : [];
+    const rawAmenities = document.getElementById("mv-venue-amenities").value;
+    const amenities = rawAmenities ? rawAmenities.split(",").map(s => s.trim()).filter(Boolean) : [];
+
+    const item = {
+      id: id || ("mven-" + Date.now()),
+      name: document.getElementById("mv-venue-name").value.trim(),
+      type: document.getElementById("mv-venue-type").value,
+      availability: document.getElementById("mv-venue-availability").value,
+      capacity: document.getElementById("mv-venue-capacity").value ? Number(document.getElementById("mv-venue-capacity").value) : null,
+      price_tier: "$$$$",
+      pricing_range: document.getElementById("mv-venue-pricing").value.trim() || null,
+      address: document.getElementById("mv-venue-address").value.trim() || null,
+      amenities: amenities,
+      curfew: "Hasta las 3:00 AM",
+      image_url: document.getElementById("mv-venue-image-url").value.trim() || null,
+      gallery_urls: gallery_urls,
+      notes: document.getElementById("mv-venue-notes").value.trim() || null
+    };
+
+    if (id) {
+      const idx = masterVenues.findIndex(x => x.id === id);
+      if (idx !== -1) masterVenues[idx] = item;
+    } else {
+      masterVenues.unshift(item);
+    }
+
+    saveMasterVenues();
+    masterFormModal.classList.add("hidden");
+    masterFormModal.classList.remove("flex");
+    window.showToast("Sede guardada en el Catálogo Maestro.", "success");
+    renderMasterVenues();
+  });
+
+  // Master venues modal listeners
+  document.getElementById("btn-open-master-venues").addEventListener("click", () => {
+    loadMasterVenues();
+    renderMasterVenues();
+    masterModal.classList.remove("hidden");
+    masterModal.classList.add("flex");
+  });
+  document.getElementById("master-venues-close").addEventListener("click", () => {
+    masterModal.classList.add("hidden");
+    masterModal.classList.remove("flex");
+  });
+  document.getElementById("master-venues-backdrop").addEventListener("click", () => {
+    masterModal.classList.add("hidden");
+    masterModal.classList.remove("flex");
+  });
+
+  masterSearchInput.addEventListener("input", (e) => {
+    masterVenuesSearchQuery = e.target.value.trim();
+    renderMasterVenues();
+  });
+
+  masterCatTabs.addEventListener("click", (e) => {
+    const tab = e.target.closest(".master-vcat-tab");
+    if (!tab) return;
+    activeMasterCatFilter = tab.dataset.cat;
+    masterCatTabs.querySelectorAll(".master-vcat-tab").forEach(t => {
+      const isActive = t === tab;
+      t.classList.toggle("bg-tertiary", isActive);
+      t.classList.toggle("text-on-tertiary", isActive);
+      t.classList.toggle("text-on-surface-variant", !isActive);
+    });
+    renderMasterVenues();
+  });
+
+  masterAvailFilter.addEventListener("change", (e) => {
+    activeMasterAvailFilter = e.target.value;
+    renderMasterVenues();
+  });
+
+  masterGrid.addEventListener("click", async (e) => {
+    const card = e.target.closest("[data-master-venue-id]");
+    if (!card) return;
+    const id = card.dataset.masterVenueId;
+    const mv = masterVenues.find(x => x.id === id);
+    if (!mv) return;
+
+    if (e.target.closest(".btn-assign-master-venue")) {
+      await assignVenueToEvent(mv);
+      return;
+    }
+    if (e.target.closest(".btn-showcase-master-venue")) {
+      openShowcase(mv);
+      return;
+    }
+    if (e.target.closest(".btn-edit-master-venue")) {
+      openMasterVenueForm(mv);
+      return;
+    }
+    if (e.target.closest(".btn-delete-master-venue")) {
+      const ok = await window.showConfirmDialog({
+        title: `¿Eliminar "${mv.name}" del Catálogo?`,
+        message: "Se eliminará de tu catálogo maestro de agencia, pero los eventos que ya la tengan asignada no se modificarán.",
+        confirmText: "Eliminar de Catálogo",
+        isDestructive: true
+      });
+      if (!ok) return;
+      masterVenues = masterVenues.filter(x => x.id !== id);
+      saveMasterVenues();
+      window.showToast("Sede removida del Catálogo.", "info");
+      renderMasterVenues();
+    }
+  });
+
+  // ---- GALLERY BUILDER IN EVENT VENUE MODAL ----
+  function renderVenueGalleryPreviews() {
+    const container = document.getElementById("venue-gallery-previews");
+    if (venueGalleryUrls.length === 0) {
+      container.innerHTML = `<span class="text-[11px] text-on-surface-variant/60 italic">Sin fotos adicionales añadidas</span>`;
+      return;
+    }
+    container.innerHTML = venueGalleryUrls.map((url, i) => `
+      <div class="relative w-14 h-12 rounded-lg overflow-hidden border border-tertiary/20 shrink-0 group">
+        <img src="${url}" class="w-full h-full object-cover" alt="Espacio ${i+1}"/>
+        <button type="button" class="btn-remove-venue-photo absolute inset-0 bg-black/60 text-error flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer" data-idx="${i}">
+          <span class="material-symbols-outlined text-[16px]">close</span>
+        </button>
+      </div>
+    `).join("");
+  }
+
+  document.getElementById("btn-add-venue-gallery-photo").addEventListener("click", () => {
+    const input = document.getElementById("venue-gallery-input");
+    const val = input.value.trim();
+    if (!val) return;
+    venueGalleryUrls.push(val);
+    input.value = "";
+    renderVenueGalleryPreviews();
+  });
+
+  document.getElementById("venue-gallery-previews").addEventListener("click", (e) => {
+    const btn = e.target.closest(".btn-remove-venue-photo");
+    if (!btn) return;
+    const idx = Number(btn.dataset.idx);
+    venueGalleryUrls.splice(idx, 1);
+    renderVenueGalleryPreviews();
+  });
+
+  // ---- RENDER EVENT VENUES (MAIN GRID) ----
   function renderVenues() {
     if (allVenues.length === 0) {
-      grid.innerHTML = `<p class="text-on-surface-variant col-span-full py-10">Aún no hay lugares registrados. Da clic en "Agregar Lugar" para crear el primero.</p>`;
+      grid.innerHTML = `<p class="text-on-surface-variant col-span-full py-10">Aún no hay lugares registrados para este evento. Da clic en "Agregar Lugar" o selecciona desde el "Catálogo Maestro de Sedes".</p>`;
       return;
     }
     grid.innerHTML = allVenues.map(v => {
       const st = statusStyles[v.status] || statusStyles.en_consideracion;
+      const availKey = getVenueAvailability(v);
+      const avail = availStyles[availKey] || availStyles.media;
+      const gallery = getVenueGallery(v);
       const bg = v.image_url
         ? `background-image: url('${v.image_url}')`
         : "background-color: #2a2a27";
       return `
-        <div class="group flex flex-col bg-surface-container rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 relative" data-id="${v.id}">
-          <div class="absolute top-4 right-4 z-10">
-            <span class="${st.badge} backdrop-blur-md px-3 py-1 rounded-full font-label-gold text-label-gold shadow-sm">${st.label}</span>
+        <div class="group flex flex-col bg-surface-container rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 relative border border-tertiary/10 hover:border-tertiary/30" data-id="${v.id}">
+          <div class="absolute top-4 right-4 z-10 flex flex-col items-end gap-1.5">
+            <span class="${st.badge} backdrop-blur-md px-3 py-1 rounded-full font-label-gold text-[10px] uppercase font-bold shadow-sm">${st.label}</span>
+            <span class="px-2.5 py-0.5 rounded-full text-[9px] font-bold border backdrop-blur-md flex items-center gap-1 ${avail.badge} shadow-sm">
+              <span class="w-1.5 h-1.5 rounded-full ${avail.dot}"></span>
+              ${avail.label}
+            </span>
           </div>
           <div class="absolute top-4 left-4 z-10 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-            <button class="btn-edit-venue w-8 h-8 rounded-full bg-surface/80 backdrop-blur flex items-center justify-center text-on-surface hover:text-tertiary transition-colors"><span class="material-symbols-outlined text-[18px]">edit</span></button>
-            <button class="btn-delete-venue w-8 h-8 rounded-full bg-surface/80 backdrop-blur flex items-center justify-center text-on-surface hover:text-error transition-colors"><span class="material-symbols-outlined text-[18px]">delete</span></button>
+            <button class="btn-edit-venue w-8 h-8 rounded-full bg-surface/80 backdrop-blur flex items-center justify-center text-on-surface hover:text-tertiary transition-colors cursor-pointer"><span class="material-symbols-outlined text-[18px]">edit</span></button>
+            <button class="btn-delete-venue w-8 h-8 rounded-full bg-surface/80 backdrop-blur flex items-center justify-center text-on-surface hover:text-error transition-colors cursor-pointer"><span class="material-symbols-outlined text-[18px]">delete</span></button>
           </div>
-          <div class="relative h-72 overflow-hidden">
+          <div class="relative h-64 overflow-hidden">
             <div class="absolute inset-0 bg-gradient-to-t from-surface-container via-transparent to-transparent z-10"></div>
             <div class="w-full h-full bg-cover bg-center group-hover:scale-105 transition-transform duration-700" style="${bg}">
               ${!v.image_url ? `<div class="w-full h-full flex items-center justify-center"><span class="material-symbols-outlined text-on-surface-variant/30 text-6xl">image</span></div>` : ""}
             </div>
           </div>
-          <div class="p-6 flex flex-col gap-4 relative z-20 -mt-8 bg-surface-container rounded-t-2xl shadow-[0_-10px_20px_rgba(0,0,0,0.2)]">
-            <h3 class="font-headline-md text-headline-md text-on-surface">${escapeHtml(v.name)}</h3>
-            <div class="flex flex-wrap gap-4 text-on-surface-variant">
-              ${v.capacity ? `<div class="flex items-center gap-2"><span class="material-symbols-outlined text-sm opacity-70">groups</span><span class="font-body-md text-body-md">Cap. ${escapeHtml(v.capacity)}</span></div>` : ""}
-              ${v.price_tier ? `<div class="flex items-center gap-2"><span class="material-symbols-outlined text-sm opacity-70">payments</span><span class="font-body-md text-body-md text-tertiary">${escapeHtml(v.price_tier)}</span></div>` : ""}
+          <div class="p-6 flex flex-col gap-3 relative z-20 -mt-6 bg-surface-container rounded-t-2xl shadow-[0_-10px_20px_rgba(0,0,0,0.2)] flex-1 justify-between">
+            <div>
+              <h3 class="font-headline-md text-xl text-on-surface font-semibold">${escapeHtml(v.name)}</h3>
+              <div class="flex flex-wrap gap-4 text-on-surface-variant text-xs mt-2">
+                ${v.capacity ? `<div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-sm text-tertiary">groups</span><span class="font-body-md">Cap. ${escapeHtml(v.capacity)} personas</span></div>` : ""}
+                ${v.price_tier ? `<div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-sm text-tertiary">payments</span><span class="font-body-md text-tertiary font-bold">${escapeHtml(v.price_tier)}</span></div>` : ""}
+              </div>
+              ${v.address ? `<div class="flex items-start gap-1.5 text-on-surface-variant text-xs mt-2"><span class="material-symbols-outlined text-sm text-tertiary mt-0.5">location_on</span><span>${escapeHtml(v.address)}</span></div>` : ""}
+              
+              <!-- Gallery Preview Thumbnails -->
+              ${gallery.length > 0 ? `
+                <div class="flex items-center gap-1.5 mt-3 pt-2 border-t border-tertiary/10 overflow-x-auto">
+                  <span class="text-[9px] uppercase tracking-wider text-on-surface-variant font-bold shrink-0 mr-1">Áreas:</span>
+                  ${gallery.slice(0, 3).map(img => `
+                    <div class="w-12 h-9 rounded-lg overflow-hidden shrink-0 border border-tertiary/20">
+                      <img src="${img}" class="w-full h-full object-cover" alt="Área"/>
+                    </div>
+                  `).join("")}
+                </div>` : ""}
             </div>
-            ${v.address ? `<div class="flex items-start gap-2 text-on-surface-variant text-sm"><span class="material-symbols-outlined text-sm opacity-70 mt-0.5">location_on</span><span>${escapeHtml(v.address)}</span></div>` : ""}
-            ${v.notes ? `<p class="text-on-surface-variant text-sm">${escapeHtml(v.notes)}</p>` : ""}
+
+            <!-- Footer Action Button -->
+            <div class="pt-3 border-t border-surface-container-high flex justify-between items-center mt-2">
+              <button class="btn-showcase-event-venue px-3 py-1.5 rounded-xl bg-tertiary/10 text-tertiary hover:bg-tertiary/20 transition-colors text-xs flex items-center gap-1.5 font-semibold cursor-pointer">
+                <span class="material-symbols-outlined text-[16px]">visibility</span>
+                <span>Ver Ficha Técnica</span>
+              </button>
+              ${v.address ? `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.name + ' ' + v.address)}" target="_blank" class="text-xs text-on-surface-variant hover:text-tertiary transition-colors flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">map</span></a>` : ""}
+            </div>
           </div>
         </div>`;
     }).join("");
@@ -468,14 +1335,20 @@ document.addEventListener('DOMContentLoaded', function () {
   function openModal(mode, venue) {
     formError.classList.add("hidden");
     uploadedImageUrl = venue ? venue.image_url || null : null;
+    venueGalleryUrls = venue ? getVenueGallery(venue) : [];
+
     document.getElementById("venue-modal-title").textContent = mode === "edit" ? "Editar Lugar" : "Agregar Lugar";
     document.getElementById("venue-id").value = venue ? venue.id : "";
     document.getElementById("venue-name").value = venue ? venue.name || "" : "";
     document.getElementById("venue-capacity").value = venue ? venue.capacity || "" : "";
     document.getElementById("venue-price-tier").value = venue ? venue.price_tier || "$$$" : "$$$";
     document.getElementById("venue-status").value = venue ? venue.status || "en_consideracion" : "en_consideracion";
+    document.getElementById("venue-availability").value = venue ? getVenueAvailability(venue) : "media";
     document.getElementById("venue-address").value = venue ? venue.address || "" : "";
     document.getElementById("venue-notes").value = venue ? venue.notes || "" : "";
+    document.getElementById("venue-gallery-input").value = "";
+    document.getElementById("venue-save-to-master").checked = true;
+
     photoInput.value = "";
     if (uploadedImageUrl) {
       photoPreview.src = uploadedImageUrl;
@@ -485,6 +1358,8 @@ document.addEventListener('DOMContentLoaded', function () {
       photoPreview.classList.add("hidden");
       photoPlaceholder.classList.remove("hidden");
     }
+
+    renderVenueGalleryPreviews();
     modal.classList.remove("hidden");
     modal.classList.add("flex");
   }
@@ -494,6 +1369,7 @@ document.addEventListener('DOMContentLoaded', function () {
     modal.classList.remove("flex");
     form.reset();
     uploadedImageUrl = null;
+    venueGalleryUrls = [];
   }
 
   document.getElementById("venue-modal-close").addEventListener("click", closeModal);
@@ -550,6 +1426,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const venue = allVenues.find(v => String(v.id) === id);
     if (!venue) return;
 
+    if (e.target.closest(".btn-showcase-event-venue")) {
+      openShowcase(venue);
+      return;
+    }
     if (e.target.closest(".btn-edit-venue")) {
       openModal("edit", venue);
       return;
@@ -577,22 +1457,32 @@ document.addEventListener('DOMContentLoaded', function () {
     e.preventDefault();
     formError.classList.add("hidden");
     const id = document.getElementById("venue-id").value;
+    const name = document.getElementById("venue-name").value.trim();
+    const capacity = document.getElementById("venue-capacity").value ? Number(document.getElementById("venue-capacity").value) : null;
+    const priceTier = document.getElementById("venue-price-tier").value;
+    const status = document.getElementById("venue-status").value;
+    const availability = document.getElementById("venue-availability").value;
+    const address = document.getElementById("venue-address").value.trim() || null;
+    const notes = document.getElementById("venue-notes").value.trim() || null;
+    const saveToMaster = document.getElementById("venue-save-to-master").checked;
+
     const payload = {
       event_id: currentEventId,
-      name: document.getElementById("venue-name").value.trim(),
-      capacity: document.getElementById("venue-capacity").value ? Number(document.getElementById("venue-capacity").value) : null,
-      price_tier: document.getElementById("venue-price-tier").value,
-      status: document.getElementById("venue-status").value,
-      address: document.getElementById("venue-address").value.trim() || null,
-      notes: document.getElementById("venue-notes").value.trim() || null,
+      name: name,
+      capacity: capacity,
+      price_tier: priceTier,
+      status: status,
+      address: address,
+      notes: notes,
       image_url: uploadedImageUrl
     };
 
+    let resultData;
     let error;
     if (id) {
-      ({ error } = await window.supabaseClient.from("venues").update(payload).eq("id", id));
+      ({ data: resultData, error } = await window.supabaseClient.from("venues").update(payload).eq("id", id).select());
     } else {
-      ({ error } = await window.supabaseClient.from("venues").insert(payload));
+      ({ data: resultData, error } = await window.supabaseClient.from("venues").insert(payload).select());
     }
 
     if (error) {
@@ -600,6 +1490,39 @@ document.addEventListener('DOMContentLoaded', function () {
       formError.classList.remove("hidden");
       return;
     }
+
+    const savedId = (resultData && resultData[0]) ? resultData[0].id : (id || Date.now());
+    if (venueGalleryUrls.length > 0) {
+      localStorage.setItem("galaVenueGallery_" + savedId, JSON.stringify(venueGalleryUrls));
+    }
+    localStorage.setItem("galaVenueAvail_" + savedId, availability);
+
+    if (saveToMaster) {
+      const existingMvIndex = masterVenues.findIndex(m => m.name.toLowerCase() === name.toLowerCase());
+      const masterItem = {
+        id: existingMvIndex !== -1 ? masterVenues[existingMvIndex].id : ("mven-" + Date.now()),
+        name: name,
+        type: "Hacienda",
+        availability: availability,
+        capacity: capacity,
+        price_tier: priceTier,
+        pricing_range: priceTier ? `Nivel ${priceTier}` : "$$$",
+        address: address,
+        amenities: ["Planta de Luz", "Estacionamiento", "Área Climatizada"],
+        curfew: "Hasta las 3:00 AM",
+        image_url: uploadedImageUrl || (existingMvIndex !== -1 ? masterVenues[existingMvIndex].image_url : null),
+        gallery_urls: venueGalleryUrls.length > 0 ? venueGalleryUrls : (existingMvIndex !== -1 ? masterVenues[existingMvIndex].gallery_urls : []),
+        notes: notes || (existingMvIndex !== -1 ? masterVenues[existingMvIndex].notes : "Sede registrada desde evento.")
+      };
+
+      if (existingMvIndex !== -1) {
+        masterVenues[existingMvIndex] = masterItem;
+      } else {
+        masterVenues.unshift(masterItem);
+      }
+      saveMasterVenues();
+    }
+
     closeModal();
     window.showToast(id ? "Lugar actualizado" : "Lugar agregado con éxito", "success");
     await loadVenues();
@@ -609,10 +1532,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const auth = await window.requireAuth();
     if (!auth) return;
 
+    if (auth.user) currentUserId = auth.user.id;
+
     const currentEvent = await window.requireEvent();
     if (!currentEvent) return;
 
     currentEventId = currentEvent.id;
+    loadMasterVenues();
     await loadVenues();
   })();
 </script>
