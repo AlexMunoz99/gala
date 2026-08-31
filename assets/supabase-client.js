@@ -255,95 +255,162 @@ async function requireAuth() {
       return null;
     }
 
-    // --- Control de Acceso por Módulos (disabled_modules) ---
-    const path = window.location.pathname;
-    const disabledModules = profile.disabled_modules || [];
-    const moduleMappings = {
-      "invitados.html": "invitados",
-      "presupuesto.html": "presupuesto",
-      "itinerario.html": "itinerario",
-      "programa.html": "programa",
-      "seating-materials.html": "asientos",
-      "tareas.html": "tareas",
-      "post-wedding.html": "galeria"
-    };
+// Catálogo Maestro de Módulos de Gala ERP
+const GALA_AVAILABLE_MODULES = [
+  { key: "invitados",   label: "Invitados & RSVP",   icon: "group",             path: "invitados.html",              desc: "Lista de invitados, pases y confirmaciones" },
+  { key: "invitacion",  label: "Invitación Web",     icon: "auto_awesome",      path: "personalizar-invitacion.html", desc: "Diseñador interactivo, sobre 3D y portal" },
+  { key: "presupuesto", label: "Presupuesto",        icon: "payments",          path: "presupuesto.html",            desc: "Control de pagos, cotizaciones y balance" },
+  { key: "itinerario",  label: "Itinerario",         icon: "calendar_today",    path: "itinerario.html",             desc: "Cronograma del día, horarios y PDF" },
+  { key: "lugares",     label: "Lugares",            icon: "location_on",       path: "lugares.html",                desc: "Catálogo de sedes y disponibilidad" },
+  { key: "proveedores", label: "Proveedores",        icon: "business_center",   path: "proveedores.html",            desc: "Cartera de proveedores y contratos" },
+  { key: "tareas",      label: "Tareas",             icon: "check_circle",      path: "tareas.html",                 desc: "Checklist de pendientes y seguimiento" },
+  { key: "programa",    label: "Programa",           icon: "list_alt",          path: "programa.html",               desc: "Minuto a minuto de la recepción" },
+  { key: "asientos",    label: "Asientos",           icon: "chair",             path: "seating-materials.html",      desc: "Plano arquitectónico de salón y mesas" },
+  { key: "galeria",     label: "Galería",            icon: "photo_library",     path: "post-wedding.html",           desc: "Galería de fotos y entrega de recuerdos" }
+];
 
-    const currentPageFile = path.substring(path.lastIndexOf("/") + 1);
-    const moduleName = moduleMappings[currentPageFile];
+const GALA_MODULE_PRESETS = {
+  boda: {
+    name: "Boda Completa",
+    icon: "favorite",
+    badge: "💍 Boda",
+    modules: ["invitados", "invitacion", "presupuesto", "itinerario", "lugares", "proveedores", "tareas", "programa", "asientos", "galeria"]
+  },
+  corporativo: {
+    name: "Evento Corporativo",
+    icon: "business_center",
+    badge: "💼 Corporativo",
+    modules: ["itinerario", "lugares", "proveedores", "presupuesto", "tareas", "programa"]
+  },
+  social: {
+    name: "Social / XV Años / Fiesta",
+    icon: "party_mode",
+    badge: "🎉 Social",
+    modules: ["invitados", "invitacion", "presupuesto", "itinerario", "asientos", "galeria", "tareas"]
+  },
+  banquete: {
+    name: "Cena / Banquete Privado",
+    icon: "restaurant",
+    badge: "🍽️ Banquete",
+    modules: ["invitados", "presupuesto", "asientos", "proveedores", "tareas"]
+  },
+  personalizado: {
+    name: "Personalizado",
+    icon: "tune",
+    badge: "🛠️ Personalizado",
+    modules: ["invitados", "presupuesto", "itinerario", "tareas"]
+  }
+};
 
-    if (moduleName && disabledModules.includes(moduleName)) {
-      window.showToast(`El módulo "${moduleName.toUpperCase()}" está desactivado para tu cuenta.`, "error");
-      setTimeout(() => { window.location.href = "proyectos.html"; }, 1000);
-      return null;
+function getEventActiveModules(event) {
+  if (event && Array.isArray(event.active_modules) && event.active_modules.length > 0) {
+    return event.active_modules;
+  }
+  const eventId = event?.id || localStorage.getItem(CURRENT_EVENT_KEY);
+  if (eventId) {
+    try {
+      const cached = localStorage.getItem("galaEventModules_" + eventId);
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch(e) {}
+  }
+  // Fallback por defecto: todos los módulos activos
+  return GALA_AVAILABLE_MODULES.map(m => m.key);
+}
+
+function isModuleEnabledForEvent(moduleKey, event) {
+  const active = getEventActiveModules(event);
+  return active.includes(moduleKey);
+}
+
+function refreshSidebarNavigation(profile, currentEvent) {
+  const sidebar = document.getElementById("app-sidebar");
+  if (!sidebar) return;
+
+  const disabledModules = profile?.disabled_modules || [];
+  const eventActiveModules = getEventActiveModules(currentEvent || window.__currentEventObj);
+
+  const moduleMappings = {
+    "invitados.html": "invitados",
+    "personalizar-invitacion.html": "invitacion",
+    "invitacion.html": "invitacion",
+    "presupuesto.html": "presupuesto",
+    "itinerario.html": "itinerario",
+    "lugares.html": "lugares",
+    "proveedores.html": "proveedores",
+    "tareas.html": "tareas",
+    "programa.html": "programa",
+    "seating-materials.html": "asientos",
+    "post-wedding.html": "galeria"
+  };
+
+  // 1. Reposicionar y renombrar botón "Mis Eventos" (antes "Mis Proyectos") al tope
+  const bottomCta = sidebar.querySelector(".sidebar-cta");
+  if (bottomCta) {
+    const btn = bottomCta.querySelector("a");
+    if (btn) {
+      btn.innerHTML = `<span class="material-symbols-outlined nav-icon">apps</span><span class="sidebar-label">Mis Eventos</span>`;
+      btn.href = "proyectos.html";
+      
+      const logoDiv = sidebar.querySelector(".h-20");
+      if (logoDiv && !sidebar.querySelector(".moved-events-btn")) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "px-4 pt-2 pb-1 border-b border-tertiary/10 moved-events-btn shrink-0";
+        btn.className = "w-full py-2.5 bg-tertiary text-on-tertiary font-button-text text-button-text uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-2 rounded-lg text-[10px] font-bold shadow-md shadow-tertiary/15";
+        wrapper.appendChild(btn);
+        logoDiv.after(wrapper);
+        bottomCta.remove();
+      }
+    }
+  }
+
+  // 2. Renombrar "Post-Boda" a "Galería" y filtrar según módulos activos del evento y del perfil
+  sidebar.querySelectorAll("nav a").forEach(a => {
+    const href = a.getAttribute("href") || "";
+    const page = href.substring(href.lastIndexOf("/") + 1);
+    
+    if (page === "post-wedding.html") {
+      const label = a.querySelector(".sidebar-label");
+      if (label) label.textContent = "Galería";
+      const icon = a.querySelector(".nav-icon");
+      if (icon) icon.textContent = "photo_library";
     }
 
-    // --- Reestructuración Dinámica del Sidebar ---
-    setTimeout(() => {
-      const sidebar = document.getElementById("app-sidebar");
-      if (sidebar) {
-        // 1. Reposicionar y renombrar botón "Mis Eventos" (antes "Mis Proyectos") al tope
-        const bottomCta = sidebar.querySelector(".sidebar-cta");
-        if (bottomCta) {
-          const btn = bottomCta.querySelector("a");
-          if (btn) {
-            btn.innerHTML = `<span class="material-symbols-outlined nav-icon">apps</span><span class="sidebar-label">Mis Eventos</span>`;
-            btn.href = "proyectos.html";
-            
-            const logoDiv = sidebar.querySelector(".h-20");
-            if (logoDiv && !sidebar.querySelector(".moved-events-btn")) {
-              const wrapper = document.createElement("div");
-              wrapper.className = "px-4 pt-2 pb-1 border-b border-tertiary/10 moved-events-btn shrink-0";
-              btn.className = "w-full py-2.5 bg-tertiary text-on-tertiary font-button-text text-button-text uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-2 rounded-lg text-[10px] font-bold shadow-md shadow-tertiary/15";
-              wrapper.appendChild(btn);
-              logoDiv.after(wrapper);
-              bottomCta.remove();
-            }
-          }
-        }
+    const mappedModule = moduleMappings[page];
+    if (mappedModule) {
+      const isAccountDisabled = disabledModules.includes(mappedModule);
+      const isEventDisabled = !eventActiveModules.includes(mappedModule);
 
-        // 2. Renombrar "Post-Boda" a "Galería" de forma dinámica y desactivar módulos deshabilitados
-        sidebar.querySelectorAll("nav a").forEach(a => {
-          const href = a.getAttribute("href") || "";
-          const page = href.substring(href.lastIndexOf("/") + 1);
-          
-          if (page === "post-wedding.html") {
-            const label = a.querySelector(".sidebar-label");
-            if (label) label.textContent = "Galería";
-            const icon = a.querySelector(".nav-icon");
-            if (icon) icon.textContent = "photo_library";
-          }
-
-          const mappedModule = moduleMappings[page];
-          if (mappedModule && disabledModules.includes(mappedModule)) {
-            a.style.opacity = "0.35";
-            a.style.pointerEvents = "none";
-            a.title = "Módulo desactivado por el administrador";
-          }
-        });
-
-        // 3. Inyectar enlaces dinámicos según el rol o plan en el sidebar
-        const nav = sidebar.querySelector("nav");
-        if (nav) {
-          // Si el plan es Agency, inyectar "Mi Equipo"
-          if (profile.plan === "agency" && !sidebar.querySelector(".agency-team-btn")) {
-            const teamLink = document.createElement("a");
-            teamLink.className = "flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all agency-team-btn border-l-4 border-transparent hover:border-tertiary/40";
-            teamLink.href = "equipo.html";
-            teamLink.innerHTML = `<span class="material-symbols-outlined nav-icon mr-4">groups</span><span class="sidebar-label">Mi Equipo</span>`;
-            nav.appendChild(teamLink);
-          }
-          // Si es Administrador, inyectar "Panel de Admin"
-          const isAdmin = profile.role === "admin" || (originalProfile && originalProfile.role === "admin");
-          if (isAdmin && !sidebar.querySelector(".admin-panel-btn")) {
-            const adminLink = document.createElement("a");
-            adminLink.className = "flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all admin-panel-btn border-l-4 border-transparent hover:border-tertiary/40";
-            adminLink.href = "usuarios.html";
-            adminLink.innerHTML = `<span class="material-symbols-outlined nav-icon mr-4">admin_panel_settings</span><span class="sidebar-label">Panel de Admin</span>`;
-            nav.appendChild(adminLink);
-          }
-        }
+      if (isAccountDisabled || isEventDisabled) {
+        a.style.display = "none";
+      } else {
+        a.style.display = "flex";
       }
-    }, 10);
+    }
+  });
+
+  // 3. Inyectar enlaces dinámicos según el rol o plan en el sidebar
+  const nav = sidebar.querySelector("nav");
+  if (nav && profile) {
+    if (profile.plan === "agency" && !sidebar.querySelector(".agency-team-btn")) {
+      const teamLink = document.createElement("a");
+      teamLink.className = "flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all agency-team-btn border-l-4 border-transparent hover:border-tertiary/40";
+      teamLink.href = "equipo.html";
+      teamLink.innerHTML = `<span class="material-symbols-outlined nav-icon mr-4">groups</span><span class="sidebar-label">Mi Equipo</span>`;
+      nav.appendChild(teamLink);
+    }
+    const isAdmin = profile.role === "admin" || (originalProfile && originalProfile.role === "admin");
+    if (isAdmin && !sidebar.querySelector(".admin-panel-btn")) {
+      const adminLink = document.createElement("a");
+      adminLink.className = "flex items-center px-6 py-4 text-on-surface-variant hover:text-tertiary transition-all admin-panel-btn border-l-4 border-transparent hover:border-tertiary/40";
+      adminLink.href = "usuarios.html";
+      adminLink.innerHTML = `<span class="material-symbols-outlined nav-icon mr-4">admin_panel_settings</span><span class="sidebar-label">Panel de Admin</span>`;
+      nav.appendChild(adminLink);
+    }
+  }
+}
 
     // --- Inyectar banner flotante de Impersonación ---
     const impersonateId = localStorage.getItem("galaImpersonateUserId");
@@ -418,12 +485,16 @@ async function requireEvent() {
       const { data: latest } = await window.supabaseClient.from("events").select("*").limit(1);
       if (latest && latest[0]) {
         localStorage.setItem(CURRENT_EVENT_KEY, latest[0].id);
+        window.__currentEventObj = latest[0];
+        refreshSidebarNavigation(originalProfile || window.__currentUserProfile, latest[0]);
         return latest[0];
       }
       localStorage.removeItem(CURRENT_EVENT_KEY);
       window.location.href = "proyectos.html";
       return null;
     }
+    window.__currentEventObj = event;
+    refreshSidebarNavigation(originalProfile || window.__currentUserProfile, event);
     return event;
   } catch(e) {
     console.error("Error en requireEvent:", e);
@@ -454,6 +525,8 @@ function formatCountdown(eventDateStr) {
  */
 function applyEventToHeader(event) {
   if (!event) return;
+  window.__currentEventObj = event;
+  refreshSidebarNavigation(originalProfile || window.__currentUserProfile, event);
   const nameEl = document.getElementById("current-event-name");
   const countdownEl = document.getElementById("current-event-countdown");
   if (nameEl) nameEl.textContent = event.name || "Proyecto sin nombre";
@@ -524,83 +597,66 @@ function showToast(message, type = "success", duration = 3500) {
   toast.className += ` ${borderClass}`;
   toast.innerHTML = `
     <span class="material-symbols-outlined ${iconClass} text-[22px] shrink-0">${iconName}</span>
-    <span class="font-body-md text-sm leading-snug flex-1">${message}</span>
+    <span class="text-xs font-medium leading-snug flex-1">${message}</span>
   `;
 
   container.appendChild(toast);
 
   requestAnimationFrame(() => {
     toast.classList.remove("translate-y-4", "opacity-0");
-    toast.classList.add("translate-y-0", "opacity-100");
   });
 
   setTimeout(() => {
-    toast.classList.remove("translate-y-0", "opacity-100");
-    toast.classList.add("translate-y-2", "opacity-0");
+    toast.classList.add("translate-y-4", "opacity-0");
     setTimeout(() => toast.remove(), 300);
   }, duration);
 }
 
 /**
- * Diálogo de Confirmación Luxury Dark
+ * Modal de Confirmación Asíncrono Personalizado
  */
-function showConfirmDialog({ title = "¿Estás seguro?", message = "Esta acción no se puede deshacer.", confirmText = "Confirmar", cancelText = "Cancelar", isDestructive = true } = {}) {
+function showConfirmDialog({ title = "Confirmar Acción", message = "¿Estás seguro?", confirmText = "Confirmar", cancelText = "Cancelar", isDestructive = true }) {
   return new Promise((resolve) => {
-    const existing = document.getElementById("gala-confirm-modal");
-    if (existing) existing.remove();
+    const overlay = document.createElement("div");
+    overlay.className = "fixed inset-0 z-[999999] bg-black/75 backdrop-blur-md flex items-center justify-center p-4 opacity-0 transition-opacity duration-200";
+    
+    const confirmBtnClass = isDestructive
+      ? "bg-error text-on-error hover:brightness-110 shadow-error/20"
+      : "bg-tertiary text-on-tertiary hover:brightness-110 shadow-tertiary/20";
 
-    const modal = document.createElement("div");
-    modal.id = "gala-confirm-modal";
-    modal.className = "fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm transition-opacity duration-200 opacity-0";
-
-    const confirmBtnClass = isDestructive 
-      ? "bg-error/20 border border-error/40 text-error hover:bg-error/30"
-      : "bg-tertiary text-on-tertiary hover:brightness-110";
-
-    modal.innerHTML = `
-      <div class="bg-surface-container-high border border-tertiary/20 rounded-2xl p-6 max-w-md w-full shadow-2xl flex flex-col gap-4 transform scale-95 transition-transform duration-200">
-        <div class="flex items-start gap-4">
+    overlay.innerHTML = `
+      <div class="bg-surface-container-low border border-tertiary/20 rounded-2xl p-6 max-w-md w-full shadow-2xl flex flex-col gap-4 transform scale-95 transition-transform duration-200">
+        <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-full ${isDestructive ? 'bg-error/15 text-error border border-error/30' : 'bg-tertiary/15 text-tertiary border border-tertiary/30'} flex items-center justify-center shrink-0">
-            <span class="material-symbols-outlined text-[22px]">${isDestructive ? 'warning' : 'help'}</span>
+            <span class="material-symbols-outlined text-[20px]">${isDestructive ? 'warning' : 'help'}</span>
           </div>
-          <div class="flex-1">
-            <h3 class="font-headline-md text-lg text-on-surface">${title}</h3>
-            <p class="font-body-md text-sm text-on-surface-variant mt-1 leading-relaxed">${message}</p>
-          </div>
+          <h3 class="font-headline-lg text-lg text-on-surface font-semibold leading-tight">${title}</h3>
         </div>
-        <div class="flex items-center justify-end gap-3 mt-2 pt-3 border-t border-tertiary/10">
-          <button id="gala-modal-cancel" class="px-4 py-2 rounded-lg border border-tertiary/20 text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all text-xs font-button-text uppercase tracking-wider">
-            ${cancelText}
-          </button>
-          <button id="gala-modal-confirm" class="px-5 py-2 rounded-lg ${confirmBtnClass} transition-all text-xs font-button-text uppercase tracking-wider font-semibold shadow-lg">
-            ${confirmText}
-          </button>
+        <p class="text-xs text-on-surface-variant leading-relaxed">${message}</p>
+        <div class="flex items-center justify-end gap-3 pt-2">
+          <button id="dialog-cancel-btn" class="px-4 py-2.5 rounded-xl border border-tertiary/20 text-on-surface-variant hover:bg-surface-container text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer">${cancelText}</button>
+          <button id="dialog-confirm-btn" class="px-5 py-2.5 rounded-xl ${confirmBtnClass} text-xs font-bold uppercase tracking-wider shadow-lg transition-all cursor-pointer">${confirmText}</button>
         </div>
       </div>
     `;
 
-    document.body.appendChild(modal);
-
+    document.body.appendChild(overlay);
     requestAnimationFrame(() => {
-      modal.classList.remove("opacity-0");
-      modal.classList.add("opacity-100");
-      modal.querySelector("div").classList.remove("scale-95");
-      modal.querySelector("div").classList.add("scale-100");
+      overlay.classList.remove("opacity-0");
+      overlay.querySelector("div").classList.remove("scale-95");
     });
 
-    function cleanUp(result) {
-      modal.classList.remove("opacity-100");
-      modal.classList.add("opacity-0");
-      setTimeout(() => {
-        modal.remove();
-        resolve(result);
-      }, 150);
-    }
+    const cleanup = (result) => {
+      overlay.classList.add("opacity-0");
+      overlay.querySelector("div").classList.add("scale-95");
+      setTimeout(() => overlay.remove(), 200);
+      resolve(result);
+    };
 
-    modal.querySelector("#gala-modal-cancel").addEventListener("click", () => cleanUp(false));
-    modal.querySelector("#gala-modal-confirm").addEventListener("click", () => cleanUp(true));
-    modal.addEventListener("click", (e) => {
-      if (e.target === modal) cleanUp(false);
+    overlay.querySelector("#dialog-confirm-btn").addEventListener("click", () => cleanup(true));
+    overlay.querySelector("#dialog-cancel-btn").addEventListener("click", () => cleanup(false));
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) cleanup(false);
     });
   });
 }
@@ -609,14 +665,12 @@ function showConfirmDialog({ title = "¿Estás seguro?", message = "Esta acción
  * Optimización y Adaptabilidad Móvil Global (Mobile Drawer & Responsive Engine)
  */
 function initMobileEngine() {
-  // Estilos compactos y responsivos ya inyectados al inicio del script.
-
-  // Backdrop oscuro para el menú en celular
-  let backdrop = document.getElementById("gala-mobile-backdrop");
+  const isMobile = window.innerWidth < 768;
+  let backdrop = document.getElementById("gala-sidebar-backdrop");
   if (!backdrop) {
     backdrop = document.createElement("div");
-    backdrop.id = "gala-mobile-backdrop";
-    backdrop.className = "fixed inset-0 bg-black/70 backdrop-blur-sm z-[99998] hidden opacity-0 transition-opacity duration-300 md:hidden";
+    backdrop.id = "gala-sidebar-backdrop";
+    backdrop.className = "fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden transition-opacity duration-300 opacity-0 md:hidden";
     document.body.appendChild(backdrop);
   }
 
@@ -666,6 +720,12 @@ if (document.readyState === "loading") {
   initMobileEngine();
 }
 
+window.GALA_AVAILABLE_MODULES = GALA_AVAILABLE_MODULES;
+window.GALA_MODULE_PRESETS = GALA_MODULE_PRESETS;
+window.getEventActiveModules = getEventActiveModules;
+window.isModuleEnabledForEvent = isModuleEnabledForEvent;
+window.refreshSidebarNavigation = refreshSidebarNavigation;
+
 window.requireAuth = requireAuth;
 window.signOut = signOut;
 window.requireEvent = requireEvent;
@@ -677,4 +737,3 @@ window.applyRoleBadge = applyRoleBadge;
 window.showToast = showToast;
 window.showConfirmDialog = showConfirmDialog;
 window.initMobileEngine = initMobileEngine;
-

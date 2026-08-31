@@ -108,40 +108,69 @@ tailwind.config = {
 
 <!-- Modal: Editar Evento -->
 <div id="edit-project-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
-  <div id="edit-project-modal-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
-  <div class="relative w-full max-w-sm bg-surface-container-low rounded-2xl shadow-2xl border border-tertiary/10 p-6">
-    <div class="flex items-center justify-between mb-4">
-      <h2 class="font-display-lg text-lg text-on-surface">Editar Evento</h2>
-      <button id="edit-project-modal-close" class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors cursor-pointer">close</button>
+  <div id="edit-project-modal-backdrop" class="absolute inset-0 bg-black/75 backdrop-blur-md"></div>
+  <div class="relative w-full max-w-2xl bg-surface-container-low rounded-3xl shadow-2xl border border-tertiary/20 p-6 md:p-8 max-h-[90vh] flex flex-col overflow-hidden">
+    <div class="flex items-start justify-between mb-4 shrink-0 pb-3 border-b border-tertiary/10">
+      <div>
+        <h2 class="font-display-lg text-xl md:text-2xl text-on-surface font-semibold">Editar Configuración de Evento</h2>
+        <p class="text-xs text-on-surface-variant mt-0.5">Modifica los detalles y activa o desactiva módulos para este proyecto</p>
+      </div>
+      <button id="edit-project-modal-close" class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors cursor-pointer p-1">close</button>
     </div>
-    <form id="edit-project-form" class="flex flex-col gap-3">
+
+    <form id="edit-project-form" class="flex-1 overflow-y-auto pr-1 flex flex-col gap-4">
       <input id="edit-project-id" type="hidden"/>
-      <div class="flex flex-col gap-1">
-        <label class="text-[10px] uppercase tracking-wider text-on-surface-variant" for="edit-project-name">Título del evento *</label>
-        <input id="edit-project-name" required="" class="bg-surface-container border border-tertiary/20 rounded-lg py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="flex flex-col gap-1">
+          <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold" for="edit-project-name">Título del evento *</label>
+          <input id="edit-project-name" required="" class="bg-surface-container border border-tertiary/20 rounded-xl py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold" for="edit-project-date">Fecha estimada</label>
+          <input id="edit-project-date" class="bg-surface-container border border-tertiary/20 rounded-xl py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary" type="date"/>
+        </div>
       </div>
-      <div class="flex flex-col gap-1">
-        <label class="text-[10px] uppercase tracking-wider text-on-surface-variant" for="edit-project-date">Fecha estimada</label>
-        <input id="edit-project-date" class="bg-surface-container border border-tertiary/20 rounded-lg py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary" type="date"/>
-      </div>
-      <div class="flex flex-col gap-1">
-        <label class="text-[10px] uppercase tracking-wider text-on-surface-variant" for="edit-project-type">Tipo de Evento</label>
-        <select id="edit-project-type" class="bg-surface-container border border-tertiary/20 rounded-lg py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary">
-          <option value="boda">Boda 💍</option>
-          <option value="social">Social 🎉 (Cumpleaños, XV Años, Graduación)</option>
-          <option value="corporativo">Corporativo 💼 (Conferencia, Congreso, Lanzamiento)</option>
+
+      <div class="flex flex-col gap-1.5">
+        <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold" for="edit-project-type">Plantilla / Tipo de Evento</label>
+        <select id="edit-project-type" class="bg-surface-container border border-tertiary/20 rounded-xl py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary">
+          <option value="boda">💍 Boda Completa (Todos los 10 módulos)</option>
+          <option value="corporativo">💼 Evento Corporativo (Itinerario, Lugares, Proveedores, Presupuesto, Tareas, Programa)</option>
+          <option value="social">🎉 Social / XV Años / Fiesta (Invitados, Invitación Web, Presupuesto, Itinerario, Asientos, Galería)</option>
+          <option value="banquete">🍽️ Cena / Banquete Privado (Invitados, Presupuesto, Asientos, Proveedores, Tareas)</option>
+          <option value="personalizado">🛠️ Personalizado (Selección manual libre)</option>
         </select>
+      </div>
+
+      <!-- Module Picker Grid -->
+      <div class="flex flex-col gap-2 pt-2 border-t border-tertiary/10">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] uppercase tracking-wider text-tertiary font-bold">Módulos Activos</span>
+            <span id="edit-modules-count" class="px-2 py-0.5 rounded-full bg-tertiary/15 text-tertiary text-[10px] font-bold border border-tertiary/30">10 seleccionados</span>
+          </div>
+          <div class="flex items-center gap-2 text-xs">
+            <button type="button" id="edit-btn-select-all" class="text-[11px] text-tertiary hover:underline font-semibold cursor-pointer">Marcar Todos</button>
+            <span class="text-on-surface-variant/40">|</span>
+            <button type="button" id="edit-btn-deselect-all" class="text-[11px] text-on-surface-variant hover:text-on-surface font-semibold cursor-pointer">Desmarcar</button>
+          </div>
+        </div>
+
+        <div id="edit-modules-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <!-- Dynamic Module Cards -->
+        </div>
       </div>
 
       <p id="edit-project-error" class="hidden text-error text-xs"></p>
 
-      <div class="flex justify-between items-center gap-2 mt-2">
+      <div class="flex justify-between items-center gap-2 pt-4 border-t border-tertiary/10 shrink-0 mt-auto">
         <button type="button" id="edit-project-delete-btn" class="px-3 py-2.5 rounded-xl text-error hover:bg-error/10 transition-colors font-button-text uppercase tracking-wider text-xs flex items-center gap-1 cursor-pointer">
           <span class="material-symbols-outlined text-[16px]">delete</span>Eliminar
         </button>
         <div class="flex justify-end gap-2 flex-1">
           <button type="button" id="edit-project-cancel" class="px-4 py-2.5 rounded-xl border border-tertiary/20 text-on-surface-variant hover:bg-surface-container transition-colors font-button-text uppercase tracking-wider text-xs cursor-pointer">Cancelar</button>
-          <button type="submit" class="px-6 py-2.5 rounded-xl bg-tertiary text-on-tertiary font-button-text text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all shadow-md cursor-pointer">Guardar</button>
+          <button type="submit" class="px-6 py-2.5 rounded-xl bg-tertiary text-on-tertiary font-button-text text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all shadow-md cursor-pointer">Guardar Cambios</button>
         </div>
       </div>
     </form>
@@ -150,33 +179,61 @@ tailwind.config = {
 
 <!-- Modal: Nuevo Evento -->
 <div id="project-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4">
-  <div id="project-modal-backdrop" class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
-  <div class="relative w-full max-w-sm bg-surface-container-low rounded-2xl shadow-2xl border border-tertiary/10 p-6">
-    <div class="flex items-center justify-between mb-4">
-      <h2 class="font-display-lg text-lg text-on-surface">Nuevo Evento</h2>
-      <button id="project-modal-close" class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors cursor-pointer">close</button>
+  <div id="project-modal-backdrop" class="absolute inset-0 bg-black/75 backdrop-blur-md"></div>
+  <div class="relative w-full max-w-2xl bg-surface-container-low rounded-3xl shadow-2xl border border-tertiary/20 p-6 md:p-8 max-h-[90vh] flex flex-col overflow-hidden">
+    <div class="flex items-start justify-between mb-4 shrink-0 pb-3 border-b border-tertiary/10">
+      <div>
+        <h2 class="font-display-lg text-xl md:text-2xl text-on-surface font-semibold">Crear Nuevo Evento</h2>
+        <p class="text-xs text-on-surface-variant mt-0.5">Elige los módulos y herramientas que utilizarás para este evento</p>
+      </div>
+      <button id="project-modal-close" class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors cursor-pointer p-1">close</button>
     </div>
-    <form id="project-form" class="flex flex-col gap-3">
-      <div class="flex flex-col gap-1">
-        <label class="text-[10px] uppercase tracking-wider text-on-surface-variant" for="project-name">Título del evento *</label>
-        <input id="project-name" required="" placeholder="Boda de Greta y Alex" class="bg-surface-container border border-tertiary/20 rounded-lg py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
+
+    <form id="project-form" class="flex-1 overflow-y-auto pr-1 flex flex-col gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="flex flex-col gap-1">
+          <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold" for="project-name">Título del evento *</label>
+          <input id="project-name" required="" placeholder="Ej: Boda Valentina & Sebastián" class="bg-surface-container border border-tertiary/20 rounded-xl py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold" for="project-date">Fecha estimada</label>
+          <input id="project-date" class="bg-surface-container border border-tertiary/20 rounded-xl py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary" type="date"/>
+        </div>
       </div>
-      <div class="flex flex-col gap-1">
-        <label class="text-[10px] uppercase tracking-wider text-on-surface-variant" for="project-date">Fecha estimada</label>
-        <input id="project-date" class="bg-surface-container border border-tertiary/20 rounded-lg py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary" type="date"/>
-      </div>
-      <div class="flex flex-col gap-1">
-        <label class="text-[10px] uppercase tracking-wider text-on-surface-variant" for="project-type">Tipo de Evento</label>
-        <select id="project-type" class="bg-surface-container border border-tertiary/20 rounded-lg py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary">
-          <option value="boda" selected>Boda 💍</option>
-          <option value="social">Social 🎉 (Cumpleaños, XV Años, Graduación)</option>
-          <option value="corporativo">Corporativo 💼 (Conferencia, Congreso, Lanzamiento)</option>
+
+      <div class="flex flex-col gap-1.5">
+        <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold" for="project-type">Plantilla / Tipo de Evento</label>
+        <select id="project-type" class="bg-surface-container border border-tertiary/20 rounded-xl py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary">
+          <option value="boda" selected>💍 Boda Completa (Todos los 10 módulos)</option>
+          <option value="corporativo">💼 Evento Corporativo (Itinerario, Lugares, Proveedores, Presupuesto, Tareas, Programa)</option>
+          <option value="social">🎉 Social / XV Años / Fiesta (Invitados, Invitación Web, Presupuesto, Itinerario, Asientos, Galería)</option>
+          <option value="banquete">🍽️ Cena / Banquete Privado (Invitados, Presupuesto, Asientos, Proveedores, Tareas)</option>
+          <option value="personalizado">🛠️ Personalizado (Selección manual libre)</option>
         </select>
+      </div>
+
+      <!-- Module Picker Grid -->
+      <div class="flex flex-col gap-2 pt-2 border-t border-tertiary/10">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] uppercase tracking-wider text-tertiary font-bold">Módulos Activos</span>
+            <span id="new-modules-count" class="px-2 py-0.5 rounded-full bg-tertiary/15 text-tertiary text-[10px] font-bold border border-tertiary/30">10 seleccionados</span>
+          </div>
+          <div class="flex items-center gap-2 text-xs">
+            <button type="button" id="new-btn-select-all" class="text-[11px] text-tertiary hover:underline font-semibold cursor-pointer">Marcar Todos</button>
+            <span class="text-on-surface-variant/40">|</span>
+            <button type="button" id="new-btn-deselect-all" class="text-[11px] text-on-surface-variant hover:text-on-surface font-semibold cursor-pointer">Desmarcar</button>
+          </div>
+        </div>
+
+        <div id="new-modules-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <!-- Dynamic Module Cards -->
+        </div>
       </div>
 
       <p id="project-form-error" class="hidden text-error text-xs"></p>
 
-      <div class="flex justify-end gap-2 mt-2">
+      <div class="flex justify-end gap-2 pt-4 border-t border-tertiary/10 shrink-0 mt-auto">
         <button type="button" id="project-modal-cancel" class="px-4 py-2.5 rounded-xl border border-tertiary/20 text-on-surface-variant hover:bg-surface-container transition-colors font-button-text uppercase tracking-wider text-xs cursor-pointer">Cancelar</button>
         <button type="submit" class="px-6 py-2.5 rounded-xl bg-tertiary text-on-tertiary font-button-text text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all shadow-md cursor-pointer">Crear Evento</button>
       </div>
@@ -205,7 +262,132 @@ tailwind.config = {
   let userProfile = null;
   let currentUser = null;
 
+  // =========================================================================
+  // GESTIÓN DEL SELECTOR MODULAR VISUAL
+  // =========================================================================
+  function renderModulePicker(containerId, countBadgeId, selectedKeys, onSelectionChange) {
+    const container = document.getElementById(containerId);
+    const countBadge = document.getElementById(countBadgeId);
+    if (!container) return;
 
+    const available = window.GALA_AVAILABLE_MODULES || [];
+    let currentSelected = new Set(selectedKeys || available.map(m => m.key));
+
+    function updateView() {
+      container.innerHTML = available.map(m => {
+        const isChecked = currentSelected.has(m.key);
+        return `
+          <div class="module-picker-card p-3 rounded-xl border transition-all flex items-start gap-3 cursor-pointer select-none ${
+            isChecked 
+              ? 'bg-tertiary/10 border-tertiary ring-1 ring-tertiary/30 text-on-surface shadow-sm' 
+              : 'bg-surface border-tertiary/10 text-on-surface-variant/60 hover:border-tertiary/40'
+          }" data-key="${m.key}">
+            <input type="checkbox" name="active_modules" value="${m.key}" class="hidden" ${isChecked ? 'checked' : ''}/>
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center ${
+              isChecked ? 'bg-tertiary text-on-tertiary font-bold shadow-sm' : 'bg-surface-container text-tertiary/50 border border-tertiary/15'
+            } shrink-0">
+              <span class="material-symbols-outlined text-[18px]">${m.icon}</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold ${isChecked ? 'text-on-surface' : 'text-on-surface-variant'}">${m.label}</span>
+                <span class="material-symbols-outlined text-[16px] ${isChecked ? 'text-tertiary' : 'text-on-surface-variant/40'}">
+                  ${isChecked ? 'check_circle' : 'radio_button_unchecked'}
+                </span>
+              </div>
+              <p class="text-[10px] text-on-surface-variant/70 leading-tight mt-0.5 line-clamp-1">${m.desc}</p>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      if (countBadge) {
+        countBadge.textContent = `${currentSelected.size}/${available.length} seleccionados`;
+      }
+
+      container.querySelectorAll(".module-picker-card").forEach(card => {
+        card.addEventListener("click", () => {
+          const key = card.dataset.key;
+          if (currentSelected.has(key)) {
+            currentSelected.delete(key);
+          } else {
+            currentSelected.add(key);
+          }
+          updateView();
+          if (onSelectionChange) onSelectionChange(Array.from(currentSelected));
+        });
+      });
+    }
+
+    updateView();
+
+    return {
+      setSelected: (newKeys) => {
+        currentSelected = new Set(newKeys);
+        updateView();
+      },
+      getSelected: () => Array.from(currentSelected),
+      selectAll: () => {
+        currentSelected = new Set(available.map(m => m.key));
+        updateView();
+        if (onSelectionChange) onSelectionChange(Array.from(currentSelected));
+      },
+      deselectAll: () => {
+        currentSelected = new Set();
+        updateView();
+        if (onSelectionChange) onSelectionChange(Array.from(currentSelected));
+      }
+    };
+  }
+
+  let newModulePicker = null;
+  let editModulePicker = null;
+
+  // Setup Presets para Nuevo Evento
+  const projectTypeSelect = document.getElementById("project-type");
+  if (projectTypeSelect) {
+    projectTypeSelect.addEventListener("change", (e) => {
+      const val = e.target.value;
+      const preset = window.GALA_MODULE_PRESETS?.[val];
+      if (preset && newModulePicker) {
+        newModulePicker.setSelected(preset.modules);
+      }
+    });
+  }
+
+  document.getElementById("new-btn-select-all")?.addEventListener("click", () => {
+    newModulePicker?.selectAll();
+    if (projectTypeSelect) projectTypeSelect.value = "boda";
+  });
+  document.getElementById("new-btn-deselect-all")?.addEventListener("click", () => {
+    newModulePicker?.deselectAll();
+    if (projectTypeSelect) projectTypeSelect.value = "personalizado";
+  });
+
+  // Setup Presets para Editar Evento
+  const editProjectTypeSelect = document.getElementById("edit-project-type");
+  if (editProjectTypeSelect) {
+    editProjectTypeSelect.addEventListener("change", (e) => {
+      const val = e.target.value;
+      const preset = window.GALA_MODULE_PRESETS?.[val];
+      if (preset && editModulePicker) {
+        editModulePicker.setSelected(preset.modules);
+      }
+    });
+  }
+
+  document.getElementById("edit-btn-select-all")?.addEventListener("click", () => {
+    editModulePicker?.selectAll();
+    if (editProjectTypeSelect) editProjectTypeSelect.value = "boda";
+  });
+  document.getElementById("edit-btn-deselect-all")?.addEventListener("click", () => {
+    editModulePicker?.deselectAll();
+    if (editProjectTypeSelect) editProjectTypeSelect.value = "personalizado";
+  });
+
+  // =========================================================================
+  // RENDERIZADO DE TARJETAS DE PROYECTOS / EVENTOS
+  // =========================================================================
   function renderProjects(events) {
     if (events.length === 0) {
       grid.innerHTML = `<div class="col-span-full text-center py-12 flex flex-col items-center gap-3">
@@ -237,31 +419,53 @@ tailwind.config = {
       } else if (type === "social") {
         typeBadge = `<span class="px-2.5 py-0.5 rounded-full bg-tertiary/15 border border-tertiary/35 text-tertiary text-[8px] font-bold uppercase tracking-wider">Social</span>`;
         typeIcon = "party_mode";
+      } else if (type === "banquete") {
+        typeBadge = `<span class="px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/35 text-amber-400 text-[8px] font-bold uppercase tracking-wider">Banquete</span>`;
+        typeIcon = "restaurant";
+      } else if (type === "personalizado") {
+        typeBadge = `<span class="px-2.5 py-0.5 rounded-full bg-purple-500/15 border border-purple-500/35 text-purple-300 text-[8px] font-bold uppercase tracking-wider">Modular</span>`;
+        typeIcon = "tune";
       } else {
         typeBadge = `<span class="px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-on-surface-variant text-[8px] font-bold uppercase tracking-wider">Boda</span>`;
         typeIcon = "favorite";
       }
 
+      const activeModules = window.getEventActiveModules(ev);
+      const totalModules = window.GALA_AVAILABLE_MODULES?.length || 10;
+
       return `
-      <div class="project-card relative text-left bg-surface-container rounded-xl p-4 shadow-md hover:-translate-y-0.5 hover:shadow-xl transition-all border border-tertiary/10 hover:border-tertiary/30 flex flex-col gap-3 cursor-pointer group" data-id="${ev.id}">
+      <div class="project-card relative text-left bg-surface-container rounded-2xl p-5 shadow-md hover:-translate-y-1 hover:shadow-2xl transition-all border border-tertiary/10 hover:border-tertiary/30 flex flex-col gap-3.5 cursor-pointer group" data-id="${ev.id}">
         <div class="flex items-center justify-between">
-          <div class="w-10 h-10 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary border border-tertiary/20">
+          <div class="w-10 h-10 rounded-xl bg-tertiary/10 flex items-center justify-center text-tertiary border border-tertiary/20">
             <span class="material-symbols-outlined text-[20px]">${typeIcon}</span>
           </div>
           <div class="flex items-center gap-1.5">
             ${typeBadge}
             ${badgeHtml}
-            <button class="btn-edit-project w-7 h-7 rounded-full bg-surface/60 backdrop-blur flex items-center justify-center text-on-surface-variant hover:text-tertiary transition-colors" title="Editar evento">
-              <span class="material-symbols-outlined text-[16px]">edit</span>
+            <button class="btn-edit-project w-8 h-8 rounded-lg bg-surface/60 backdrop-blur flex items-center justify-center text-on-surface-variant hover:text-tertiary hover:bg-surface transition-all cursor-pointer" title="Editar configuración de evento y módulos">
+              <span class="material-symbols-outlined text-[16px]">tune</span>
             </button>
           </div>
         </div>
+
         <div>
           <h3 class="font-display-lg text-lg text-on-surface mb-0.5 pr-4 group-hover:text-tertiary transition-colors">${escapeHtml(ev.name)}</h3>
-          <p class="text-on-surface-variant text-xs">${formatDate(ev.event_date)}</p>
+          <p class="text-on-surface-variant text-xs flex items-center gap-1">
+            <span class="material-symbols-outlined text-[14px]">calendar_month</span>
+            ${formatDate(ev.event_date)}
+          </p>
         </div>
+
+        <!-- Módulos Activos Badge -->
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <span class="px-2.5 py-1 rounded-lg bg-surface-container-high border border-tertiary/15 text-tertiary text-[10px] font-bold flex items-center gap-1" title="Módulos configurados para este evento">
+            <span class="material-symbols-outlined text-[13px]">widgets</span>
+            ${activeModules.length}/${totalModules} Módulos Activos
+          </span>
+        </div>
+
         <div class="mt-auto pt-3 border-t border-tertiary/10 flex items-center justify-between">
-          <span class="text-tertiary text-[10px] uppercase tracking-widest font-button-text">${window.formatCountdown(ev.event_date)}</span>
+          <span class="text-tertiary text-[10px] uppercase tracking-widest font-button-text font-semibold">${window.formatCountdown(ev.event_date)}</span>
           <span class="material-symbols-outlined text-on-surface-variant text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
         </div>
       </div>`;
@@ -314,15 +518,21 @@ tailwind.config = {
     document.getElementById("edit-project-name").value = ev.name || "";
     document.getElementById("edit-project-date").value = ev.event_date || "";
     document.getElementById("edit-project-type").value = ev.event_type || "boda";
+
+    const currentActive = window.getEventActiveModules(ev);
+    editModulePicker = renderModulePicker("edit-modules-grid", "edit-modules-count", currentActive);
+
     const modal = document.getElementById("edit-project-modal");
     modal.classList.remove("hidden");
     modal.classList.add("flex");
   }
+
   function closeEditModal() {
     const modal = document.getElementById("edit-project-modal");
     modal.classList.add("hidden");
     modal.classList.remove("flex");
   }
+
   document.getElementById("edit-project-modal-close").addEventListener("click", closeEditModal);
   document.getElementById("edit-project-cancel").addEventListener("click", closeEditModal);
   document.getElementById("edit-project-modal-backdrop").addEventListener("click", closeEditModal);
@@ -330,19 +540,39 @@ tailwind.config = {
   document.getElementById("edit-project-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const id = document.getElementById("edit-project-id").value;
+    const selectedModules = editModulePicker ? editModulePicker.getSelected() : window.GALA_AVAILABLE_MODULES.map(m => m.key);
+    const event_type = document.getElementById("edit-project-type").value;
+    const name = document.getElementById("edit-project-name").value.trim();
+    const event_date = document.getElementById("edit-project-date").value || null;
+
     const payload = {
-      name: document.getElementById("edit-project-name").value.trim(),
-      event_date: document.getElementById("edit-project-date").value || null,
-      event_type: document.getElementById("edit-project-type").value
+      name,
+      event_date,
+      event_type,
+      active_modules: selectedModules
     };
-    const { error } = await window.supabaseClient.from("events").update(payload).eq("id", id);
+
+    // Guardar en caché local
+    try {
+      localStorage.setItem("galaEventModules_" + id, JSON.stringify(selectedModules));
+    } catch(err) {}
+
+    let res = await window.supabaseClient.from("events").update(payload).eq("id", id);
+    if (res.error) {
+      // Fallback si la columna active_modules no existe en Supabase
+      delete payload.active_modules;
+      res = await window.supabaseClient.from("events").update(payload).eq("id", id);
+    }
+
     const errEl = document.getElementById("edit-project-error");
-    if (error) {
-      errEl.textContent = error.message;
+    if (res.error) {
+      errEl.textContent = res.error.message;
       errEl.classList.remove("hidden");
       return;
     }
+
     closeEditModal();
+    window.showToast("Configuración del evento actualizada correctamente.", "success");
     await loadProjects();
   });
 
@@ -364,6 +594,10 @@ tailwind.config = {
     if (localStorage.getItem("galaCurrentEventId") === id) {
       localStorage.removeItem("galaCurrentEventId");
     }
+    try {
+      localStorage.removeItem("galaEventModules_" + id);
+    } catch(err) {}
+
     closeEditModal();
     window.showToast("Evento eliminado", "info");
     await loadProjects();
@@ -372,9 +606,14 @@ tailwind.config = {
   function openModal() {
     formError.classList.add("hidden");
     form.reset();
+    document.getElementById("project-type").value = "boda";
+    const defaultModules = window.GALA_MODULE_PRESETS.boda.modules;
+    newModulePicker = renderModulePicker("new-modules-grid", "new-modules-count", defaultModules);
+
     modal.classList.remove("hidden");
     modal.classList.add("flex");
   }
+
   function closeModal() {
     modal.classList.add("hidden");
     modal.classList.remove("flex");
@@ -391,23 +630,48 @@ tailwind.config = {
     const name = document.getElementById("project-name").value.trim();
     const event_date = document.getElementById("project-date").value || null;
     const event_type = document.getElementById("project-type").value;
+    const selectedModules = newModulePicker ? newModulePicker.getSelected() : window.GALA_AVAILABLE_MODULES.map(m => m.key);
 
-    const payload = { name, event_date, event_type };
+    const payload = { 
+      name, 
+      event_date, 
+      event_type,
+      active_modules: selectedModules
+    };
+
     if (currentUser?.id) {
       payload.user_id = currentUser.id;
     }
 
-    const { data, error } = await window.supabaseClient
+    let { data, error } = await window.supabaseClient
       .from("events")
       .insert(payload)
       .select()
       .single();
 
     if (error) {
+      // Fallback si active_modules no está en la base de datos
+      delete payload.active_modules;
+      const res = await window.supabaseClient
+        .from("events")
+        .insert(payload)
+        .select()
+        .single();
+      data = res.data;
+      error = res.error;
+    }
+
+    if (error) {
       formError.textContent = error.message;
       formError.classList.remove("hidden");
       return;
     }
+
+    // Persistir módulos en caché
+    try {
+      localStorage.setItem("galaEventModules_" + data.id, JSON.stringify(selectedModules));
+    } catch(err) {}
+
     window.selectProject(data.id);
   });
 
@@ -424,11 +688,12 @@ tailwind.config = {
         const auth = await window.requireAuth();
         if (!auth) return;
 
-        // 1. Crear Evento
+        // 1. Crear Evento con todos los módulos
         let event = null;
+        const allKeys = (window.GALA_AVAILABLE_MODULES || []).map(m => m.key);
         const res1 = await window.supabaseClient
           .from("events")
-          .insert({ name: "Boda Valentina & Sebastián 2026", event_date: "2026-11-28" })
+          .insert({ name: "Boda Valentina & Sebastián 2026", event_date: "2026-11-28", event_type: "boda", active_modules: allKeys })
           .select()
           .single();
 
@@ -437,7 +702,7 @@ tailwind.config = {
         } else {
           const res2 = await window.supabaseClient
             .from("events")
-            .insert({ name: "Boda Valentina & Sebastián 2026", event_date: "2026-11-28", user_id: auth.user.id })
+            .insert({ name: "Boda Valentina & Sebastián 2026", event_date: "2026-11-28", user_id: auth.user.id, event_type: "boda" })
             .select()
             .single();
           if (res2.error) throw new Error(res1.error?.message || res2.error.message);
@@ -445,6 +710,9 @@ tailwind.config = {
         }
 
         const eventId = event.id;
+        try {
+          localStorage.setItem("galaEventModules_" + eventId, JSON.stringify(allKeys));
+        } catch(err) {}
 
         // 2. Grupos
         const { data: groups } = await window.supabaseClient
