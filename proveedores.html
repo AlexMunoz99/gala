@@ -212,18 +212,15 @@ tailwind.config = {
     <div class="flex flex-col w-full">
 
       <!-- Header Section -->
-      <div class="px-container-padding mt-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 relative z-10">
-        <div class="flex flex-col gap-2 max-w-2xl">
-          <div class="flex items-center gap-3 mb-2">
-            <span class="w-8 h-[1px] bg-tertiary"></span>
-            <span class="font-label-gold text-label-gold text-tertiary uppercase tracking-widest">Gestión de Proveedores</span>
-          </div>
-          <h1 class="font-display-lg text-display-lg text-on-surface">Aliados Selectos</h1>
-          <p class="font-body-lg text-body-lg text-on-surface-variant">Supervise contratos, controle hitos de pago y gestione comunicaciones con sus especialistas de élite.</p>
+      <div class="px-container-padding mt-12 flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 relative z-10">
+        <div class="flex flex-col gap-1.5">
+          <span class="font-label-gold text-label-gold text-tertiary uppercase tracking-[0.2em] relative pl-8 before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-6 before:h-px before:bg-tertiary/50">Gestión de Proveedores</span>
+          <h1 class="font-display-lg text-3xl sm:text-4xl text-on-surface">Aliados Selectos</h1>
+          <p class="font-body-md text-sm text-on-surface-variant max-w-xl">Supervisa contratos, controla hitos de pago y gestiona la comunicación con tus especialistas.</p>
         </div>
-        <button id="btn-add-vendor" class="shrink-0 bg-tertiary text-on-tertiary font-button-text text-button-text px-8 py-4 rounded-lg flex items-center gap-3 hover:bg-tertiary-fixed transition-all duration-300 shadow-xl shadow-tertiary/20 group">
-          <span class="material-symbols-outlined group-hover:rotate-90 transition-transform duration-300">add</span>
-          Añadir Proveedor
+        <button id="btn-add-vendor" class="px-5 py-2.5 bg-tertiary text-on-tertiary font-button-text text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all flex items-center gap-2 rounded-xl shadow-lg shadow-tertiary/20 cursor-pointer">
+          <span class="material-symbols-outlined text-[18px]">add</span>
+          <span>Añadir Proveedor</span>
         </button>
       </div>
 
@@ -384,9 +381,9 @@ tailwind.config = {
 
       <p id="vendor-form-error" class="hidden text-error text-sm"></p>
 
-      <div class="flex justify-end gap-3 mt-2">
-        <button type="button" id="vendor-modal-cancel" class="px-6 py-3 rounded-lg border border-tertiary/20 text-on-surface-variant hover:bg-surface-container transition-colors font-button-text uppercase tracking-wider text-sm">Cancelar</button>
-        <button type="submit" id="vendor-form-submit" class="px-8 py-3 rounded-lg bg-tertiary text-on-tertiary font-button-text uppercase tracking-wider text-sm hover:brightness-110 transition-all">Guardar</button>
+      <div class="flex justify-end gap-2 mt-2">
+        <button type="button" id="vendor-modal-cancel" class="px-4 py-2.5 rounded-xl border border-tertiary/20 text-on-surface-variant hover:bg-surface-container transition-colors font-button-text uppercase tracking-wider text-xs cursor-pointer">Cancelar</button>
+        <button type="submit" id="vendor-form-submit" class="px-6 py-2.5 rounded-xl bg-tertiary text-on-tertiary font-button-text text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all shadow-md cursor-pointer">Guardar</button>
       </div>
     </form>
   </div>

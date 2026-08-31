@@ -145,15 +145,12 @@
           <div class="absolute -top-32 -right-32 w-96 h-96 bg-tertiary/10 rounded-full blur-[100px] pointer-events-none"></div>
           <div class="absolute -bottom-32 -left-32 w-[500px] h-[500px] bg-secondary-container/20 rounded-full blur-[120px] pointer-events-none"></div>
           <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-            <div class="max-w-2xl">
-              <p class="font-label-gold text-label-gold text-tertiary mb-4 uppercase tracking-[0.2em] relative inline-flex items-center gap-2">
-                <span class="w-8 h-[1px] bg-tertiary inline-block"></span>
-                Administración General
-              </p>
-              <h1 class="font-display-lg text-display-lg text-on-surface mb-2">
+            <div class="flex flex-col gap-1.5 max-w-2xl">
+              <span class="font-label-gold text-label-gold text-tertiary uppercase tracking-[0.2em] relative pl-8 before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-6 before:h-px before:bg-tertiary/50">Administración General</span>
+              <h1 class="font-display-lg text-3xl sm:text-4xl text-on-surface">
                 Acceso a Clientes <span class="text-tertiary/80 italic">&amp;</span> Módulos
               </h1>
-              <p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl">
+              <p class="font-body-md text-sm text-on-surface-variant max-w-xl">
                 Administra las cuentas de usuario registradas, modifica sus planes de suscripción y configura sus permisos de acceso a módulos específicos.
               </p>
             </div>
@@ -316,9 +313,9 @@
         </label>
       </div>
 
-      <div class="p-6 bg-surface-container/30 border-t border-outline-variant/10 flex justify-end gap-4">
-        <button class="px-6 py-2.5 rounded-lg border border-outline-variant/30 text-on-surface font-button-text text-button-text hover:bg-surface-variant transition-colors" id="btn-cancel-modal">Cancelar</button>
-        <button class="px-6 py-2.5 bg-tertiary text-on-tertiary font-button-text text-button-text rounded-lg hover:brightness-110 transition-all shadow-md shadow-tertiary/10 font-semibold" id="btn-save-modules">Guardar Permisos</button>
+      <div class="p-6 bg-surface-container/30 border-t border-outline-variant/10 flex justify-end gap-2">
+        <button class="px-4 py-2.5 rounded-xl border border-outline-variant/30 text-on-surface font-button-text uppercase tracking-wider text-xs hover:bg-surface-variant transition-colors cursor-pointer" id="btn-cancel-modal">Cancelar</button>
+        <button class="px-6 py-2.5 bg-tertiary text-on-tertiary font-button-text text-xs font-bold uppercase tracking-wider rounded-xl hover:brightness-110 transition-all shadow-md cursor-pointer" id="btn-save-modules">Guardar Permisos</button>
       </div>
     </div>
   </div>

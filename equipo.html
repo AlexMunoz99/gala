@@ -141,37 +141,39 @@
       <div class="flex flex-col w-full h-full gap-8 p-10 text-on-surface">
         <div class="flex flex-col md:flex-row gap-8 items-start justify-between w-full relative group">
           <div class="absolute -left-12 -top-12 w-64 h-64 bg-tertiary/5 rounded-full blur-3xl -z-10 group-hover:bg-tertiary/10 transition-colors duration-1000 ease-in-out"></div>
-          <div class="flex flex-col gap-2 max-w-2xl relative z-10">
-            <h1 class="font-display-lg text-display-lg text-on-surface">Gestión de Equipo Agency</h1>
-            <p class="font-body-lg text-body-lg text-on-surface-variant">Administra el acceso y los roles de los miembros de tu equipo para colaborar en eventos de manera eficiente y segura bajo el paraguas de tu cuenta de agencia.</p>
+          <div class="flex flex-col gap-1.5 max-w-2xl relative z-10">
+            <span class="font-label-gold text-label-gold text-tertiary uppercase tracking-[0.2em] relative pl-8 before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-6 before:h-px before:bg-tertiary/50">Colaboración & Permisos</span>
+            <h1 class="font-display-lg text-3xl sm:text-4xl text-on-surface">Gestión de Equipo Agency</h1>
+            <p class="font-body-md text-sm text-on-surface-variant max-w-xl">Administra el acceso y los roles de los miembros de tu equipo para colaborar de manera eficiente y segura.</p>
           </div>
           
-          <div class="bg-surface-container-high rounded-xl p-8 flex flex-col gap-6 w-full md:w-[450px] shadow-xl relative overflow-hidden group border border-tertiary/10">
+          <div class="bg-surface-container-high rounded-2xl p-6 flex flex-col gap-5 w-full md:w-[420px] shadow-xl relative overflow-hidden group border border-tertiary/10">
             <div class="absolute inset-0 bg-gradient-to-br from-tertiary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 ease-out"></div>
-            <div class="relative z-10 flex flex-col gap-6">
+            <div class="relative z-10 flex flex-col gap-5">
               <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary">
-                  <span class="material-symbols-outlined">person_add</span>
+                  <span class="material-symbols-outlined text-[20px]">person_add</span>
                 </div>
-                <h2 class="font-headline-md text-headline-md text-on-surface">Invitar Miembro</h2>
+                <h2 class="font-headline-md text-lg text-on-surface">Invitar Miembro</h2>
               </div>
-              <form class="flex flex-col gap-4">
+              <form class="flex flex-col gap-3.5">
                 <div class="flex flex-col gap-1">
-                  <label class="font-label-gold text-label-gold text-on-surface-variant uppercase ml-1">Correo Electrónico</label>
-                  <input id="invite-email" class="w-full bg-surface-container-highest text-on-surface font-body-md text-body-md px-4 py-3 rounded-lg focus:outline-none focus:ring-1 focus:ring-tertiary/50 transition-shadow bg-opacity-50 placeholder-on-surface-variant/50 border border-outline-variant/30" placeholder="correo@agencia.com" type="email">
+                  <label class="text-[10px] uppercase tracking-wider text-on-surface-variant ml-1 font-semibold">Correo Electrónico</label>
+                  <input id="invite-email" class="w-full bg-surface-container-highest text-on-surface font-body-md text-xs px-3.5 py-2.5 rounded-lg focus:outline-none focus:ring-1 focus:ring-tertiary/50 transition-shadow placeholder:text-on-surface-variant/40 border border-outline-variant/30" placeholder="correo@agencia.com" type="email">
                 </div>
                 <div class="flex flex-col gap-1">
-                  <label class="font-label-gold text-label-gold text-on-surface-variant uppercase ml-1">Rol de Acceso</label>
+                  <label class="text-[10px] uppercase tracking-wider text-on-surface-variant ml-1 font-semibold">Rol de Acceso</label>
                   <div class="relative">
-                    <select id="invite-role" class="w-full bg-surface-container-highest text-on-surface font-body-md text-body-md px-4 py-3 rounded-lg appearance-none focus:outline-none focus:ring-1 focus:ring-tertiary/50 transition-shadow bg-opacity-50 cursor-pointer border border-outline-variant/30">
+                    <select id="invite-role" class="w-full bg-surface-container-highest text-on-surface font-body-md text-xs px-3.5 py-2.5 rounded-lg appearance-none focus:outline-none focus:ring-1 focus:ring-tertiary/50 transition-shadow cursor-pointer border border-outline-variant/30">
                       <option class="bg-surface-container text-on-surface" value="editor">Editor (Control total)</option>
                       <option class="bg-surface-container text-on-surface" value="lector">Lector (Solo vista)</option>
                     </select>
-                    <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">expand_more</span>
+                    <span class="material-symbols-outlined absolute right-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none text-[18px]">expand_more</span>
                   </div>
                 </div>
-                <button id="btn-invite" class="mt-2 w-full py-3 bg-tertiary text-on-tertiary font-button-text text-button-text uppercase tracking-widest hover:brightness-110 transition-all rounded-lg shadow-md hover:shadow-lg flex items-center justify-center gap-2 font-bold" type="button">
-                  Enviar Invitación
+                <button id="btn-invite" class="mt-2 w-full py-2.5 bg-tertiary text-on-tertiary font-button-text text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all rounded-xl shadow-lg shadow-tertiary/20 flex items-center justify-center gap-2 cursor-pointer" type="button">
+                  <span class="material-symbols-outlined text-[18px]">send</span>
+                  <span>Enviar Invitación</span>
                 </button>
               </form>
             </div>

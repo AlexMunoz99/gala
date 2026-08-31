@@ -416,30 +416,24 @@ tailwind.config = {
     <div class="flex flex-col w-full px-container-padding pb-section-gap gap-12">
 
       <!-- Header Section -->
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 w-full pt-12 relative">
-        <div class="absolute -top-12 -left-12 w-64 h-64 bg-tertiary-container/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="flex flex-col gap-4 relative z-10">
-          <div class="flex items-center gap-3">
-            <span class="w-8 h-1 bg-tertiary"></span>
-            <span class="font-label-gold text-label-gold text-tertiary uppercase tracking-[0.2em]">Maestro de Ceremonias</span>
-          </div>
-          <h1 class="font-display-lg text-display-lg text-on-surface">Programa del Evento</h1>
-          <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
-            El cronograma oficial y el guion del maestro de ceremonias para <span id="current-event-name-inline">tu evento</span>. Los horarios son estrictos; asegúrese de que todos los oradores estén preparados 5 minutos antes de su segmento.
-          </p>
+      <div class="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 w-full pt-12 relative z-10">
+        <div class="flex flex-col gap-1.5">
+          <span class="font-label-gold text-label-gold text-tertiary uppercase tracking-[0.2em] relative pl-8 before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-6 before:h-px before:bg-tertiary/50">Maestro de Ceremonias</span>
+          <h1 class="font-display-lg text-3xl sm:text-4xl text-on-surface">Programa del Evento</h1>
+          <p class="font-body-md text-sm text-on-surface-variant max-w-xl">El cronograma oficial y guion para el maestro de ceremonias durante el evento.</p>
         </div>
         <div class="flex items-center gap-3 shrink-0 flex-wrap">
-          <button id="btn-import-itinerary" class="relative group bg-surface-container border border-tertiary/20 text-tertiary px-6 py-4 rounded-full font-button-text text-button-text uppercase tracking-widest hover:bg-tertiary/10 transition-all duration-300 flex items-center gap-2 shadow-sm" title="Importar actividades del día principal desde el Itinerario">
-            <span class="material-symbols-outlined group-hover:rotate-180 transition-transform duration-500 text-lg">sync</span>
-            Sincronizar Itinerario
+          <button id="btn-import-itinerary" class="px-4 py-2.5 bg-surface-container-high/80 border border-tertiary/20 text-tertiary font-button-text text-xs uppercase tracking-wider hover:bg-tertiary/10 transition-all flex items-center gap-2 rounded-xl shadow-md cursor-pointer backdrop-blur-sm" title="Importar actividades del día principal desde el Itinerario">
+            <span class="material-symbols-outlined text-[18px]">sync</span>
+            <span>Sincronizar Itinerario</span>
           </button>
-          <button id="btn-add-item" class="bg-tertiary text-on-tertiary px-8 py-4 rounded-full font-button-text text-button-text uppercase tracking-widest shadow-lg shadow-tertiary/20 hover:shadow-tertiary/40 transition-all duration-300 hover:-translate-y-1 flex items-center gap-3 font-semibold">
-            <span class="material-symbols-outlined">add</span>
-            Agregar Suceso
+          <button id="btn-print-pdf" class="px-4 py-2.5 bg-surface-container-high/80 border border-tertiary/20 text-tertiary font-button-text text-xs uppercase tracking-wider hover:bg-tertiary/10 transition-all flex items-center gap-2 rounded-xl shadow-md cursor-pointer backdrop-blur-sm">
+            <span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+            <span>Imprimir PDF</span>
           </button>
-          <button id="btn-print-pdf" class="relative group bg-surface-container border border-tertiary/20 text-tertiary px-8 py-4 rounded-full font-button-text text-button-text uppercase tracking-widest hover:bg-tertiary/5 transition-all duration-300 flex items-center gap-3">
-            <span class="material-symbols-outlined group-hover:scale-110 transition-transform">picture_as_pdf</span>
-            Imprimir PDF
+          <button id="btn-add-item" class="px-5 py-2.5 bg-tertiary text-on-tertiary font-button-text text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all flex items-center gap-2 rounded-xl shadow-lg shadow-tertiary/20 cursor-pointer">
+            <span class="material-symbols-outlined text-[18px]">add</span>
+            <span>Agregar Suceso</span>
           </button>
         </div>
       </div>
@@ -525,13 +519,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
       <p id="item-form-error" class="hidden text-error text-sm"></p>
 
-      <div class="flex justify-between items-center gap-3 mt-2">
-        <button type="button" id="item-delete-btn" class="hidden px-4 py-3 rounded-lg text-error hover:bg-error/10 transition-colors font-button-text uppercase tracking-wider text-sm flex items-center gap-2">
+      <div class="flex justify-between items-center gap-2 mt-2">
+        <button type="button" id="item-delete-btn" class="hidden px-4 py-2.5 rounded-xl text-error hover:bg-error/10 transition-colors font-button-text uppercase tracking-wider text-xs flex items-center gap-1.5 cursor-pointer">
           <span class="material-symbols-outlined text-[18px]">delete</span>Eliminar
         </button>
-        <div class="flex justify-end gap-3 flex-1">
-          <button type="button" id="item-modal-cancel" class="px-6 py-3 rounded-lg border border-tertiary/20 text-on-surface-variant hover:bg-surface-container transition-colors font-button-text uppercase tracking-wider text-sm">Cancelar</button>
-          <button type="submit" class="px-8 py-3 rounded-lg bg-tertiary text-on-tertiary font-button-text uppercase tracking-wider text-sm hover:brightness-110 transition-all">Guardar</button>
+        <div class="flex justify-end gap-2 flex-1">
+          <button type="button" id="item-modal-cancel" class="px-4 py-2.5 rounded-xl border border-tertiary/20 text-on-surface-variant hover:bg-surface-container transition-colors font-button-text uppercase tracking-wider text-xs cursor-pointer">Cancelar</button>
+          <button type="submit" class="px-6 py-2.5 rounded-xl bg-tertiary text-on-tertiary font-button-text text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all shadow-md cursor-pointer">Guardar</button>
         </div>
       </div>
     </form>
