@@ -353,9 +353,9 @@ tailwind.config = {
         </div>
 
         <!-- Main Content Area: Search, Filters & Table -->
-        <div class="flex flex-col gap-4 relative z-10">
+        <div class="flex flex-col gap-4 relative z-30">
           <!-- Toolbar with Search, RSVP Filter, Group Filter, CSV & Density -->
-          <div class="flex flex-col md:flex-row gap-3 justify-between items-stretch md:items-center bg-surface-container-low/80 backdrop-blur-md p-3.5 rounded-xl border border-tertiary/10 shadow-md">
+          <div class="flex flex-col md:flex-row gap-3 justify-between items-stretch md:items-center bg-surface-container-low/80 backdrop-blur-md p-3.5 rounded-xl border border-tertiary/10 shadow-md relative z-30">
             <div class="relative flex-1 max-w-md">
               <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-tertiary/50 text-[20px]">search</span>
               <input id="guest-search" class="w-full bg-surface-container border border-tertiary/20 text-on-surface font-body-md text-xs sm:text-sm py-2 pl-10 pr-4 rounded-lg focus:outline-none focus:border-tertiary transition-all placeholder:text-on-surface-variant/40" placeholder="Buscar por nombre, teléfono o notas..." type="text"/>
@@ -388,33 +388,33 @@ tailwind.config = {
               </button>
 
               <!-- Dropdown: Datos CSV -->
-              <div class="relative inline-block text-left z-30" id="dropdown-csv-wrap">
-                <button id="btn-dropdown-csv" type="button" class="px-2.5 py-1.5 bg-surface-container border border-tertiary/20 text-on-surface-variant hover:text-tertiary font-button-text text-xs rounded-lg transition-colors flex items-center gap-1 cursor-pointer" title="Importar o exportar datos CSV">
-                  <span class="material-symbols-outlined text-[16px]">cloud_sync</span>
-                  <span class="hidden sm:inline">Datos CSV</span>
+              <div class="relative inline-block text-left z-40" id="dropdown-csv-wrap">
+                <button id="btn-dropdown-csv" type="button" class="px-3 py-1.5 bg-surface-container hover:bg-surface-container-high border border-tertiary/20 text-on-surface hover:text-tertiary font-button-text text-xs rounded-lg transition-all flex items-center gap-1.5 cursor-pointer shadow-sm" title="Importar o exportar datos CSV">
+                  <span class="material-symbols-outlined text-[17px] text-tertiary">cloud_sync</span>
+                  <span>Datos CSV</span>
                   <span class="material-symbols-outlined text-[14px] transition-transform duration-200" id="csv-arrow">expand_more</span>
                 </button>
-                <div id="dropdown-csv-menu" class="hidden absolute right-0 mt-2 w-56 rounded-2xl bg-surface-container-high/95 backdrop-blur-xl border border-tertiary/20 shadow-2xl z-[100] py-2 divide-y divide-tertiary/10">
+                <div id="dropdown-csv-menu" class="hidden absolute right-0 mt-2 w-64 rounded-2xl bg-surface-container-high/95 backdrop-blur-xl border border-tertiary/30 shadow-2xl z-[100] py-2 divide-y divide-tertiary/10">
                   <div class="py-1">
-                    <button id="btn-import-csv" type="button" class="w-full text-left flex items-center gap-3 px-4 py-2.5 text-xs text-on-surface hover:bg-tertiary/10 hover:text-tertiary transition-colors cursor-pointer">
-                      <span class="material-symbols-outlined text-[18px] text-tertiary">upload</span>
+                    <button id="btn-download-template" type="button" class="w-full text-left flex items-center gap-3 px-4 py-2.5 text-xs text-on-surface hover:bg-tertiary/10 hover:text-tertiary transition-colors cursor-pointer">
+                      <span class="material-symbols-outlined text-[20px] text-tertiary">description</span>
                       <div class="flex flex-col">
-                        <span class="font-semibold">Importar CSV</span>
+                        <span class="font-semibold text-tertiary">Descargar Plantilla CSV</span>
+                        <span class="text-[10px] text-on-surface-variant">Formato de ejemplo para carga</span>
+                      </div>
+                    </button>
+                    <button id="btn-import-csv" type="button" class="w-full text-left flex items-center gap-3 px-4 py-2.5 text-xs text-on-surface hover:bg-tertiary/10 hover:text-tertiary transition-colors cursor-pointer">
+                      <span class="material-symbols-outlined text-[20px] text-tertiary">upload</span>
+                      <div class="flex flex-col">
+                        <span class="font-semibold">Importar Archivo CSV</span>
                         <span class="text-[10px] text-on-surface-variant">Cargar invitados masivamente</span>
                       </div>
                     </button>
                     <button id="btn-export-csv" type="button" class="w-full text-left flex items-center gap-3 px-4 py-2.5 text-xs text-on-surface hover:bg-tertiary/10 hover:text-tertiary transition-colors cursor-pointer">
-                      <span class="material-symbols-outlined text-[18px] text-tertiary">download</span>
+                      <span class="material-symbols-outlined text-[20px] text-tertiary">download</span>
                       <div class="flex flex-col">
-                        <span class="font-semibold">Exportar CSV</span>
-                        <span class="text-[10px] text-on-surface-variant">Descargar base de datos</span>
-                      </div>
-                    </button>
-                    <button id="btn-download-template" type="button" class="w-full text-left flex items-center gap-3 px-4 py-2.5 text-xs text-on-surface-variant hover:bg-tertiary/10 hover:text-tertiary transition-colors cursor-pointer">
-                      <span class="material-symbols-outlined text-[18px]">description</span>
-                      <div class="flex flex-col">
-                        <span class="font-semibold">Descargar Plantilla</span>
-                        <span class="text-[10px] text-on-surface-variant">Formato CSV sugerido</span>
+                        <span class="font-semibold">Exportar Lista Actual</span>
+                        <span class="text-[10px] text-on-surface-variant">Descargar base de datos CSV</span>
                       </div>
                     </button>
                   </div>
@@ -925,26 +925,37 @@ document.addEventListener('DOMContentLoaded', function () {
 
   document.getElementById("btn-add-guest").addEventListener("click", () => openModal("add", null));
 
-  document.getElementById("btn-download-template").addEventListener("click", () => {
+  document.getElementById("btn-download-template")?.addEventListener("click", () => {
+    closeAllDropdowns();
     const headers = ["Nombre", "Grupo", "Teléfono", "RSVP", "Mesa", "Acompañante", "Notas dietéticas"];
-    const example = ["Juan Pérez", "Familia Novia", "+52 33 1234 5678", "Pendiente", "5", "No", "Vegetariano"];
-    const note = ["# RSVP: Confirmado / Pendiente / Declinado", "", "", "", "", "# Acompañante: Sí / No", ""];
-    const csv = [headers, example, note]
+    const rows = [
+      headers,
+      ["Carlos Mendoza", "Familia Novio", "+52 33 1234 5678", "Confirmado", "Mesa 1", "No", "Sin mariscos"],
+      ["Mariana Gómez", "Amigos Novia", "+52 33 9876 5432", "Pendiente", "Mesa 2", "Sí", "Vegetariana"],
+      ["Roberto Silva", "Trabajo", "+52 55 5555 5555", "Pendiente", "Mesa 3", "No", ""]
+    ];
+    const csv = rows
       .map(row => row.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(","))
       .join("\n");
     const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "plantilla-invitados.csv";
+    a.download = "Plantilla_Invitados_Gala.csv";
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    window.showToast("Plantilla CSV descargada con éxito.", "success");
   });
 
   const csvFileInput = document.getElementById("csv-file-input");
   const importSummary = document.getElementById("import-summary");
 
-  document.getElementById("btn-import-csv").addEventListener("click", () => csvFileInput.click());
+  document.getElementById("btn-import-csv")?.addEventListener("click", () => {
+    closeAllDropdowns();
+    csvFileInput.click();
+  });
 
   function showImportSummary(text, isError) {
     importSummary.textContent = text;
@@ -1014,7 +1025,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  document.getElementById("btn-export-csv").addEventListener("click", () => {
+  document.getElementById("btn-export-csv")?.addEventListener("click", () => {
+    closeAllDropdowns();
     if (allGuests.length === 0) {
       window.showToast("No hay invitados para exportar.", "info");
       return;
@@ -1031,9 +1043,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "invitados.csv";
+    a.download = `Invitados_Gala_${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    window.showToast("Lista de invitados exportada en CSV.", "success");
   });
 
   searchInput.addEventListener("input", applyFilterAndRender);
