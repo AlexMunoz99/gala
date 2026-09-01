@@ -155,6 +155,11 @@ let isBypassingSession = false;
         padding-left: 0.75rem !important;
         padding-right: 0.75rem !important;
       }
+      html.sidebar-collapsed #app-sidebar .sidebar-top-btn-wrapper,
+      html.sidebar-collapsed #app-sidebar .sidebar-top-btn {
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+      }
     `;
     const ref = document.head || document.getElementsByTagName("head")[0] || document.documentElement;
     ref.appendChild(compactStyle);
@@ -300,24 +305,10 @@ function refreshSidebarNavigation(profile, currentEvent) {
     "post-wedding.html": "galeria"
   };
 
-  // 1. Reposicionar y renombrar botón "Mis Eventos" (antes "Mis Proyectos") al tope
+  // 1. Eliminar cualquier contenedor .sidebar-cta residual si existiera
   const bottomCta = sidebar.querySelector(".sidebar-cta");
   if (bottomCta) {
-    const btn = bottomCta.querySelector("a");
-    if (btn) {
-      btn.innerHTML = `<span class="material-symbols-outlined nav-icon">apps</span><span class="sidebar-label">Mis Eventos</span>`;
-      btn.href = "proyectos.html";
-      
-      const logoDiv = sidebar.querySelector(".h-20");
-      if (logoDiv && !sidebar.querySelector(".moved-events-btn")) {
-        const wrapper = document.createElement("div");
-        wrapper.className = "px-4 pt-2 pb-1 border-b border-tertiary/10 moved-events-btn shrink-0";
-        btn.className = "w-full py-2.5 bg-tertiary text-on-tertiary font-button-text text-button-text uppercase tracking-widest hover:brightness-110 transition-all flex items-center justify-center gap-2 rounded-lg text-[10px] font-bold shadow-md shadow-tertiary/15";
-        wrapper.appendChild(btn);
-        logoDiv.after(wrapper);
-        bottomCta.remove();
-      }
-    }
+    bottomCta.remove();
   }
 
   // 2. Renombrar "Post-Boda" a "Galería" y filtrar según módulos activos del evento y del perfil
