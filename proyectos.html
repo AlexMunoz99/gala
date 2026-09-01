@@ -132,15 +132,24 @@ tailwind.config = {
         </div>
       </div>
 
-      <div class="flex flex-col gap-1.5">
-        <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold" for="edit-project-type">Plantilla / Tipo de Evento</label>
-        <select id="edit-project-type" class="bg-surface-container border border-tertiary/20 rounded-xl py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary">
-          <option value="boda">💍 Boda Completa (Todos los 10 módulos)</option>
-          <option value="corporativo">💼 Evento Corporativo (Itinerario, Lugares, Proveedores, Presupuesto, Tareas, Programa)</option>
-          <option value="social">🎉 Social / XV Años / Fiesta (Invitados, Invitación Web, Presupuesto, Itinerario, Asientos, Galería)</option>
-          <option value="banquete">🍽️ Cena / Banquete Privado (Invitados, Presupuesto, Asientos, Proveedores, Tareas)</option>
-          <option value="personalizado">🛠️ Personalizado (Selección manual libre)</option>
-        </select>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="flex flex-col gap-1">
+          <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold" for="edit-project-budget">Presupuesto Estimado ($ MXN)</label>
+          <div class="relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-tertiary font-bold text-xs">$</span>
+            <input id="edit-project-budget" type="number" min="0" step="1000" placeholder="Ej: 350000" class="w-full bg-surface-container border border-tertiary/20 rounded-xl py-2.5 pl-8 pr-3 text-xs text-on-surface focus:outline-none focus:border-tertiary font-medium"/>
+          </div>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold" for="edit-project-type">Plantilla / Tipo de Evento</label>
+          <select id="edit-project-type" class="bg-surface-container border border-tertiary/20 rounded-xl py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary">
+            <option value="boda">💍 Boda Completa (Todos los 10 módulos)</option>
+            <option value="corporativo">💼 Evento Corporativo (Itinerario, Lugares, Proveedores, Presupuesto, Tareas, Programa)</option>
+            <option value="social">🎉 Social / XV Años / Fiesta (Invitados, Invitación Web, Presupuesto, Itinerario, Asientos, Galería)</option>
+            <option value="banquete">🍽️ Cena / Banquete Privado (Invitados, Presupuesto, Asientos, Proveedores, Tareas)</option>
+            <option value="personalizado">🛠️ Personalizado (Selección manual libre)</option>
+          </select>
+        </div>
       </div>
 
       <!-- Module Picker Grid -->
@@ -184,7 +193,7 @@ tailwind.config = {
     <div class="flex items-start justify-between mb-4 shrink-0 pb-3 border-b border-tertiary/10">
       <div>
         <h2 class="font-display-lg text-xl md:text-2xl text-on-surface font-semibold">Crear Nuevo Evento</h2>
-        <p class="text-xs text-on-surface-variant mt-0.5">Elige los módulos y herramientas que utilizarás para este evento</p>
+        <p class="text-xs text-on-surface-variant mt-0.5">Elige los módulos y define el presupuesto para este evento</p>
       </div>
       <button id="project-modal-close" class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors cursor-pointer p-1">close</button>
     </div>
@@ -201,15 +210,24 @@ tailwind.config = {
         </div>
       </div>
 
-      <div class="flex flex-col gap-1.5">
-        <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold" for="project-type">Plantilla / Tipo de Evento</label>
-        <select id="project-type" class="bg-surface-container border border-tertiary/20 rounded-xl py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary">
-          <option value="boda" selected>💍 Boda Completa (Todos los 10 módulos)</option>
-          <option value="corporativo">💼 Evento Corporativo (Itinerario, Lugares, Proveedores, Presupuesto, Tareas, Programa)</option>
-          <option value="social">🎉 Social / XV Años / Fiesta (Invitados, Invitación Web, Presupuesto, Itinerario, Asientos, Galería)</option>
-          <option value="banquete">🍽️ Cena / Banquete Privado (Invitados, Presupuesto, Asientos, Proveedores, Tareas)</option>
-          <option value="personalizado">🛠️ Personalizado (Selección manual libre)</option>
-        </select>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="flex flex-col gap-1">
+          <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold" for="project-budget">Presupuesto Estimado ($ MXN)</label>
+          <div class="relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-tertiary font-bold text-xs">$</span>
+            <input id="project-budget" type="number" min="0" step="1000" placeholder="Ej: 350000" class="w-full bg-surface-container border border-tertiary/20 rounded-xl py-2.5 pl-8 pr-3 text-xs text-on-surface focus:outline-none focus:border-tertiary font-medium"/>
+          </div>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold" for="project-type">Plantilla / Tipo de Evento</label>
+          <select id="project-type" class="bg-surface-container border border-tertiary/20 rounded-xl py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary">
+            <option value="boda" selected>💍 Boda Completa (Todos los 10 módulos)</option>
+            <option value="corporativo">💼 Evento Corporativo (Itinerario, Lugares, Proveedores, Presupuesto, Tareas, Programa)</option>
+            <option value="social">🎉 Social / XV Años / Fiesta (Invitados, Invitación Web, Presupuesto, Itinerario, Asientos, Galería)</option>
+            <option value="banquete">🍽️ Cena / Banquete Privado (Invitados, Presupuesto, Asientos, Proveedores, Tareas)</option>
+            <option value="personalizado">🛠️ Personalizado (Selección manual libre)</option>
+          </select>
+        </div>
       </div>
 
       <!-- Module Picker Grid -->
@@ -456,12 +474,18 @@ tailwind.config = {
           </p>
         </div>
 
-        <!-- Módulos Activos Badge -->
+        <!-- Módulos y Presupuesto Badges -->
         <div class="flex items-center gap-1.5 flex-wrap">
           <span class="px-2.5 py-1 rounded-lg bg-surface-container-high border border-tertiary/15 text-tertiary text-[10px] font-bold flex items-center gap-1" title="Módulos configurados para este evento">
             <span class="material-symbols-outlined text-[13px]">widgets</span>
-            ${activeModules.length}/${totalModules} Módulos Activos
+            ${activeModules.length}/${totalModules} Módulos
           </span>
+          ${ev.budget_total && Number(ev.budget_total) > 0 ? `
+          <span class="px-2.5 py-1 rounded-lg bg-surface-container-high border border-secondary/30 text-secondary text-[10px] font-bold flex items-center gap-1" title="Presupuesto planeado">
+            <span class="material-symbols-outlined text-[13px]">payments</span>
+            $${Number(ev.budget_total).toLocaleString("es-MX")} MXN
+          </span>
+          ` : ''}
         </div>
 
         <div class="mt-auto pt-3 border-t border-tertiary/10 flex items-center justify-between">
@@ -548,6 +572,7 @@ tailwind.config = {
     document.getElementById("edit-project-id").value = ev.id;
     document.getElementById("edit-project-name").value = ev.name || "";
     document.getElementById("edit-project-date").value = ev.event_date || "";
+    document.getElementById("edit-project-budget").value = (ev.budget_total !== null && ev.budget_total !== undefined && ev.budget_total > 0) ? ev.budget_total : "";
     document.getElementById("edit-project-type").value = ev.event_type || "boda";
 
     const currentActive = window.getEventActiveModules(ev);
@@ -575,10 +600,12 @@ tailwind.config = {
     const event_type = document.getElementById("edit-project-type").value;
     const name = document.getElementById("edit-project-name").value.trim();
     const event_date = document.getElementById("edit-project-date").value || null;
+    const budget_total = Number(document.getElementById("edit-project-budget").value) || 0;
 
     const payload = {
       name,
       event_date,
+      budget_total,
       event_type,
       active_modules: selectedModules
     };
@@ -661,11 +688,13 @@ tailwind.config = {
     const name = document.getElementById("project-name").value.trim();
     const event_date = document.getElementById("project-date").value || null;
     const event_type = document.getElementById("project-type").value;
+    const budget_total = Number(document.getElementById("project-budget").value) || 0;
     const selectedModules = newModulePicker ? newModulePicker.getSelected() : window.GALA_AVAILABLE_MODULES.map(m => m.key);
 
     const payload = { 
       name, 
       event_date, 
+      budget_total,
       event_type,
       active_modules: selectedModules
     };

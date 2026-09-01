@@ -219,7 +219,10 @@ tailwind.config = {
               <h1 class="font-display-lg text-3xl sm:text-4xl text-on-surface">Asignación de Presupuesto</h1>
               <p class="font-body-md text-sm text-on-surface-variant max-w-xl">Panorama financiero y seguimiento en tiempo real de <span id="current-event-name-inline" class="text-tertiary">tu evento</span>.</p>
             </div>
-            <div class="flex items-center gap-3 flex-wrap">
+              <button id="btn-open-budget-modal" class="px-4 py-2.5 bg-surface-container-high/80 border border-tertiary/30 text-tertiary font-button-text text-xs uppercase tracking-wider hover:bg-tertiary/15 transition-all flex items-center gap-2 rounded-xl shadow-md cursor-pointer backdrop-blur-sm">
+                <span class="material-symbols-outlined text-[18px]">edit_note</span>
+                <span>Modificar Meta</span>
+              </button>
               <button id="btn-add-external" class="px-4 py-2.5 bg-surface-container-high/80 border border-tertiary/20 text-tertiary font-button-text text-xs uppercase tracking-wider hover:bg-tertiary/10 transition-all flex items-center gap-2 rounded-xl shadow-md cursor-pointer backdrop-blur-sm">
                 <span class="material-symbols-outlined text-[18px]">payments</span>
                 <span>Gasto Externo</span>
@@ -238,12 +241,13 @@ tailwind.config = {
           <!-- KPI Cards (4 Column Grid) -->
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <!-- 1. Presupuesto Planeado -->
-            <div class="bg-surface-container-high rounded-xl p-6 relative overflow-hidden group shadow-md border border-tertiary/10">
+            <div id="card-planned-budget" class="bg-surface-container-high rounded-xl p-6 relative overflow-hidden group shadow-md border border-tertiary/10 hover:border-tertiary/40 transition-all cursor-pointer">
               <div class="absolute -right-12 -top-12 w-40 h-40 bg-primary/5 rounded-full blur-2xl"></div>
               <div class="flex justify-between items-center mb-3">
                 <p class="font-label-gold text-label-gold text-tertiary uppercase tracking-widest">Presupuesto Planeado</p>
-                <button id="btn-edit-planned-budget" class="text-on-surface-variant hover:text-tertiary transition-colors flex items-center" title="Editar presupuesto planeado">
-                  <span class="material-symbols-outlined text-sm">edit</span>
+                <button id="btn-edit-planned-budget" class="px-2.5 py-1 rounded-lg bg-tertiary/15 border border-tertiary/30 text-tertiary hover:bg-tertiary hover:text-on-tertiary transition-all flex items-center gap-1 text-[11px] font-bold cursor-pointer" title="Modificar presupuesto planeado">
+                  <span class="material-symbols-outlined text-[14px]">edit</span>
+                  <span>Modificar</span>
                 </button>
               </div>
               <div class="flex items-baseline gap-1.5">
@@ -435,20 +439,38 @@ tailwind.config = {
 
 <!-- Modal Presupuesto Planeado -->
 <div id="budget-edit-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
-  <div id="budget-edit-modal-backdrop" class="absolute inset-0 bg-surface-dim/80 backdrop-blur-sm"></div>
-  <div class="relative w-full max-w-sm bg-surface-container-high rounded-2xl p-6 shadow-2xl border border-tertiary/20 flex flex-col gap-4">
-    <div class="flex items-center justify-between border-b border-tertiary/10 pb-3">
-      <h3 class="font-headline-md text-lg text-on-surface">Presupuesto Planeado</h3>
-      <button type="button" id="budget-edit-modal-close" class="text-on-surface-variant hover:text-tertiary transition-colors"><span class="material-symbols-outlined text-[20px]">close</span></button>
+  <div id="budget-edit-modal-backdrop" class="absolute inset-0 bg-black/75 backdrop-blur-md"></div>
+  <div class="relative w-full max-w-md bg-surface-container-high rounded-3xl p-6 sm:p-8 shadow-2xl border border-tertiary/30 flex flex-col gap-5">
+    <div class="flex items-start justify-between border-b border-tertiary/10 pb-4">
+      <div>
+        <h3 class="font-display-lg text-xl text-on-surface font-semibold">Definir Presupuesto Total</h3>
+        <p class="text-xs text-on-surface-variant mt-0.5">Establece el monto global planeado para el evento</p>
+      </div>
+      <button type="button" id="budget-edit-modal-close" class="text-on-surface-variant hover:text-tertiary transition-colors cursor-pointer p-1"><span class="material-symbols-outlined text-[20px]">close</span></button>
     </div>
     <form id="budget-edit-form" class="flex flex-col gap-4">
-      <div class="flex flex-col gap-1">
-        <label class="text-[10px] uppercase tracking-wider text-on-surface-variant" for="budget-edit-input">Nuevo Monto Planeado (MXN) *</label>
-        <input id="budget-edit-input" required min="0" step="any" placeholder="0.00" class="bg-surface-container border border-tertiary/20 rounded-lg py-2.5 px-3 text-sm text-on-surface focus:outline-none focus:border-tertiary" type="number"/>
+      <div class="flex flex-col gap-1.5">
+        <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold" for="budget-edit-input">Monto Planeado Meta ($ MXN) *</label>
+        <div class="relative">
+          <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-tertiary font-bold text-sm">$</span>
+          <input id="budget-edit-input" required min="0" step="any" placeholder="Ej: 350000" class="w-full bg-surface-container border border-tertiary/20 rounded-xl py-3 pl-8 pr-4 text-base font-semibold text-on-surface focus:outline-none focus:border-tertiary transition-colors" type="number"/>
+        </div>
       </div>
-      <div class="flex justify-end gap-2 mt-2">
+
+      <!-- Botones de incremento rápido -->
+      <div class="flex flex-col gap-1.5">
+        <span class="text-[10px] uppercase tracking-wider text-on-surface-variant/70 font-semibold">Valores rápidos:</span>
+        <div class="grid grid-cols-4 gap-1.5">
+          <button type="button" class="btn-quick-budget px-2 py-1.5 rounded-lg bg-surface-container hover:bg-tertiary/20 hover:text-tertiary text-[11px] font-semibold text-on-surface border border-tertiary/10 transition-colors" data-amount="100000">$100k</button>
+          <button type="button" class="btn-quick-budget px-2 py-1.5 rounded-lg bg-surface-container hover:bg-tertiary/20 hover:text-tertiary text-[11px] font-semibold text-on-surface border border-tertiary/10 transition-colors" data-amount="250000">$250k</button>
+          <button type="button" class="btn-quick-budget px-2 py-1.5 rounded-lg bg-surface-container hover:bg-tertiary/20 hover:text-tertiary text-[11px] font-semibold text-on-surface border border-tertiary/10 transition-colors" data-amount="500000">$500k</button>
+          <button type="button" class="btn-quick-budget px-2 py-1.5 rounded-lg bg-surface-container hover:bg-tertiary/20 hover:text-tertiary text-[11px] font-semibold text-on-surface border border-tertiary/10 transition-colors" data-amount="1000000">$1M</button>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-3 border-t border-tertiary/10 mt-1">
         <button type="button" id="budget-edit-cancel" class="px-4 py-2.5 rounded-xl border border-tertiary/20 text-on-surface-variant hover:bg-surface-container transition-colors font-button-text uppercase tracking-wider text-xs cursor-pointer">Cancelar</button>
-        <button type="submit" class="px-6 py-2.5 rounded-xl bg-tertiary text-on-tertiary font-button-text text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all shadow-md cursor-pointer">Guardar</button>
+        <button type="submit" class="px-6 py-2.5 rounded-xl bg-tertiary text-on-tertiary font-button-text text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all shadow-md cursor-pointer">Guardar Presupuesto</button>
       </div>
     </form>
   </div>
@@ -787,10 +809,26 @@ tailwind.config = {
     budgetModal.classList.remove("flex");
   }
 
-  document.getElementById("btn-edit-planned-budget").addEventListener("click", openBudgetModal);
+  document.getElementById("btn-edit-planned-budget")?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    openBudgetModal();
+  });
+  document.getElementById("btn-open-budget-modal")?.addEventListener("click", openBudgetModal);
+  document.getElementById("card-planned-budget")?.addEventListener("click", openBudgetModal);
+
+  document.querySelectorAll(".btn-quick-budget").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const amt = btn.dataset.amount;
+      if (amt) {
+        budgetInput.value = amt;
+        budgetInput.focus();
+      }
+    });
+  });
+
   if (budgetClose) budgetClose.addEventListener("click", closeBudgetModal);
   if (budgetCancel) budgetCancel.addEventListener("click", closeBudgetModal);
-  document.getElementById("budget-edit-modal-backdrop").addEventListener("click", closeBudgetModal);
+  document.getElementById("budget-edit-modal-backdrop")?.addEventListener("click", closeBudgetModal);
 
   budgetForm.addEventListener("submit", async (e) => {
     e.preventDefault();
