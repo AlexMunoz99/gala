@@ -490,7 +490,7 @@
       if (toggle) {
         const id = toggle.getAttribute("data-id");
         const isActive = toggle.checked;
-        const { error } = await window.supabaseClient.from("profiles").update({ is_active: isActive }).eq("id", id);
+        const { error } = await window.supabaseClient.from("profiles").update({ is_active: isActive, is_approved: isActive }).eq("id", id);
         if (error) {
           window.showToast("Error al actualizar estado: " + error.message, "error");
           toggle.checked = !isActive; // revertir

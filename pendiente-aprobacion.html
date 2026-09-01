@@ -51,9 +51,9 @@ tailwind.config = {
       window.location.href = "login.html";
       return;
     }
-    // Si ya lo aprobaron mientras esperaba, dejarlo pasar
+    // Si la cuenta está activa o es admin, redirigir a proyectos
     const { data: profile } = await window.supabaseClient.from("profiles").select("*").eq("id", session.user.id).single();
-    if (profile && (profile.is_approved || profile.role === "admin")) {
+    if (!profile || profile.is_active !== false || profile.role === "admin") {
       window.location.href = "proyectos.html";
       return;
     }

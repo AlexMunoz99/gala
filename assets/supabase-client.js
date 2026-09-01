@@ -387,16 +387,31 @@ async function requireAuth() {
     }
 
     if (!profile) {
-      // Fallback seguro para evitar pantallas congeladas
+      // Fallback seguro y registro automático en profiles si no existe
       profile = {
         id: session.user.id,
-        role: "admin",
-        plan: "free",
+        email: session.user.email,
+        role: "organizador",
+        plan: "standard",
+        is_active: true,
         is_approved: true,
         full_name: session.user.user_metadata?.full_name || session.user.email?.split("@")[0] || "Usuario Gala"
       };
-    } else if (!profile.plan) {
-      profile.plan = "free";
+      try {
+        await window.supabaseClient.from("profiles").upsert({
+          id: session.user.id,
+          email: session.user.email,
+          full_name: profile.full_name,
+          role: "organizador",
+          plan: "standard",
+          is_active: true,
+          is_approved: true
+        });
+      } catch(e) {}
+    } else {
+      if (!profile.plan) profile.plan = "standard";
+      if (profile.is_approved === undefined || profile.is_approved === null) profile.is_approved = true;
+      if (profile.is_active === undefined || profile.is_active === null) profile.is_active = true;
     }
 
     let originalProfile = profile;
@@ -422,8 +437,13 @@ async function requireAuth() {
     }
 
     const onPendingPage = window.location.pathname.endsWith("pendiente-aprobacion.html");
-    if (profile && !profile.is_approved && profile.role !== "admin" && !onPendingPage) {
+    // Solo bloquear si la cuenta fue explícitamente suspendida por el Administrador (is_active === false)
+    if (profile && profile.is_active === false && profile.role !== "admin" && !onPendingPage) {
       window.location.href = "pendiente-aprobacion.html";
+      return null;
+    }
+    if (onPendingPage && profile && profile.is_active !== false) {
+      window.location.href = "proyectos.html";
       return null;
     }
 
