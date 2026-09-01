@@ -480,10 +480,10 @@ tailwind.config = {
             <span class="material-symbols-outlined text-[13px]">widgets</span>
             ${activeModules.length}/${totalModules} Módulos
           </span>
-          ${ev.budget_total && Number(ev.budget_total) > 0 ? `
+          ${ev.total_budget && Number(ev.total_budget) > 0 ? `
           <span class="px-2.5 py-1 rounded-lg bg-surface-container-high border border-secondary/30 text-secondary text-[10px] font-bold flex items-center gap-1" title="Presupuesto planeado">
             <span class="material-symbols-outlined text-[13px]">payments</span>
-            $${Number(ev.budget_total).toLocaleString("es-MX")} MXN
+            $${Number(ev.total_budget).toLocaleString("es-MX")} MXN
           </span>
           ` : ''}
         </div>
@@ -572,7 +572,7 @@ tailwind.config = {
     document.getElementById("edit-project-id").value = ev.id;
     document.getElementById("edit-project-name").value = ev.name || "";
     document.getElementById("edit-project-date").value = ev.event_date || "";
-    document.getElementById("edit-project-budget").value = (ev.budget_total !== null && ev.budget_total !== undefined && ev.budget_total > 0) ? ev.budget_total : "";
+    document.getElementById("edit-project-budget").value = (ev.total_budget !== null && ev.total_budget !== undefined && ev.total_budget > 0) ? ev.total_budget : "";
     document.getElementById("edit-project-type").value = ev.event_type || "boda";
 
     const currentActive = window.getEventActiveModules(ev);
@@ -600,12 +600,12 @@ tailwind.config = {
     const event_type = document.getElementById("edit-project-type").value;
     const name = document.getElementById("edit-project-name").value.trim();
     const event_date = document.getElementById("edit-project-date").value || null;
-    const budget_total = Number(document.getElementById("edit-project-budget").value) || 0;
+    const total_budget = Number(document.getElementById("edit-project-budget").value) || 0;
 
     const payload = {
       name,
       event_date,
-      budget_total,
+      total_budget,
       event_type,
       active_modules: selectedModules
     };
@@ -688,13 +688,13 @@ tailwind.config = {
     const name = document.getElementById("project-name").value.trim();
     const event_date = document.getElementById("project-date").value || null;
     const event_type = document.getElementById("project-type").value;
-    const budget_total = Number(document.getElementById("project-budget").value) || 0;
+    const total_budget = Number(document.getElementById("project-budget").value) || 0;
     const selectedModules = newModulePicker ? newModulePicker.getSelected() : window.GALA_AVAILABLE_MODULES.map(m => m.key);
 
     const payload = { 
       name, 
       event_date, 
-      budget_total,
+      total_budget,
       event_type,
       active_modules: selectedModules
     };

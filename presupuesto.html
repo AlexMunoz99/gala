@@ -681,11 +681,11 @@ tailwind.config = {
     // Cargar Presupuesto Planeado
     const { data: eventData, error: eventErr } = await window.supabaseClient
       .from("events")
-      .select("budget_total")
+      .select("total_budget")
       .eq("id", currentEventId)
       .single();
     if (!eventErr && eventData) {
-      plannedBudget = Number(eventData.budget_total) || 0;
+      plannedBudget = Number(eventData.total_budget) || 0;
     }
 
     // Cargar Gastos y Proveedores
@@ -840,7 +840,7 @@ tailwind.config = {
 
     const { error } = await window.supabaseClient
       .from("events")
-      .update({ budget_total: num })
+      .update({ total_budget: num })
       .eq("id", currentEventId);
 
     if (error) {
