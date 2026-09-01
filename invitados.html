@@ -930,9 +930,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const headers = ["Nombre", "Grupo", "Teléfono", "RSVP", "Mesa", "Acompañante", "Notas dietéticas"];
     const rows = [
       headers,
-      ["Carlos Mendoza", "Familia Novio", "+52 33 1234 5678", "Confirmado", "Mesa 1", "No", "Sin mariscos"],
-      ["Mariana Gómez", "Amigos Novia", "+52 33 9876 5432", "Pendiente", "Mesa 2", "Sí", "Vegetariana"],
-      ["Roberto Silva", "Trabajo", "+52 55 5555 5555", "Pendiente", "Mesa 3", "No", ""]
+      ["Carlos Mendoza", "Familia Novio", "523312345678", "Confirmado", "Mesa 1", "No", "Sin mariscos"],
+      ["Mariana Gómez", "Amigos Novia", "3398765432", "Pendiente", "Mesa 2", "Sí", "Vegetariana"],
+      ["Roberto Silva", "Trabajo", "5555555555", "Pendiente", "Mesa 3", "No", ""]
     ];
     const csv = rows
       .map(row => row.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(","))
@@ -946,7 +946,7 @@ document.addEventListener('DOMContentLoaded', function () {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    window.showToast("Plantilla CSV descargada con éxito.", "success");
+    window.showToast("Plantilla CSV descargada (sin fórmulas ni signo '+' para evitar errores en Excel).", "success");
   });
 
   const csvFileInput = document.getElementById("csv-file-input");
@@ -966,6 +966,19 @@ document.addEventListener('DOMContentLoaded', function () {
     importSummary.classList.toggle("text-tertiary", !isError);
   }
 
+  function cleanPhoneNumber(rawPhone) {
+    if (!rawPhone) return null;
+    let str = String(rawPhone).trim();
+    // Limpiar posibles prefijos que agrega Excel cuando interpreta como fórmula (=+, +, =, ', etc.)
+    str = str.replace(/^[=+']+/, "").trim();
+    // Si Excel exportó notación científica (ej: 5.23312E+11)
+    if (/^\d+(\.\d+)?[eE]\+\d+$/.test(str)) {
+      try { str = BigInt(Math.round(Number(str))).toString(); } catch(e) {}
+    }
+    const digits = str.replace(/\D/g, "");
+    return digits || null;
+  }
+
   function normalizeRsvp(value) {
     const v = (value || "").trim().toLowerCase();
     if (v.startsWith("confirm")) return "confirmado";
@@ -981,7 +994,11 @@ document.addEventListener('DOMContentLoaded', function () {
       header: true,
       skipEmptyLines: true,
       complete: async (results) => {
-        const rows = (results.data || []).filter(r => (r["Nombre"] || "").trim());
+        const rows = (results.data || []).filter(r => {
+          const name = r["Nombre"] || r["nombre"] || r["Name"] || r["Nombre Completo"] || "";
+          return String(name).trim().length > 0;
+        });
+
         if (rows.length === 0) {
           showImportSummary("El archivo no tiene invitados válidos (revisa que la columna 'Nombre' esté llena).", true);
           csvFileInput.value = "";
@@ -991,7 +1008,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Crea sobre la marcha los grupos que vengan en el CSV y no existan todavía
         const groupNameToId = { ...Object.fromEntries(allGroups.map(g => [g.name.toLowerCase(), g.id])) };
         for (const row of rows) {
-          const groupName = (row["Grupo"] || "").trim();
+          const groupName = (row["Grupo"] || row["grupo"] || row["Group"] || "").trim();
           if (groupName && !groupNameToId[groupName.toLowerCase()]) {
             const { data: newGroup, error } = await window.supabaseClient
               .from("guest_groups").insert({ event_id: currentEventId, name: groupName }).select().single();
@@ -999,16 +1016,26 @@ document.addEventListener('DOMContentLoaded', function () {
           }
         }
 
-        const payload = rows.map(row => ({
-          event_id: currentEventId,
-          full_name: (row["Nombre"] || "").trim(),
-          group_id: groupNameToId[(row["Grupo"] || "").trim().toLowerCase()] || null,
-          phone: (row["Teléfono"] || "").trim() || null,
-          rsvp_status: normalizeRsvp(row["RSVP"]),
-          table_number: (row["Mesa"] || "").trim() || null,
-          plus_one: (row["Acompañante"] || "").trim().toLowerCase().startsWith("s"),
-          dietary_notes: (row["Notas dietéticas"] || "").trim() || null
-        }));
+        const payload = rows.map(row => {
+          const rawName = row["Nombre"] || row["nombre"] || row["Name"] || row["Nombre Completo"] || "";
+          const rawGroup = row["Grupo"] || row["grupo"] || row["Group"] || "";
+          const rawPhone = row["Teléfono"] || row["Telefono"] || row["telefono"] || row["Phone"] || row["Celular"] || row["Cel"] || "";
+          const rawRsvp = row["RSVP"] || row["rsvp"] || row["Asistencia"] || row["Estado"] || "";
+          const rawTable = row["Mesa"] || row["mesa"] || row["Table"] || "";
+          const rawPlus = row["Acompañante"] || row["Acompanante"] || row["Plus One"] || row["Pase Doble"] || row["Pases"] || "";
+          const rawDiet = row["Notas dietéticas"] || row["Notas dieteticas"] || row["Dieta"] || row["Alergias"] || row["Notas"] || "";
+
+          return {
+            event_id: currentEventId,
+            full_name: String(rawName).trim(),
+            group_id: groupNameToId[String(rawGroup).trim().toLowerCase()] || null,
+            phone: cleanPhoneNumber(rawPhone),
+            rsvp_status: normalizeRsvp(rawRsvp),
+            table_number: String(rawTable).trim() || null,
+            plus_one: String(rawPlus).trim().toLowerCase().startsWith("s") || String(rawPlus).trim() === "1" || String(rawPlus).trim() === "2",
+            dietary_notes: String(rawDiet).trim() || null
+          };
+        });
 
         const { error: insertError } = await window.supabaseClient.from("guests").insert(payload);
         csvFileInput.value = "";
@@ -1063,11 +1090,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const waBtn = e.target.closest(".btn-wa-send");
     if (waBtn) {
-      const phone = (guest.phone || "").replace(/\D/g, "");
+      let phone = (guest.phone || "").replace(/\D/g, "");
       if (!phone || phone.length < 8) {
         window.showToast(`Por favor ingresa un teléfono válido para ${guest.full_name}.`, "info");
         openModal("edit", guest);
         return;
+      }
+      if (phone.length === 10) {
+        phone = "52" + phone;
       }
       const invUrl = `${window.location.origin + window.location.pathname.replace('invitados.html', '')}invitacion.html?g=${guest.id}`;
       const msg = `¡Hola ${guest.full_name}! Te compartimos nuestra invitación digital con todos los detalles y pases reservados:\n\n${invUrl}`;
@@ -1357,8 +1387,9 @@ document.addEventListener('DOMContentLoaded', function () {
     remindList.innerHTML = pendings.map(g => {
       const invUrl = `${window.location.origin + window.location.pathname.replace('invitados.html', '')}invitacion.html?g=${g.id}`;
       const msg = `¡Hola ${g.full_name}! 👋 Te escribimos con mucho cariño para recordarte confirmar tu asistencia a nuestra boda.\n\nPuedes ver todos los detalles y confirmar tus pases directamente aquí:\n${invUrl}\n\n¡Esperamos contar contigo! ✨`;
-      const cleanPhone = (g.phone || "").replace(/\D/g, "");
-      const hasPhone = cleanPhone && cleanPhone.length >= 8;
+      let cleanPhone = (g.phone || "").replace(/\D/g, "");
+      if (cleanPhone.length === 10) cleanPhone = "52" + cleanPhone;
+      const hasPhone = cleanPhone && cleanPhone.length >= 10;
       const waLink = hasPhone ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(msg)}` : '#';
 
       return `
