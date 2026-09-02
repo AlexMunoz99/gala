@@ -106,9 +106,35 @@ tailwind.config = {
     </a>
   </div>
 
-  <div class="relative max-w-sm">
-    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
-    <input id="project-search" class="w-full bg-surface-container border border-tertiary/20 rounded-lg py-2 pl-10 pr-4 text-on-surface text-xs focus:outline-none focus:border-tertiary transition-colors placeholder:text-on-surface-variant/50" placeholder="Buscar evento por nombre..." type="text"/>
+  <!-- Barra de Búsqueda y Filtros -->
+  <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 justify-between bg-surface-container-low/80 backdrop-blur-md p-3 rounded-2xl border border-tertiary/10 shadow-sm">
+    <div class="relative flex-1 max-w-md">
+      <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-tertiary/60 text-[18px]">search</span>
+      <input id="project-search" class="w-full bg-surface-container border border-tertiary/20 rounded-xl py-2 pl-10 pr-4 text-on-surface text-xs focus:outline-none focus:border-tertiary transition-colors placeholder:text-on-surface-variant/40" placeholder="Buscar por evento, organizador o correo..." type="text"/>
+    </div>
+
+    <div class="flex items-center gap-2 flex-wrap">
+      <!-- Filtro Tipo de Evento -->
+      <div class="flex items-center gap-1.5 bg-surface-container px-2.5 py-1.5 rounded-xl border border-tertiary/20">
+        <span class="material-symbols-outlined text-tertiary/70 text-[16px]">category</span>
+        <select id="filter-type" class="bg-transparent text-on-surface font-body-md text-xs focus:outline-none cursor-pointer">
+          <option value="" class="bg-surface-container">Todos los tipos</option>
+          <option value="boda" class="bg-surface-container">💍 Bodas</option>
+          <option value="corporativo" class="bg-surface-container">💼 Corporativos</option>
+          <option value="social" class="bg-surface-container">🎉 Sociales / XV</option>
+          <option value="banquete" class="bg-surface-container">🍽️ Banquetes</option>
+          <option value="personalizado" class="bg-surface-container">🛠️ Modulares</option>
+        </select>
+      </div>
+
+      <!-- Filtro Creador / Organizador (Para Admin) -->
+      <div id="filter-user-wrap" class="hidden flex items-center gap-1.5 bg-surface-container px-2.5 py-1.5 rounded-xl border border-tertiary/20">
+        <span class="material-symbols-outlined text-tertiary/70 text-[16px]">person</span>
+        <select id="filter-user" class="bg-transparent text-on-surface font-body-md text-xs focus:outline-none cursor-pointer max-w-[200px] truncate">
+          <option value="" class="bg-surface-container">Todos los organizadores</option>
+        </select>
+      </div>
+    </div>
   </div>
 
   <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -289,6 +315,7 @@ tailwind.config = {
   let allEvents = [];
   let userProfile = null;
   let currentUser = null;
+  let profilesById = {};
 
   // =========================================================================
   // GESTIÓN DEL SELECTOR MODULAR VISUAL
@@ -498,6 +525,31 @@ tailwind.config = {
           ` : ''}
         </div>
 
+        ${(() => {
+          if (userProfile?.role !== "admin") return "";
+          const creator = ev.user_id ? profilesById[ev.user_id] : null;
+          const creatorName = creator ? (creator.full_name || creator.email) : (ev.user_id ? "Usuario registrado" : "Demo / Público");
+          const creatorEmail = creator?.email ? creator.email : "";
+          const isCreatorAdmin = creator?.role === "admin";
+          const isOwner = currentUser && ev.user_id === currentUser.id;
+
+          return `
+            <div class="flex items-center gap-2 pt-2.5 pb-0.5 border-t border-tertiary/10 text-xs">
+              <div class="w-6 h-6 rounded-full ${isCreatorAdmin ? 'bg-tertiary/20 text-tertiary border border-tertiary/30' : 'bg-surface-container-high text-on-surface-variant border border-tertiary/15'} flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-[13px]">${isCreatorAdmin ? 'shield_person' : 'person'}</span>
+              </div>
+              <div class="flex flex-col min-w-0 flex-1">
+                <div class="flex items-center gap-1.5 flex-wrap">
+                  <span class="text-[10px] font-bold text-on-surface truncate">${escapeHtml(creatorName)}</span>
+                  ${isCreatorAdmin ? '<span class="px-1.5 py-0.2 rounded bg-tertiary/20 text-tertiary text-[7.5px] font-bold uppercase">Admin</span>' : ''}
+                  ${isOwner ? '<span class="px-1.5 py-0.2 rounded bg-secondary/20 text-secondary text-[7.5px] font-bold uppercase">Tú</span>' : ''}
+                </div>
+                ${creatorEmail && creatorEmail !== creatorName ? `<span class="text-[9px] text-on-surface-variant/70 truncate">${escapeHtml(creatorEmail)}</span>` : ''}
+              </div>
+            </div>
+          `;
+        })()}
+
         <div class="mt-auto pt-3 border-t border-tertiary/10 flex items-center justify-between">
           <span class="text-tertiary text-[10px] uppercase tracking-widest font-button-text font-semibold">${window.formatCountdown(ev.event_date)}</span>
           <span class="material-symbols-outlined text-on-surface-variant text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
@@ -506,16 +558,79 @@ tailwind.config = {
     }).join("");
   }
 
+  function populateUserFilter(profs) {
+    const filterUserWrap = document.getElementById("filter-user-wrap");
+    const filterUser = document.getElementById("filter-user");
+    if (!filterUser) return;
+
+    if (userProfile?.role === "admin" && profs && profs.length > 0) {
+      if (filterUserWrap) filterUserWrap.classList.remove("hidden");
+      const currentVal = filterUser.value;
+      filterUser.innerHTML = '<option value="">Todos los organizadores</option>' +
+        profs.map(p => {
+          const label = p.full_name ? `${p.full_name} (${p.email || p.role})` : (p.email || p.id);
+          return `<option value="${p.id}">${escapeHtml(label)}</option>`;
+        }).join("");
+      filterUser.value = currentVal;
+    } else {
+      if (filterUserWrap) filterUserWrap.classList.add("hidden");
+    }
+  }
+
   function applySearchAndRender() {
-    const term = (document.getElementById("project-search").value || "").trim().toLowerCase();
-    const filtered = term ? allEvents.filter(ev => (ev.name || "").toLowerCase().includes(term)) : allEvents;
+    const term = (document.getElementById("project-search")?.value || "").trim().toLowerCase();
+    const typeFilter = document.getElementById("filter-type")?.value || "";
+    const userFilter = document.getElementById("filter-user")?.value || "";
+
+    const filtered = allEvents.filter(ev => {
+      // 1. Filtro por organizador / creador
+      if (userFilter && String(ev.user_id || "") !== userFilter) {
+        return false;
+      }
+
+      // 2. Filtro por tipo de evento
+      if (typeFilter && (ev.event_type || "boda").toLowerCase() !== typeFilter.toLowerCase()) {
+        return false;
+      }
+
+      // 3. Búsqueda por texto (nombre de evento, creador, correo, tipo o fecha)
+      if (term) {
+        const creator = ev.user_id ? profilesById[ev.user_id] : null;
+        const nameMatch = (ev.name || "").toLowerCase().includes(term);
+        const typeMatch = (ev.event_type || "").toLowerCase().includes(term);
+        const creatorNameMatch = creator && (creator.full_name || "").toLowerCase().includes(term);
+        const creatorEmailMatch = creator && (creator.email || "").toLowerCase().includes(term);
+        return nameMatch || typeMatch || creatorNameMatch || creatorEmailMatch;
+      }
+
+      return true;
+    });
+
     renderProjects(filtered);
   }
 
   async function loadProjects() {
     try {
       const { data: { session } } = await window.supabaseClient.auth.getSession();
-      
+      currentUser = session?.user || null;
+
+      // Si es admin, cargar todos los perfiles para conocer el creador de cada evento y poblar filtro
+      if (userProfile?.role === "admin") {
+        try {
+          const { data: profs } = await window.supabaseClient
+            .from("profiles")
+            .select("id, full_name, email, role")
+            .order("full_name", { ascending: true });
+          
+          if (profs && profs.length > 0) {
+            profilesById = Object.fromEntries(profs.map(p => [p.id, p]));
+            populateUserFilter(profs);
+          }
+        } catch(e) {
+          console.warn("No se pudieron cargar perfiles de creadores:", e);
+        }
+      }
+
       let data = null;
       let error = null;
 
@@ -544,7 +659,6 @@ tailwind.config = {
       applySearchAndRender();
     } catch (err) {
       console.error("Error al cargar eventos:", err);
-      // Fallback final
       try {
         const fallback = await window.supabaseClient.from("events").select("*").order("created_at", { ascending: false });
         allEvents = fallback.data || [];
@@ -555,7 +669,9 @@ tailwind.config = {
     }
   }
 
-  document.getElementById("project-search").addEventListener("input", applySearchAndRender);
+  document.getElementById("project-search")?.addEventListener("input", applySearchAndRender);
+  document.getElementById("filter-type")?.addEventListener("change", applySearchAndRender);
+  document.getElementById("filter-user")?.addEventListener("change", applySearchAndRender);
 
   grid.addEventListener("click", (e) => {
     const card = e.target.closest(".project-card");
