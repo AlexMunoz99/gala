@@ -261,9 +261,21 @@ tailwind.config = {
       <button id="upload-photo-close" class="material-symbols-outlined text-on-surface-variant hover:text-tertiary transition-colors">close</button>
     </div>
     <form id="upload-photo-form" class="flex flex-col gap-3">
+      <!-- Opción Archivo Directo -->
+      <div class="flex flex-col gap-1.5">
+        <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-semibold">Subir desde dispositivo</label>
+        <input id="photo-file-input" type="file" accept="image/*" class="w-full text-xs text-on-surface-variant file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-tertiary/20 file:text-tertiary hover:file:bg-tertiary/30 cursor-pointer"/>
+      </div>
+
+      <div class="flex items-center gap-2 my-1">
+        <div class="flex-1 h-px bg-tertiary/10"></div>
+        <span class="text-[10px] text-on-surface-variant/50 uppercase">o mediante URL</span>
+        <div class="flex-1 h-px bg-tertiary/10"></div>
+      </div>
+
       <div class="flex flex-col gap-1">
-        <label class="text-[10px] uppercase tracking-wider text-on-surface-variant" for="photo-url">URL de la Imagen *</label>
-        <input id="photo-url" required placeholder="https://ejemplo.com/foto-boda.jpg" class="bg-surface-container border border-tertiary/20 rounded-lg py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary" type="url"/>
+        <label class="text-[10px] uppercase tracking-wider text-on-surface-variant" for="photo-url">URL de la Imagen</label>
+        <input id="photo-url" placeholder="https://ejemplo.com/foto-boda.jpg" class="bg-surface-container border border-tertiary/20 rounded-lg py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary" type="url"/>
       </div>
       <div class="flex flex-col gap-1">
         <label class="text-[10px] uppercase tracking-wider text-on-surface-variant" for="photo-caption">Descripción / Nota</label>
@@ -274,7 +286,7 @@ tailwind.config = {
 
       <div class="flex justify-end gap-2 mt-2">
         <button type="button" id="upload-photo-cancel" class="px-4 py-2.5 rounded-xl border border-tertiary/20 text-on-surface-variant hover:bg-surface-container transition-colors font-button-text uppercase tracking-wider text-xs cursor-pointer">Cancelar</button>
-        <button type="submit" class="px-6 py-2.5 rounded-xl bg-tertiary text-on-tertiary font-button-text text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all shadow-md cursor-pointer">Agregar Foto</button>
+        <button type="submit" id="upload-photo-submit-btn" class="px-6 py-2.5 rounded-xl bg-tertiary text-on-tertiary font-button-text text-xs font-bold uppercase tracking-wider hover:brightness-110 transition-all shadow-md cursor-pointer">Agregar Foto</button>
       </div>
     </form>
   </div>
@@ -491,9 +503,30 @@ tailwind.config = {
 
   document.getElementById("upload-photo-form").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const url = document.getElementById("photo-url").value.trim();
+    const errorEl = document.getElementById("upload-photo-error");
+    errorEl.classList.add("hidden");
+
+    const fileInput = document.getElementById("photo-file-input");
+    let url = document.getElementById("photo-url").value.trim();
     const caption = document.getElementById("photo-caption").value.trim();
-    if (!url) return;
+
+    if (fileInput.files && fileInput.files[0]) {
+      try {
+        window.showToast("Optimizando foto...", "info", 1500);
+        const { dataUrl } = await window.compressImage(fileInput.files[0], { maxWidth: 1600, maxHeight: 1600, quality: 0.82 });
+        url = dataUrl;
+      } catch(err) {
+        errorEl.textContent = "Error al procesar la imagen: " + err.message;
+        errorEl.classList.remove("hidden");
+        return;
+      }
+    }
+
+    if (!url) {
+      errorEl.textContent = "Por favor selecciona una foto de tu dispositivo o ingresa una URL.";
+      errorEl.classList.remove("hidden");
+      return;
+    }
 
     await savePhoto(url, caption);
     window.showToast("¡Foto añadida a La Bóveda!", "success");

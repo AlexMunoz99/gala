@@ -512,17 +512,26 @@ tailwind.config = {
     }
   }
 
-  // Previsualizar foto subida
-  document.getElementById("cover-file-input").addEventListener("change", (e) => {
+  // Previsualizar y optimizar foto subida
+  document.getElementById("cover-file-input").addEventListener("change", async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        document.getElementById("cover-photo-preview").src = ev.target.result;
-        document.getElementById("cover-image-url-input").value = ev.target.result;
-        document.getElementById("preview-cover-photo").src = ev.target.result;
-      };
-      reader.readAsDataURL(file);
+      try {
+        window.showToast("Optimizando foto para carga ultra rápida...", "info", 1800);
+        const { dataUrl } = await window.compressImage(file, { maxWidth: 1600, maxHeight: 1600, quality: 0.85 });
+        document.getElementById("cover-photo-preview").src = dataUrl;
+        document.getElementById("cover-image-url-input").value = dataUrl;
+        document.getElementById("preview-cover-photo").src = dataUrl;
+        window.showToast("Foto optimizada con éxito.", "success");
+      } catch(err) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          document.getElementById("cover-photo-preview").src = ev.target.result;
+          document.getElementById("cover-image-url-input").value = ev.target.result;
+          document.getElementById("preview-cover-photo").src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
     }
   });
 

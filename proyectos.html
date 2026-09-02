@@ -4,6 +4,16 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Gala ERP — Mis Proyectos</title>
+<meta name="description" content="Gestión y administración de eventos y bodas exclusivas.">
+<meta name="theme-color" content="#131411">
+<link rel="icon" type="image/png" href="assets/logo.png">
+
+<!-- OpenGraph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Gala ERP — Mis Proyectos">
+<meta property="og:description" content="Gestión y administración de eventos y bodas exclusivas.">
+<meta property="og:image" content="assets/logo.png">
+
 <style>
   html, body { margin: 0; padding: 0; }
   ::-webkit-scrollbar { display: none; }
@@ -509,30 +519,21 @@ tailwind.config = {
       let data = null;
       let error = null;
 
-      // Si es admin, cargar todos los eventos
-      if (userProfile?.role === "admin" || !session?.user?.id) {
+      // Si es admin, cargar todos los eventos del sistema
+      if (userProfile?.role === "admin") {
         const res = await window.supabaseClient.from("events").select("*").order("created_at", { ascending: false });
         data = res.data;
         error = res.error;
-      } else {
-        // Consultar eventos del usuario o sin asignar (demo/públicos)
+      } else if (session?.user?.id) {
+        // Consultar exclusivamente eventos pertenecientes al usuario autenticado
         const res = await window.supabaseClient
           .from("events")
           .select("*")
-          .or(`user_id.eq.${session.user.id},user_id.is.null`)
+          .eq("user_id", session.user.id)
           .order("created_at", { ascending: false });
         
         data = res.data;
         error = res.error;
-
-        // Si el filtro .or no devuelve eventos o falla, fallback a todos los eventos disponibles
-        if (error || !data || data.length === 0) {
-          const fallback = await window.supabaseClient.from("events").select("*").order("created_at", { ascending: false });
-          if (fallback.data && fallback.data.length > 0) {
-            data = fallback.data;
-            error = null;
-          }
-        }
       }
 
       if (error) {

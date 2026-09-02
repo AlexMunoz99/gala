@@ -777,6 +777,80 @@ function initMobileEngine() {
   }
 }
 
+/**
+ * Compresor de Imágenes de Alto Rendimiento en el Navegador.
+ * Reduce fotos de 5MB-15MB a WebP/JPEG optimizados (~150KB-300KB) para subida ultrarrápida.
+ */
+function compressImage(file, options = {}) {
+  const maxWidth = options.maxWidth || 1600;
+  const maxHeight = options.maxHeight || 1600;
+  const quality = options.quality !== undefined ? options.quality : 0.82;
+  const outputType = options.outputType || "image/webp";
+
+  return new Promise((resolve, reject) => {
+    if (!file || !file.type || !file.type.startsWith("image/")) {
+      return reject(new Error("El archivo seleccionado no es una imagen válida."));
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        let width = img.width;
+        let height = img.height;
+
+        if (width > maxWidth || height > maxHeight) {
+          if (width / height > maxWidth / maxHeight) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          } else {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = "high";
+        ctx.drawImage(img, 0, 0, width, height);
+
+        let dataUrl = "";
+        try {
+          dataUrl = canvas.toDataURL(outputType, quality);
+        } catch(err) {
+          dataUrl = canvas.toDataURL("image/jpeg", quality);
+        }
+        
+        canvas.toBlob((blob) => {
+          resolve({
+            dataUrl,
+            blob: blob || file,
+            width,
+            height,
+            originalSize: file.size,
+            compressedSize: blob ? blob.size : dataUrl.length
+          });
+        }, outputType, quality);
+      };
+      img.onerror = () => reject(new Error("No se pudo procesar la imagen seleccionada."));
+      img.src = e.target.result;
+    };
+    reader.onerror = () => reject(new Error("No se pudo leer el archivo."));
+    reader.readAsDataURL(file);
+  });
+}
+
+// Monitor de Conexión de Red (Offline / Online Resilience)
+window.addEventListener("offline", () => {
+  showToast("Conexión perdida. Los cambios se sincronizarán al reconectar.", "info", 5000);
+});
+window.addEventListener("online", () => {
+  showToast("Conexión restablecida con éxito.", "success", 3000);
+});
+
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initMobileEngine);
 } else {
@@ -800,3 +874,4 @@ window.applyRoleBadge = applyRoleBadge;
 window.showToast = showToast;
 window.showConfirmDialog = showConfirmDialog;
 window.initMobileEngine = initMobileEngine;
+window.compressImage = compressImage;

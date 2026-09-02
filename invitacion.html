@@ -4,6 +4,16 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
 <title>Nuestra Boda — Invitación Digital</title>
+<meta name="description" content="Acompáñanos a celebrar este día tan especial. Consulta los detalles de la ceremonia, recepción y confirma tu asistencia.">
+<meta name="theme-color" content="#54463d">
+<link rel="icon" type="image/png" href="assets/logo.png">
+
+<!-- OpenGraph / Social Media Sharing (WhatsApp, Facebook, Twitter) -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Nuestra Boda — Invitación Digital">
+<meta property="og:description" content="Acompáñanos a celebrar este momento único. Consulta el itinerario, ubicación y confirma tus pases reservados.">
+<meta property="og:image" content="assets/logo.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
@@ -594,6 +604,7 @@ tailwind.config = {
 
         // Adaptar nombres principales
         if (ev.name) {
+          document.title = `${ev.name} — Invitación Digital`;
           document.getElementById("envelope-couple-names").textContent = ev.name;
           const namesEl = document.getElementById("invitation-couple-names");
           if (namesEl) {
