@@ -2,43 +2,104 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"/>
+<script>
+(function(){
+  try {
+    if (localStorage.getItem('galaSidebarCollapsed') === 'true') {
+      document.documentElement.classList.add('sidebar-collapsed');
+    }
+  } catch (e) {}
+})();
+</script>
+<style>
+  :root { --sidebar-w: 188px; }
+  html.sidebar-collapsed { --sidebar-w: 64px; }
+  .sidebar-collapsed .sidebar-label { display: none; }
+  .sidebar-collapsed #app-sidebar nav a { justify-content: center; padding-left: 0; padding-right: 0; }
+  .sidebar-collapsed #app-sidebar .nav-icon { margin-right: 0; }
+  .sidebar-collapsed #app-sidebar .sidebar-cta { padding-left: 12px; padding-right: 12px; }
+  #sidebar-toggle-icon { transition: transform 0.3s; }
+  .sidebar-collapsed #sidebar-toggle-icon { transform: rotate(180deg); }
+  #app-sidebar, #app-content-wrapper, #app-header-logo { transition: width 0.25s ease, padding-left 0.25s ease; }
+</style>
+
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Personalizar Invitación Digital — Gala</title>
+<title>Gala ERP — Personalizar Invitación Digital</title>
 <link rel="icon" type="image/png" href="assets/logo.png"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Great+Vibes&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com"></script>
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        colors: {
-          surface: '#131411',
-          'surface-container': '#1c1d18',
-          'surface-container-high': '#262822',
-          'surface-container-low': '#181914',
-          'on-surface': '#e5e2dd',
-          'on-surface-variant': '#c9c5be',
-          tertiary: '#e9c349',
-          'on-tertiary': '#1c1d18',
-          'secondary-container': '#181914',
-          'primary-container': '#131411',
-          error: '#ffb4ab',
-        },
-        fontFamily: {
-          'display-lg': ['"Playfair Display"', 'serif'],
-          'body-md': ['"Inter"', 'sans-serif'],
-          'label-gold': ['"Inter"', 'sans-serif'],
-          'button-text': ['"Inter"', 'sans-serif'],
-          'serif-title': ['"Playfair Display"', 'serif'],
-          script: ['"Alex Brush"', 'cursive'],
-          'script-vibes': ['"Great Vibes"', 'cursive']
-        }
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "surface-tint": "#bac8dc",
+        "primary-fixed": "#d6e4f9",
+        "surface-container-low": "#1c1c19",
+        "error": "#ffb4ab",
+        "secondary-fixed": "#d2e4ff",
+        "on-error": "#690005",
+        "secondary-container": "#2a486b",
+        "on-primary-fixed-variant": "#3a4859",
+        "secondary-fixed-dim": "#abc9f2",
+        "primary-container": "#0d1b2a",
+        "tertiary-fixed-dim": "#e9c349",
+        "outline": "#8e9196",
+        "on-secondary-container": "#9ab7e0",
+        "inverse-on-surface": "#31302d",
+        "tertiary-container": "#cca730",
+        "surface-variant": "#353532",
+        "primary-fixed-dim": "#bac8dc",
+        "inverse-primary": "#525f71",
+        "on-secondary": "#103253",
+        "on-error-container": "#ffdad6",
+        "outline-variant": "#44474c",
+        "tertiary": "#e9c349",
+        "on-primary-fixed": "#0f1c2c",
+        "surface": "#131411",
+        "on-surface": "#e5e2dd",
+        "on-tertiary-container": "#4f3e00",
+        "tertiary-fixed": "#ffe088",
+        "inverse-surface": "#e5e2dd",
+        "on-tertiary-fixed-variant": "#574500",
+        "surface-container": "#20201d",
+        "primary": "#bac8dc",
+        "error-container": "#93000a",
+        "on-secondary-fixed-variant": "#2a486b",
+        "on-background": "#e5e2dd",
+        "on-tertiary": "#3c2f00",
+        "on-secondary-fixed": "#001c37",
+        "on-primary-container": "#768497",
+        "on-tertiary-fixed": "#241a00",
+        "surface-dim": "#131411",
+        "background": "#131411",
+        "surface-container-highest": "#353532",
+        "surface-container-high": "#2a2a27",
+        "on-primary": "#243141",
+        "surface-container-lowest": "#0e0e0c",
+        "secondary": "#abc9f2",
+        "surface-bright": "#3a3936",
+        "on-surface-variant": "#c4c6cc"
+      },
+      borderRadius: { "DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem" },
+      spacing: { "gutter": "24px", "margin-mobile": "16px", "container-padding": "40px", "section-gap": "80px", "unit": "8px" },
+      fontFamily: {
+        "headline-lg": ["Playfair Display", "serif"],
+        "body-md": ["Inter", "sans-serif"],
+        "button-text": ["Inter", "sans-serif"],
+        "label-gold": ["Inter", "sans-serif"],
+        "headline-md": ["Playfair Display", "serif"],
+        "display-lg": ["Playfair Display", "serif"],
+        script: ["Alex Brush", "cursive"],
+        "script-vibes": ["Great Vibes", "cursive"]
       }
     }
   }
+};
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/supabase-client.js"></script>
@@ -131,7 +192,7 @@
     </div>
   </header>
 
-  <main class="flex-1 pt-16 px-4 md:px-8 pb-12 bg-on-surface-variant/5 min-h-screen">
+  <main class="flex-1 pt-24 px-4 md:px-8 pb-12 bg-on-surface-variant/5 min-h-screen">
     <div class="max-w-6xl mx-auto flex flex-col gap-6">
       
       <!-- Header y Botones de Acción -->
@@ -157,7 +218,7 @@
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
         <!-- Panel Izquierdo: Wizard (7 cols) -->
-        <div class="lg:col-span-7 flex flex-col gap-4 bg-surface-container rounded-2xl p-5 md:p-6 border border-tertiary/10 shadow-xl">
+        <div class="lg:col-span-7 flex flex-col gap-4 bg-surface-container-high/60 backdrop-blur-md rounded-2xl p-5 md:p-6 border border-tertiary/15 shadow-xl">
           
           <!-- Pestañas del Wizard -->
           <div class="flex border-b border-tertiary/10 pb-3 justify-between text-center gap-1 overflow-x-auto">
@@ -180,29 +241,29 @@
               <!-- Selector de Arquetipo de Evento -->
               <div class="flex flex-col gap-1.5">
                 <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold">Tipo de Formato / Plantilla</label>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <label class="theme-card bg-surface border border-tertiary/20 p-3 rounded-xl flex items-start gap-2.5 cursor-pointer hover:border-tertiary transition-all">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <label class="theme-card bg-surface-container border border-tertiary/20 p-3 rounded-xl flex items-start gap-2.5 cursor-pointer hover:border-tertiary transition-all">
                     <input type="radio" name="theme_template" value="gold-wedding" checked class="mt-0.5 accent-tertiary"/>
                     <div class="flex flex-col">
                       <span class="text-xs font-bold text-on-surface flex items-center gap-1">💍 Boda Clásica Gold</span>
                       <span class="text-[10px] text-on-surface-variant leading-tight mt-0.5">Elegante, doble marco y tipografía solemne.</span>
                     </div>
                   </label>
-                  <label class="theme-card bg-surface border border-tertiary/20 p-3 rounded-xl flex items-start gap-2.5 cursor-pointer hover:border-tertiary transition-all">
+                  <label class="theme-card bg-surface-container border border-tertiary/20 p-3 rounded-xl flex items-start gap-2.5 cursor-pointer hover:border-tertiary transition-all">
                     <input type="radio" name="theme_template" value="velvet-xv" class="mt-0.5 accent-tertiary"/>
                     <div class="flex flex-col">
                       <span class="text-xs font-bold text-on-surface flex items-center gap-1">👑 Velvet XV & Dulces 16</span>
                       <span class="text-[10px] text-on-surface-variant leading-tight mt-0.5">Tiara de honor, tonos suaves y vals.</span>
                     </div>
                   </label>
-                  <label class="theme-card bg-surface border border-tertiary/20 p-3 rounded-xl flex items-start gap-2.5 cursor-pointer hover:border-tertiary transition-all">
+                  <label class="theme-card bg-surface-container border border-tertiary/20 p-3 rounded-xl flex items-start gap-2.5 cursor-pointer hover:border-tertiary transition-all">
                     <input type="radio" name="theme_template" value="corporate-gala" class="mt-0.5 accent-tertiary"/>
                     <div class="flex flex-col">
                       <span class="text-xs font-bold text-on-surface flex items-center gap-1">💼 Corporativo & Conferencia</span>
                       <span class="text-[10px] text-on-surface-variant leading-tight mt-0.5">Minimalista, conferencias y networking.</span>
                     </div>
                   </label>
-                  <label class="theme-card bg-surface border border-tertiary/20 p-3 rounded-xl flex items-start gap-2.5 cursor-pointer hover:border-tertiary transition-all">
+                  <label class="theme-card bg-surface-container border border-tertiary/20 p-3 rounded-xl flex items-start gap-2.5 cursor-pointer hover:border-tertiary transition-all">
                     <input type="radio" name="theme_template" value="modern-social" class="mt-0.5 accent-tertiary"/>
                     <div class="flex flex-col">
                       <span class="text-xs font-bold text-on-surface flex items-center gap-1">🎉 Fiesta & Cumpleaños</span>
@@ -216,27 +277,27 @@
               <div class="flex flex-col gap-1.5 pt-2 border-t border-tertiary/10">
                 <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold">Paleta de Colores</label>
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  <label class="bg-surface border border-tertiary/20 p-2.5 rounded-lg flex items-center gap-2.5 cursor-pointer hover:border-tertiary transition-colors">
+                  <label class="bg-surface-container border border-tertiary/20 p-2.5 rounded-lg flex items-center gap-2.5 cursor-pointer hover:border-tertiary transition-colors">
                     <input type="radio" name="theme_color" value="gold" checked class="accent-tertiary"/>
                     <div class="w-3.5 h-3.5 rounded-full bg-[#e9c349]"></div>
                     <span class="text-xs text-on-surface">Oro Champagne</span>
                   </label>
-                  <label class="bg-surface border border-tertiary/20 p-2.5 rounded-lg flex items-center gap-2.5 cursor-pointer hover:border-tertiary transition-colors">
+                  <label class="bg-surface-container border border-tertiary/20 p-2.5 rounded-lg flex items-center gap-2.5 cursor-pointer hover:border-tertiary transition-colors">
                     <input type="radio" name="theme_color" value="pink" class="accent-tertiary"/>
                     <div class="w-3.5 h-3.5 rounded-full bg-[#f472b6]"></div>
                     <span class="text-xs text-on-surface">Rosa & Velvet</span>
                   </label>
-                  <label class="bg-surface border border-tertiary/20 p-2.5 rounded-lg flex items-center gap-2.5 cursor-pointer hover:border-tertiary transition-colors">
+                  <label class="bg-surface-container border border-tertiary/20 p-2.5 rounded-lg flex items-center gap-2.5 cursor-pointer hover:border-tertiary transition-colors">
                     <input type="radio" name="theme_color" value="blue" class="accent-tertiary"/>
                     <div class="w-3.5 h-3.5 rounded-full bg-[#3b82f6]"></div>
                     <span class="text-xs text-on-surface">Azul Zafiro</span>
                   </label>
-                  <label class="bg-surface border border-tertiary/20 p-2.5 rounded-lg flex items-center gap-2.5 cursor-pointer hover:border-tertiary transition-colors">
+                  <label class="bg-surface-container border border-tertiary/20 p-2.5 rounded-lg flex items-center gap-2.5 cursor-pointer hover:border-tertiary transition-colors">
                     <input type="radio" name="theme_color" value="green" class="accent-tertiary"/>
                     <div class="w-3.5 h-3.5 rounded-full bg-[#10b981]"></div>
                     <span class="text-xs text-on-surface">Verde Esmeralda</span>
                   </label>
-                  <label class="bg-surface border border-tertiary/20 p-2.5 rounded-lg flex items-center gap-2.5 cursor-pointer hover:border-tertiary transition-colors">
+                  <label class="bg-surface-container border border-tertiary/20 p-2.5 rounded-lg flex items-center gap-2.5 cursor-pointer hover:border-tertiary transition-colors">
                     <input type="radio" name="theme_color" value="dark" class="accent-tertiary"/>
                     <div class="w-3.5 h-3.5 rounded-full bg-[#262626]"></div>
                     <span class="text-xs text-on-surface">Midnight Dark</span>
@@ -248,21 +309,21 @@
               <div class="flex flex-col gap-1.5 pt-2 border-t border-tertiary/10">
                 <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold">Combinación Tipográfica</label>
                 <div class="grid grid-cols-1 gap-2">
-                  <label class="bg-surface border border-tertiary/20 p-2.5 rounded-lg flex items-center justify-between cursor-pointer hover:border-tertiary transition-colors">
+                  <label class="bg-surface-container border border-tertiary/20 p-2.5 rounded-lg flex items-center justify-between cursor-pointer hover:border-tertiary transition-colors">
                     <div class="flex items-center gap-2.5">
                       <input type="radio" name="theme_font" value="elegant" checked class="accent-tertiary"/>
                       <span class="text-xs text-on-surface">Elegante Editorial (Playfair + Serif)</span>
                     </div>
                     <span class="text-[10px] text-tertiary tracking-wider uppercase font-serif" style="font-family: 'Playfair Display', serif;">Elegante</span>
                   </label>
-                  <label class="bg-surface border border-tertiary/20 p-2.5 rounded-lg flex items-center justify-between cursor-pointer hover:border-tertiary transition-colors">
+                  <label class="bg-surface-container border border-tertiary/20 p-2.5 rounded-lg flex items-center justify-between cursor-pointer hover:border-tertiary transition-colors">
                     <div class="flex items-center gap-2.5">
                       <input type="radio" name="theme_font" value="romantic" class="accent-tertiary"/>
                       <span class="text-xs text-on-surface">Romántica Cursiva (Great Vibes + Alex Brush)</span>
                     </div>
                     <span class="text-[14px] text-tertiary font-script" style="font-family: 'Great Vibes', cursive;">Romantic</span>
                   </label>
-                  <label class="bg-surface border border-tertiary/20 p-2.5 rounded-lg flex items-center justify-between cursor-pointer hover:border-tertiary transition-colors">
+                  <label class="bg-surface-container border border-tertiary/20 p-2.5 rounded-lg flex items-center justify-between cursor-pointer hover:border-tertiary transition-colors">
                     <div class="flex items-center gap-2.5">
                       <input type="radio" name="theme_font" value="minimalist" class="accent-tertiary"/>
                       <span class="text-xs text-on-surface">Moderno Minimalista (Inter + Montserrat)</span>
@@ -285,7 +346,7 @@
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <!-- Switch: Sobre interactivo -->
-                <label class="bg-surface border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
+                <label class="bg-surface-container border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
                   <div class="flex items-center gap-2.5">
                     <span class="material-symbols-outlined text-tertiary text-[20px]">mail</span>
                     <div>
@@ -297,7 +358,7 @@
                 </label>
 
                 <!-- Switch: Cuenta regresiva -->
-                <label class="bg-surface border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
+                <label class="bg-surface-container border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
                   <div class="flex items-center gap-2.5">
                     <span class="material-symbols-outlined text-tertiary text-[20px]">timer</span>
                     <div>
@@ -309,7 +370,7 @@
                 </label>
 
                 <!-- Switch: Padres y anfitriones -->
-                <label class="bg-surface border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
+                <label class="bg-surface-container border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
                   <div class="flex items-center gap-2.5">
                     <span class="material-symbols-outlined text-tertiary text-[20px]">family_restroom</span>
                     <div>
@@ -321,7 +382,7 @@
                 </label>
 
                 <!-- Switch: Padrinos -->
-                <label class="bg-surface border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
+                <label class="bg-surface-container border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
                   <div class="flex items-center gap-2.5">
                     <span class="material-symbols-outlined text-tertiary text-[20px]">diversity_3</span>
                     <div>
@@ -333,7 +394,7 @@
                 </label>
 
                 <!-- Switch: Ceremonia / Misa / Auditorio -->
-                <label class="bg-surface border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
+                <label class="bg-surface-container border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
                   <div class="flex items-center gap-2.5">
                     <span class="material-symbols-outlined text-tertiary text-[20px]">church</span>
                     <div>
@@ -345,7 +406,7 @@
                 </label>
 
                 <!-- Switch: Recepción / Fiesta -->
-                <label class="bg-surface border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
+                <label class="bg-surface-container border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
                   <div class="flex items-center gap-2.5">
                     <span class="material-symbols-outlined text-tertiary text-[20px]">celebration</span>
                     <div>
@@ -357,7 +418,7 @@
                 </label>
 
                 <!-- Switch: Código de Vestimenta -->
-                <label class="bg-surface border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
+                <label class="bg-surface-container border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
                   <div class="flex items-center gap-2.5">
                     <span class="material-symbols-outlined text-tertiary text-[20px]">styler</span>
                     <div>
@@ -369,7 +430,7 @@
                 </label>
 
                 <!-- Switch: Mesa de regalos / Sobres -->
-                <label class="bg-surface border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
+                <label class="bg-surface-container border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
                   <div class="flex items-center gap-2.5">
                     <span class="material-symbols-outlined text-tertiary text-[20px]">featured_seasonal_and_gifts</span>
                     <div>
@@ -381,7 +442,7 @@
                 </label>
 
                 <!-- Switch: Música de fondo flotante -->
-                <label class="bg-surface border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
+                <label class="bg-surface-container border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
                   <div class="flex items-center gap-2.5">
                     <span class="material-symbols-outlined text-tertiary text-[20px]">music_note</span>
                     <div>
@@ -393,7 +454,7 @@
                 </label>
 
                 <!-- Switch: Pase QR de acceso -->
-                <label class="bg-surface border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
+                <label class="bg-surface-container border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
                   <div class="flex items-center gap-2.5">
                     <span class="material-symbols-outlined text-tertiary text-[20px]">qr_code_2</span>
                     <div>
@@ -417,16 +478,16 @@
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="names-grid">
                 <div class="flex flex-col gap-1">
                   <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium" for="bride-name-input" id="label-name-1">Nombre Novia / Celebrante 1 *</label>
-                  <input id="bride-name-input" required class="bg-surface border border-tertiary/20 rounded-lg py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary" type="text" placeholder="Ej. Valentina"/>
+                  <input id="bride-name-input" required class="bg-surface-container border border-tertiary/20 rounded-lg py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary" type="text" placeholder="Ej. Valentina"/>
                 </div>
                 <div class="flex flex-col gap-1" id="wrap-name-2">
                   <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium" for="groom-name-input" id="label-name-2">Nombre Novio / Celebrante 2 *</label>
-                  <input id="groom-name-input" class="bg-surface border border-tertiary/20 rounded-lg py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary" type="text" placeholder="Ej. Sebastián"/>
+                  <input id="groom-name-input" class="bg-surface-container border border-tertiary/20 rounded-lg py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary" type="text" placeholder="Ej. Sebastián"/>
                 </div>
               </div>
 
               <!-- Foto de Portada -->
-              <div class="flex flex-col sm:flex-row gap-4 items-center bg-surface p-3 rounded-xl border border-tertiary/15">
+              <div class="flex flex-col sm:flex-row gap-4 items-center bg-surface-container p-3 rounded-xl border border-tertiary/15">
                 <div class="w-20 h-24 rounded-lg overflow-hidden bg-surface-container-high border border-dashed border-tertiary/30 flex items-center justify-center relative group shrink-0">
                   <img id="cover-photo-preview" src="assets/hero-gala.jpg" alt="Foto de portada" class="w-full h-full object-cover"/>
                   <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer" onclick="document.getElementById('cover-file-input').click()">
@@ -439,7 +500,7 @@
                     <input id="cover-file-input" type="file" accept="image/*" class="text-xs text-on-surface file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:text-[10px] file:font-semibold file:bg-tertiary file:text-on-tertiary hover:file:brightness-110 cursor-pointer"/>
                   </div>
                   <div>
-                    <input id="cover-image-url-input" type="url" placeholder="O pega la URL de una foto..." class="w-full bg-surface-container border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                    <input id="cover-image-url-input" type="url" placeholder="O pega la URL de una foto..." class="w-full bg-surface-container-high border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
                   </div>
                 </div>
               </div>
@@ -447,7 +508,7 @@
               <!-- Frase o Dedicatoria -->
               <div class="flex flex-col gap-1">
                 <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium" for="quote-text-input">Frase de Amor / Dedicatoria</label>
-                <textarea id="quote-text-input" rows="2" class="w-full bg-surface border border-tertiary/20 rounded-lg p-2.5 text-xs text-on-surface focus:outline-none focus:border-tertiary" placeholder="Ej. Con mucha ilusión queremos compartir contigo este gran día..."></textarea>
+                <textarea id="quote-text-input" rows="2" class="w-full bg-surface-container border border-tertiary/20 rounded-lg p-2.5 text-xs text-on-surface focus:outline-none focus:border-tertiary" placeholder="Ej. Con mucha ilusión queremos compartir contigo este gran día..."></textarea>
                 <input id="quote-author-input" type="text" placeholder="Ej. — Rut 1:16 (Opcional)" class="bg-transparent border-b border-tertiary/20 py-1 text-xs text-tertiary focus:outline-none w-1/2"/>
               </div>
 
@@ -460,16 +521,16 @@
                   </button>
                 </div>
                 <div class="grid grid-cols-2 gap-2">
-                  <input id="bride-father-input" type="text" placeholder="Padre 1 / Padre Novia" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
-                  <input id="bride-mother-input" type="text" placeholder="Madre 1 / Madre Novia" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <input id="bride-father-input" type="text" placeholder="Padre 1 / Padre Novia" class="bg-surface-container border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <input id="bride-mother-input" type="text" placeholder="Madre 1 / Madre Novia" class="bg-surface-container border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
                 </div>
                 <div class="grid grid-cols-2 gap-2" id="parents-row-2">
-                  <input id="groom-father-input" type="text" placeholder="Padre 2 / Padre Novio" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
-                  <input id="groom-mother-input" type="text" placeholder="Madre 2 / Madre Novio" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <input id="groom-father-input" type="text" placeholder="Padre 2 / Padre Novio" class="bg-surface-container border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <input id="groom-mother-input" type="text" placeholder="Madre 2 / Madre Novio" class="bg-surface-container border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
                 </div>
                 <div class="grid grid-cols-2 gap-2">
-                  <input id="padrino-1-input" type="text" placeholder="Padrino de Honor 1" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
-                  <input id="padrino-2-input" type="text" placeholder="Padrino de Honor 2" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <input id="padrino-1-input" type="text" placeholder="Padrino de Honor 1" class="bg-surface-container border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <input id="padrino-2-input" type="text" placeholder="Padrino de Honor 2" class="bg-surface-container border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
                 </div>
               </div>
             </div>
@@ -487,36 +548,36 @@
               </div>
               
               <!-- Sede 1: Ceremonia / Misa / Auditorio -->
-              <div class="flex flex-col gap-2 bg-surface p-3.5 rounded-xl border border-tertiary/10">
+              <div class="flex flex-col gap-2 bg-surface-container p-3.5 rounded-xl border border-tertiary/10">
                 <span class="font-label-gold text-[10px] uppercase tracking-wider text-tertiary font-bold" id="label-venue-1">1. Ceremonia Religiosa / Conferencia</span>
-                <input id="ceremony-name-input" type="text" placeholder="Ej. Parroquia San Francisco / Auditorio Principal" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                <input id="ceremony-name-input" type="text" placeholder="Ej. Parroquia San Francisco / Auditorio Principal" class="bg-surface-container-high border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
                 <div class="grid grid-cols-2 gap-2">
-                  <input id="ceremony-time-input" type="text" placeholder="Ej. 6:00 PM" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
-                  <input id="ceremony-city-input" type="text" placeholder="Ej. Guadalajara, Jalisco" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <input id="ceremony-time-input" type="text" placeholder="Ej. 6:00 PM" class="bg-surface-container-high border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <input id="ceremony-city-input" type="text" placeholder="Ej. Guadalajara, Jalisco" class="bg-surface-container-high border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
                 </div>
-                <input id="ceremony-map-input" type="url" placeholder="https://maps.google.com/?q=..." class="bg-surface border border-tertiary/20 rounded-lg p-2 text-[10px] text-on-surface focus:outline-none focus:border-tertiary"/>
+                <input id="ceremony-map-input" type="url" placeholder="https://maps.google.com/?q=..." class="bg-surface-container-high border border-tertiary/20 rounded-lg p-2 text-[10px] text-on-surface focus:outline-none focus:border-tertiary"/>
               </div>
 
               <!-- Sede 2: Recepción / Fiesta / Cocktail -->
-              <div class="flex flex-col gap-2 bg-surface p-3.5 rounded-xl border border-tertiary/10">
+              <div class="flex flex-col gap-2 bg-surface-container p-3.5 rounded-xl border border-tertiary/10">
                 <span class="font-label-gold text-[10px] uppercase tracking-wider text-tertiary font-bold" id="label-venue-2">2. Recepción / Fiesta / Cocktail</span>
-                <input id="reception-name-input" type="text" placeholder="Ej. Salón Bellavista / Terraza Jardín" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                <input id="reception-name-input" type="text" placeholder="Ej. Salón Bellavista / Terraza Jardín" class="bg-surface-container-high border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
                 <div class="grid grid-cols-2 gap-2">
-                  <input id="reception-time-input" type="text" placeholder="Ej. 8:00 PM" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
-                  <input id="reception-city-input" type="text" placeholder="Ej. Guadalajara, Jalisco" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <input id="reception-time-input" type="text" placeholder="Ej. 8:00 PM" class="bg-surface-container-high border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <input id="reception-city-input" type="text" placeholder="Ej. Guadalajara, Jalisco" class="bg-surface-container-high border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
                 </div>
-                <input id="reception-map-input" type="url" placeholder="https://maps.google.com/?q=..." class="bg-surface border border-tertiary/20 rounded-lg p-2 text-[10px] text-on-surface focus:outline-none focus:border-tertiary"/>
+                <input id="reception-map-input" type="url" placeholder="https://maps.google.com/?q=..." class="bg-surface-container-high border border-tertiary/20 rounded-lg p-2 text-[10px] text-on-surface focus:outline-none focus:border-tertiary"/>
               </div>
 
               <!-- Dress Code & Niños -->
               <div class="grid grid-cols-2 gap-3 pt-2 border-t border-tertiary/10">
                 <div class="flex flex-col gap-1">
                   <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium">Dress Code</label>
-                  <input id="dress-code-input" type="text" value="Riguroso Formal" placeholder="Ej. Formal, Cocktail, Guayabera" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <input id="dress-code-input" type="text" value="Riguroso Formal" placeholder="Ej. Formal, Cocktail, Guayabera" class="bg-surface-container border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
                 </div>
                 <div class="flex flex-col gap-1">
                   <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium">Política de Niños</label>
-                  <select id="kids-policy-select" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary">
+                  <select id="kids-policy-select" class="bg-surface-container border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary">
                     <option value="NO NIÑOS · EVENTO DE ADULTOS">NO NIÑOS · Solo Adultos</option>
                     <option value="NIÑOS BIENVENIDOS">Niños Bienvenidos</option>
                     <option value="SOLO FAMILIA CERCANA">Solo Familia Cercana</option>
@@ -527,10 +588,10 @@
               <!-- Mesa de Regalos y CLABE -->
               <div class="flex flex-col gap-2 pt-2 border-t border-tertiary/10">
                 <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold">Mesa de Regalos & Transferencia</label>
-                <input id="gift-amazon-url" type="url" placeholder="Enlace a Mesa de Regalos (Amazon / Liverpool / etc.)" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                <input id="gift-amazon-url" type="url" placeholder="Enlace a Mesa de Regalos (Amazon / Liverpool / etc.)" class="bg-surface-container border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
                 <div class="grid grid-cols-2 gap-2">
-                  <input id="bank-name-input" type="text" placeholder="Banco (Ej. BBVA)" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
-                  <input id="bank-clabe-input" type="text" placeholder="CLABE (18 dígitos)" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary font-mono"/>
+                  <input id="bank-name-input" type="text" placeholder="Banco (Ej. BBVA)" class="bg-surface-container border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <input id="bank-clabe-input" type="text" placeholder="CLABE (18 dígitos)" class="bg-surface-container border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary font-mono"/>
                 </div>
               </div>
             </div>
@@ -546,7 +607,7 @@
 
         <!-- Panel Derecho: Live Mobile Preview (5 cols) -->
         <div class="lg:col-span-5 relative">
-          <div class="sticky top-20 bg-surface-container-high border-4 border-tertiary/20 rounded-[32px] w-full max-w-[280px] mx-auto aspect-[9/18] overflow-hidden shadow-2xl p-2 flex flex-col transition-all duration-300 hover:border-tertiary/40">
+          <div class="sticky top-24 bg-surface-container-high border-4 border-tertiary/20 rounded-[32px] w-full max-w-[280px] mx-auto aspect-[9/18] overflow-hidden shadow-2xl p-2 flex flex-col transition-all duration-300 hover:border-tertiary/40">
             <!-- Speaker & Notch -->
             <div class="h-4 w-28 bg-surface-container-lowest rounded-full mx-auto mb-2 shrink-0 flex items-center justify-center">
               <div class="w-10 h-0.5 bg-tertiary/30 rounded-full"></div>
@@ -607,6 +668,17 @@
     </div>
   </main>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var btn = document.getElementById('sidebar-toggle');
+  if (!btn) return;
+  btn.addEventListener('click', function () {
+    var isCollapsed = document.documentElement.classList.toggle('sidebar-collapsed');
+    try { localStorage.setItem('galaSidebarCollapsed', isCollapsed ? 'true' : 'false'); } catch (e) {}
+  });
+});
+</script>
 
 <script type="module">
   let currentEventId = null;
