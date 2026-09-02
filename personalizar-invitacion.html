@@ -4,49 +4,41 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Personalizar Invitación Digital — Gala</title>
-<style>
-  :root { --sidebar-w: 260px; }
-  html.sidebar-collapsed { --sidebar-w: 72px; }
-  .sidebar-collapsed .sidebar-label { display: none !important; }
-  .sidebar-collapsed .sidebar-cta { display: none !important; }
-  .sidebar-collapsed #sidebar-toggle-icon { transform: rotate(180deg); }
-  .sidebar-collapsed #app-sidebar nav a { justify-content: center; padding-left: 0; padding-right: 0; }
-  .sidebar-collapsed #app-sidebar nav a .nav-icon { margin-right: 0 !important; }
-  .sidebar-collapsed #app-sidebar nav a[aria-current="page"] { border-left-width: 0 !important; border-bottom: 3px solid #e9c349; }
-</style>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Alex+Brush&display=swap" rel="stylesheet"/>
+<link rel="icon" type="image/png" href="assets/logo.png"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Great+Vibes&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com"></script>
-<script id="tailwind-config">
-tailwind.config = {
-  theme: {
-    extend: {
-      colors: {
-        "surface": "#131411",
-        "surface-container": "#20201d",
-        "surface-container-low": "#1c1c19",
-        "surface-container-high": "#2a2a27",
-        "surface-container-highest": "#353532",
-        "primary-container": "#0d1b2a",
-        "on-surface": "#e5e2dd",
-        "on-surface-variant": "#c4c6cc",
-        "tertiary": "#e9c349",
-        "on-tertiary": "#3c2f00",
-        "error": "#ffb4ab",
-        "secondary-container": "#2a486b",
-        "secondary": "#abc9f2"
-      },
-      fontFamily: {
-        "headline-lg": ["Playfair Display"],
-        "headline-md": ["Playfair Display"],
-        "body-md": ["Inter"],
-        "button-text": ["Inter"],
-        "label-gold": ["Inter"],
-        "script": ["Alex Brush", "cursive"]
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          surface: '#131411',
+          'surface-container': '#1c1d18',
+          'surface-container-high': '#262822',
+          'surface-container-low': '#181914',
+          'on-surface': '#e5e2dd',
+          'on-surface-variant': '#c9c5be',
+          tertiary: '#e9c349',
+          'on-tertiary': '#1c1d18',
+          'secondary-container': '#181914',
+          'primary-container': '#131411',
+          error: '#ffb4ab',
+        },
+        fontFamily: {
+          'display-lg': ['"Playfair Display"', 'serif'],
+          'body-md': ['"Inter"', 'sans-serif'],
+          'label-gold': ['"Inter"', 'sans-serif'],
+          'button-text': ['"Inter"', 'sans-serif'],
+          'serif-title': ['"Playfair Display"', 'serif'],
+          script: ['"Alex Brush"', 'cursive'],
+          'script-vibes': ['"Great Vibes"', 'cursive']
+        }
       }
     }
   }
-};
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/supabase-client.js"></script>
@@ -142,12 +134,12 @@ tailwind.config = {
   <main class="flex-1 pt-16 px-4 md:px-8 pb-12 bg-on-surface-variant/5 min-h-screen">
     <div class="max-w-6xl mx-auto flex flex-col gap-6">
       
-      <!-- Top Title & Action Bar -->
+      <!-- Header y Botones de Acción -->
       <div class="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 border-b border-tertiary/10 pb-6">
         <div class="flex flex-col gap-1.5">
-          <span class="font-label-gold text-label-gold text-tertiary uppercase tracking-[0.2em] relative pl-8 before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-6 before:h-px before:bg-tertiary/50">Editor de Invitación Digital</span>
-          <h1 class="font-display-lg text-3xl sm:text-4xl text-on-surface">Personalizar Invitación Web</h1>
-          <p class="font-body-md text-sm text-on-surface-variant max-w-xl">Configura cada detalle de la invitación interactiva que recibirán tus invitados en sus teléfonos.</p>
+          <span class="font-label-gold text-label-gold text-tertiary uppercase tracking-[0.2em] relative pl-8 before:content-[''] before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-6 before:h-px before:bg-tertiary/50">Personalizador Universal</span>
+          <h1 class="font-display-lg text-3xl sm:text-4xl text-on-surface">Invitación Digital Interactiva</h1>
+          <p class="font-body-md text-sm text-on-surface-variant max-w-xl">Elige el formato según tu tipo de evento, activa o desactiva secciones con switches y personaliza fotos, frases y detalles.</p>
         </div>
         <div class="flex items-center gap-3 flex-wrap">
           <a id="btn-view-invitation-live" href="invitacion.html" target="_blank" class="px-4 py-2.5 bg-surface-container-high/80 border border-tertiary/20 text-tertiary font-button-text text-xs uppercase tracking-wider hover:bg-tertiary/10 transition-all flex items-center gap-2 rounded-xl shadow-md cursor-pointer backdrop-blur-sm">
@@ -161,71 +153,101 @@ tailwind.config = {
         </div>
       </div>
 
-      <!-- Layout Grid: 12 Columns -->
+      <!-- Layout Grid (12 columnas) -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
-        <!-- Left Panel: Wizard (7 cols) -->
+        <!-- Panel Izquierdo: Wizard (7 cols) -->
         <div class="lg:col-span-7 flex flex-col gap-4 bg-surface-container rounded-2xl p-5 md:p-6 border border-tertiary/10 shadow-xl">
           
-          <!-- Step Navigation Tabs -->
-          <div class="flex border-b border-tertiary/10 pb-3 justify-between text-center gap-1">
-            <button type="button" class="wizard-tab flex-1 py-2 text-xs font-semibold border-b-2 border-tertiary text-tertiary" data-step="1">1. Diseño</button>
-            <button type="button" class="wizard-tab flex-1 py-2 text-xs font-semibold border-b-2 border-transparent text-on-surface-variant hover:text-tertiary" data-step="2">2. Novios</button>
-            <button type="button" class="wizard-tab flex-1 py-2 text-xs font-semibold border-b-2 border-transparent text-on-surface-variant hover:text-tertiary" data-step="3">3. Logística</button>
-            <button type="button" class="wizard-tab flex-1 py-2 text-xs font-semibold border-b-2 border-transparent text-on-surface-variant hover:text-tertiary" data-step="4">4. Detalles</button>
+          <!-- Pestañas del Wizard -->
+          <div class="flex border-b border-tertiary/10 pb-3 justify-between text-center gap-1 overflow-x-auto">
+            <button type="button" class="wizard-tab flex-1 py-2 text-xs font-semibold border-b-2 border-tertiary text-tertiary whitespace-nowrap" data-step="1">1. Formato & Tema</button>
+            <button type="button" class="wizard-tab flex-1 py-2 text-xs font-semibold border-b-2 border-transparent text-on-surface-variant hover:text-tertiary whitespace-nowrap" data-step="2">2. Bloques (Switches)</button>
+            <button type="button" class="wizard-tab flex-1 py-2 text-xs font-semibold border-b-2 border-transparent text-on-surface-variant hover:text-tertiary whitespace-nowrap" data-step="3">3. Nombres & Frases</button>
+            <button type="button" class="wizard-tab flex-1 py-2 text-xs font-semibold border-b-2 border-transparent text-on-surface-variant hover:text-tertiary whitespace-nowrap" data-step="4">4. Sedes & Regalos</button>
           </div>
 
-          <!-- Form Element -->
+          <!-- Formulario Principal -->
           <form id="invitation-form" class="flex flex-col gap-4 mt-2">
             
-            <!-- STEP 1: DISEÑO Y ESTILOS -->
+            <!-- STEP 1: FORMATO, TEMA Y PALETA -->
             <div id="step-section-1" class="step-section flex flex-col gap-4">
               <h3 class="font-display-lg text-base text-on-surface flex items-center gap-1.5">
-                <span class="material-symbols-outlined text-tertiary text-[18px]">palette</span>
-                Catálogo de Colores y Tipografías
+                <span class="material-symbols-outlined text-tertiary text-[18px]">auto_awesome</span>
+                Arquetipo y Estilo Visual
               </h3>
+
+              <!-- Selector de Arquetipo de Evento -->
+              <div class="flex flex-col gap-1.5">
+                <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold">Tipo de Formato / Plantilla</label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <label class="theme-card bg-surface border border-tertiary/20 p-3 rounded-xl flex items-start gap-2.5 cursor-pointer hover:border-tertiary transition-all">
+                    <input type="radio" name="theme_template" value="gold-wedding" checked class="mt-0.5 accent-tertiary"/>
+                    <div class="flex flex-col">
+                      <span class="text-xs font-bold text-on-surface flex items-center gap-1">💍 Boda Clásica Gold</span>
+                      <span class="text-[10px] text-on-surface-variant leading-tight mt-0.5">Elegante, doble marco y tipografía solemne.</span>
+                    </div>
+                  </label>
+                  <label class="theme-card bg-surface border border-tertiary/20 p-3 rounded-xl flex items-start gap-2.5 cursor-pointer hover:border-tertiary transition-all">
+                    <input type="radio" name="theme_template" value="velvet-xv" class="mt-0.5 accent-tertiary"/>
+                    <div class="flex flex-col">
+                      <span class="text-xs font-bold text-on-surface flex items-center gap-1">👑 Velvet XV & Dulces 16</span>
+                      <span class="text-[10px] text-on-surface-variant leading-tight mt-0.5">Tiara de honor, tonos suaves y vals.</span>
+                    </div>
+                  </label>
+                  <label class="theme-card bg-surface border border-tertiary/20 p-3 rounded-xl flex items-start gap-2.5 cursor-pointer hover:border-tertiary transition-all">
+                    <input type="radio" name="theme_template" value="corporate-gala" class="mt-0.5 accent-tertiary"/>
+                    <div class="flex flex-col">
+                      <span class="text-xs font-bold text-on-surface flex items-center gap-1">💼 Corporativo & Conferencia</span>
+                      <span class="text-[10px] text-on-surface-variant leading-tight mt-0.5">Minimalista, conferencias y networking.</span>
+                    </div>
+                  </label>
+                  <label class="theme-card bg-surface border border-tertiary/20 p-3 rounded-xl flex items-start gap-2.5 cursor-pointer hover:border-tertiary transition-all">
+                    <input type="radio" name="theme_template" value="modern-social" class="mt-0.5 accent-tertiary"/>
+                    <div class="flex flex-col">
+                      <span class="text-xs font-bold text-on-surface flex items-center gap-1">🎉 Fiesta & Cumpleaños</span>
+                      <span class="text-[10px] text-on-surface-variant leading-tight mt-0.5">Diseño fresco para celebraciones sociales.</span>
+                    </div>
+                  </label>
+                </div>
+              </div>
               
-              <div class="flex flex-col gap-1">
-                <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium">Paleta de Colores</label>
-                <div class="grid grid-cols-2 gap-2 mt-1">
+              <!-- Paleta de Colores -->
+              <div class="flex flex-col gap-1.5 pt-2 border-t border-tertiary/10">
+                <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold">Paleta de Colores</label>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
                   <label class="bg-surface border border-tertiary/20 p-2.5 rounded-lg flex items-center gap-2.5 cursor-pointer hover:border-tertiary transition-colors">
                     <input type="radio" name="theme_color" value="gold" checked class="accent-tertiary"/>
-                    <div class="flex gap-1 shrink-0">
-                      <div class="w-3.5 h-3.5 rounded-full bg-[#e9c349]"></div>
-                      <div class="w-3.5 h-3.5 rounded-full bg-[#131411]"></div>
-                    </div>
-                    <span class="text-xs text-on-surface">Oro & Negro</span>
+                    <div class="w-3.5 h-3.5 rounded-full bg-[#e9c349]"></div>
+                    <span class="text-xs text-on-surface">Oro Champagne</span>
                   </label>
                   <label class="bg-surface border border-tertiary/20 p-2.5 rounded-lg flex items-center gap-2.5 cursor-pointer hover:border-tertiary transition-colors">
                     <input type="radio" name="theme_color" value="pink" class="accent-tertiary"/>
-                    <div class="flex gap-1 shrink-0">
-                      <div class="w-3.5 h-3.5 rounded-full bg-[#f472b6]"></div>
-                      <div class="w-3.5 h-3.5 rounded-full bg-[#faf5ff]"></div>
-                    </div>
-                    <span class="text-xs text-on-surface">Rosa & Lavanda</span>
+                    <div class="w-3.5 h-3.5 rounded-full bg-[#f472b6]"></div>
+                    <span class="text-xs text-on-surface">Rosa & Velvet</span>
                   </label>
                   <label class="bg-surface border border-tertiary/20 p-2.5 rounded-lg flex items-center gap-2.5 cursor-pointer hover:border-tertiary transition-colors">
                     <input type="radio" name="theme_color" value="blue" class="accent-tertiary"/>
-                    <div class="flex gap-1 shrink-0">
-                      <div class="w-3.5 h-3.5 rounded-full bg-[#1e3a8a]"></div>
-                      <div class="w-3.5 h-3.5 rounded-full bg-[#f3f4f6]"></div>
-                    </div>
-                    <span class="text-xs text-on-surface">Marino & Plata</span>
+                    <div class="w-3.5 h-3.5 rounded-full bg-[#3b82f6]"></div>
+                    <span class="text-xs text-on-surface">Azul Zafiro</span>
                   </label>
                   <label class="bg-surface border border-tertiary/20 p-2.5 rounded-lg flex items-center gap-2.5 cursor-pointer hover:border-tertiary transition-colors">
                     <input type="radio" name="theme_color" value="green" class="accent-tertiary"/>
-                    <div class="flex gap-1 shrink-0">
-                      <div class="w-3.5 h-3.5 rounded-full bg-[#10b981]"></div>
-                      <div class="w-3.5 h-3.5 rounded-full bg-[#fffbeb]"></div>
-                    </div>
-                    <span class="text-xs text-on-surface">Verde & Arena</span>
+                    <div class="w-3.5 h-3.5 rounded-full bg-[#10b981]"></div>
+                    <span class="text-xs text-on-surface">Verde Esmeralda</span>
+                  </label>
+                  <label class="bg-surface border border-tertiary/20 p-2.5 rounded-lg flex items-center gap-2.5 cursor-pointer hover:border-tertiary transition-colors">
+                    <input type="radio" name="theme_color" value="dark" class="accent-tertiary"/>
+                    <div class="w-3.5 h-3.5 rounded-full bg-[#262626]"></div>
+                    <span class="text-xs text-on-surface">Midnight Dark</span>
                   </label>
                 </div>
               </div>
 
-              <div class="flex flex-col gap-1">
-                <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium">Combinación Tipográfica</label>
-                <div class="grid grid-cols-1 gap-2 mt-1">
+              <!-- Tipografía -->
+              <div class="flex flex-col gap-1.5 pt-2 border-t border-tertiary/10">
+                <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold">Combinación Tipográfica</label>
+                <div class="grid grid-cols-1 gap-2">
                   <label class="bg-surface border border-tertiary/20 p-2.5 rounded-lg flex items-center justify-between cursor-pointer hover:border-tertiary transition-colors">
                     <div class="flex items-center gap-2.5">
                       <input type="radio" name="theme_font" value="elegant" checked class="accent-tertiary"/>
@@ -236,14 +258,14 @@ tailwind.config = {
                   <label class="bg-surface border border-tertiary/20 p-2.5 rounded-lg flex items-center justify-between cursor-pointer hover:border-tertiary transition-colors">
                     <div class="flex items-center gap-2.5">
                       <input type="radio" name="theme_font" value="romantic" class="accent-tertiary"/>
-                      <span class="text-xs text-on-surface">Romántica Cursiva (Alex Brush + Inter)</span>
+                      <span class="text-xs text-on-surface">Romántica Cursiva (Great Vibes + Alex Brush)</span>
                     </div>
-                    <span class="text-[14px] text-tertiary font-script" style="font-family: 'Alex Brush', cursive;">Romantic</span>
+                    <span class="text-[14px] text-tertiary font-script" style="font-family: 'Great Vibes', cursive;">Romantic</span>
                   </label>
                   <label class="bg-surface border border-tertiary/20 p-2.5 rounded-lg flex items-center justify-between cursor-pointer hover:border-tertiary transition-colors">
                     <div class="flex items-center gap-2.5">
                       <input type="radio" name="theme_font" value="minimalist" class="accent-tertiary"/>
-                      <span class="text-xs text-on-surface">Moderno Minimalista (Inter + Sans)</span>
+                      <span class="text-xs text-on-surface">Moderno Minimalista (Inter + Montserrat)</span>
                     </div>
                     <span class="text-[9px] text-tertiary font-bold tracking-widest uppercase font-sans">MINIMAL</span>
                   </label>
@@ -251,93 +273,246 @@ tailwind.config = {
               </div>
             </div>
 
-            <!-- STEP 2: NOVIOS Y FRASES -->
-            <div id="step-section-2" class="step-section hidden flex flex-col gap-4">
-              <h3 class="font-display-lg text-base text-on-surface flex items-center gap-1.5">
-                <span class="material-symbols-outlined text-tertiary text-[18px]">favorite</span>
-                Portada & Foto de los Novios
-              </h3>
-              <div class="grid grid-cols-2 gap-3">
-                <div class="flex flex-col gap-1">
-                  <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium" for="bride-name-input">Nombre de la Novia *</label>
-                  <input id="bride-name-input" required class="bg-surface border border-tertiary/20 rounded-lg py-2 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary" type="text" placeholder="Ej. Yariana"/>
-                </div>
-                <div class="flex flex-col gap-1">
-                  <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium" for="groom-name-input">Nombre del Novio *</label>
-                  <input id="groom-name-input" required class="bg-surface border border-tertiary/20 rounded-lg py-2 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary" type="text" placeholder="Ej. Daniel"/>
-                </div>
+            <!-- STEP 2: SWITCHES DE SECCIONES (ACTIVAR / DESACTIVAR) -->
+            <div id="step-section-2" class="step-section hidden flex flex-col gap-3.5">
+              <div>
+                <h3 class="font-display-lg text-base text-on-surface flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-tertiary text-[18px]">toggle_on</span>
+                  Secciones Activas de la Invitación
+                </h3>
+                <p class="text-xs text-on-surface-variant mt-0.5">Prende o apaga cualquier bloque para que aparezca o se oculte en la invitación de tus invitados.</p>
               </div>
-              <div class="flex flex-col sm:flex-row gap-4 items-center">
-                <div class="w-24 h-32 rounded-lg overflow-hidden bg-surface-container-high border border-dashed border-tertiary/30 flex items-center justify-center relative group shrink-0">
-                  <img id="cover-photo-preview" src="assets/hero-gala.jpg" alt="Foto de portada" class="w-full h-full object-cover"/>
-                  <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer" onclick="document.getElementById('cover-file-input').click()">
-                    <span class="material-symbols-outlined text-white text-xl">cloud_upload</span>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <!-- Switch: Sobre interactivo -->
+                <label class="bg-surface border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
+                  <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-tertiary text-[20px]">mail</span>
+                    <div>
+                      <span class="text-xs font-semibold text-on-surface block">Sobre con Sello de Cera</span>
+                      <span class="text-[10px] text-on-surface-variant">Animación de apertura al inicio</span>
+                    </div>
                   </div>
-                </div>
-                <div class="flex-1 flex flex-col gap-2 w-full">
-                  <div>
-                    <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium block mb-1">Subir Foto de Pareja</label>
-                    <input id="cover-file-input" type="file" accept="image/*" class="text-xs text-on-surface file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:text-[10px] file:font-semibold file:bg-tertiary file:text-on-tertiary hover:file:brightness-110 cursor-pointer"/>
+                  <input id="sw-show-envelope" type="checkbox" checked class="w-4 h-4 accent-tertiary cursor-pointer"/>
+                </label>
+
+                <!-- Switch: Cuenta regresiva -->
+                <label class="bg-surface border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
+                  <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-tertiary text-[20px]">timer</span>
+                    <div>
+                      <span class="text-xs font-semibold text-on-surface block">Cuenta Regresiva</span>
+                      <span class="text-[10px] text-on-surface-variant">Días, horas y minutos restantes</span>
+                    </div>
                   </div>
-                  <div>
-                    <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium block mb-1">URL de Imagen Externa</label>
-                    <input id="cover-image-url-input" type="url" placeholder="https://ejemplo.com/foto.jpg" class="w-full bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <input id="sw-show-countdown" type="checkbox" checked class="w-4 h-4 accent-tertiary cursor-pointer"/>
+                </label>
+
+                <!-- Switch: Padres y anfitriones -->
+                <label class="bg-surface border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
+                  <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-tertiary text-[20px]">family_restroom</span>
+                    <div>
+                      <span class="text-xs font-semibold text-on-surface block">Padres / Anfitriones</span>
+                      <span class="text-[10px] text-on-surface-variant">Nombres de bendición familiar</span>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div class="flex flex-col gap-1">
-                <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium" for="quote-text-input">Cita de Amor / Frase Bíblica</label>
-                <textarea id="quote-text-input" rows="2" class="w-full bg-surface border border-tertiary/20 rounded-lg p-2.5 text-xs text-on-surface focus:outline-none focus:border-tertiary" placeholder="“A donde tú vayas, iré yo...”">“A donde tú vayas, iré yo; y donde tú vivas, viviré. Tu pueblo será mi pueblo, y tu Dios mi Dios.”</textarea>
-                <input id="quote-author-input" type="text" placeholder="— Rut 1:16" value="— Rut 1:16" class="bg-transparent border-b border-tertiary/20 py-1 text-xs text-tertiary focus:outline-none w-1/2"/>
+                  <input id="sw-show-parents" type="checkbox" checked class="w-4 h-4 accent-tertiary cursor-pointer"/>
+                </label>
+
+                <!-- Switch: Padrinos -->
+                <label class="bg-surface border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
+                  <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-tertiary text-[20px]">diversity_3</span>
+                    <div>
+                      <span class="text-xs font-semibold text-on-surface block">Padrinos de Honor</span>
+                      <span class="text-[10px] text-on-surface-variant">Padrinos de velación o de honor</span>
+                    </div>
+                  </div>
+                  <input id="sw-show-godparents" type="checkbox" checked class="w-4 h-4 accent-tertiary cursor-pointer"/>
+                </label>
+
+                <!-- Switch: Ceremonia / Misa / Auditorio -->
+                <label class="bg-surface border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
+                  <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-tertiary text-[20px]">church</span>
+                    <div>
+                      <span class="text-xs font-semibold text-on-surface block">Ceremonia / Sede 1</span>
+                      <span class="text-[10px] text-on-surface-variant">Misa o conferencia con mapa</span>
+                    </div>
+                  </div>
+                  <input id="sw-show-ceremony" type="checkbox" checked class="w-4 h-4 accent-tertiary cursor-pointer"/>
+                </label>
+
+                <!-- Switch: Recepción / Fiesta -->
+                <label class="bg-surface border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
+                  <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-tertiary text-[20px]">celebration</span>
+                    <div>
+                      <span class="text-xs font-semibold text-on-surface block">Recepción / Sede 2</span>
+                      <span class="text-[10px] text-on-surface-variant">Fiesta o cocktail con mapa</span>
+                    </div>
+                  </div>
+                  <input id="sw-show-reception" type="checkbox" checked class="w-4 h-4 accent-tertiary cursor-pointer"/>
+                </label>
+
+                <!-- Switch: Código de Vestimenta -->
+                <label class="bg-surface border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
+                  <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-tertiary text-[20px]">styler</span>
+                    <div>
+                      <span class="text-xs font-semibold text-on-surface block">Código de Vestimenta</span>
+                      <span class="text-[10px] text-on-surface-variant">Dress code y recomendaciones</span>
+                    </div>
+                  </div>
+                  <input id="sw-show-dress-code" type="checkbox" checked class="w-4 h-4 accent-tertiary cursor-pointer"/>
+                </label>
+
+                <!-- Switch: Mesa de regalos / Sobres -->
+                <label class="bg-surface border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
+                  <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-tertiary text-[20px]">featured_seasonal_and_gifts</span>
+                    <div>
+                      <span class="text-xs font-semibold text-on-surface block">Regalos / Lluvia de Sobres</span>
+                      <span class="text-[10px] text-on-surface-variant">Mesa online o CLABE bancaria</span>
+                    </div>
+                  </div>
+                  <input id="sw-show-gifts" type="checkbox" checked class="w-4 h-4 accent-tertiary cursor-pointer"/>
+                </label>
+
+                <!-- Switch: Música de fondo flotante -->
+                <label class="bg-surface border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
+                  <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-tertiary text-[20px]">music_note</span>
+                    <div>
+                      <span class="text-xs font-semibold text-on-surface block">Música de Fondo</span>
+                      <span class="text-[10px] text-on-surface-variant">Botón flotante superior de audio</span>
+                    </div>
+                  </div>
+                  <input id="sw-show-music" type="checkbox" checked class="w-4 h-4 accent-tertiary cursor-pointer"/>
+                </label>
+
+                <!-- Switch: Pase QR de acceso -->
+                <label class="bg-surface border border-tertiary/15 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-tertiary/40 transition-all">
+                  <div class="flex items-center gap-2.5">
+                    <span class="material-symbols-outlined text-tertiary text-[20px]">qr_code_2</span>
+                    <div>
+                      <span class="text-xs font-semibold text-on-surface block">Pase con Código QR</span>
+                      <span class="text-[10px] text-on-surface-variant">Control de entrada digital</span>
+                    </div>
+                  </div>
+                  <input id="sw-show-qr-pass" type="checkbox" checked class="w-4 h-4 accent-tertiary cursor-pointer"/>
+                </label>
               </div>
             </div>
 
-            <!-- STEP 3: LOGÍSTICA / LUGARES -->
+            <!-- STEP 3: NOMBRES, FRASES Y CORTE DE HONOR -->
             <div id="step-section-3" class="step-section hidden flex flex-col gap-4">
+              <h3 class="font-display-lg text-base text-on-surface flex items-center gap-1.5" id="step3-heading">
+                <span class="material-symbols-outlined text-tertiary text-[18px]">favorite</span>
+                Portada & Celebrantes
+              </h3>
+
+              <!-- Nombres de los celebrantes -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="names-grid">
+                <div class="flex flex-col gap-1">
+                  <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium" for="bride-name-input" id="label-name-1">Nombre Novia / Celebrante 1 *</label>
+                  <input id="bride-name-input" required class="bg-surface border border-tertiary/20 rounded-lg py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary" type="text" placeholder="Ej. Valentina"/>
+                </div>
+                <div class="flex flex-col gap-1" id="wrap-name-2">
+                  <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium" for="groom-name-input" id="label-name-2">Nombre Novio / Celebrante 2 *</label>
+                  <input id="groom-name-input" class="bg-surface border border-tertiary/20 rounded-lg py-2.5 px-3 text-xs text-on-surface focus:outline-none focus:border-tertiary" type="text" placeholder="Ej. Sebastián"/>
+                </div>
+              </div>
+
+              <!-- Foto de Portada -->
+              <div class="flex flex-col sm:flex-row gap-4 items-center bg-surface p-3 rounded-xl border border-tertiary/15">
+                <div class="w-20 h-24 rounded-lg overflow-hidden bg-surface-container-high border border-dashed border-tertiary/30 flex items-center justify-center relative group shrink-0">
+                  <img id="cover-photo-preview" src="assets/hero-gala.jpg" alt="Foto de portada" class="w-full h-full object-cover"/>
+                  <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer" onclick="document.getElementById('cover-file-input').click()">
+                    <span class="material-symbols-outlined text-white text-lg">cloud_upload</span>
+                  </div>
+                </div>
+                <div class="flex-1 flex flex-col gap-1.5 w-full">
+                  <div>
+                    <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium block mb-1">Subir Foto Principal (Compresión Automática)</label>
+                    <input id="cover-file-input" type="file" accept="image/*" class="text-xs text-on-surface file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:text-[10px] file:font-semibold file:bg-tertiary file:text-on-tertiary hover:file:brightness-110 cursor-pointer"/>
+                  </div>
+                  <div>
+                    <input id="cover-image-url-input" type="url" placeholder="O pega la URL de una foto..." class="w-full bg-surface-container border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Frase o Dedicatoria -->
+              <div class="flex flex-col gap-1">
+                <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium" for="quote-text-input">Frase de Amor / Dedicatoria</label>
+                <textarea id="quote-text-input" rows="2" class="w-full bg-surface border border-tertiary/20 rounded-lg p-2.5 text-xs text-on-surface focus:outline-none focus:border-tertiary" placeholder="Ej. Con mucha ilusión queremos compartir contigo este gran día..."></textarea>
+                <input id="quote-author-input" type="text" placeholder="Ej. — Rut 1:16 (Opcional)" class="bg-transparent border-b border-tertiary/20 py-1 text-xs text-tertiary focus:outline-none w-1/2"/>
+              </div>
+
+              <!-- Padres y Padrinos -->
+              <div id="parents-padrinos-wrapper" class="flex flex-col gap-3 pt-2 border-t border-tertiary/10">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold">Corte Familiar & Padrinos</span>
+                  <button type="button" id="btn-sync-padrinos" class="text-[10px] text-tertiary hover:underline flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[12px]">sync</span> Auto-sincronizar
+                  </button>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <input id="bride-father-input" type="text" placeholder="Padre 1 / Padre Novia" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <input id="bride-mother-input" type="text" placeholder="Madre 1 / Madre Novia" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                </div>
+                <div class="grid grid-cols-2 gap-2" id="parents-row-2">
+                  <input id="groom-father-input" type="text" placeholder="Padre 2 / Padre Novio" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <input id="groom-mother-input" type="text" placeholder="Madre 2 / Madre Novio" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <input id="padrino-1-input" type="text" placeholder="Padrino de Honor 1" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <input id="padrino-2-input" type="text" placeholder="Padrino de Honor 2" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 4: SEDES, MAPAS, REGALOS Y CLABE -->
+            <div id="step-section-4" class="step-section hidden flex flex-col gap-4">
               <div class="flex items-center justify-between">
                 <h3 class="font-display-lg text-base text-on-surface flex items-center gap-1.5">
-                  <span class="material-symbols-outlined text-tertiary text-[18px]">church</span>
-                  Ceremonia & Recepción
+                  <span class="material-symbols-outlined text-tertiary text-[18px]">location_on</span>
+                  Sedes & Ubicaciones
                 </h3>
                 <button type="button" id="btn-sync-venues" class="text-[10px] text-tertiary hover:underline flex items-center gap-1">
                   <span class="material-symbols-outlined text-[12px]">sync</span> Auto-cargar Sedes
                 </button>
               </div>
               
-              <!-- Ceremonia -->
+              <!-- Sede 1: Ceremonia / Misa / Auditorio -->
               <div class="flex flex-col gap-2 bg-surface p-3.5 rounded-xl border border-tertiary/10">
-                <span class="font-label-gold text-[10px] uppercase tracking-wider text-tertiary font-bold">1. Ceremonia Religiosa (Misa)</span>
-                <input id="ceremony-name-input" type="text" placeholder="Parroquia de San Francisco de Asís" value="Parroquia de San Francisco de Asís" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                <span class="font-label-gold text-[10px] uppercase tracking-wider text-tertiary font-bold" id="label-venue-1">1. Ceremonia Religiosa / Conferencia</span>
+                <input id="ceremony-name-input" type="text" placeholder="Ej. Parroquia San Francisco / Auditorio Principal" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
                 <div class="grid grid-cols-2 gap-2">
-                  <input id="ceremony-time-input" type="text" placeholder="6:00 PM" value="6:00 PM" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
-                  <input id="ceremony-city-input" type="text" placeholder="Ciudad, Estado" value="Tepatitlán de Morelos, Jalisco" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <input id="ceremony-time-input" type="text" placeholder="Ej. 6:00 PM" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <input id="ceremony-city-input" type="text" placeholder="Ej. Guadalajara, Jalisco" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
                 </div>
-                <input id="ceremony-map-input" type="url" placeholder="https://maps.google.com/?q=..." value="https://maps.google.com/?q=Parroquia+de+San+Francisco+de+Asis+Tepatitlan" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-[10px] text-on-surface focus:outline-none focus:border-tertiary"/>
+                <input id="ceremony-map-input" type="url" placeholder="https://maps.google.com/?q=..." class="bg-surface border border-tertiary/20 rounded-lg p-2 text-[10px] text-on-surface focus:outline-none focus:border-tertiary"/>
               </div>
 
-              <!-- Recepción -->
+              <!-- Sede 2: Recepción / Fiesta / Cocktail -->
               <div class="flex flex-col gap-2 bg-surface p-3.5 rounded-xl border border-tertiary/10">
-                <span class="font-label-gold text-[10px] uppercase tracking-wider text-tertiary font-bold">2. Recepción (Fiesta)</span>
-                <input id="reception-name-input" type="text" placeholder="Mítico Terraza y Jardín" value="Mítico Terraza y Jardín" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                <span class="font-label-gold text-[10px] uppercase tracking-wider text-tertiary font-bold" id="label-venue-2">2. Recepción / Fiesta / Cocktail</span>
+                <input id="reception-name-input" type="text" placeholder="Ej. Salón Bellavista / Terraza Jardín" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
                 <div class="grid grid-cols-2 gap-2">
-                  <input id="reception-time-input" type="text" placeholder="8:00 PM" value="8:00 PM" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
-                  <input id="reception-city-input" type="text" placeholder="Ciudad, Estado" value="Capilla de Guadalupe, Jalisco" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <input id="reception-time-input" type="text" placeholder="Ej. 8:00 PM" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <input id="reception-city-input" type="text" placeholder="Ej. Guadalajara, Jalisco" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
                 </div>
-                <input id="reception-map-input" type="url" placeholder="https://maps.google.com/?q=..." value="https://maps.google.com/?q=Mitico+Terraza+y+Jardin+Capilla+de+Guadalupe" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-[10px] text-on-surface focus:outline-none focus:border-tertiary"/>
+                <input id="reception-map-input" type="url" placeholder="https://maps.google.com/?q=..." class="bg-surface border border-tertiary/20 rounded-lg p-2 text-[10px] text-on-surface focus:outline-none focus:border-tertiary"/>
               </div>
-            </div>
 
-            <!-- STEP 4: DETALLES EXTRA -->
-            <div id="step-section-4" class="step-section hidden flex flex-col gap-4">
-              <h3 class="font-display-lg text-base text-on-surface flex items-center gap-1.5">
-                <span class="material-symbols-outlined text-tertiary text-[18px]">styler</span>
-                Detalles Adicionales & Música
-              </h3>
-              
-              <div class="grid grid-cols-2 gap-3">
+              <!-- Dress Code & Niños -->
+              <div class="grid grid-cols-2 gap-3 pt-2 border-t border-tertiary/10">
                 <div class="flex flex-col gap-1">
                   <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium">Dress Code</label>
-                  <input id="dress-code-input" type="text" value="Riguroso Formal" placeholder="Ej. Playa, Formal" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <input id="dress-code-input" type="text" value="Riguroso Formal" placeholder="Ej. Formal, Cocktail, Guayabera" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
                 </div>
                 <div class="flex flex-col gap-1">
                   <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium">Política de Niños</label>
@@ -349,57 +524,18 @@ tailwind.config = {
                 </div>
               </div>
 
-              <div class="flex flex-col gap-1">
-                <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium">Mesa de Regalos (Amazon/Liverpool)</label>
-                <input id="gift-amazon-url" type="url" placeholder="https://www.amazon.com.mx" value="https://www.amazon.com.mx" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
-              </div>
-
-              <div class="grid grid-cols-2 gap-3">
-                <div class="flex flex-col gap-1">
-                  <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium">Banco</label>
-                  <input id="bank-name-input" type="text" placeholder="BBVA" value="BBVA" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
-                </div>
-                <div class="flex flex-col gap-1">
-                  <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium">CLABE Bancaria</label>
-                  <input id="bank-clabe-input" type="text" placeholder="012345678901234567" value="012345678901234567" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary font-mono"/>
-                </div>
-              </div>
-
-              <div class="flex flex-col gap-1">
-                <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-medium">Canción de los Novios</label>
+              <!-- Mesa de Regalos y CLABE -->
+              <div class="flex flex-col gap-2 pt-2 border-t border-tertiary/10">
+                <label class="text-[10px] uppercase tracking-wider text-on-surface-variant font-bold">Mesa de Regalos & Transferencia</label>
+                <input id="gift-amazon-url" type="url" placeholder="Enlace a Mesa de Regalos (Amazon / Liverpool / etc.)" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
                 <div class="grid grid-cols-2 gap-2">
-                  <input id="song-title-input" type="text" value="Hasta Mi Final — Il Divo" placeholder="Hasta Mi Final" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
-                  <select id="song-platform-select" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary">
-                    <option value="spotify">Spotify</option>
-                    <option value="youtube">YouTube Music</option>
-                  </select>
-                </div>
-                <input id="song-url-input" type="url" placeholder="URL de la canción" class="bg-surface border border-tertiary/20 rounded-lg p-2 mt-1 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
-              </div>
-
-              <div id="parents-padrinos-wrapper" class="flex flex-col gap-3">
-                <div class="flex items-center justify-between border-t border-tertiary/10 pt-3">
-                  <span class="text-[10px] text-on-surface-variant font-semibold">Corte de Honor</span>
-                  <button type="button" id="btn-sync-padrinos" class="text-[10px] text-tertiary hover:underline flex items-center gap-1">
-                    <span class="material-symbols-outlined text-[12px]">sync</span> Sincronizar Padrinos
-                  </button>
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                  <input id="padrino-1-input" type="text" placeholder="Padrino de Velación 1" value="Lauro Coss Y León Rubio" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
-                  <input id="padrino-2-input" type="text" placeholder="Padrino de Velación 2" value="Itzel Durand Cortés" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                  <input id="bride-father-input" type="text" placeholder="Padre Novia" value="Guillermo Martínez Gómez" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
-                  <input id="bride-mother-input" type="text" placeholder="Madre Novia" value="María Elena Padilla Gutiérrez" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
-                </div>
-                <div class="grid grid-cols-2 gap-2">
-                  <input id="groom-father-input" type="text" placeholder="Padre Novio" value="Armando Jiménez Jiménez" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
-                  <input id="groom-mother-input" type="text" placeholder="Madre Novio" value="Blanca Delia González Lozano" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <input id="bank-name-input" type="text" placeholder="Banco (Ej. BBVA)" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary"/>
+                  <input id="bank-clabe-input" type="text" placeholder="CLABE (18 dígitos)" class="bg-surface border border-tertiary/20 rounded-lg p-2 text-xs text-on-surface focus:outline-none focus:border-tertiary font-mono"/>
                 </div>
               </div>
             </div>
 
-            <!-- Navigation buttons -->
+            <!-- Botones de Navegación del Wizard -->
             <div class="flex justify-between items-center mt-3 pt-3 border-t border-tertiary/10">
               <button type="button" id="btn-prev-step" class="px-4 py-2 border border-tertiary/20 text-on-surface-variant hover:text-tertiary transition-colors text-xs font-button-text uppercase tracking-wider rounded-lg invisible">Anterior</button>
               <button type="button" id="btn-next-step" class="px-5 py-2 bg-tertiary text-on-tertiary font-button-text text-xs uppercase tracking-wider rounded-lg hover:brightness-110 transition-all font-semibold">Siguiente</button>
@@ -408,7 +544,7 @@ tailwind.config = {
           </form>
         </div>
 
-        <!-- Right Panel: Live Mobile Preview (5 cols) -->
+        <!-- Panel Derecho: Live Mobile Preview (5 cols) -->
         <div class="lg:col-span-5 relative">
           <div class="sticky top-20 bg-surface-container-high border-4 border-tertiary/20 rounded-[32px] w-full max-w-[280px] mx-auto aspect-[9/18] overflow-hidden shadow-2xl p-2 flex flex-col transition-all duration-300 hover:border-tertiary/40">
             <!-- Speaker & Notch -->
@@ -416,53 +552,58 @@ tailwind.config = {
               <div class="w-10 h-0.5 bg-tertiary/30 rounded-full"></div>
             </div>
             <!-- Screen content -->
-            <div id="phone-preview-screen" class="flex-1 rounded-[22px] overflow-y-auto bg-surface p-3 flex flex-col gap-5 text-center border border-tertiary/10 relative scrollbar-none transition-all duration-300" style="font-family: 'Playfair Display', serif;">
-              <!-- Cover Slide (Slide 1) -->
-              <div class="flex flex-col items-center justify-center min-h-[220px] gap-3 py-6 border-b border-tertiary/10">
-                <div id="preview-cover-photo-container" class="w-full h-28 bg-surface-container-low rounded-lg overflow-hidden border border-tertiary/20 relative shadow-inner">
+            <div id="phone-preview-screen" class="flex-1 rounded-[22px] overflow-y-auto bg-surface p-3 flex flex-col gap-4 text-center border border-tertiary/10 relative scrollbar-none transition-all duration-300" style="font-family: 'Playfair Display', serif;">
+              
+              <!-- Cover Slide -->
+              <div class="flex flex-col items-center justify-center min-h-[200px] gap-2.5 py-4 border-b border-tertiary/10">
+                <div id="preview-archetype-icon" class="hidden text-tertiary">
+                  <span class="material-symbols-outlined text-2xl">crown</span>
+                </div>
+                <div id="preview-cover-photo-container" class="w-full h-24 bg-surface-container-low rounded-lg overflow-hidden border border-tertiary/20 relative shadow-inner">
                   <img id="preview-cover-photo" src="assets/hero-gala.jpg" class="w-full h-full object-cover"/>
                 </div>
-                <div class="mt-1">
-                  <h3 id="preview-couple-names" class="text-lg text-tertiary font-script" style="font-family: 'Alex Brush', cursive;">Yariana & Daniel</h3>
-                  <p id="preview-date-text" class="font-label-gold text-[8px] uppercase tracking-widest text-on-surface mt-0.5">SÁBADO, 14 DE NOVIEMBRE DE 2026</p>
+                <div class="mt-0.5">
+                  <h3 id="preview-couple-names" class="text-base text-tertiary font-script" style="font-family: 'Alex Brush', cursive;">Mi Evento</h3>
+                  <p id="preview-date-text" class="font-label-gold text-[8px] uppercase tracking-widest text-on-surface mt-0.5">FECHA DEL EVENTO</p>
                 </div>
-                <div class="px-1 mt-1">
-                  <p id="preview-quote-text" class="text-[9px] italic text-on-surface-variant leading-relaxed">"A donde tú vayas, iré yo; y donde tú vivas, viviré..."</p>
-                  <span id="preview-quote-author" class="text-[8px] text-tertiary mt-0.5 block">— Rut 1:16</span>
-                </div>
-              </div>
-
-              <!-- Ceremony Section -->
-              <div class="flex flex-col gap-2 py-3 border-b border-tertiary/10">
-                <span id="preview-ceremony-icon" class="material-symbols-outlined text-tertiary text-lg">church</span>
-                <h4 id="preview-ceremony-title" class="font-headline-md text-[10px] text-on-surface uppercase tracking-wider">Ceremonia Religiosa</h4>
-                <p id="preview-ceremony-name" class="text-[10px] text-on-surface font-medium px-1">Parroquia de San Francisco de Asís</p>
-                <div class="text-[9px] text-on-surface-variant flex justify-center gap-1.5">
-                  <span id="preview-ceremony-time">6:00 PM</span> | <span id="preview-ceremony-city" class="truncate max-w-[100px]">Tepatitlán, Jal</span>
+                <div class="px-1">
+                  <p id="preview-quote-text" class="text-[8.5px] italic text-on-surface-variant leading-relaxed">"Con mucha ilusión queremos compartir este día contigo..."</p>
                 </div>
               </div>
 
-              <!-- Reception Section -->
-              <div class="flex flex-col gap-2 py-3 border-b border-tertiary/10">
-                <span id="preview-reception-icon" class="material-symbols-outlined text-tertiary text-lg">celebration</span>
-                <h4 id="preview-reception-title" class="font-headline-md text-[10px] text-on-surface uppercase tracking-wider">Recepción</h4>
-                <p id="preview-reception-name" class="text-[10px] text-on-surface font-medium px-1">Mítico Terraza y Jardín</p>
-                <div class="text-[9px] text-on-surface-variant flex justify-center gap-1.5">
-                  <span id="preview-reception-time">8:00 PM</span> | <span id="preview-reception-city" class="truncate max-w-[100px]">Capilla Gpe</span>
+              <!-- Ceremony Section Preview -->
+              <div id="preview-wrap-ceremony" class="flex flex-col gap-1 py-2 border-b border-tertiary/10">
+                <span id="preview-ceremony-icon" class="material-symbols-outlined text-tertiary text-base">church</span>
+                <h4 id="preview-ceremony-title" class="font-headline-md text-[9px] text-on-surface uppercase tracking-wider">Ceremonia</h4>
+                <p id="preview-ceremony-name" class="text-[9px] text-on-surface font-medium px-1">Sede Principal</p>
+                <div class="text-[8px] text-on-surface-variant flex justify-center gap-1">
+                  <span id="preview-ceremony-time">6:00 PM</span> | <span id="preview-ceremony-city" class="truncate max-w-[80px]">Ciudad</span>
                 </div>
               </div>
 
-              <!-- Dress Code Section -->
-              <div class="flex flex-col gap-1.5 py-3">
-                <span class="material-symbols-outlined text-tertiary text-lg">styler</span>
-                <h4 class="font-headline-md text-[10px] text-on-surface uppercase tracking-wider">Código de Vestimenta</h4>
-                <p id="preview-dress-code" class="text-[10px] text-tertiary font-semibold">Riguroso Formal</p>
-                <p id="preview-kids-policy" class="text-[8px] text-on-surface-variant uppercase tracking-wide">NO NIÑOS</p>
+              <!-- Reception Section Preview -->
+              <div id="preview-wrap-reception" class="flex flex-col gap-1 py-2 border-b border-tertiary/10">
+                <span id="preview-reception-icon" class="material-symbols-outlined text-tertiary text-base">celebration</span>
+                <h4 id="preview-reception-title" class="font-headline-md text-[9px] text-on-surface uppercase tracking-wider">Recepción</h4>
+                <p id="preview-reception-name" class="text-[9px] text-on-surface font-medium px-1">Salón de Eventos</p>
+                <div class="text-[8px] text-on-surface-variant flex justify-center gap-1">
+                  <span id="preview-reception-time">8:00 PM</span> | <span id="preview-reception-city" class="truncate max-w-[80px]">Ciudad</span>
+                </div>
               </div>
+
+              <!-- Dress Code Section Preview -->
+              <div id="preview-wrap-dress" class="flex flex-col gap-1 py-2">
+                <span class="material-symbols-outlined text-tertiary text-base">styler</span>
+                <h4 class="font-headline-md text-[9px] text-on-surface uppercase tracking-wider">Dress Code</h4>
+                <p id="preview-dress-code" class="text-[9px] text-tertiary font-semibold">Riguroso Formal</p>
+                <p id="preview-kids-policy" class="text-[7.5px] text-on-surface-variant uppercase tracking-wide">NO NIÑOS</p>
+              </div>
+
             </div>
           </div>
         </div>
 
+      </div>
     </div>
   </main>
 </div>
@@ -473,7 +614,6 @@ tailwind.config = {
   const SETTINGS_KEY = "galaInvitationSettings_";
 
   async function getStoredSettings() {
-    // 1. Intentar cargar desde Supabase
     try {
       if (currentEventId) {
         const { data: ev } = await window.supabaseClient.from("events").select("invitation_settings").eq("id", currentEventId).single();
@@ -486,7 +626,6 @@ tailwind.config = {
       console.warn("No se pudo cargar invitation_settings de Supabase:", e);
     }
 
-    // 2. Fallback a localStorage
     try {
       const raw = localStorage.getItem(SETTINGS_KEY + currentEventId);
       return raw ? JSON.parse(raw) : null;
@@ -565,12 +704,12 @@ tailwind.config = {
     updateLivePreview();
   });
 
-  // Auto-cargar lugares desde la tabla venues / itinerario
+  // Auto-cargar lugares desde la tabla venues
   document.getElementById("btn-sync-venues").addEventListener("click", async () => {
     const { data: venues } = await window.supabaseClient.from("venues").select("*").eq("event_id", currentEventId);
     if (venues && venues.length > 0) {
-      const church = venues.find(v => v.name.toLowerCase().includes("iglesia") || v.name.toLowerCase().includes("parroquia") || v.name.toLowerCase().includes("templo")) || venues[0];
-      const reception = venues.find(v => v.name.toLowerCase().includes("terraza") || v.name.toLowerCase().includes("jardin") || v.name.toLowerCase().includes("salon") || v.name.toLowerCase().includes("hacienda")) || (venues[1] || venues[0]);
+      const church = venues.find(v => v.name.toLowerCase().includes("iglesia") || v.name.toLowerCase().includes("parroquia") || v.name.toLowerCase().includes("templo") || v.name.toLowerCase().includes("auditorio")) || venues[0];
+      const reception = venues.find(v => v.name.toLowerCase().includes("terraza") || v.name.toLowerCase().includes("jardin") || v.name.toLowerCase().includes("salon") || v.name.toLowerCase().includes("hacienda") || v.name.toLowerCase().includes("hotel")) || (venues[1] || venues[0]);
 
       if (church) {
         document.getElementById("ceremony-name-input").value = church.name;
@@ -587,33 +726,49 @@ tailwind.config = {
     }
   });
 
-  // Guardar configuración
+  // Guardar configuración completa
   document.getElementById("btn-save-invitation-settings").addEventListener("click", async () => {
     const payload = {
+      theme_template: document.querySelector('input[name="theme_template"]:checked')?.value || 'gold-wedding',
       theme_color: document.querySelector('input[name="theme_color"]:checked')?.value || 'gold',
       theme_font: document.querySelector('input[name="theme_font"]:checked')?.value || 'elegant',
+      
+      // Switches
+      show_envelope: document.getElementById("sw-show-envelope").checked,
+      show_countdown: document.getElementById("sw-show-countdown").checked,
+      show_parents: document.getElementById("sw-show-parents").checked,
+      show_godparents: document.getElementById("sw-show-godparents").checked,
+      show_ceremony: document.getElementById("sw-show-ceremony").checked,
+      show_reception: document.getElementById("sw-show-reception").checked,
+      show_dress_code: document.getElementById("sw-show-dress-code").checked,
+      show_gifts: document.getElementById("sw-show-gifts").checked,
+      show_music: document.getElementById("sw-show-music").checked,
+      show_qr_pass: document.getElementById("sw-show-qr-pass").checked,
+
+      // Textos
       bride_name: document.getElementById("bride-name-input").value.trim(),
       groom_name: document.getElementById("groom-name-input").value.trim(),
       cover_image: document.getElementById("cover-image-url-input").value.trim() || document.getElementById("cover-photo-preview").src,
       quote: document.getElementById("quote-text-input").value.trim(),
       quote_author: document.getElementById("quote-author-input").value.trim(),
-      song_title: document.getElementById("song-title-input").value.trim(),
-      song_platform: document.getElementById("song-platform-select").value,
-      song_url: document.getElementById("song-url-input").value.trim(),
+      
       bride_father: document.getElementById("bride-father-input").value.trim(),
       bride_mother: document.getElementById("bride-mother-input").value.trim(),
       groom_father: document.getElementById("groom-father-input").value.trim(),
       groom_mother: document.getElementById("groom-mother-input").value.trim(),
       padrino_1: document.getElementById("padrino-1-input").value.trim(),
       padrino_2: document.getElementById("padrino-2-input").value.trim(),
+      
       ceremony_name: document.getElementById("ceremony-name-input").value.trim(),
       ceremony_time: document.getElementById("ceremony-time-input").value.trim(),
       ceremony_city: document.getElementById("ceremony-city-input").value.trim(),
       ceremony_map: document.getElementById("ceremony-map-input").value.trim(),
+      
       reception_name: document.getElementById("reception-name-input").value.trim(),
       reception_time: document.getElementById("reception-time-input").value.trim(),
       reception_city: document.getElementById("reception-city-input").value.trim(),
       reception_map: document.getElementById("reception-map-input").value.trim(),
+      
       dress_code: document.getElementById("dress-code-input").value.trim(),
       kids_policy: document.getElementById("kids-policy-select").value,
       gift_amazon: document.getElementById("gift-amazon-url").value.trim(),
@@ -673,392 +828,240 @@ tailwind.config = {
     }
   });
 
-  // Live preview reactive bindings
-  const inputsToBind = [
-    { inputId: "bride-name-input", outputId: "preview-couple-names", valueFn: () => {
-      const bride = document.getElementById("bride-name-input").value.trim();
-      const groom = document.getElementById("groom-name-input").value.trim();
-      if (currentEventType === "corporativo") {
-        return groom || "Nombre del Evento";
-      }
-      const defaultBride = currentEventType === "social" ? "Festejado" : "Novia";
-      const defaultGroom = currentEventType === "social" ? "Co-Anfitrión" : "Novio";
-      
-      if (!bride && !groom) return `${defaultBride} & ${defaultGroom}`;
-      if (!bride) return groom;
-      if (!groom) return bride;
-      return `${bride} & ${groom}`;
-    }},
-    { inputId: "groom-name-input", outputId: "preview-couple-names", valueFn: () => {
-      const bride = document.getElementById("bride-name-input").value.trim();
-      const groom = document.getElementById("groom-name-input").value.trim();
-      if (currentEventType === "corporativo") {
-        return groom || "Nombre del Evento";
-      }
-      const defaultBride = currentEventType === "social" ? "Festejado" : "Novia";
-      const defaultGroom = currentEventType === "social" ? "Co-Anfitrión" : "Novio";
-      
-      if (!bride && !groom) return `${defaultBride} & ${defaultGroom}`;
-      if (!bride) return groom;
-      if (!groom) return bride;
-      return `${bride} & ${groom}`;
-    }},
-    { inputId: "quote-text-input", outputId: "preview-quote-text" },
-    { inputId: "quote-author-input", outputId: "preview-quote-author" },
-    { inputId: "ceremony-name-input", outputId: "preview-ceremony-name" },
-    { inputId: "ceremony-time-input", outputId: "preview-ceremony-time" },
-    { inputId: "ceremony-city-input", outputId: "preview-ceremony-city" },
-    { inputId: "reception-name-input", outputId: "preview-reception-name" },
-    { inputId: "reception-time-input", outputId: "preview-reception-time" },
-    { inputId: "reception-city-input", outputId: "preview-reception-city" },
-    { inputId: "dress-code-input", outputId: "preview-dress-code" },
-    { inputId: "kids-policy-select", outputId: "preview-kids-policy" }
-  ];
+  // Adaptación dinámica de campos según el arquetipo elegido
+  function adaptArchetypeForm(template) {
+    const l1 = document.getElementById("label-name-1");
+    const l2 = document.getElementById("label-name-2");
+    const wrap2 = document.getElementById("wrap-name-2");
+    const inp1 = document.getElementById("bride-name-input");
+    const inp2 = document.getElementById("groom-name-input");
+    const parentsRow2 = document.getElementById("parents-row-2");
+    const lVenue1 = document.getElementById("label-venue-1");
+    const lVenue2 = document.getElementById("label-venue-2");
 
-  function updateLivePreview() {
-    inputsToBind.forEach(item => {
-      const el = document.getElementById(item.inputId);
-      const out = document.getElementById(item.outputId);
-      if (!el || !out) return;
-
-      if (item.valueFn) {
-        out.textContent = item.valueFn();
-      } else {
-        out.textContent = el.value || "—";
-      }
-    });
-
-    // Adaptar dinámicamente el layout de la previsualización según tipo de evento
-    const coupleText = document.getElementById("preview-couple-names");
-    const ceremonyIcon = document.getElementById("preview-ceremony-icon");
-    const ceremonyTitle = document.getElementById("preview-ceremony-title");
-    const receptionIcon = document.getElementById("preview-reception-icon");
-    const receptionTitle = document.getElementById("preview-reception-title");
-
-    if (currentEventType === "corporativo") {
-      if (coupleText) {
-        coupleText.style.fontFamily = "'Inter', sans-serif";
-        coupleText.style.fontSize = "13px";
-        coupleText.style.textTransform = "uppercase";
-        coupleText.style.fontWeight = "bold";
-        coupleText.style.letterSpacing = "0.08em";
-      }
-      if (ceremonyIcon) ceremonyIcon.textContent = "business_center";
-      if (ceremonyTitle) ceremonyTitle.textContent = "Conferencia / Sesión";
-      if (receptionIcon) receptionIcon.textContent = "local_bar";
-      if (receptionTitle) receptionTitle.textContent = "Cierre / Networking";
-    } else if (currentEventType === "social") {
-      if (coupleText) {
-        coupleText.style.fontFamily = "";
-        coupleText.style.fontSize = "";
-        coupleText.style.textTransform = "";
-        coupleText.style.fontWeight = "";
-        coupleText.style.letterSpacing = "";
-      }
-      if (ceremonyIcon) ceremonyIcon.textContent = "celebration";
-      if (ceremonyTitle) ceremonyTitle.textContent = "Recepción de Invitados";
-      if (receptionIcon) receptionIcon.textContent = "cake";
-      if (receptionTitle) receptionTitle.textContent = "Fiesta / Brindis";
+    if (template === "velvet-xv") {
+      if (l1) l1.textContent = "Nombre de la Quinceañera (Festejada) *";
+      if (inp1) inp1.placeholder = "Ej. Sofía";
+      if (wrap2) wrap2.classList.add("hidden");
+      if (parentsRow2) parentsRow2.classList.remove("hidden");
+      if (lVenue1) lVenue1.textContent = "1. Misa de Acción de Gracias";
+      if (lVenue2) lVenue2.textContent = "2. Recepción & Vals";
+    } else if (template === "corporate-gala") {
+      if (l1) l1.textContent = "Nombre de la Empresa / Organizador *";
+      if (l2) l2.textContent = "Nombre del Evento (Corto) *";
+      if (inp1) inp1.placeholder = "Ej. Tech Corp";
+      if (inp2) inp2.placeholder = "Ej. Summit 2026";
+      if (wrap2) wrap2.classList.remove("hidden");
+      if (parentsRow2) parentsRow2.classList.add("hidden");
+      if (lVenue1) lVenue1.textContent = "1. Sede / Auditorio Principal";
+      if (lVenue2) lVenue2.textContent = "2. Cocktail & Networking";
+    } else if (template === "modern-social") {
+      if (l1) l1.textContent = "Nombre del Festejado(a) / Evento *";
+      if (inp1) inp1.placeholder = "Ej. Aniversario de Oro";
+      if (wrap2) wrap2.classList.add("hidden");
+      if (parentsRow2) parentsRow2.classList.add("hidden");
+      if (lVenue1) lVenue1.textContent = "1. Recepción de Invitados";
+      if (lVenue2) lVenue2.textContent = "2. Fiesta & Brindis";
     } else {
       // Boda
-      if (coupleText) {
-        coupleText.style.fontFamily = "";
-        coupleText.style.fontSize = "";
-        coupleText.style.textTransform = "";
-        coupleText.style.fontWeight = "";
-        coupleText.style.letterSpacing = "";
-      }
-      if (ceremonyIcon) ceremonyIcon.textContent = "church";
-      if (ceremonyTitle) ceremonyTitle.textContent = "Ceremonia Religiosa";
-      if (receptionIcon) receptionIcon.textContent = "celebration";
-      if (receptionTitle) receptionTitle.textContent = "Recepción";
+      if (l1) l1.textContent = "Nombre de la Novia *";
+      if (l2) l2.textContent = "Nombre del Novio *";
+      if (inp1) inp1.placeholder = "Ej. Valentina";
+      if (inp2) inp2.placeholder = "Ej. Sebastián";
+      if (wrap2) wrap2.classList.remove("hidden");
+      if (parentsRow2) parentsRow2.classList.remove("hidden");
+      if (lVenue1) lVenue1.textContent = "1. Ceremonia Religiosa (Misa)";
+      if (lVenue2) lVenue2.textContent = "2. Recepción (Fiesta)";
+    }
+  }
+
+  // Previsualización en vivo en el celular simulado
+  function updateLivePreview() {
+    const template = document.querySelector('input[name="theme_template"]:checked')?.value || 'gold-wedding';
+    adaptArchetypeForm(template);
+
+    const b = document.getElementById("bride-name-input").value.trim();
+    const g = document.getElementById("groom-name-input").value.trim();
+    const coupleText = document.getElementById("preview-couple-names");
+    const previewIcon = document.getElementById("preview-archetype-icon");
+
+    if (template === "velvet-xv") {
+      if (coupleText) coupleText.textContent = b || "Sofía";
+      if (previewIcon) previewIcon.classList.remove("hidden");
+    } else if (template === "corporate-gala") {
+      if (coupleText) coupleText.textContent = (b && g) ? `${b} - ${g}` : (b || g || "Gala Corporativa");
+      if (previewIcon) previewIcon.classList.add("hidden");
+    } else if (template === "modern-social") {
+      if (coupleText) coupleText.textContent = b || "Gran Celebración";
+      if (previewIcon) previewIcon.classList.add("hidden");
+    } else {
+      if (coupleText) coupleText.textContent = (b && g) ? `${b} & ${g}` : (b || g || "Nuestra Boda");
+      if (previewIcon) previewIcon.classList.add("hidden");
     }
 
-    // Theme Color live style update
+    const q = document.getElementById("quote-text-input").value.trim();
+    document.getElementById("preview-quote-text").textContent = q ? `"${q}"` : "Con mucha ilusión queremos compartir este día contigo...";
+
+    document.getElementById("preview-ceremony-name").textContent = document.getElementById("ceremony-name-input").value.trim() || "Sede Principal";
+    document.getElementById("preview-ceremony-time").textContent = document.getElementById("ceremony-time-input").value.trim() || "6:00 PM";
+    document.getElementById("preview-ceremony-city").textContent = document.getElementById("ceremony-city-input").value.trim() || "Ciudad";
+
+    document.getElementById("preview-reception-name").textContent = document.getElementById("reception-name-input").value.trim() || "Salón de Eventos";
+    document.getElementById("preview-reception-time").textContent = document.getElementById("reception-time-input").value.trim() || "8:00 PM";
+    document.getElementById("preview-reception-city").textContent = document.getElementById("reception-city-input").value.trim() || "Ciudad";
+
+    document.getElementById("preview-dress-code").textContent = document.getElementById("dress-code-input").value.trim() || "Formal";
+    document.getElementById("preview-kids-policy").textContent = document.getElementById("kids-policy-select").value;
+
+    // Actualizar switches en preview
+    document.getElementById("preview-wrap-ceremony").classList.toggle("hidden", !document.getElementById("sw-show-ceremony").checked);
+    document.getElementById("preview-wrap-reception").classList.toggle("hidden", !document.getElementById("sw-show-reception").checked);
+    document.getElementById("preview-wrap-dress").classList.toggle("hidden", !document.getElementById("sw-show-dress-code").checked);
+
+    // Color y tipografía preview
     const activeColor = document.querySelector('input[name="theme_color"]:checked')?.value || 'gold';
     const root = document.getElementById("phone-preview-screen");
-    const quoteAuth = document.getElementById("preview-quote-author");
     const codeText = document.getElementById("preview-dress-code");
-    
-    // Reset colors
-    root.style.backgroundColor = "";
-    root.style.color = "";
-    [coupleText, quoteAuth, codeText].forEach(el => {
-      if (el) {
-        el.style.color = "";
-        el.className = el.className.replace(/\btext-\S+/g, '');
-      }
-    });
 
-    if (activeColor === 'gold') {
-      root.style.backgroundColor = "#131411";
-      root.style.color = "#e5e2dd";
-      if (coupleText) coupleText.style.color = "#e9c349";
-      if (quoteAuth) quoteAuth.style.color = "#e9c349";
-      if (codeText) codeText.style.color = "#e9c349";
-    } else if (activeColor === 'pink') {
-      root.style.backgroundColor = "#faf5ff";
+    if (activeColor === 'pink') {
+      root.style.backgroundColor = "#fff5f8";
       root.style.color = "#4a044e";
-      if (coupleText) coupleText.style.color = "#f472b6";
-      if (quoteAuth) quoteAuth.style.color = "#f472b6";
-      if (codeText) codeText.style.color = "#f472b6";
+      if (coupleText) coupleText.style.color = "#e879a9";
+      if (codeText) codeText.style.color = "#e879a9";
     } else if (activeColor === 'blue') {
       root.style.backgroundColor = "#f3f4f6";
       root.style.color = "#1e3a8a";
       if (coupleText) coupleText.style.color = "#3b82f6";
-      if (quoteAuth) quoteAuth.style.color = "#3b82f6";
       if (codeText) codeText.style.color = "#3b82f6";
     } else if (activeColor === 'green') {
       root.style.backgroundColor = "#fffbeb";
       root.style.color = "#064e3b";
       if (coupleText) coupleText.style.color = "#10b981";
-      if (quoteAuth) quoteAuth.style.color = "#10b981";
       if (codeText) codeText.style.color = "#10b981";
+    } else if (activeColor === 'dark') {
+      root.style.backgroundColor = "#1a1a1a";
+      root.style.color = "#f5f5f5";
+      if (coupleText) coupleText.style.color = "#e9c349";
+      if (codeText) codeText.style.color = "#e9c349";
+    } else {
+      root.style.backgroundColor = "#131411";
+      root.style.color = "#e5e2dd";
+      if (coupleText) coupleText.style.color = "#e9c349";
+      if (codeText) codeText.style.color = "#e9c349";
     }
 
-    // Theme Font live style update
     const activeFont = document.querySelector('input[name="theme_font"]:checked')?.value || 'elegant';
-    if (activeFont === 'elegant') {
-      root.style.fontFamily = "'Playfair Display', serif";
-      if (coupleText) {
-        coupleText.style.fontFamily = "'Alex Brush', cursive";
-        coupleText.style.fontSize = "1.25rem";
-      }
-    } else if (activeFont === 'romantic') {
+    if (activeFont === 'romantic') {
       root.style.fontFamily = "'Cormorant Garamond', serif";
-      if (coupleText) {
-        coupleText.style.fontFamily = "'Alex Brush', cursive";
-        coupleText.style.fontSize = "1.75rem";
-      }
+      if (coupleText) coupleText.style.fontFamily = "'Great Vibes', cursive";
     } else if (activeFont === 'minimalist') {
       root.style.fontFamily = "'Montserrat', sans-serif";
-      if (coupleText) {
-        coupleText.style.fontFamily = "'Montserrat', sans-serif";
-        coupleText.style.fontSize = "1rem";
-        coupleText.style.fontWeight = "bold";
-      }
-    }
-  }
-
-  // Register event listeners for preview updates
-  inputsToBind.forEach(item => {
-    const el = document.getElementById(item.inputId);
-    if (el) {
-      el.addEventListener("input", updateLivePreview);
-      el.addEventListener("change", updateLivePreview);
-    }
-  });
-
-  // Watch color and font selection
-  document.addEventListener("change", (e) => {
-    if (e.target.name === "theme_color" || e.target.name === "theme_font") {
-      updateLivePreview();
-    }
-  });
-
-  function applyRandomDefaultValues() {
-    const randomBrideNames = ["Adriana", "Camila", "Valentina", "Greta", "Mariana", "Lucía", "Victoria", "Gabriela", "Natalia", "Fernanda"];
-    const randomGroomNames = ["Sebastián", "Mateo", "Santiago", "Alex", "Daniel", "Diego", "Nicolás", "Samuel", "Benjamín", "Lucas"];
-    
-    const randomQuotes = [
-      { text: "“El amor no consiste en mirarse el uno al otro, sino en mirar juntos en la misma dirección.”", author: "— Antoine de Saint-Exupéry" },
-      { text: "“Por encima de todo, vístanse de amor, que es el vínculo perfecto.”", author: "— Colosenses 3:14" },
-      { text: "“Donde hay amor hay vida.”", author: "— Mahatma Gandhi" },
-      { text: "“Siempre tuyo, siempre mía, siempre nuestros.”", author: "— Ludwig van Beethoven" }
-    ];
-
-    const randomCities = [
-      { city: "Tlaquepaque, Jalisco", church: "Santuario de Nuestra Señora de la Soledad", reception: "Hacienda del Sol", map1: "https://maps.google.com/?q=Santuario+Soledad+Tlaquepaque", map2: "https://maps.google.com/?q=Hacienda+del+Sol+Tlaquepaque" },
-      { city: "San Miguel de Allende, Gto", church: "Parroquia de San Miguel Arcángel", reception: "Instituto Allende", map1: "https://maps.google.com/?q=Parroquia+San+Miguel+Arcangel", map2: "https://maps.google.com/?q=Instituto+Allende" },
-      { city: "Mérida, Yucatán", church: "Catedral de San Ildefonso", reception: "Quinta Montes Molina", map1: "https://maps.google.com/?q=Catedral+Merida", map2: "https://maps.google.com/?q=Quinta+Montes+Molina" },
-      { city: "Oaxaca de Juárez, Oax", church: "Templo de Santo Domingo de Guzmán", reception: "Jardín Etnobotánico Oaxaca", map1: "https://maps.google.com/?q=Templo+Santo+Domingo+Oaxaca", map2: "https://maps.google.com/?q=Jardin+Etnobotanico+Oaxaca" }
-    ];
-
-    const randomPadrinosList = [
-      ["Lauro Coss Y León Rubio", "Itzel Durand Cortés"],
-      ["Ing. Carlos Mendoza", "Dra. Elena Rostova"],
-      ["Dr. Fernando Gómez", "Lic. Patricia Quiroz"],
-      ["Roberto Sierra", "Ana María Orozco"]
-    ];
-
-    const randomParentsList = [
-      { bf: "Guillermo Martínez Gómez", bm: "María Elena Padilla Gutiérrez", gf: "Armando Jiménez Jiménez", gm: "Blanca Delia González Lozano" },
-      { bf: "Ricardo Fuentes S.", bm: "Rosaura Delgado Tapia", gf: "Ing. Alberto Lozano", gm: "Dra. Sofía Rincón" },
-      { bf: "Héctor Silva", bm: "Lucía Villaseñor", gf: "Enrique Olvera", gm: "Martha Mendoza" }
-    ];
-
-    // Pick random indices
-    const bride = randomBrideNames[Math.floor(Math.random() * randomBrideNames.length)];
-    const groom = randomGroomNames[Math.floor(Math.random() * randomGroomNames.length)];
-    const quote = randomQuotes[Math.floor(Math.random() * randomQuotes.length)];
-    const location = randomCities[Math.floor(Math.random() * randomCities.length)];
-    const padrinos = randomPadrinosList[Math.floor(Math.random() * randomPadrinosList.length)];
-    const parents = randomParentsList[Math.floor(Math.random() * randomParentsList.length)];
-
-    document.getElementById("bride-name-input").value = bride;
-    document.getElementById("groom-name-input").value = groom;
-    document.getElementById("quote-text-input").value = quote.text;
-    document.getElementById("quote-author-input").value = quote.author;
-    
-    document.getElementById("ceremony-name-input").value = location.church;
-    document.getElementById("ceremony-time-input").value = "6:00 PM";
-    document.getElementById("ceremony-city-input").value = location.city;
-    document.getElementById("ceremony-map-input").value = location.map1;
-
-    document.getElementById("reception-name-input").value = location.reception;
-    document.getElementById("reception-time-input").value = "8:00 PM";
-    document.getElementById("reception-city-input").value = location.city;
-    document.getElementById("reception-map-input").value = location.map2;
-
-    document.getElementById("padrino-1-input").value = padrinos[0];
-    document.getElementById("padrino-2-input").value = padrinos[1];
-
-    document.getElementById("bride-father-input").value = parents.bf;
-    document.getElementById("bride-mother-input").value = parents.bm;
-    document.getElementById("groom-father-input").value = parents.gf;
-    document.getElementById("groom-mother-input").value = parents.gm;
-  }
-
-  function adaptFormLabelsAndWizard(eventType) {
-    const type = (eventType || "boda").toLowerCase();
-    const brideLabel = document.querySelector('label[for="bride-name-input"]');
-    const groomLabel = document.querySelector('label[for="groom-name-input"]');
-    const step2Title = document.querySelector('#step-section-2 > h3');
-    const step4Title = document.querySelector('#step-section-4 > h3');
-    const tab2 = document.querySelector('.wizard-tab[data-step="2"]');
-    
-    const brideInput = document.getElementById("bride-name-input");
-    const groomInput = document.getElementById("groom-name-input");
-    const quoteLabel = document.querySelector('label[for="quote-text-input"]');
-    const quoteTextarea = document.getElementById("quote-text-input");
-    const quoteAuthor = document.getElementById("quote-author-input");
-
-    const parentsPadrinosWrapper = document.getElementById("parents-padrinos-wrapper");
-
-    if (type === "corporativo") {
-      if (brideLabel) brideLabel.textContent = "Organizador / Empresa *";
-      if (groomLabel) groomLabel.textContent = "Nombre del Evento (Corto) *";
-      if (brideInput) brideInput.placeholder = "Ej. Google México";
-      if (groomInput) groomInput.placeholder = "Ej. Google I/O 2026";
-      
-      if (step2Title) {
-        step2Title.innerHTML = `<span class="material-symbols-outlined text-tertiary text-[18px]">business_center</span>Portada & Título del Evento`;
-      }
-      if (step4Title) {
-        step4Title.innerHTML = `<span class="material-symbols-outlined text-tertiary text-[18px]">styler</span>Detalles y Enlaces`;
-      }
-      if (tab2) tab2.textContent = "2. Evento";
-      
-      if (quoteLabel) quoteLabel.textContent = "Eslogan / Lema del Evento";
-      if (quoteTextarea) quoteTextarea.placeholder = "Ej. Conectando mentes, creando el futuro...";
-      if (quoteAuthor) quoteAuthor.placeholder = "— Lema Oficial";
-
-      if (parentsPadrinosWrapper) parentsPadrinosWrapper.classList.add("hidden");
-    } else if (type === "social") {
-      if (brideLabel) brideLabel.textContent = "Nombre del Festejado *";
-      if (groomLabel) groomLabel.textContent = "Nombre del Co-Anfitrión (Opcional) *";
-      if (brideInput) brideInput.placeholder = "Ej. Sofía Ortega";
-      if (groomInput) groomInput.placeholder = "Ej. Padres de Sofía";
-      
-      if (step2Title) {
-        step2Title.innerHTML = `<span class="material-symbols-outlined text-tertiary text-[18px]">celebration</span>Portada & Festejado`;
-      }
-      if (tab2) tab2.textContent = "2. Festejado";
-      
-      if (quoteLabel) quoteLabel.textContent = "Frase / Mensaje de Bienvenida";
-      if (quoteTextarea) quoteTextarea.placeholder = "Ej. Bienvenidos a mi gran fiesta de cumpleaños...";
-      
-      if (parentsPadrinosWrapper) parentsPadrinosWrapper.classList.remove("hidden");
+      if (coupleText) coupleText.style.fontFamily = "'Montserrat', sans-serif";
     } else {
-      if (brideLabel) brideLabel.textContent = "Nombre de la Novia *";
-      if (groomLabel) groomLabel.textContent = "Nombre del Novio *";
-      if (brideInput) brideInput.placeholder = "Ej. Yariana";
-      if (groomInput) groomInput.placeholder = "Ej. Daniel";
-      
-      if (step2Title) {
-        step2Title.innerHTML = `<span class="material-symbols-outlined text-tertiary text-[18px]">favorite</span>Portada & Foto de los Novios`;
-      }
-      if (tab2) tab2.textContent = "2. Novios";
-      
-      if (quoteLabel) quoteLabel.textContent = "Cita de Amor / Frase Bíblica";
-      
-      if (parentsPadrinosWrapper) parentsPadrinosWrapper.classList.remove("hidden");
+      root.style.fontFamily = "'Playfair Display', serif";
+      if (coupleText) coupleText.style.fontFamily = "'Alex Brush', cursive";
     }
   }
+
+  // Bind inputs
+  document.getElementById("invitation-form").addEventListener("input", updateLivePreview);
+  document.getElementById("invitation-form").addEventListener("change", updateLivePreview);
 
   // Inicialización
-  (async function init() {
-    const auth = await window.requireAuth();
-    if (!auth) return;
+  async function init() {
     const currentEvent = await window.requireEvent();
     if (!currentEvent) return;
     currentEventId = currentEvent.id;
-    currentEventType = currentEvent.event_type || "boda";
+    currentEventType = (currentEvent.event_type || "boda").toLowerCase();
 
-    adaptFormLabelsAndWizard(currentEventType);
-    document.getElementById("btn-view-invitation-live").href = `invitacion.html?event=${currentEventId}`;
+    // Fecha en preview
+    if (currentEvent.event_date) {
+      document.getElementById("preview-date-text").textContent = currentEvent.event_date.replace(/-/g, " · ");
+    }
 
     const saved = await getStoredSettings();
     if (saved) {
+      if (saved.theme_template) {
+        const rad = document.querySelector(`input[name="theme_template"][value="${saved.theme_template}"]`);
+        if (rad) rad.checked = true;
+      }
       if (saved.theme_color) {
-        const radio = document.querySelector(`input[name="theme_color"][value="${saved.theme_color}"]`);
-        if (radio) radio.checked = true;
+        const rad = document.querySelector(`input[name="theme_color"][value="${saved.theme_color}"]`);
+        if (rad) rad.checked = true;
       }
       if (saved.theme_font) {
-        const radio = document.querySelector(`input[name="theme_font"][value="${saved.theme_font}"]`);
-        if (radio) radio.checked = true;
+        const rad = document.querySelector(`input[name="theme_font"][value="${saved.theme_font}"]`);
+        if (rad) rad.checked = true;
       }
+
+      // Switches
+      if (saved.show_envelope !== undefined) document.getElementById("sw-show-envelope").checked = saved.show_envelope;
+      if (saved.show_countdown !== undefined) document.getElementById("sw-show-countdown").checked = saved.show_countdown;
+      if (saved.show_parents !== undefined) document.getElementById("sw-show-parents").checked = saved.show_parents;
+      if (saved.show_godparents !== undefined) document.getElementById("sw-show-godparents").checked = saved.show_godparents;
+      if (saved.show_ceremony !== undefined) document.getElementById("sw-show-ceremony").checked = saved.show_ceremony;
+      if (saved.show_reception !== undefined) document.getElementById("sw-show-reception").checked = saved.show_reception;
+      if (saved.show_dress_code !== undefined) document.getElementById("sw-show-dress-code").checked = saved.show_dress_code;
+      if (saved.show_gifts !== undefined) document.getElementById("sw-show-gifts").checked = saved.show_gifts;
+      if (saved.show_music !== undefined) document.getElementById("sw-show-music").checked = saved.show_music;
+      if (saved.show_qr_pass !== undefined) document.getElementById("sw-show-qr-pass").checked = saved.show_qr_pass;
+
       if (saved.bride_name) document.getElementById("bride-name-input").value = saved.bride_name;
       if (saved.groom_name) document.getElementById("groom-name-input").value = saved.groom_name;
-      
       if (saved.cover_image) {
+        document.getElementById("cover-image-url-input").value = saved.cover_image;
         document.getElementById("cover-photo-preview").src = saved.cover_image;
-        document.getElementById("cover-image-url-input").value = saved.cover_image.startsWith("data:") ? "" : saved.cover_image;
         document.getElementById("preview-cover-photo").src = saved.cover_image;
       }
       if (saved.quote) document.getElementById("quote-text-input").value = saved.quote;
       if (saved.quote_author) document.getElementById("quote-author-input").value = saved.quote_author;
-      if (saved.song_title) document.getElementById("song-title-input").value = saved.song_title;
-      if (saved.song_platform) document.getElementById("song-platform-select").value = saved.song_platform;
-      if (saved.song_url) document.getElementById("song-url-input").value = saved.song_url;
+
       if (saved.bride_father) document.getElementById("bride-father-input").value = saved.bride_father;
       if (saved.bride_mother) document.getElementById("bride-mother-input").value = saved.bride_mother;
       if (saved.groom_father) document.getElementById("groom-father-input").value = saved.groom_father;
       if (saved.groom_mother) document.getElementById("groom-mother-input").value = saved.groom_mother;
       if (saved.padrino_1) document.getElementById("padrino-1-input").value = saved.padrino_1;
       if (saved.padrino_2) document.getElementById("padrino-2-input").value = saved.padrino_2;
+
       if (saved.ceremony_name) document.getElementById("ceremony-name-input").value = saved.ceremony_name;
       if (saved.ceremony_time) document.getElementById("ceremony-time-input").value = saved.ceremony_time;
       if (saved.ceremony_city) document.getElementById("ceremony-city-input").value = saved.ceremony_city;
       if (saved.ceremony_map) document.getElementById("ceremony-map-input").value = saved.ceremony_map;
+
       if (saved.reception_name) document.getElementById("reception-name-input").value = saved.reception_name;
       if (saved.reception_time) document.getElementById("reception-time-input").value = saved.reception_time;
       if (saved.reception_city) document.getElementById("reception-city-input").value = saved.reception_city;
       if (saved.reception_map) document.getElementById("reception-map-input").value = saved.reception_map;
+
       if (saved.dress_code) document.getElementById("dress-code-input").value = saved.dress_code;
       if (saved.kids_policy) document.getElementById("kids-policy-select").value = saved.kids_policy;
       if (saved.gift_amazon) document.getElementById("gift-amazon-url").value = saved.gift_amazon;
       if (saved.bank_name) document.getElementById("bank-name-input").value = saved.bank_name;
       if (saved.bank_clabe) document.getElementById("bank-clabe-input").value = saved.bank_clabe;
     } else {
-      // Default dummy values using random names and places
-      applyRandomDefaultValues();
+      // Valores iniciales según tipo de evento
+      if (currentEventType === "social" || currentEventType === "xv") {
+        const rad = document.querySelector('input[name="theme_template"][value="velvet-xv"]');
+        if (rad) rad.checked = true;
+      } else if (currentEventType === "corporativo") {
+        const rad = document.querySelector('input[name="theme_template"][value="corporate-gala"]');
+        if (rad) rad.checked = true;
+      }
+      if (currentEvent.name) {
+        if (currentEvent.name.includes("&")) {
+          const parts = currentEvent.name.split("&");
+          document.getElementById("bride-name-input").value = parts[0].trim();
+          document.getElementById("groom-name-input").value = parts[1].trim();
+        } else {
+          document.getElementById("bride-name-input").value = currentEvent.name;
+        }
+      }
     }
 
-    showStep(1);
     updateLivePreview();
-  })();
-</script>
+  }
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  var btn = document.getElementById('sidebar-toggle');
-  if (!btn) return;
-  btn.addEventListener('click', function () {
-    var isCollapsed = document.documentElement.classList.toggle('sidebar-collapsed');
-    try { localStorage.setItem('galaSidebarCollapsed', isCollapsed ? 'true' : 'false'); } catch (e) {}
-  });
-});
+  window.addEventListener("load", init);
 </script>
 </body>
 </html>

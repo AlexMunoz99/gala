@@ -486,7 +486,7 @@ document.addEventListener('DOMContentLoaded', function () {
       <input id="guest-id" type="hidden"/>
       <div class="flex flex-col gap-1">
         <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="guest-full-name">Nombre completo *</label>
-        <input id="guest-full-name" required="" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
+        <input id="guest-full-name" required="" placeholder="Ej. Nombre y Apellidos" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
       </div>
       <div class="grid grid-cols-2 gap-4">
         <div class="flex flex-col gap-1">
@@ -500,16 +500,16 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
         <div class="flex flex-col gap-1">
           <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="guest-table">Mesa #</label>
-          <input id="guest-table" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
+          <input id="guest-table" placeholder="Ej. 1, 2, VIP, Principal..." class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
         </div>
       </div>
       <div class="flex flex-col gap-1">
         <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="guest-phone">Teléfono</label>
-        <input id="guest-phone" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
+        <input id="guest-phone" placeholder="Ej. 3312345678" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
       </div>
       <div class="flex flex-col gap-1">
         <label class="text-xs uppercase tracking-wider text-on-surface-variant" for="guest-dietary">Notas dietéticas</label>
-        <input id="guest-dietary" class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
+        <input id="guest-dietary" placeholder="Ej. Vegetariano, sin mariscos, etc." class="bg-surface-container border border-tertiary/20 rounded-lg py-3 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
       </div>
       <div class="grid grid-cols-2 gap-4 items-end">
         <div class="flex flex-col gap-1">
@@ -546,7 +546,7 @@ document.addEventListener('DOMContentLoaded', function () {
     </div>
     <div id="groups-list" class="flex flex-col gap-2 mb-6 max-h-64 overflow-y-auto"></div>
     <form id="group-add-form" class="flex gap-2">
-      <input id="new-group-name" placeholder="Nombre del nuevo grupo" required="" class="flex-1 bg-surface-container border border-tertiary/20 rounded-lg py-2.5 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
+      <input id="new-group-name" placeholder="Ej. Familia, Amigos, Empresa, Mesa de Honor..." required="" class="flex-1 bg-surface-container border border-tertiary/20 rounded-lg py-2.5 px-4 text-on-surface focus:outline-none focus:border-tertiary" type="text"/>
       <button type="submit" class="px-4 py-2.5 rounded-lg bg-tertiary text-on-tertiary font-button-text uppercase tracking-wider text-sm hover:brightness-110 transition-all">Agregar</button>
     </form>
     <p id="groups-error" class="hidden text-error text-sm mt-2"></p>
@@ -930,9 +930,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const headers = ["Nombre", "Grupo", "Teléfono", "RSVP", "Mesa", "Acompañante", "Notas dietéticas"];
     const rows = [
       headers,
-      ["Carlos Mendoza", "Familia Novio", "523312345678", "Confirmado", "Mesa 1", "No", "Sin mariscos"],
-      ["Mariana Gómez", "Amigos Novia", "3398765432", "Pendiente", "Mesa 2", "Sí", "Vegetariana"],
-      ["Roberto Silva", "Trabajo", "5555555555", "Pendiente", "Mesa 3", "No", ""]
+      ["Invitado Ejemplo 1", "Familia", "523312345678", "Confirmado", "Mesa 1", "No", "Sin mariscos"],
+      ["Invitado Ejemplo 2", "Amigos", "3398765432", "Pendiente", "Mesa 2", "Sí", "Vegetariano"],
+      ["Invitado Ejemplo 3", "Empresa", "5555555555", "Pendiente", "Mesa 3", "No", ""]
     ];
     const csv = rows
       .map(row => row.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(","))
@@ -1386,7 +1386,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     remindList.innerHTML = pendings.map(g => {
       const invUrl = `${window.location.origin + window.location.pathname.replace('invitados.html', '')}invitacion.html?g=${g.id}`;
-      const msg = `¡Hola ${g.full_name}! 👋 Te escribimos con mucho cariño para recordarte confirmar tu asistencia a nuestra boda.\n\nPuedes ver todos los detalles y confirmar tus pases directamente aquí:\n${invUrl}\n\n¡Esperamos contar contigo! ✨`;
+      const msg = `¡Hola ${g.full_name}! 👋 Te escribimos con mucho gusto para recordarte confirmar tu asistencia a nuestro evento.\n\nPuedes ver todos los detalles y confirmar tus pases directamente aquí:\n${invUrl}\n\n¡Esperamos contar contigo! ✨`;
       let cleanPhone = (g.phone || "").replace(/\D/g, "");
       if (cleanPhone.length === 10) cleanPhone = "52" + cleanPhone;
       const hasPhone = cleanPhone && cleanPhone.length >= 10;
